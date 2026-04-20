@@ -2,27 +2,11 @@
 
 ## 🔧 Co musisz zrobić (krok po kroku):
 
-### 1. GitHub — repozytorium
-- [ ] Utwórz konto na [github.com](https://github.com) (jeśli nie masz)
-- [ ] Utwórz nowe repozytorium (np. `barcode-generator`)
-- [ ] Ustaw repozytorium jako **publiczne** (wymagane do free Cloudflare Pages)
-- [ ] Połącz lokalne repo z GitHub:
-  ```
-  git remote add origin https://github.com/TWOJ-USERNAME/barcode-generator.git
-  git branch -M main
-  git push -u origin main
-  ```
+### 1. ~~GitHub — repozytorium~~ ✅
+- [x] Repozytorium: [github.com/IgorGerc/Generator-kodow-kreskowych](https://github.com/IgorGerc/Generator-kodow-kreskowych)
 
-### 2. Cloudflare Pages — hosting
-- [ ] Utwórz darmowe konto na [dash.cloudflare.com](https://dash.cloudflare.com)
-- [ ] Idź do **Workers & Pages** → **Create application** → **Pages**
-- [ ] Połącz z GitHub i wybierz repozytorium `barcode-generator`
-- [ ] Ustawienia buildu:
-  - **Build command:** *(zostaw puste — to statyczna strona)*
-  - **Build output directory:** `/` *(root)*
-  - **Root directory:** `/`
-- [ ] Kliknij **Save and Deploy**
-- [ ] Strona będzie dostępna pod: `barcode-generator.pages.dev`
+### 2. ~~Cloudflare Pages — hosting~~ ✅
+- [x] Strona live: [generator-kodow-kreskowych.igor-gerc-gercu.workers.dev](https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/)
 
 ### 3. Własna domena (opcjonalnie)
 - [ ] Kup domenę (np. na [OVH](https://ovh.pl), [Cloudflare Registrar](https://dash.cloudflare.com/domains), [Porkbun](https://porkbun.com))
@@ -59,7 +43,7 @@
 - [ ] Otwórz [search.google.com/search-console](https://search.google.com/search-console)
 - [ ] Dodaj property → Wpisz URL strony
 - [ ] Zweryfikuj (Cloudflare DNS verification jest najłatwiejszy)
-- [ ] Zgłoś sitemap: `https://barcode-generator.pages.dev/sitemap.xml`
+- [ ] Zgłoś sitemap: `https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/sitemap.xml`
 - [ ] Poproś o indeksowanie strony głównej
 
 ### 7. Sprawdzenie po deployu

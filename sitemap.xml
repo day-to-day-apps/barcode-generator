@@ -2,108 +2,108 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
-        <loc>https://barcode-generator.pages.dev/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.pages.dev/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.pages.dev/en/"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.pages.dev/de/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.pages.dev/fr/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.pages.dev/es/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.pages.dev/it/"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.pages.dev/pt/"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.pages.dev/nl/"/>
-        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.pages.dev/cs/"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.pages.dev/uk/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.pages.dev/"/>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/en/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/de/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/fr/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/es/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/it/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/pt/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/nl/"/>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/cs/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/uk/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.pages.dev/en/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.pages.dev/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.pages.dev/en/"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.pages.dev/de/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.pages.dev/fr/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.pages.dev/es/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.pages.dev/it/"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.pages.dev/pt/"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.pages.dev/nl/"/>
-        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.pages.dev/cs/"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.pages.dev/uk/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.pages.dev/"/>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/en/</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/en/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/de/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/fr/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/es/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/it/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/pt/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/nl/"/>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/cs/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/uk/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.pages.dev/de/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.pages.dev/"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.pages.dev/de/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.pages.dev/"/>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/de/</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/de/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.pages.dev/fr/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.pages.dev/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.pages.dev/fr/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.pages.dev/"/>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/fr/</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/fr/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.pages.dev/es/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.pages.dev/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.pages.dev/es/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.pages.dev/"/>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/es/</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/es/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.pages.dev/it/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.pages.dev/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.pages.dev/it/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.pages.dev/"/>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/it/</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/it/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.pages.dev/pt/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.pages.dev/"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.pages.dev/pt/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.pages.dev/"/>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/pt/</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/pt/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.pages.dev/nl/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.pages.dev/"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.pages.dev/nl/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.pages.dev/"/>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/nl/</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/nl/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.pages.dev/cs/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.pages.dev/"/>
-        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.pages.dev/cs/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.pages.dev/"/>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/cs/</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/cs/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.pages.dev/uk/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.pages.dev/"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.pages.dev/uk/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.pages.dev/"/>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/uk/</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/uk/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.pages.dev/polityka-prywatnosci.html</loc>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/polityka-prywatnosci.html</loc>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.pages.dev/regulamin.html</loc>
+        <loc>https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/regulamin.html</loc>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
