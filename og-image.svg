@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f0a2e"/>
+      <stop offset="50%" stop-color="#1a1145"/>
+      <stop offset="100%" stop-color="#0d0826"/>
+    </linearGradient>
+    <linearGradient id="bar-g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="bar-g2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#a78bfa" stop-opacity="0.3"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-soft">
+      <feGaussianBlur stdDeviation="20" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.04" stroke="#a78bfa" stroke-width="0.5">
+    <line x1="0" y1="0" x2="0" y2="630"/><line x1="60" y1="0" x2="60" y2="630"/>
+    <line x1="120" y1="0" x2="120" y2="630"/><line x1="180" y1="0" x2="180" y2="630"/>
+    <line x1="240" y1="0" x2="240" y2="630"/><line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="360" y1="0" x2="360" y2="630"/><line x1="420" y1="0" x2="420" y2="630"/>
+    <line x1="480" y1="0" x2="480" y2="630"/><line x1="540" y1="0" x2="540" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/><line x1="660" y1="0" x2="660" y2="630"/>
+    <line x1="720" y1="0" x2="720" y2="630"/><line x1="780" y1="0" x2="780" y2="630"/>
+    <line x1="840" y1="0" x2="840" y2="630"/><line x1="900" y1="0" x2="900" y2="630"/>
+    <line x1="960" y1="0" x2="960" y2="630"/><line x1="1020" y1="0" x2="1020" y2="630"/>
+    <line x1="1080" y1="0" x2="1080" y2="630"/><line x1="1140" y1="0" x2="1140" y2="630"/>
+    <line x1="1200" y1="0" x2="1200" y2="630"/>
+  </g>
+
+  <!-- Decorative background barcode (left side, very subtle) -->
+  <g transform="translate(50, 100)" opacity="0.06">
+    <rect x="0" width="8" height="430" rx="2" fill="#a78bfa"/>
+    <rect x="14" width="4" height="430" rx="1" fill="#a78bfa"/>
+    <rect x="24" width="10" height="430" rx="2" fill="#a78bfa"/>
+    <rect x="40" width="5" height="430" rx="1" fill="#a78bfa"/>
+    <rect x="50" width="8" height="430" rx="2" fill="#a78bfa"/>
+    <rect x="64" width="4" height="430" rx="1" fill="#a78bfa"/>
+  </g>
+
+  <!-- Decorative background barcode (right side, very subtle) -->
+  <g transform="translate(1080, 100)" opacity="0.06">
+    <rect x="0" width="4" height="430" rx="1" fill="#a78bfa"/>
+    <rect x="10" width="8" height="430" rx="2" fill="#a78bfa"/>
+    <rect x="24" width="5" height="430" rx="1" fill="#a78bfa"/>
+    <rect x="35" width="10" height="430" rx="2" fill="#a78bfa"/>
+    <rect x="50" width="4" height="430" rx="1" fill="#a78bfa"/>
+    <rect x="60" width="8" height="430" rx="2" fill="#a78bfa"/>
+  </g>
+
+  <!-- Main barcode illustration (center) -->
+  <g transform="translate(410, 140)" filter="url(#glow)">
+    <rect x="0" y="0" width="12" height="200" rx="3" fill="url(#bar-g)"/>
+    <rect x="22" y="15" width="6" height="170" rx="2" fill="url(#bar-g)"/>
+    <rect x="38" y="5" width="14" height="190" rx="3" fill="url(#bar-g)"/>
+    <rect x="62" y="20" width="8" height="160" rx="2" fill="url(#bar-g)"/>
+    <rect x="80" y="10" width="12" height="180" rx="3" fill="url(#bar-g)"/>
+    <rect x="102" y="18" width="6" height="164" rx="2" fill="url(#bar-g)"/>
+    <rect x="118" y="3" width="10" height="194" rx="3" fill="url(#bar-g)"/>
+    <rect x="138" y="12" width="8" height="176" rx="2" fill="url(#bar-g)"/>
+    <rect x="156" y="8" width="12" height="184" rx="3" fill="url(#bar-g)"/>
+    <rect x="178" y="20" width="6" height="160" rx="2" fill="url(#bar-g)"/>
+    <rect x="194" y="0" width="10" height="200" rx="3" fill="url(#bar-g)"/>
+    <rect x="214" y="14" width="8" height="172" rx="2" fill="url(#bar-g)"/>
+    <rect x="232" y="6" width="12" height="188" rx="3" fill="url(#bar-g)"/>
+    <rect x="254" y="18" width="6" height="164" rx="2" fill="url(#bar-g)"/>
+    <rect x="270" y="4" width="14" height="192" rx="3" fill="url(#bar-g)"/>
+    <rect x="294" y="10" width="8" height="180" rx="2" fill="url(#bar-g)"/>
+    <rect x="312" y="0" width="12" height="200" rx="3" fill="url(#bar-g)"/>
+    <rect x="334" y="16" width="6" height="168" rx="2" fill="url(#bar-g)"/>
+    <rect x="350" y="8" width="10" height="184" rx="3" fill="url(#bar-g)"/>
+  </g>
+
+  <!-- Glow orb behind barcode -->
+  <ellipse cx="600" cy="250" rx="250" ry="140" fill="#7c3aed" opacity="0.08" filter="url(#glow-soft)"/>
+
+  <!-- Title text -->
+  <text x="600" y="430" text-anchor="middle" font-family="Inter, -apple-system, system-ui, Segoe UI, sans-serif" font-size="56" font-weight="700" fill="white" letter-spacing="-1">Barcode Generator</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="480" text-anchor="middle" font-family="Inter, -apple-system, system-ui, Segoe UI, sans-serif" font-size="24" font-weight="400" fill="#a5b4fc" opacity="0.85">Free Online Tool — 18 Standards — PNG / SVG Export</text>
+
+  <!-- Supported standards chips -->
+  <g transform="translate(265, 510)">
+    <rect x="0" y="0" width="95" height="32" rx="8" fill="#4f46e5" fill-opacity="0.25" stroke="#6366f1" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="47.5" y="21" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#a5b4fc">Code 128</text>
+
+    <rect x="110" y="0" width="82" height="32" rx="8" fill="#4f46e5" fill-opacity="0.25" stroke="#6366f1" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="151" y="21" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#a5b4fc">EAN-13</text>
+
+    <rect x="207" y="0" width="72" height="32" rx="8" fill="#4f46e5" fill-opacity="0.25" stroke="#6366f1" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="243" y="21" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#a5b4fc">UPC-A</text>
+
+    <rect x="294" y="0" width="85" height="32" rx="8" fill="#4f46e5" fill-opacity="0.25" stroke="#6366f1" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="336.5" y="21" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#a5b4fc">Code 39</text>
+
+    <rect x="394" y="0" width="72" height="32" rx="8" fill="#4f46e5" fill-opacity="0.25" stroke="#6366f1" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="430" y="21" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#a5b4fc">ITF-14</text>
+
+    <rect x="481" y="0" width="58" height="32" rx="8" fill="#4f46e5" fill-opacity="0.25" stroke="#6366f1" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="510" y="21" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#a5b4fc">MSI</text>
+
+    <rect x="554" y="0" width="52" height="32" rx="8" fill="#4f46e5" fill-opacity="0.25" stroke="#6366f1" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="580" y="21" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#a5b4fc">+12</text>
+  </g>
+
+  <!-- Bottom border accent -->
+  <rect x="0" y="624" width="1200" height="6" fill="url(#bar-g)"/>
+
+  <!-- Language flags row -->
+  <text x="600" y="590" text-anchor="middle" font-family="Inter, sans-serif" font-size="22" letter-spacing="8">🇵🇱 🇬🇧 🇩🇪 🇫🇷 🇪🇸 🇮🇹 🇵🇹 🇳🇱 🇨🇿 🇺🇦</text>
+</svg>

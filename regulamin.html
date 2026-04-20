@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regulamin — Generator Kodów Kreskowych</title>
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .legal-page { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+        .legal-page h1 { font-size: 28px; margin-bottom: 8px; color: var(--primary); }
+        .legal-page .date { color: var(--text-secondary); font-size: 14px; margin-bottom: 32px; }
+        .legal-page h2 { font-size: 20px; margin-top: 32px; margin-bottom: 12px; color: var(--text); }
+        .legal-page p, .legal-page li { color: var(--text-secondary); line-height: 1.8; margin-bottom: 12px; }
+        .legal-page ul { padding-left: 24px; }
+        .legal-page a { color: var(--primary); text-decoration: none; }
+        .legal-page a:hover { text-decoration: underline; }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 24px; color: var(--primary); text-decoration: none; font-weight: 500; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="legal-page">
+            <a href="index.html" class="back-link">&larr; Wróć do generatora</a>
+            <h1>Regulamin korzystania z serwisu</h1>
+            <p class="date">Ostatnia aktualizacja: styczeń 2026</p>
+
+            <h2>1. Postanowienia ogólne</h2>
+            <p>Generator Kodów Kreskowych (dalej: „Serwis") jest darmowym narzędziem online umożliwiającym generowanie kodów kreskowych w różnych standardach.</p>
+
+            <h2>2. Zasady korzystania</h2>
+            <ul>
+                <li>Serwis jest dostępny bezpłatnie dla wszystkich użytkowników.</li>
+                <li>Wygenerowane kody kreskowe można wykorzystywać do celów prywatnych i komercyjnych bez ograniczeń.</li>
+                <li>Zabronione jest wykorzystywanie Serwisu do celów niezgodnych z prawem.</li>
+                <li>Zabronione jest podejmowanie działań mogących zakłócić działanie Serwisu (np. ataki DDoS, scraping masowy).</li>
+            </ul>
+
+            <h2>3. Funkcjonalność</h2>
+            <p>Serwis umożliwia:</p>
+            <ul>
+                <li>Generowanie kodów kreskowych w 18 standardach (EAN-13, Code 128, UPC-A, Code 39 i inne).</li>
+                <li>Personalizację wyglądu kodu (rozmiar, kolory, marginesy, rotacja).</li>
+                <li>Eksport kodu jako PNG (3x rozdzielczość) lub SVG.</li>
+                <li>Kopiowanie kodu do schowka.</li>
+                <li>Przygotowanie etykiet do druku (drukarka termiczna, arkusze A4, niestandardowe rozmiary).</li>
+            </ul>
+
+            <h2>4. Odpowiedzialność</h2>
+            <p>Serwis jest udostępniany w stanie „takim, jaki jest" (as is). Nie gwarantujemy bezbłędnego działania ani pełnej kompatybilności ze wszystkimi urządzeniami i przeglądarkami.</p>
+            <p>Nie ponosimy odpowiedzialności za straty wynikające z wykorzystania wygenerowanych kodów kreskowych (np. błędne kody na produktach).</p>
+
+            <h2>5. Własność intelektualna</h2>
+            <p>Wygenerowane kody kreskowe stanowią własność użytkownika. Interfejs, design i kod źródłowy Serwisu są chronione prawem autorskim.</p>
+
+            <h2>6. Zmiany regulaminu</h2>
+            <p>Zastrzegamy sobie prawo do zmiany niniejszego regulaminu. Zmiany wchodzą w życie z momentem opublikowania na stronie.</p>
+
+            <h2>7. Kontakt</h2>
+            <p>W razie pytań: <strong>kontakt@barcode-generator.pages.dev</strong></p>
+        </div>
+    </div>
+
+    <script>
+        const saved = localStorage.getItem('barcode-theme') || 
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', saved);
+    </script>
+</body>
+</html>

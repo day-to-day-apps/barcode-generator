@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polityka Prywatności — Generator Kodów Kreskowych</title>
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .legal-page { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+        .legal-page h1 { font-size: 28px; margin-bottom: 8px; color: var(--primary); }
+        .legal-page .date { color: var(--text-secondary); font-size: 14px; margin-bottom: 32px; }
+        .legal-page h2 { font-size: 20px; margin-top: 32px; margin-bottom: 12px; color: var(--text); }
+        .legal-page p, .legal-page li { color: var(--text-secondary); line-height: 1.8; margin-bottom: 12px; }
+        .legal-page ul { padding-left: 24px; }
+        .legal-page a { color: var(--primary); text-decoration: none; }
+        .legal-page a:hover { text-decoration: underline; }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 24px; color: var(--primary); text-decoration: none; font-weight: 500; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="legal-page">
+            <a href="index.html" class="back-link">&larr; Wróć do generatora</a>
+            <h1>Polityka Prywatności</h1>
+            <p class="date">Ostatnia aktualizacja: styczeń 2026</p>
+
+            <h2>1. Informacje ogólne</h2>
+            <p>Generator Kodów Kreskowych to darmowe narzędzie online do tworzenia kodów kreskowych. Szanujemy prywatność naszych użytkowników i dokładamy wszelkich starań, aby ją chronić.</p>
+
+            <h2>2. Przetwarzanie danych w przeglądarce</h2>
+            <p>Wszystkie kody kreskowe są generowane lokalnie w Twojej przeglądarce. Żadne dane wpisane w generatorze (treść kodu, ustawienia, eksportowane pliki) <strong>nie są wysyłane na żaden serwer</strong>.</p>
+
+            <h2>3. Pliki cookies i localStorage</h2>
+            <p>Strona wykorzystuje localStorage przeglądarki wyłącznie do zapamiętania:</p>
+            <ul>
+                <li>Wybranego motywu (jasny/ciemny)</li>
+            </ul>
+            <p>Nie używamy plików cookies do śledzenia użytkowników.</p>
+
+            <h2>4. Usługi zewnętrzne</h2>
+            <p>Strona może korzystać z następujących usług zewnętrznych:</p>
+            <ul>
+                <li><strong>Google Fonts</strong> — do ładowania czcionki Inter. Google może zbierać anonimowe dane techniczne (adres IP, typ przeglądarki). <a href="https://policies.google.com/privacy" rel="noopener">Polityka prywatności Google</a>.</li>
+                <li><strong>jsDelivr CDN</strong> — do ładowania biblioteki JsBarcode. <a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net" rel="noopener">Polityka prywatności jsDelivr</a>.</li>
+                <li><strong>Google AdSense</strong> (planowane) — reklamy kontekstowe, które mogą używać plików cookies. <a href="https://policies.google.com/technologies/ads" rel="noopener">Jak Google wykorzystuje dane z reklam</a>.</li>
+            </ul>
+
+            <h2>5. Twoje prawa</h2>
+            <p>Zgodnie z RODO masz prawo do dostępu, sprostowania, usunięcia i przenoszenia swoich danych. Ponieważ nie zbieramy danych osobowych, prawa te dotyczą głównie danych przetwarzanych przez usługi zewnętrzne wymienione powyżej.</p>
+
+            <h2>6. Kontakt</h2>
+            <p>W razie pytań dotyczących polityki prywatności, skontaktuj się z nami pod adresem: <strong>kontakt@barcode-generator.pages.dev</strong></p>
+        </div>
+    </div>
+
+    <script>
+        const saved = localStorage.getItem('barcode-theme') || 
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', saved);
+    </script>
+</body>
+</html>
