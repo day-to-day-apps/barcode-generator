@@ -25,6 +25,7 @@
     const dropArea = document.getElementById('drop-area');
     const fileInput = document.getElementById('file-input');
     const previewImg = document.getElementById('preview-img');
+    const previewContainer = document.querySelector('.preview-container');
     const resultBox = document.getElementById('result-box');
     const resultType = document.getElementById('result-type');
     const resultValue = document.getElementById('result-value');
@@ -110,6 +111,7 @@
         const objectUrl = URL.createObjectURL(file);
         previewImg.src = objectUrl;
         previewImg.hidden = false;
+        if (previewContainer) previewContainer.classList.add('scanning');
 
         try {
             // Wait for image to load before decoding
@@ -135,6 +137,7 @@
             }
         } finally {
             showSpinner(false);
+            if (previewContainer) previewContainer.classList.remove('scanning');
             URL.revokeObjectURL(objectUrl);
         }
     }
@@ -186,9 +189,13 @@
         if (!value) return;
         try {
             await navigator.clipboard.writeText(value);
-            const original = copyBtn.textContent;
-            copyBtn.textContent = '✓ ' + strings.copied;
-            setTimeout(() => { copyBtn.textContent = original; }, 2000);
+            const original = copyBtn.innerHTML;
+            copyBtn.classList.add('copied');
+            copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 10 8 14 16 6"/></svg>' + strings.copied;
+            setTimeout(() => {
+                copyBtn.classList.remove('copied');
+                copyBtn.innerHTML = original;
+            }, 1800);
         } catch (e) {
             showError(strings.copyFailed);
         }
