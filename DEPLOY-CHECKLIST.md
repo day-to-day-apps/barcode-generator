@@ -3,7 +3,7 @@
 ## 🔧 Co musisz zrobić (krok po kroku):
 
 ### 1. ~~GitHub — repozytorium~~ ✅
-- [x] Repozytorium: [github.com/IgorGerc/Generator-kodow-kreskowych](https://github.com/IgorGerc/Generator-kodow-kreskowych)
+- [x] Repozytorium: [github.com/day-to-day-apps/barcode-generator](https://github.com/day-to-day-apps/barcode-generator)
 
 ### 2. ~~Cloudflare Pages — hosting~~ ✅
 - [x] Strona live: [generator-kodow-kreskowych.igor-gerc-gercu.workers.dev](https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/)
