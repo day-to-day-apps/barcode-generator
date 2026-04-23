@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ===== I18N =====
-    const LANG = document.documentElement.lang || 'pl';
+    const LANG = document.documentElement.lang || 'en';
     const T = (window.BARCODE_I18N || {})[LANG] || (window.BARCODE_I18N || {})['en'] || {};
 
     // ===== LANGUAGE DROPDOWN =====

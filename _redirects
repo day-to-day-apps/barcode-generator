@@ -1,19 +1,16 @@
 # Cloudflare Pages — language-based redirects
-# Browser Accept-Language → nearest available translation
-# These only apply if the user visits the root path /
+# EN is now the default at / — PL moved to /pl/
+# Old /en/* URLs redirect to root to preserve SEO
 
-# Note: Cloudflare Pages _redirects support is limited.
-# For advanced Accept-Language routing, use Cloudflare Workers or Page Rules.
-# Below are basic fallback redirects for common typos / old URLs.
-
-/pl    /            301
-/pl/   /            301
-/en    /en/         301
-/de    /de/         301
-/fr    /fr/         301
-/es    /es/         301
-/it    /it/         301
-/pt    /pt/         301
-/nl    /nl/         301
-/cs    /cs/         301
-/uk    /uk/         301
+/en/          /          301
+/en           /          301
+/en/*         /:splat    301
+/pl           /pl/       301
+/de           /de/       301
+/fr           /fr/       301
+/es           /es/       301
+/it           /it/       301
+/pt           /pt/       301
+/nl           /nl/       301
+/cs           /cs/       301
+/uk           /uk/       301
