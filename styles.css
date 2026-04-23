@@ -1949,6 +1949,13 @@ footer {
 }
 
 /* ===== DECODER PAGE — Premium Redesign ===== */
+.decoder-main [hidden],
+.decoder-main img[hidden],
+.spinner[hidden],
+.preview-img[hidden],
+.result-box[hidden],
+.error-box[hidden] { display: none !important; }
+
 .decoder-main {
     max-width: 860px;
     margin: 0 auto;
