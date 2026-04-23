@@ -66,6 +66,37 @@
     }
     </script>
 
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Jak wygenerować kod kreskowy",
+        "description": "Wygeneruj kod kreskowy online w czterech krokach: wybierz format, wpisz dane, dostosuj wygląd, pobierz lub wydrukuj.",
+        "totalTime": "PT1M",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Wybierz format", "text": "Wybierz standard kodu z listy — EAN-13, UPC-A, Code 128, QR Code, ITF i inne." },
+            { "@type": "HowToStep", "position": 2, "name": "Wpisz dane", "text": "Wpisz liczbę lub tekst do zakodowania. Narzędzie na bieżąco sprawdza sumy kontrolne i długość." },
+            { "@type": "HowToStep", "position": 3, "name": "Dostosuj wygląd", "text": "Zmień rozmiar, kolory, marginesy i obrót. Podgląd aktualizuje się natychmiast." },
+            { "@type": "HowToStep", "position": 4, "name": "Pobierz lub drukuj", "text": "Eksportuj jako PNG lub SVG, albo otwórz okno druku etykiet dla drukarek termicznych i arkuszy A4." }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "Czy generator kodów kreskowych jest naprawdę darmowy?", "acceptedAnswer": { "@type": "Answer", "text": "Tak — w pełni darmowy, bez rejestracji, bez znaków wodnych i bez limitu liczby generowanych kodów." } },
+            { "@type": "Question", "name": "Czy moje dane są prywatne?", "acceptedAnswer": { "@type": "Answer", "text": "Tak. Generowanie odbywa się w 100% w przeglądarce. Nic nie jest wysyłane na żaden serwer — dane zostają na Twoim urządzeniu." } },
+            { "@type": "Question", "name": "Jakie formaty kodów są obsługiwane?", "acceptedAnswer": { "@type": "Answer", "text": "18 standardów, w tym EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF-14, Codabar, MSI, Pharmacode i QR Code." } },
+            { "@type": "Question", "name": "Czy mogę zdekodować kod kreskowy ze zdjęcia?", "acceptedAnswer": { "@type": "Answer", "text": "Tak — użyj Dekodera kodów kreskowych. Wgraj zdjęcie lub wklej zrzut ekranu i odczytaj EAN, UPC, Code 128, QR i inne." } },
+            { "@type": "Question", "name": "Czy można drukować etykiety?", "acceptedAnswer": { "@type": "Answer", "text": "Tak — narzędzie zawiera okno druku etykiet dla drukarek termicznych (Zebra, Brother, Dymo) oraz arkuszy A4 (układy Avery)." } },
+            { "@type": "Question", "name": "Czy mogę używać kodów komercyjnie?", "acceptedAnswer": { "@type": "Answer", "text": "Tak. Kody możesz używać w dowolnym projekcie komercyjnym i prywatnym. Numery EAN/UPC do sprzedaży detalicznej nadal muszą być zarejestrowane w GS1." } }
+        ]
+    }
+    </script>
+
     <link rel="stylesheet" href="../styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -359,6 +390,58 @@
                         <h3>Codabar / Pharmacode</h3>
                         <p>Codabar — biblioteki i banki krwi. Pharmacode — branża farmaceutyczna do kodowania opakowań leków.</p>
                     </div>
+                </div>
+            </section>
+
+            <section class="howto-section" aria-labelledby="howto-heading">
+                <h2 id="howto-heading">Jak wygenerować kod kreskowy</h2>
+                <ol class="howto-steps">
+                    <li>
+                        <h3>Wybierz format</h3>
+                        <p>Wybierz standard kodu z listy — EAN-13, UPC-A, Code 128, QR Code, ITF i inne.</p>
+                    </li>
+                    <li>
+                        <h3>Wpisz dane</h3>
+                        <p>Wpisz liczbę lub tekst do zakodowania. Narzędzie na bieżąco sprawdza sumy kontrolne i długość.</p>
+                    </li>
+                    <li>
+                        <h3>Dostosuj wygląd</h3>
+                        <p>Zmień rozmiar, kolory, marginesy i obrót. Podgląd aktualizuje się natychmiast.</p>
+                    </li>
+                    <li>
+                        <h3>Pobierz lub drukuj</h3>
+                        <p>Eksportuj jako PNG lub SVG, albo otwórz okno druku etykiet dla drukarek termicznych i arkuszy A4.</p>
+                    </li>
+                </ol>
+            </section>
+
+            <section class="faq-section" aria-labelledby="faq-heading">
+                <h2 id="faq-heading">Najczęściej zadawane pytania</h2>
+                <div class="faq-list">
+                    <details class="faq-item">
+                        <summary>Czy generator kodów kreskowych jest naprawdę darmowy?</summary>
+                        <p>Tak — w pełni darmowy, bez rejestracji, bez znaków wodnych i bez limitu liczby generowanych kodów.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Czy moje dane są prywatne?</summary>
+                        <p>Tak. Generowanie odbywa się w 100% w przeglądarce. Nic nie jest wysyłane na żaden serwer — dane zostają na Twoim urządzeniu.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Jakie formaty kodów są obsługiwane?</summary>
+                        <p>18 standardów, w tym EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF-14, Codabar, MSI, Pharmacode i QR Code.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Czy mogę zdekodować kod kreskowy ze zdjęcia?</summary>
+                        <p>Tak — użyj <a href="decoder.html">Dekodera kodów kreskowych</a>. Wgraj zdjęcie lub wklej zrzut ekranu i odczytaj EAN, UPC, Code 128, QR i inne.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Czy można drukować etykiety?</summary>
+                        <p>Tak — narzędzie zawiera okno druku etykiet dla drukarek termicznych (Zebra, Brother, Dymo) oraz arkuszy A4 (układy Avery).</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Czy mogę używać kodów komercyjnie?</summary>
+                        <p>Tak. Kody możesz używać w dowolnym projekcie komercyjnym i prywatnym. Numery EAN/UPC do sprzedaży detalicznej nadal muszą być zarejestrowane w GS1.</p>
+                    </details>
                 </div>
             </section>
         </main>

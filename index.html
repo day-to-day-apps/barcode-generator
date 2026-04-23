@@ -66,6 +66,37 @@
     }
     </script>
 
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to generate a barcode",
+        "description": "Generate a barcode online in four steps: choose format, enter data, customize the look, download or print.",
+        "totalTime": "PT1M",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Choose a format", "text": "Pick a barcode standard from the dropdown — EAN-13, UPC-A, Code 128, QR Code, ITF and more." },
+            { "@type": "HowToStep", "position": 2, "name": "Enter your data", "text": "Type the number or text to encode. The tool validates checksums and length in real time." },
+            { "@type": "HowToStep", "position": 3, "name": "Customize the look", "text": "Adjust size, colors, margins and rotation. Preview updates instantly as you change settings." },
+            { "@type": "HowToStep", "position": 4, "name": "Download or print", "text": "Export as PNG or SVG, or open the label-print dialog for thermal printers and A4 grid sheets." }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "Is this barcode generator really free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — fully free, no registration, no watermarks and no limits on the number of codes you can generate." } },
+            { "@type": "Question", "name": "Does my data stay private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Barcode generation runs 100% in your browser. Nothing you type is sent to any server — your data stays on your device." } },
+            { "@type": "Question", "name": "Which barcode formats are supported?", "acceptedAnswer": { "@type": "Answer", "text": "18 standards including EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF-14, Codabar, MSI, Pharmacode and QR Code." } },
+            { "@type": "Question", "name": "Can I decode a barcode from an image?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — use the Barcode Decoder. Upload a photo or paste a screenshot and read EAN, UPC, Code 128, QR and more." } },
+            { "@type": "Question", "name": "Can I print labels?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — the tool includes a label-print dialog for thermal printers (Zebra, Brother, Dymo) and A4 grid sheets (Avery layouts)." } },
+            { "@type": "Question", "name": "Can I use generated barcodes commercially?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. You are free to use the barcodes in any commercial or personal project. EAN/UPC numbers must still be registered with GS1 if you sell retail." } }
+        ]
+    }
+    </script>
+
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -359,6 +390,58 @@
                         <h3>Codabar / Pharmacode</h3>
                         <p>Codabar — libraries and blood banks. Pharmacode — pharmaceutical industry for drug packaging encoding.</p>
                     </div>
+                </div>
+            </section>
+
+            <section class="howto-section" aria-labelledby="howto-heading">
+                <h2 id="howto-heading">How to generate a barcode</h2>
+                <ol class="howto-steps">
+                    <li>
+                        <h3>Choose a format</h3>
+                        <p>Pick a barcode standard from the dropdown — EAN-13, UPC-A, Code 128, QR Code, ITF and more.</p>
+                    </li>
+                    <li>
+                        <h3>Enter your data</h3>
+                        <p>Type the number or text to encode. The tool validates checksums and length in real time.</p>
+                    </li>
+                    <li>
+                        <h3>Customize the look</h3>
+                        <p>Adjust size, colors, margins and rotation. Preview updates instantly as you change settings.</p>
+                    </li>
+                    <li>
+                        <h3>Download or print</h3>
+                        <p>Export as PNG or SVG, or open the label-print dialog for thermal printers and A4 grid sheets.</p>
+                    </li>
+                </ol>
+            </section>
+
+            <section class="faq-section" aria-labelledby="faq-heading">
+                <h2 id="faq-heading">Frequently asked questions</h2>
+                <div class="faq-list">
+                    <details class="faq-item">
+                        <summary>Is this barcode generator really free?</summary>
+                        <p>Yes — fully free, no registration, no watermarks and no limits on the number of codes you can generate.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Does my data stay private?</summary>
+                        <p>Yes. Barcode generation runs 100% in your browser. Nothing you type is sent to any server — your data stays on your device.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Which barcode formats are supported?</summary>
+                        <p>18 standards including EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF-14, Codabar, MSI, Pharmacode and QR Code.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Can I decode a barcode from an image?</summary>
+                        <p>Yes — use the <a href="decoder.html">Barcode Decoder</a>. Upload a photo or paste a screenshot and read EAN, UPC, Code 128, QR and more.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Can I print labels?</summary>
+                        <p>Yes — the tool includes a label-print dialog for thermal printers (Zebra, Brother, Dymo) and A4 grid sheets (Avery layouts).</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary>Can I use generated barcodes commercially?</summary>
+                        <p>Yes. You are free to use the barcodes in any commercial or personal project. EAN/UPC numbers must still be registered with GS1 if you sell retail.</p>
+                    </details>
                 </div>
             </section>
         </main>
