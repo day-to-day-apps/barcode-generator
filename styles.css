@@ -1947,3 +1947,220 @@ footer {
     border-color: var(--primary);
     color: var(--primary);
 }
+
+/* ===== DECODER PAGE ===== */
+.decoder-main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+}
+
+.decoder-intro {
+    text-align: center;
+    margin-bottom: 32px;
+    color: var(--text-secondary, #64748b);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.drop-area {
+    border: 2px dashed var(--border, #cbd5e1);
+    border-radius: 16px;
+    padding: 48px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: var(--surface, rgba(255, 255, 255, 0.5));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.drop-area:hover,
+.drop-area.drag-over {
+    border-color: #4f46e5;
+    background: rgba(79, 70, 229, 0.06);
+    transform: translateY(-2px);
+}
+
+.drop-area-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.7;
+}
+
+.drop-area-text {
+    font-size: 16px;
+    color: var(--text-primary, #0f172a);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.drop-area-hint {
+    font-size: 13px;
+    color: var(--text-secondary, #64748b);
+}
+
+.decoder-hidden-input {
+    display: none;
+}
+
+.preview-container {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.preview-img {
+    max-width: 100%;
+    max-height: 320px;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    margin: 0 auto;
+    display: block;
+}
+
+.spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+    font-size: 15px;
+    color: var(--text-secondary, #64748b);
+}
+
+.spinner::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2.5px solid rgba(79, 70, 229, 0.2);
+    border-top-color: #4f46e5;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 12px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.result-box {
+    margin-top: 24px;
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(124, 58, 237, 0.08));
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    border-radius: 16px;
+}
+
+.result-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: baseline;
+}
+
+.result-row:last-of-type {
+    margin-bottom: 0;
+}
+
+.result-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary, #64748b);
+    min-width: 72px;
+}
+
+.result-value {
+    flex: 1;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 15px;
+    color: var(--text-primary, #0f172a);
+    word-break: break-all;
+    user-select: all;
+}
+
+.result-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.decoder-btn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.decoder-btn-primary {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #fff;
+}
+
+.decoder-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+}
+
+.decoder-btn-ghost {
+    background: transparent;
+    color: var(--text-primary, #0f172a);
+    border: 1px solid var(--border, #cbd5e1);
+}
+
+.decoder-btn-ghost:hover {
+    background: var(--surface-hover, rgba(0, 0, 0, 0.04));
+}
+
+.error-box {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 12px;
+    color: #b91c1c;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+[data-theme="dark"] .error-box {
+    color: #fca5a5;
+}
+
+.decoder-nav {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin: 16px 0 8px;
+    flex-wrap: wrap;
+}
+
+.decoder-nav a {
+    font-size: 14px;
+    color: #4f46e5;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.decoder-nav a:hover {
+    background: rgba(79, 70, 229, 0.08);
+}
+
+.decoder-nav a.active {
+    background: rgba(79, 70, 229, 0.12);
+}
+
+@media (max-width: 560px) {
+    .drop-area { padding: 36px 16px; }
+    .drop-area-icon { font-size: 40px; }
+    .result-row { flex-direction: column; gap: 4px; }
+    .result-label { min-width: 0; }
+}

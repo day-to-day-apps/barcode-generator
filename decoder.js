@@ -1,0 +1,210 @@
+(function () {
+    'use strict';
+
+    const LANG = document.documentElement.lang || 'en';
+    const T = (window.BARCODE_I18N || {})[LANG] || (window.BARCODE_I18N || {})['en'] || {};
+
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('file-input');
+    const previewImg = document.getElementById('preview-img');
+    const resultBox = document.getElementById('result-box');
+    const resultType = document.getElementById('result-type');
+    const resultValue = document.getElementById('result-value');
+    const copyBtn = document.getElementById('copy-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const errorBox = document.getElementById('error-box');
+    const spinner = document.getElementById('spinner');
+
+    // Translations fallback
+    const strings = {
+        decoding: T.decoder_decoding || 'Decoding…',
+        notFound: T.decoder_not_found || 'No barcode detected in the image. Try a clearer photo or different angle.',
+        invalidFile: T.decoder_invalid_file || 'Please select a valid image file (JPG, PNG, WebP).',
+        tooLarge: T.decoder_too_large || 'Image too large (max 10 MB).',
+        copied: T.decoder_copied || 'Copied!',
+        copyFailed: T.decoder_copy_failed || 'Copy failed',
+        formatLabel: T.decoder_format_label || 'Format',
+        valueLabel: T.decoder_value_label || 'Value'
+    };
+
+    const MAX_SIZE = 10 * 1024 * 1024;
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
+
+    let codeReader = null;
+
+    function getReader() {
+        if (codeReader) return codeReader;
+        if (typeof ZXingBrowser === 'undefined') return null;
+        codeReader = new ZXingBrowser.BrowserMultiFormatReader();
+        return codeReader;
+    }
+
+    function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.hidden = false;
+        resultBox.hidden = true;
+    }
+
+    function hideError() {
+        errorBox.hidden = true;
+        errorBox.textContent = '';
+    }
+
+    function showSpinner(show) {
+        spinner.hidden = !show;
+    }
+
+    function resetResult() {
+        resultBox.hidden = true;
+        resultType.textContent = '';
+        resultValue.textContent = '';
+    }
+
+    function validateFile(file) {
+        if (!file || !ALLOWED_TYPES.includes(file.type)) {
+            return strings.invalidFile;
+        }
+        if (file.size > MAX_SIZE) {
+            return strings.tooLarge;
+        }
+        return null;
+    }
+
+    async function decodeFile(file) {
+        const err = validateFile(file);
+        if (err) {
+            showError(err);
+            return;
+        }
+
+        hideError();
+        resetResult();
+        showSpinner(true);
+
+        const reader = getReader();
+        if (!reader) {
+            showError('Decoder library failed to load. Check your internet connection.');
+            showSpinner(false);
+            return;
+        }
+
+        const objectUrl = URL.createObjectURL(file);
+        previewImg.src = objectUrl;
+        previewImg.hidden = false;
+
+        try {
+            // Wait for image to load before decoding
+            await new Promise((resolve, reject) => {
+                if (previewImg.complete && previewImg.naturalWidth > 0) {
+                    resolve();
+                } else {
+                    previewImg.onload = () => resolve();
+                    previewImg.onerror = () => reject(new Error('Image load failed'));
+                }
+            });
+
+            const result = await reader.decodeFromImageElement(previewImg);
+
+            resultType.textContent = result.getBarcodeFormat();
+            resultValue.textContent = result.getText();
+            resultBox.hidden = false;
+        } catch (e) {
+            if (e && e.name === 'NotFoundException') {
+                showError(strings.notFound);
+            } else {
+                showError((e && e.message) || strings.notFound);
+            }
+        } finally {
+            showSpinner(false);
+            URL.revokeObjectURL(objectUrl);
+        }
+    }
+
+    // File input
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) decodeFile(file);
+    });
+
+    // Drag & drop
+    ['dragenter', 'dragover'].forEach((evt) => {
+        dropArea.addEventListener(evt, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropArea.classList.add('drag-over');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach((evt) => {
+        dropArea.addEventListener(evt, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropArea.classList.remove('drag-over');
+        });
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (file) decodeFile(file);
+    });
+
+    // Paste from clipboard
+    window.addEventListener('paste', (e) => {
+        const items = e.clipboardData && e.clipboardData.items;
+        if (!items) return;
+        for (const item of items) {
+            if (item.type && item.type.startsWith('image/')) {
+                const file = item.getAsFile();
+                if (file) decodeFile(file);
+                return;
+            }
+        }
+    });
+
+    // Copy button
+    copyBtn.addEventListener('click', async () => {
+        const value = resultValue.textContent;
+        if (!value) return;
+        try {
+            await navigator.clipboard.writeText(value);
+            const original = copyBtn.textContent;
+            copyBtn.textContent = '✓ ' + strings.copied;
+            setTimeout(() => { copyBtn.textContent = original; }, 2000);
+        } catch (e) {
+            showError(strings.copyFailed);
+        }
+    });
+
+    // Clear button
+    clearBtn.addEventListener('click', () => {
+        fileInput.value = '';
+        previewImg.src = '';
+        previewImg.hidden = true;
+        resetResult();
+        hideError();
+    });
+
+    // ===== THEME TOGGLE (shared with main app) =====
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+    }
+
+    // ===== LANGUAGE DROPDOWN =====
+    const langToggle = document.getElementById('lang-toggle');
+    const langDropdown = document.getElementById('lang-dropdown');
+    if (langToggle && langDropdown) {
+        langToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langDropdown.classList.toggle('open');
+        });
+        document.addEventListener('click', () => langDropdown.classList.remove('open'));
+    }
+})();
