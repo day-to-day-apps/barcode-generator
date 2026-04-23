@@ -2126,12 +2126,14 @@ footer {
     font-weight: 600;
     letter-spacing: -0.01em;
 }
+[data-theme="dark"] .drop-area-text { color: #f1f5f9; }
 
 .drop-area-hint {
     font-size: 13px;
     color: var(--text-secondary, #64748b);
     letter-spacing: 0.02em;
 }
+[data-theme="dark"] .drop-area-hint { color: #94a3b8; }
 
 .decoder-hidden-input {
     position: absolute;
@@ -2331,6 +2333,8 @@ footer {
     user-select: all;
     line-height: 1.45;
 }
+[data-theme="dark"] .result-value { color: #f1f5f9; }
+[data-theme="dark"] .result-label { color: #94a3b8; }
 
 /* Format as inline pill */
 #result-type {
@@ -2411,19 +2415,35 @@ footer {
 .error-box {
     margin-top: 20px;
     padding: 16px 20px;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(220, 38, 38, 0.06));
-    border: 1px solid rgba(239, 68, 68, 0.32);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(220, 38, 38, 0.09));
+    border: 1px solid rgba(185, 28, 28, 0.45);
     border-radius: 14px;
-    color: #b91c1c;
+    color: #7f1d1d;
     font-size: 14.5px;
     line-height: 1.55;
-    font-weight: 500;
+    font-weight: 600;
     animation: errorShake 0.45s ease;
 }
 [data-theme="dark"] .error-box {
     color: #fca5a5;
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.14), rgba(220, 38, 38, 0.1));
 }
+
+/* Decoder footer */
+.decoder-footer {
+    text-align: center;
+    padding: 24px 20px;
+    font-size: 13px;
+    color: var(--text-secondary, #64748b);
+}
+.decoder-footer a {
+    color: #4f46e5;
+    text-decoration: none;
+    font-weight: 500;
+}
+.decoder-footer a:hover { text-decoration: underline; }
+[data-theme="dark"] .decoder-footer { color: #94a3b8; }
+[data-theme="dark"] .decoder-footer a { color: #a5b4fc; }
 
 @keyframes errorShake {
     0%, 100% { transform: translateX(0); }
@@ -2458,6 +2478,18 @@ footer {
 @media (max-width: 560px) {
     .drop-area { padding: 36px 16px; }
     .drop-area-icon { font-size: 40px; }
+    .decoder-nav {
+        display: flex;
+        width: calc(100% - 24px);
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+        left: auto;
+        transform: none;
+    }
+    .decoder-nav a { padding: 9px 16px; flex: 1; text-align: center; }
+    .decoder-features { grid-template-columns: 1fr; }
+    .decoder-footer { padding: 20px 16px; font-size: 12.5px; }
     .result-row { flex-direction: column; gap: 4px; }
     .result-label { min-width: 0; }
 }

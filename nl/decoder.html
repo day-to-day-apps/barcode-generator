@@ -10,7 +10,14 @@
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/nl/decoder.html">
     <link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps-contact.workers.dev/decoder.html">
     <link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps-contact.workers.dev/pl/decoder.html">
+    <link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps-contact.workers.dev/de/decoder.html">
+    <link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps-contact.workers.dev/fr/decoder.html">
+    <link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps-contact.workers.dev/es/decoder.html">
+    <link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps-contact.workers.dev/it/decoder.html">
+    <link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps-contact.workers.dev/pt/decoder.html">
     <link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps-contact.workers.dev/nl/decoder.html">
+    <link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps-contact.workers.dev/cs/decoder.html">
+    <link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps-contact.workers.dev/uk/decoder.html">
     <link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps-contact.workers.dev/decoder.html">
 
     <meta property="og:type" content="website">
@@ -29,6 +36,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script type="application/ld+json">
@@ -86,7 +94,7 @@
             <div id="spinner" class="spinner" hidden>Decoderen…</div>
 
             <div class="preview-container">
-                <img id="preview-img" class="preview-img" alt="Geüploade barcode" hidden />
+                <img id="preview-img" class="preview-img" alt="Geüploade barcode" width="600" height="400" hidden />
             </div>
 
             <div id="error-box" class="error-box" role="alert" hidden></div>
@@ -107,12 +115,12 @@
             </div>
         </main>
 
-        <footer style="text-align:center; padding:24px 20px; font-size:13px; color:var(--text-secondary,#64748b);">
-            <p>Gebaseerd op <a href="https://github.com/zxing-js/library" rel="noopener" target="_blank" style="color:#4f46e5;">ZXing</a> — open source.</p>
+        <footer class="decoder-footer">
+            <p>Gebaseerd op <a href="https://github.com/zxing-js/library" rel="noopener noreferrer" target="_blank">ZXing</a> — open source.</p>
         </footer>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js" async></script>
     <script src="../i18n.js"></script>
     <script src="../decoder.js"></script>
     <script src="../analytics.js" defer></script>

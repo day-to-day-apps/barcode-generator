@@ -7,15 +7,28 @@
             '🇬🇧': 'gb', '🇵🇱': 'pl', '🇩🇪': 'de', '🇫🇷': 'fr', '🇪🇸': 'es',
             '🇮🇹': 'it', '🇵🇹': 'pt', '🇳🇱': 'nl', '🇨🇿': 'cz', '🇺🇦': 'ua'
         };
+        const flagRegex = new RegExp(Object.keys(flagToCode).join('|'), 'g');
         document.querySelectorAll('.lang-current, .lang-option').forEach(el => {
-            let html = el.innerHTML;
-            Object.keys(flagToCode).forEach(flag => {
-                if (html.includes(flag)) {
-                    const code = flagToCode[flag];
-                    html = html.replaceAll(flag, `<img src="https://flagcdn.com/20x15/${code}.png" srcset="https://flagcdn.com/40x30/${code}.png 2x" width="20" height="15" alt="" class="flag-img">`);
+            const text = el.textContent;
+            if (!flagRegex.test(text)) return;
+            flagRegex.lastIndex = 0;
+            const parts = text.split(flagRegex);
+            const flags = text.match(flagRegex) || [];
+            el.textContent = '';
+            parts.forEach((part, i) => {
+                if (part) el.appendChild(document.createTextNode(part));
+                if (flags[i]) {
+                    const code = flagToCode[flags[i]];
+                    const img = document.createElement('img');
+                    img.src = `https://flagcdn.com/20x15/${code}.png`;
+                    img.srcset = `https://flagcdn.com/40x30/${code}.png 2x`;
+                    img.width = 20;
+                    img.height = 15;
+                    img.alt = '';
+                    img.className = 'flag-img';
+                    el.appendChild(img);
                 }
             });
-            el.innerHTML = html;
         });
     });
 
@@ -170,8 +183,9 @@
         if (file) decodeFile(file);
     });
 
-    // Paste from clipboard
-    window.addEventListener('paste', (e) => {
+    // Paste from clipboard — document scope + auto-cleanup on unload
+    const pasteController = new AbortController();
+    document.addEventListener('paste', (e) => {
         const items = e.clipboardData && e.clipboardData.items;
         if (!items) return;
         for (const item of items) {
@@ -181,20 +195,25 @@
                 return;
             }
         }
-    });
+    }, { signal: pasteController.signal });
+    window.addEventListener('pagehide', () => pasteController.abort(), { once: true });
 
-    // Copy button
+    // Copy button — guard against double-click race
+    let copyOriginalHtml = null;
+    let copyResetTimer = null;
     copyBtn.addEventListener('click', async () => {
+        if (copyBtn.classList.contains('copied')) return;
         const value = resultValue.textContent;
         if (!value) return;
         try {
             await navigator.clipboard.writeText(value);
-            const original = copyBtn.innerHTML;
+            copyOriginalHtml = copyBtn.innerHTML;
             copyBtn.classList.add('copied');
             copyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 10 8 14 16 6"/></svg>' + strings.copied;
-            setTimeout(() => {
+            clearTimeout(copyResetTimer);
+            copyResetTimer = setTimeout(() => {
                 copyBtn.classList.remove('copied');
-                copyBtn.innerHTML = original;
+                if (copyOriginalHtml !== null) copyBtn.innerHTML = copyOriginalHtml;
             }, 1800);
         } catch (e) {
             showError(strings.copyFailed);
