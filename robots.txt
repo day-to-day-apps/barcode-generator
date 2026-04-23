@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/sitemap.xml
+Sitemap: https://barcode-generator.daytodayapps-contact.workers.dev/sitemap.xml

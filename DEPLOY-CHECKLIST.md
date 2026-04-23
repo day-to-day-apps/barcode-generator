@@ -6,7 +6,7 @@
 - [x] Repozytorium: [github.com/day-to-day-apps/barcode-generator](https://github.com/day-to-day-apps/barcode-generator)
 
 ### 2. ~~Cloudflare Pages — hosting~~ ✅
-- [x] Strona live: [generator-kodow-kreskowych.igor-gerc-gercu.workers.dev](https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/)
+- [x] Strona live: [barcode-generator.daytodayapps-contact.workers.dev](https://barcode-generator.daytodayapps-contact.workers.dev/)
 
 ### 3. Własna domena (opcjonalnie)
 - [ ] Kup domenę (np. na [OVH](https://ovh.pl), [Cloudflare Registrar](https://dash.cloudflare.com/domains), [Porkbun](https://porkbun.com))
@@ -43,7 +43,7 @@
 - [ ] Otwórz [search.google.com/search-console](https://search.google.com/search-console)
 - [ ] Dodaj property → Wpisz URL strony
 - [ ] Zweryfikuj (Cloudflare DNS verification jest najłatwiejszy)
-- [ ] Zgłoś sitemap: `https://generator-kodow-kreskowych.igor-gerc-gercu.workers.dev/sitemap.xml`
+- [ ] Zgłoś sitemap: `https://barcode-generator.daytodayapps-contact.workers.dev/sitemap.xml`
 - [ ] Poproś o indeksowanie strony głównej
 
 ### 7. Sprawdzenie po deployu
