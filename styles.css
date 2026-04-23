@@ -2019,6 +2019,7 @@ footer {
 
 /* Drop area — glass-morphic card with animated gradient border */
 .drop-area {
+    display: block;
     position: relative;
     border-radius: 20px;
     padding: 56px 28px;
