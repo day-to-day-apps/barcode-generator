@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descodificador de código de barras — Scanner online grátis</title>
+    <meta name="description" content="Descodificador de código de barras online grátis. Envie uma imagem ou arraste — EAN-13, UPC, Code 128, QR e mais. 100% no navegador.">
+    <meta name="keywords" content="descodificador código de barras, scanner online, ler código de barras, descodificador QR, descodificador EAN">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/pt/decoder.html">
+    <link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps-contact.workers.dev/decoder.html">
+    <link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps-contact.workers.dev/pl/decoder.html">
+    <link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps-contact.workers.dev/pt/decoder.html">
+    <link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps-contact.workers.dev/decoder.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Descodificador de código de barras — Scanner online grátis">
+    <meta property="og:description" content="Descodificador de código de barras online grátis. Envie uma imagem ou arraste — EAN-13, UPC, Code 128, QR e mais. 100% no navegador.">
+    <meta property="og:url" content="https://barcode-generator.daytodayapps-contact.workers.dev/pt/decoder.html">
+    <meta property="og:image" content="https://barcode-generator.daytodayapps-contact.workers.dev/og-image.png">
+    <meta property="og:locale" content="pt_PT">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Descodificador de código de barras — Scanner online grátis">
+    <meta name="twitter:description" content="Descodificador de código de barras online grátis. Envie uma imagem ou arraste — EAN-13, UPC, Code 128, QR e mais. 100% no navegador.">
+
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Descodificador de código de barras",
+        "url": "https://barcode-generator.daytodayapps-contact.workers.dev/pt/decoder.html",
+        "description": "Descodificador de código de barras online grátis. Envie uma imagem ou arraste — EAN-13, UPC, Code 128, QR e mais. 100% no navegador.",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Any",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+</head>
+<body>
+    <div class="app">
+        <header class="animated-header">
+            <div class="lang-switch">
+                <button class="lang-current" id="lang-toggle">🇵🇹 PT ▾</button>
+                <div class="lang-dropdown" id="lang-dropdown">
+                    <a href="decoder.html" class="lang-option active">🇵🇹 PT</a>
+                    <a href="../decoder.html" class="lang-option">🇬🇧 English</a>
+                    <a href="../pl/decoder.html" class="lang-option">🇵🇱 Polski</a>
+                </div>
+            </div>
+            <button class="theme-toggle" id="theme-toggle" title="Alternar tema" aria-label="Alternar tema">
+                <svg class="icon-moon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M17.5 10.5a7.5 7.5 0 01-10-10 7.5 7.5 0 1010 10z"/></svg>
+                <svg class="icon-sun" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="10" r="3.5"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4"/></svg>
+            </button>
+            <h1>Descodificador de código de barras</h1>
+            <p class="subtitle">Envie uma imagem — leia EAN, UPC, Code 128, QR e outros.</p>
+        </header>
+
+        <nav class="decoder-nav" aria-label="Navegação principal">
+            <a href="index.html">← Gerador</a>
+            <a href="decoder.html" class="active">Descodificador</a>
+        </nav>
+
+        <main class="decoder-main">
+            <p class="decoder-intro">Largue uma imagem, clique para escolher um ficheiro, ou cole da área de transferência (Ctrl+V). Tudo acontece no seu navegador — as imagens nunca saem do seu dispositivo.</p>
+
+            <label for="file-input" id="drop-area" class="drop-area" tabindex="0">
+                <div class="drop-area-icon" aria-hidden="true">📷</div>
+                <div class="drop-area-text">Largue a imagem aqui ou clique para enviar</div>
+                <div class="drop-area-hint">JPG, PNG, WebP — até 10 MB</div>
+                <input type="file" id="file-input" class="decoder-hidden-input" accept="image/*" />
+            </label>
+
+            <div id="spinner" class="spinner" hidden>A descodificar…</div>
+
+            <div class="preview-container">
+                <img id="preview-img" class="preview-img" alt="Código de barras enviado" hidden />
+            </div>
+
+            <div id="error-box" class="error-box" role="alert" hidden></div>
+
+            <div id="result-box" class="result-box" hidden>
+                <div class="result-row">
+                    <span class="result-label">Formato</span>
+                    <span id="result-type" class="result-value"></span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Valor</span>
+                    <span id="result-value" class="result-value"></span>
+                </div>
+                <div class="result-actions">
+                    <button id="copy-btn" class="decoder-btn decoder-btn-primary" type="button">Copiar</button>
+                    <button id="clear-btn" class="decoder-btn decoder-btn-ghost" type="button">Limpar</button>
+                </div>
+            </div>
+        </main>
+
+        <footer style="text-align:center; padding:24px 20px; font-size:13px; color:var(--text-secondary,#64748b);">
+            <p>Baseado em <a href="https://github.com/zxing-js/library" rel="noopener" target="_blank" style="color:#4f46e5;">ZXing</a> — código aberto.</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/umd/index.min.js"></script>
+    <script src="../i18n.js"></script>
+    <script src="../decoder.js"></script>
+    <script src="../analytics.js" defer></script>
+</body>
+</html>
