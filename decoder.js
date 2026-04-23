@@ -1,6 +1,24 @@
 (function () {
     'use strict';
 
+    // ===== FLAG EMOJI POLYFILL (Windows doesn't render flag emojis) =====
+    document.addEventListener('DOMContentLoaded', () => {
+        const flagToCode = {
+            '🇬🇧': 'gb', '🇵🇱': 'pl', '🇩🇪': 'de', '🇫🇷': 'fr', '🇪🇸': 'es',
+            '🇮🇹': 'it', '🇵🇹': 'pt', '🇳🇱': 'nl', '🇨🇿': 'cz', '🇺🇦': 'ua'
+        };
+        document.querySelectorAll('.lang-current, .lang-option').forEach(el => {
+            let html = el.innerHTML;
+            Object.keys(flagToCode).forEach(flag => {
+                if (html.includes(flag)) {
+                    const code = flagToCode[flag];
+                    html = html.replaceAll(flag, `<img src="https://flagcdn.com/20x15/${code}.png" srcset="https://flagcdn.com/40x30/${code}.png 2x" width="20" height="15" alt="" class="flag-img">`);
+                }
+            });
+            el.innerHTML = html;
+        });
+    });
+
     const LANG = document.documentElement.lang || 'en';
     const T = (window.BARCODE_I18N || {})[LANG] || (window.BARCODE_I18N || {})['en'] || {};
 
@@ -34,8 +52,9 @@
 
     function getReader() {
         if (codeReader) return codeReader;
-        if (typeof ZXingBrowser === 'undefined') return null;
-        codeReader = new ZXingBrowser.BrowserMultiFormatReader();
+        const lib = window.ZXing || window.ZXingBrowser;
+        if (!lib || typeof lib.BrowserMultiFormatReader !== 'function') return null;
+        codeReader = new lib.BrowserMultiFormatReader();
         return codeReader;
     }
 

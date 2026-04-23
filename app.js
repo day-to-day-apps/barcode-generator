@@ -1,4 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ===== FLAG EMOJI POLYFILL (Windows doesn't render flag emojis) =====
+    (function replaceFlagEmojis() {
+        const flagToCode = {
+            '🇬🇧': 'gb', '🇵🇱': 'pl', '🇩🇪': 'de', '🇫🇷': 'fr', '🇪🇸': 'es',
+            '🇮🇹': 'it', '🇵🇹': 'pt', '🇳🇱': 'nl', '🇨🇿': 'cz', '🇺🇦': 'ua'
+        };
+        document.querySelectorAll('.lang-current, .lang-option').forEach(el => {
+            let html = el.innerHTML;
+            Object.keys(flagToCode).forEach(flag => {
+                if (html.includes(flag)) {
+                    const code = flagToCode[flag];
+                    html = html.replaceAll(flag, `<img src="https://flagcdn.com/20x15/${code}.png" srcset="https://flagcdn.com/40x30/${code}.png 2x" width="20" height="15" alt="" class="flag-img">`);
+                }
+            });
+            el.innerHTML = html;
+        });
+    })();
+
     // ===== DARK MODE =====
     const themeToggle = document.getElementById('theme-toggle');
     const savedTheme = localStorage.getItem('barcode-theme') || 
@@ -58,9 +76,19 @@ document.addEventListener('DOMContentLoaded', () => {
         { input: fontSize, display: document.getElementById('font-size-val') },
     ];
 
+    // Debounce for slider regeneration (avoid regenerating on every micro-step)
+    let regenDebounce;
+    function scheduleRegen() {
+        clearTimeout(regenDebounce);
+        regenDebounce = setTimeout(() => {
+            if (barcodeText.value.trim()) generateBarcode();
+        }, 80);
+    }
+
     rangeInputs.forEach(({ input, display }) => {
         input.addEventListener('input', () => {
             display.textContent = input.value;
+            scheduleRegen();
         });
     });
 
@@ -70,10 +98,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     lineColor.addEventListener('input', () => {
         lineColorHex.textContent = lineColor.value.toUpperCase();
+        scheduleRegen();
     });
     bgColor.addEventListener('input', () => {
         bgColorHex.textContent = bgColor.value.toUpperCase();
+        scheduleRegen();
     });
+
+    // Rotation + show-text toggle trigger regeneration too
+    rotation.addEventListener('change', () => { if (barcodeText.value.trim()) generateBarcode(); });
+    showText.addEventListener('change', () => { if (barcodeText.value.trim()) generateBarcode(); });
 
     // Text alignment buttons
     let textAlign = 'center';
@@ -84,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll(`.btn-option[data-target="${target}"]`).forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 textAlign = btn.dataset.value;
+                if (barcodeText.value.trim()) generateBarcode();
             }
         });
     });
