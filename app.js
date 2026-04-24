@@ -613,13 +613,13 @@ document.addEventListener('DOMContentLoaded', () => {
             labelH = currentPrinterType === 'thermal' ? currentLabelH : (parseInt(customH.value) || 40);
             const copies = Math.max(1, parseInt(labelCopies.value) || 1);
 
-            // Dynamic @page size for thermal/custom — each label = one sheet
-            pageStyle = `<style>@page { size: ${labelW}mm ${labelH}mm; margin: 0; }</style>`;
+            // Let the browser paginate naturally to the user's selected paper size.
+            // Labels tile via flex-wrap, each with break-inside:avoid so none gets split.
+            pageStyle = `<style>@page { margin: 10mm; }</style>`;
 
-            let html = pageStyle + `<div style="font-family:Inter,sans-serif;">`;
+            let html = pageStyle + `<div style="font-family:Inter,sans-serif;display:flex;flex-wrap:wrap;gap:4mm;align-content:flex-start;justify-content:flex-start;">`;
             for (let i = 0; i < copies; i++) {
-                const breakStyle = i < copies - 1 ? 'page-break-after:always;break-after:page;' : '';
-                html += `<div style="${breakStyle}">${createLabelHTML(labelW, labelH, true)}</div>`;
+                html += `<div style="width:${labelW}mm;height:${labelH}mm;page-break-inside:avoid;break-inside:avoid;">${createLabelHTML(labelW, labelH, true)}</div>`;
             }
             html += '</div>';
             printOutput.innerHTML = html;

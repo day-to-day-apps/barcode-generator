@@ -1970,6 +1970,24 @@ footer {
     max-width: 860px;
     margin: 0 auto;
     padding: 8px 20px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 18px;
+    align-items: stretch;
+}
+.decoder-main > .decoder-intro { grid-column: 1 / -1; grid-row: 1; }
+.decoder-main > .drop-area     { grid-column: 1;      grid-row: 2; }
+.decoder-main > .camera-row    { grid-column: 2;      grid-row: 2; }
+.decoder-main > .decoder-features,
+.decoder-main > #spinner,
+.decoder-main > .preview-container,
+.decoder-main > #error-box,
+.decoder-main > #result-box { grid-column: 1 / -1; }
+@media (max-width: 720px) {
+    .decoder-main { grid-template-columns: 1fr; }
+    .decoder-main > .drop-area   { grid-column: 1; grid-row: auto; }
+    .decoder-main > .camera-row  { grid-column: 1; grid-row: auto; }
+    .decoder-main > .decoder-intro { grid-row: auto; }
 }
 
 .decoder-intro {
@@ -2462,47 +2480,69 @@ footer {
 [data-theme="dark"] .decoder-footer { color: #94a3b8; }
 [data-theme="dark"] .decoder-footer a { color: #a5b4fc; }
 
-/* Camera scan button — secondary CTA under drop-area */
+/* Camera scan — equal-weight CTA sitting next to drop-area */
 .camera-row {
     display: flex;
-    justify-content: center;
-    margin-top: 14px;
     animation: fadeSlideUp 0.8s ease both;
-    animation-delay: 0.3s;
+    animation-delay: 0.25s;
+    margin: 0;
 }
 .camera-btn {
-    display: inline-flex;
+    position: relative;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border-radius: 999px;
-    border: 1.5px solid rgba(79, 70, 229, 0.35);
-    background: rgba(255, 255, 255, 0.55);
-    color: #4f46e5;
-    font-size: 14px;
-    font-weight: 600;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 100%;
+    padding: 56px 28px;
+    border-radius: 20px;
+    border: none;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 60%, #9333ea 100%);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     cursor: pointer;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.2s ease;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3), inset 0 1px 0 rgba(255,255,255,0.18);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
 }
+.camera-btn::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255,255,255,0.18), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    animation: meshRotate 18s linear infinite;
+}
+.camera-btn > * { position: relative; z-index: 1; }
 .camera-btn:hover {
-    transform: translateY(-1px);
-    background: rgba(79, 70, 229, 0.08);
-    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.22);
+    transform: translateY(-3px) scale(1.005);
+    box-shadow: 0 18px 44px rgba(79, 70, 229, 0.42), inset 0 1px 0 rgba(255,255,255,0.22);
 }
+.camera-btn:hover::before { opacity: 1; }
 .camera-btn:focus-visible {
-    outline: 2px solid #4f46e5;
-    outline-offset: 2px;
+    outline: 3px solid rgba(255,255,255,0.75);
+    outline-offset: -6px;
 }
-.camera-btn svg { width: 18px; height: 18px; }
+.camera-btn:active { transform: translateY(-1px) scale(1); }
+.camera-btn svg {
+    width: 44px;
+    height: 44px;
+    padding: 14px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.18);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.25);
+    animation: iconFloat 3.6s ease-in-out infinite;
+}
+.camera-btn span { font-size: 17px; font-weight: 700; }
 [data-theme="dark"] .camera-btn {
-    background: rgba(30, 41, 59, 0.55);
-    color: #a5b4fc;
-    border-color: rgba(129, 140, 248, 0.45);
-}
-[data-theme="dark"] .camera-btn:hover {
-    background: rgba(129, 140, 248, 0.12);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
 /* Camera modal — full-screen overlay with video preview */
