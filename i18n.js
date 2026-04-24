@@ -43,6 +43,13 @@ window.BARCODE_I18N = {
         pagesFew: 'strony',
         a4Info: 'Arkusz A4: {0} etykiet/stronę ({1}×{2}), etykieta: {3} × {4} mm',
         a4Pages: '— do wydruku: {0} {1}',
+        decoder_mode_single: 'Pojedynczo',
+        decoder_mode_multi: 'Wielokrotnie',
+        decoder_scanned_count: 'Zeskanowano',
+        decoder_copy_all: 'Skopiuj wszystko',
+        decoder_clear_all: 'Wyczyść',
+        decoder_list_empty: 'Skieruj kamerę na kody — pojawią się tutaj.',
+        decoder_results_heading: 'Zeskanowane kody',
     },
 
     /* ── English ── */
@@ -87,6 +94,13 @@ window.BARCODE_I18N = {
         pagesFew: 'pages',
         a4Info: 'A4 sheet: {0} labels/page ({1}×{2}), label: {3} × {4} mm',
         a4Pages: '— to print: {0} {1}',
+        decoder_mode_single: 'Single',
+        decoder_mode_multi: 'Multi',
+        decoder_scanned_count: 'Scanned',
+        decoder_copy_all: 'Copy all',
+        decoder_clear_all: 'Clear',
+        decoder_list_empty: 'Point camera at codes — they will appear here.',
+        decoder_results_heading: 'Scanned codes',
     },
 
     /* ── German ── */
@@ -131,6 +145,13 @@ window.BARCODE_I18N = {
         pagesFew: 'Seiten',
         a4Info: 'A4-Bogen: {0} Etiketten/Seite ({1}×{2}), Etikett: {3} × {4} mm',
         a4Pages: '— zu drucken: {0} {1}',
+        decoder_mode_single: 'Einzeln',
+        decoder_mode_multi: 'Mehrfach',
+        decoder_scanned_count: 'Gescannt',
+        decoder_copy_all: 'Alles kopieren',
+        decoder_clear_all: 'Löschen',
+        decoder_list_empty: 'Kamera auf Codes richten — sie erscheinen hier.',
+        decoder_results_heading: 'Gescannte Codes',
     },
 
     /* ── French ── */
@@ -175,6 +196,13 @@ window.BARCODE_I18N = {
         pagesFew: 'pages',
         a4Info: 'Feuille A4\u00a0: {0} \u00e9tiquettes/page ({1}\u00d7{2}), \u00e9tiquette\u00a0: {3} \u00d7 {4} mm',
         a4Pages: '— \u00e0 imprimer\u00a0: {0} {1}',
+        decoder_mode_single: 'Unique',
+        decoder_mode_multi: 'Multiple',
+        decoder_scanned_count: 'Scannés',
+        decoder_copy_all: 'Tout copier',
+        decoder_clear_all: 'Effacer',
+        decoder_list_empty: 'Pointez la caméra sur les codes — ils apparaîtront ici.',
+        decoder_results_heading: 'Codes scannés',
     },
 
     /* ── Spanish ── */
@@ -219,6 +247,13 @@ window.BARCODE_I18N = {
         pagesFew: 'p\u00e1ginas',
         a4Info: 'Hoja A4: {0} etiquetas/p\u00e1gina ({1}\u00d7{2}), etiqueta: {3} \u00d7 {4} mm',
         a4Pages: '— a imprimir: {0} {1}',
+        decoder_mode_single: 'Único',
+        decoder_mode_multi: 'Múltiple',
+        decoder_scanned_count: 'Escaneados',
+        decoder_copy_all: 'Copiar todo',
+        decoder_clear_all: 'Limpiar',
+        decoder_list_empty: 'Apunta la cámara a los códigos — aparecerán aquí.',
+        decoder_results_heading: 'Códigos escaneados',
     },
 
     /* ── Italian ── */
@@ -263,6 +298,13 @@ window.BARCODE_I18N = {
         pagesFew: 'pagine',
         a4Info: 'Foglio A4: {0} etichette/pagina ({1}\u00d7{2}), etichetta: {3} \u00d7 {4} mm',
         a4Pages: '— da stampare: {0} {1}',
+        decoder_mode_single: 'Singolo',
+        decoder_mode_multi: 'Multiplo',
+        decoder_scanned_count: 'Scansionati',
+        decoder_copy_all: 'Copia tutto',
+        decoder_clear_all: 'Cancella',
+        decoder_list_empty: 'Punta la fotocamera sui codici — appariranno qui.',
+        decoder_results_heading: 'Codici scansionati',
     },
 
     /* ── Portuguese ── */
@@ -307,6 +349,13 @@ window.BARCODE_I18N = {
         pagesFew: 'p\u00e1ginas',
         a4Info: 'Folha A4: {0} etiquetas/p\u00e1gina ({1}\u00d7{2}), etiqueta: {3} \u00d7 {4} mm',
         a4Pages: '— para imprimir: {0} {1}',
+        decoder_mode_single: 'Único',
+        decoder_mode_multi: 'Múltiplo',
+        decoder_scanned_count: 'Digitalizados',
+        decoder_copy_all: 'Copiar tudo',
+        decoder_clear_all: 'Limpar',
+        decoder_list_empty: 'Aponte a câmara para os códigos — aparecerão aqui.',
+        decoder_results_heading: 'Códigos digitalizados',
     },
 
     /* ── Dutch ── */
@@ -351,6 +400,13 @@ window.BARCODE_I18N = {
         pagesFew: "pagina's",
         a4Info: "A4-vel: {0} labels/pagina ({1}\u00d7{2}), label: {3} \u00d7 {4} mm",
         a4Pages: '— af te drukken: {0} {1}',
+        decoder_mode_single: 'Enkel',
+        decoder_mode_multi: 'Meerdere',
+        decoder_scanned_count: 'Gescand',
+        decoder_copy_all: 'Alles kopiëren',
+        decoder_clear_all: 'Wissen',
+        decoder_list_empty: 'Richt de camera op codes — ze verschijnen hier.',
+        decoder_results_heading: 'Gescande codes',
     },
 
     /* ── Czech ── */
@@ -395,6 +451,13 @@ window.BARCODE_I18N = {
         pagesFew: 'strany',
         a4Info: 'Arch A4: {0} \u0161t\u00edtk\u016f/str\u00e1nku ({1}\u00d7{2}), \u0161t\u00edtek: {3} \u00d7 {4} mm',
         a4Pages: '— k tisku: {0} {1}',
+        decoder_mode_single: 'Jeden',
+        decoder_mode_multi: 'Více',
+        decoder_scanned_count: 'Naskenováno',
+        decoder_copy_all: 'Kopírovat vše',
+        decoder_clear_all: 'Vymazat',
+        decoder_list_empty: 'Namiřte kameru na kódy — objeví se zde.',
+        decoder_results_heading: 'Naskenované kódy',
     },
 
     /* ── Ukrainian ── */
@@ -439,5 +502,12 @@ window.BARCODE_I18N = {
         pagesFew: '\u0441\u0442\u043e\u0440\u0456\u043d\u043a\u0438',
         a4Info: '\u0410\u0440\u043a\u0443\u0448 A4: {0} \u0435\u0442\u0438\u043a\u0435\u0442\u043e\u043a/\u0441\u0442\u043e\u0440\u0456\u043d\u043a\u0443 ({1}\u00d7{2}), \u0435\u0442\u0438\u043a\u0435\u0442\u043a\u0430: {3} \u00d7 {4} mm',
         a4Pages: '— \u0434\u043e \u0434\u0440\u0443\u043a\u0443: {0} {1}',
+        decoder_mode_single: 'Один',
+        decoder_mode_multi: 'Кілька',
+        decoder_scanned_count: 'Відскановано',
+        decoder_copy_all: 'Копіювати все',
+        decoder_clear_all: 'Очистити',
+        decoder_list_empty: 'Наведіть камеру на коди — вони з’являться тут.',
+        decoder_results_heading: 'Відскановані коди',
     },
 };
