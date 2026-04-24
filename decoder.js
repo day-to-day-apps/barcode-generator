@@ -260,6 +260,9 @@
 
     // ===== CAMERA SCANNING =====
     let cameraActive = false;
+    let cameraStream = null;
+    let rafId = 0;
+    let usingNativeDetector = false;
 
     function mapCameraError(e) {
         const name = (e && e.name) || '';
@@ -276,10 +279,100 @@
         return (name ? name + ': ' : '') + (msg || strings.cameraUnavailable);
     }
 
+    // Sync scan-line sweep distance with actual frame height (for smooth GPU animation)
+    function updateScanTravel() {
+        const frame = cameraModal && cameraModal.querySelector('.camera-frame');
+        if (!frame) return;
+        const h = frame.clientHeight;
+        if (h > 0) frame.style.setProperty('--scan-travel', (h - 2) + 'px');
+    }
+
+    // Try to enable continuous autofocus — improves detection on close-up barcodes
+    function tryEnableContinuousFocus(stream) {
+        try {
+            const track = stream.getVideoTracks && stream.getVideoTracks()[0];
+            if (!track || !track.applyConstraints) return;
+            const caps = track.getCapabilities ? track.getCapabilities() : {};
+            if (caps.focusMode && caps.focusMode.indexOf('continuous') !== -1) {
+                track.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }).catch(() => {});
+            }
+        } catch (_) { /* ignored */ }
+    }
+
+    function handleDetection(format, text) {
+        resultType.textContent = format || '';
+        resultValue.textContent = text || '';
+        resultBox.hidden = false;
+        if (navigator.vibrate) { try { navigator.vibrate(120); } catch (_) {} }
+        stopCamera();
+    }
+
+    async function startNativeDetector(detector) {
+        usingNativeDetector = true;
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: { ideal: 'environment' },
+                width: { ideal: 1920 },
+                height: { ideal: 1080 }
+            },
+            audio: false
+        });
+        cameraVideo.srcObject = cameraStream;
+        cameraVideo.setAttribute('playsinline', 'true');
+        cameraVideo.muted = true;
+        await cameraVideo.play();
+        tryEnableContinuousFocus(cameraStream);
+        updateScanTravel();
+
+        const loop = async () => {
+            if (!cameraActive) return;
+            try {
+                const codes = await detector.detect(cameraVideo);
+                if (codes && codes.length > 0) {
+                    const c = codes[0];
+                    handleDetection((c.format || '').toUpperCase().replace(/_/g, ' '), c.rawValue || '');
+                    return;
+                }
+            } catch (_) { /* transient decode errors ignored */ }
+            rafId = requestAnimationFrame(loop);
+        };
+        rafId = requestAnimationFrame(loop);
+    }
+
+    async function startZXingDetector() {
+        usingNativeDetector = false;
+        const reader = getReader();
+        if (!reader) throw new Error('Decoder library failed to load.');
+
+        const constraints = {
+            video: {
+                facingMode: { ideal: 'environment' },
+                width: { ideal: 1920 },
+                height: { ideal: 1080 }
+            },
+            audio: false
+        };
+
+        await reader.decodeFromConstraints(constraints, cameraVideo, (result) => {
+            if (!result) return;
+            const format = result.getBarcodeFormat ? result.getBarcodeFormat() : '';
+            const formatName = typeof format === 'number' && window.ZXing && window.ZXing.BarcodeFormat
+                ? Object.keys(window.ZXing.BarcodeFormat).find(k => window.ZXing.BarcodeFormat[k] === format) || String(format)
+                : String(format);
+            handleDetection(formatName, result.getText());
+        });
+
+        // ZXing attaches its own stream; capture the reference for cleanup and focus
+        if (cameraVideo.srcObject) {
+            cameraStream = cameraVideo.srcObject;
+            tryEnableContinuousFocus(cameraStream);
+        }
+        cameraVideo.addEventListener('loadedmetadata', updateScanTravel, { once: true });
+        updateScanTravel();
+    }
+
     async function startCamera() {
         if (cameraActive) return;
-        const reader = getReader();
-        if (!reader) { showError('Decoder library failed to load. Please refresh the page.'); return; }
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             showError(strings.cameraUnavailable + ' (getUserMedia API missing)');
             return;
@@ -294,30 +387,20 @@
         cameraModal.hidden = false;
         cameraActive = true;
 
-        // ZXing handles: getUserMedia → attach stream → play → continuous decode.
-        // Prefer rear camera; request higher resolution for sharper barcodes.
-        const constraints = {
-            video: {
-                facingMode: { ideal: 'environment' },
-                width: { ideal: 1920 },
-                height: { ideal: 1080 }
-            },
-            audio: false
-        };
-
         try {
-            await reader.decodeFromConstraints(constraints, cameraVideo, (result, err) => {
-                if (!result) return;
-                const format = result.getBarcodeFormat ? result.getBarcodeFormat() : '';
-                const formatName = typeof format === 'number' && window.ZXing && window.ZXing.BarcodeFormat
-                    ? Object.keys(window.ZXing.BarcodeFormat).find(k => window.ZXing.BarcodeFormat[k] === format) || String(format)
-                    : String(format);
-                resultType.textContent = formatName;
-                resultValue.textContent = result.getText();
-                resultBox.hidden = false;
-                if (navigator.vibrate) { try { navigator.vibrate(120); } catch (_) {} }
-                stopCamera();
-            });
+            // Primary path: native BarcodeDetector (hardware-accelerated on Android/iOS/macOS)
+            if ('BarcodeDetector' in window) {
+                const supported = await window.BarcodeDetector.getSupportedFormats();
+                const wanted = ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'code_93', 'codabar', 'itf', 'qr_code', 'data_matrix', 'aztec', 'pdf417'];
+                const formats = wanted.filter(f => supported.indexOf(f) !== -1);
+                if (formats.length > 0) {
+                    const detector = new window.BarcodeDetector({ formats });
+                    await startNativeDetector(detector);
+                    return;
+                }
+            }
+            // Fallback: ZXing-js with TRY_HARDER hints
+            await startZXingDetector();
         } catch (e) {
             showError(mapCameraError(e));
             stopCamera();
@@ -326,7 +409,12 @@
 
     function stopCamera() {
         cameraActive = false;
+        if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
         try { if (codeReader && typeof codeReader.reset === 'function') codeReader.reset(); } catch (_) {}
+        if (cameraStream) {
+            try { cameraStream.getTracks().forEach(t => t.stop()); } catch (_) {}
+            cameraStream = null;
+        }
         if (cameraVideo) {
             try { cameraVideo.pause(); } catch (_) {}
             if (cameraVideo.srcObject) {
@@ -335,7 +423,11 @@
             }
         }
         cameraModal.hidden = true;
+        usingNativeDetector = false;
     }
+
+    // Recompute scan-line travel distance on window resize (orientation change)
+    window.addEventListener('resize', () => { if (cameraActive) updateScanTravel(); });
 
     if (cameraBtn) cameraBtn.addEventListener('click', startCamera);
     if (cameraClose) cameraClose.addEventListener('click', stopCamera);

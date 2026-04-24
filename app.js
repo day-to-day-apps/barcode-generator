@@ -606,15 +606,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Print button
     btnDoPrint.addEventListener('click', () => {
         let labelW, labelH;
+        let pageStyle = '';
 
         if (currentPrinterType === 'thermal' || currentPrinterType === 'custom') {
             labelW = currentPrinterType === 'thermal' ? currentLabelW : (parseInt(customW.value) || 60);
             labelH = currentPrinterType === 'thermal' ? currentLabelH : (parseInt(customH.value) || 40);
             const copies = Math.max(1, parseInt(labelCopies.value) || 1);
 
-            let html = `<div style="font-family:Inter,sans-serif;">`;
+            // Dynamic @page size for thermal/custom — each label = one sheet
+            pageStyle = `<style>@page { size: ${labelW}mm ${labelH}mm; margin: 0; }</style>`;
+
+            let html = pageStyle + `<div style="font-family:Inter,sans-serif;">`;
             for (let i = 0; i < copies; i++) {
-                html += createLabelHTML(labelW, labelH, true);
+                const breakStyle = i < copies - 1 ? 'page-break-after:always;break-after:page;' : '';
+                html += `<div style="${breakStyle}">${createLabelHTML(labelW, labelH, true)}</div>`;
             }
             html += '</div>';
             printOutput.innerHTML = html;
@@ -622,16 +627,19 @@ document.addEventListener('DOMContentLoaded', () => {
             // A4
             labelW = currentA4LabelW;
             labelH = currentA4LabelH;
-            const totalLabels = currentA4Cols * currentA4Rows;
             const copies = Math.min(parseInt(labelCopies.value) || 1, 500);
             const labelsPerPage = currentA4Cols * currentA4Rows;
             const pages = Math.ceil(copies / labelsPerPage);
 
-            let html = '<div style="font-family:Inter,sans-serif;">';
+            pageStyle = `<style>@page { size: A4; margin: 5mm; }</style>`;
+
+            let html = pageStyle + '<div style="font-family:Inter,sans-serif;">';
             let labelsDone = 0;
 
             for (let p = 0; p < pages; p++) {
-                html += `<div style="width:210mm;min-height:297mm;display:grid;grid-template-columns:repeat(${currentA4Cols},${labelW}mm);grid-template-rows:repeat(${currentA4Rows},${labelH}mm);gap:0;justify-content:center;align-content:start;padding:${Math.max(5, Math.floor((297 - currentA4Rows * labelH) / 2))}mm ${Math.max(5, Math.floor((210 - currentA4Cols * labelW) / 2))}mm;page-break-after:always;">`;
+                const isLast = p === pages - 1;
+                const breakStyle = isLast ? '' : 'page-break-after:always;break-after:page;';
+                html += `<div style="width:210mm;min-height:287mm;display:grid;grid-template-columns:repeat(${currentA4Cols},${labelW}mm);grid-template-rows:repeat(${currentA4Rows},${labelH}mm);gap:0;justify-content:center;align-content:start;padding:${Math.max(2, Math.floor((287 - currentA4Rows * labelH) / 2))}mm ${Math.max(2, Math.floor((200 - currentA4Cols * labelW) / 2))}mm;${breakStyle}">`;
 
                 for (let i = 0; i < labelsPerPage && labelsDone < copies; i++) {
                     html += createLabelHTML(labelW, labelH, true);

@@ -1544,25 +1544,40 @@ footer {
 
 /* ===== Print-only styles ===== */
 @media print {
-    body * {
-        visibility: hidden;
+    /* Hide everything except the print output; display:none keeps reflowed content
+       out of pagination (visibility:hidden left empty pages behind). */
+    body > *:not(#print-output) {
+        display: none !important;
     }
-    
-    #print-output,
-    #print-output * {
-        visibility: visible;
+
+    html, body {
+        background: #fff !important;
+        background-image: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
-    
+    html::before, body::before, html::after, body::after {
+        display: none !important;
+        background: none !important;
+    }
+
     #print-output {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        z-index: 99999;
+        display: block !important;
+        position: static !important;
+        width: auto;
+        background: #fff !important;
+    }
+
+    /* Only print colors where they matter — barcode labels. */
+    #print-output * {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
     }
 
     .label-preview {
         border: none;
+        box-shadow: none !important;
+        background: #fff !important;
     }
 
     .label-preview.label-cut-lines {
@@ -1570,13 +1585,8 @@ footer {
     }
 
     @page {
-        margin: 5mm;
+        margin: 0;
         marks: none;
-    }
-
-    html {
-        print-color-adjust: exact;
-        -webkit-print-color-adjust: exact;
     }
 }
 
@@ -2540,15 +2550,18 @@ footer {
     position: absolute;
     left: 10%;
     right: 10%;
-    top: 50%;
+    top: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, #4f46e5 30%, #a855f7 70%, transparent);
     box-shadow: 0 0 14px rgba(79, 70, 229, 0.8);
-    animation: cameraScan 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
+    animation: cameraScan 2.4s linear infinite alternate;
 }
 @keyframes cameraScan {
-    0%, 100% { top: 10%; opacity: 0.3; }
-    50%      { top: 90%; opacity: 1; }
+    0%   { transform: translate3d(0, 0, 0); opacity: 0.35; }
+    50%  { opacity: 1; }
+    100% { transform: translate3d(0, var(--scan-travel, 180px), 0); opacity: 0.35; }
 }
 .camera-hint {
     padding: 14px 16px;
