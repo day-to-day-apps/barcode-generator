@@ -75,7 +75,29 @@
         if (codeReader) return codeReader;
         const lib = window.ZXing || window.ZXingBrowser;
         if (!lib || typeof lib.BrowserMultiFormatReader !== 'function') return null;
-        codeReader = new lib.BrowserMultiFormatReader();
+
+        // Hints: TRY_HARDER + explicit format list dramatically improves detection
+        // from live camera feeds (motion blur, angles, low contrast).
+        let hints = null;
+        try {
+            if (lib.DecodeHintType && lib.BarcodeFormat) {
+                hints = new Map();
+                hints.set(lib.DecodeHintType.TRY_HARDER, true);
+                const F = lib.BarcodeFormat;
+                const formats = [
+                    F.EAN_13, F.EAN_8, F.UPC_A, F.UPC_E,
+                    F.CODE_128, F.CODE_39, F.CODE_93, F.CODABAR,
+                    F.ITF, F.QR_CODE, F.DATA_MATRIX, F.AZTEC,
+                    F.PDF_417, F.RSS_14, F.RSS_EXPANDED
+                ].filter(f => typeof f !== 'undefined');
+                hints.set(lib.DecodeHintType.POSSIBLE_FORMATS, formats);
+            }
+        } catch (_) { hints = null; }
+
+        // timeBetweenScansMillis = 200 → 5 attempts/sec (default is 500ms)
+        codeReader = hints
+            ? new lib.BrowserMultiFormatReader(hints, 200)
+            : new lib.BrowserMultiFormatReader();
         return codeReader;
     }
 
@@ -238,7 +260,6 @@
 
     // ===== CAMERA SCANNING =====
     let cameraActive = false;
-    let cameraStream = null;
 
     function mapCameraError(e) {
         const name = (e && e.name) || '';
@@ -273,33 +294,19 @@
         cameraModal.hidden = false;
         cameraActive = true;
 
-        // Step 1: request permission explicitly — this triggers the browser prompt
-        try {
-            cameraStream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
-                audio: false
-            });
-        } catch (e) {
-            showError(mapCameraError(e));
-            cameraActive = false;
-            cameraModal.hidden = true;
-            return;
-        }
+        // ZXing handles: getUserMedia → attach stream → play → continuous decode.
+        // Prefer rear camera; request higher resolution for sharper barcodes.
+        const constraints = {
+            video: {
+                facingMode: { ideal: 'environment' },
+                width: { ideal: 1920 },
+                height: { ideal: 1080 }
+            },
+            audio: false
+        };
 
-        // Step 2: attach stream to video and play
         try {
-            cameraVideo.srcObject = cameraStream;
-            cameraVideo.setAttribute('playsinline', 'true');
-            await cameraVideo.play();
-        } catch (e) {
-            showError('Could not start video preview: ' + ((e && e.message) || e));
-            stopCamera();
-            return;
-        }
-
-        // Step 3: hand video element to ZXing for continuous decoding
-        try {
-            reader.decodeFromVideoElement(cameraVideo, (result) => {
+            await reader.decodeFromConstraints(constraints, cameraVideo, (result, err) => {
                 if (!result) return;
                 const format = result.getBarcodeFormat ? result.getBarcodeFormat() : '';
                 const formatName = typeof format === 'number' && window.ZXing && window.ZXing.BarcodeFormat
@@ -312,7 +319,7 @@
                 stopCamera();
             });
         } catch (e) {
-            showError('Decoder init failed: ' + ((e && e.message) || e));
+            showError(mapCameraError(e));
             stopCamera();
         }
     }
@@ -320,13 +327,12 @@
     function stopCamera() {
         cameraActive = false;
         try { if (codeReader && typeof codeReader.reset === 'function') codeReader.reset(); } catch (_) {}
-        if (cameraStream) {
-            try { cameraStream.getTracks().forEach(t => t.stop()); } catch (_) {}
-            cameraStream = null;
-        }
         if (cameraVideo) {
             try { cameraVideo.pause(); } catch (_) {}
-            cameraVideo.srcObject = null;
+            if (cameraVideo.srcObject) {
+                try { cameraVideo.srcObject.getTracks().forEach(t => t.stop()); } catch (_) {}
+                cameraVideo.srcObject = null;
+            }
         }
         cameraModal.hidden = true;
     }
