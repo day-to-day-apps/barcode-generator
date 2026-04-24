@@ -46,6 +46,10 @@
     const clearBtn = document.getElementById('clear-btn');
     const errorBox = document.getElementById('error-box');
     const spinner = document.getElementById('spinner');
+    const cameraBtn = document.getElementById('camera-btn');
+    const cameraModal = document.getElementById('camera-modal');
+    const cameraVideo = document.getElementById('camera-video');
+    const cameraClose = document.getElementById('camera-close');
 
     // Translations fallback
     const strings = {
@@ -56,7 +60,10 @@
         copied: T.decoder_copied || 'Copied!',
         copyFailed: T.decoder_copy_failed || 'Copy failed',
         formatLabel: T.decoder_format_label || 'Format',
-        valueLabel: T.decoder_value_label || 'Value'
+        valueLabel: T.decoder_value_label || 'Value',
+        cameraUnavailable: T.decoder_camera_unavailable || 'Camera not available in this browser. Use HTTPS and grant permission.',
+        cameraDenied: T.decoder_camera_denied || 'Camera permission denied.',
+        cameraNotFound: T.decoder_camera_not_found || 'No camera found on this device.'
     };
 
     const MAX_SIZE = 10 * 1024 * 1024;
@@ -228,6 +235,66 @@
         resetResult();
         hideError();
     });
+
+    // ===== CAMERA SCANNING =====
+    let cameraActive = false;
+
+    async function startCamera() {
+        if (cameraActive) return;
+        const reader = getReader();
+        if (!reader) { showError('Decoder library failed to load. Please refresh the page.'); return; }
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.isSecureContext) {
+            showError(strings.cameraUnavailable);
+            return;
+        }
+        hideError();
+        resetResult();
+        cameraModal.hidden = false;
+        cameraActive = true;
+        try {
+            await reader.decodeFromConstraints(
+                { video: { facingMode: { ideal: 'environment' } } },
+                cameraVideo,
+                (result, err) => {
+                    if (result) {
+                        const format = result.getBarcodeFormat ? result.getBarcodeFormat() : '';
+                        const formatName = typeof format === 'number' && window.ZXing && window.ZXing.BarcodeFormat
+                            ? Object.keys(window.ZXing.BarcodeFormat).find(k => window.ZXing.BarcodeFormat[k] === format) || String(format)
+                            : String(format);
+                        resultType.textContent = formatName;
+                        resultValue.textContent = result.getText();
+                        resultBox.hidden = false;
+                        if (navigator.vibrate) { try { navigator.vibrate(120); } catch (_) {} }
+                        stopCamera();
+                    }
+                }
+            );
+        } catch (e) {
+            const name = e && e.name;
+            if (name === 'NotAllowedError' || name === 'PermissionDeniedError') showError(strings.cameraDenied);
+            else if (name === 'NotFoundError' || name === 'DevicesNotFoundError') showError(strings.cameraNotFound);
+            else showError((e && e.message) || strings.cameraUnavailable);
+            stopCamera();
+        }
+    }
+
+    function stopCamera() {
+        if (!cameraActive) return;
+        cameraActive = false;
+        try { if (codeReader && typeof codeReader.reset === 'function') codeReader.reset(); } catch (_) {}
+        if (cameraVideo && cameraVideo.srcObject) {
+            try { cameraVideo.srcObject.getTracks().forEach(t => t.stop()); } catch (_) {}
+            cameraVideo.srcObject = null;
+        }
+        cameraModal.hidden = true;
+    }
+
+    if (cameraBtn) cameraBtn.addEventListener('click', startCamera);
+    if (cameraClose) cameraClose.addEventListener('click', stopCamera);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && cameraActive) stopCamera();
+    });
+    window.addEventListener('pagehide', stopCamera);
 
     // ===== THEME TOGGLE (shared with main app) =====
     const themeToggle = document.getElementById('theme-toggle');

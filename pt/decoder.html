@@ -32,7 +32,7 @@
     <meta name="twitter:description" content="Descodificador de código de barras online grátis. Envie uma imagem ou arraste — EAN-13, UPC, Code 128, QR e mais. 100% no navegador.">
 
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-    <link rel="stylesheet" href="../styles.css?v=20260423162006">
+    <link rel="stylesheet" href="../styles.css?v=20260423190000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
@@ -90,6 +90,13 @@
                 <div class="decoder-feature"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a12 12 0 0 1 14 0"/><path d="M5.5 11a8 8 0 0 1 9 0"/><path d="M8 14a4 4 0 0 1 4 0"/><circle cx="10" cy="17" r="0.8" fill="currentColor"/></svg><span>Funciona offline</span></div>
                 <div class="decoder-feature"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="10 2 2 6 10 10 18 6 10 2"/><polyline points="2 10 10 14 18 10"/><polyline points="2 14 10 18 18 14"/></svg><span>20+ formatos</span></div>
             </div>
+            <div class="camera-row">
+                <button id="camera-btn" class="camera-btn" type="button" aria-label="Scan barcode with camera">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    <span>Scan with camera</span>
+                </button>
+            </div>
+
 
             <div id="spinner" class="spinner" hidden>A descodificar…</div>
 
@@ -119,10 +126,21 @@
             <p>Baseado em <a href="https://github.com/zxing-js/library" rel="noopener noreferrer" target="_blank">ZXing</a> — código aberto.</p>
         </footer>
     </div>
+    <div id="camera-modal" class="camera-modal" role="dialog" aria-modal="true" aria-label="Camera barcode scanner" hidden>
+        <div class="camera-modal-inner">
+            <video id="camera-video" class="camera-video" playsinline muted autoplay></video>
+            <div class="camera-frame" aria-hidden="true"></div>
+            <button id="camera-close" class="camera-close" type="button" aria-label="Close camera">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+            </button>
+            <div class="camera-hint">Point your camera at a barcode</div>
+        </div>
+    </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js" async></script>
-    <script src="../i18n.js?v=20260423162006"></script>
-    <script src="../decoder.js?v=20260423162006"></script>
+    <script src="../i18n.js?v=20260423190000"></script>
+    <script src="../decoder.js?v=20260423190000"></script>
     <script src="../analytics.js" defer></script>
 </body>
 </html>

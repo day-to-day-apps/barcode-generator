@@ -1975,8 +1975,9 @@ footer {
 
 /* Segmented tab navigation (Generator / Decoder) */
 .decoder-nav {
-    display: inline-flex;
-    margin: 12px auto 24px;
+    display: flex;
+    width: fit-content;
+    margin: -8px auto 20px;
     padding: 5px;
     background: rgba(255, 255, 255, 0.55);
     backdrop-filter: blur(12px) saturate(160%);
@@ -1985,9 +1986,6 @@ footer {
     border-radius: 999px;
     gap: 2px;
     box-shadow: 0 2px 12px rgba(79, 70, 229, 0.08);
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
     animation: fadeSlideUp 0.6s ease both;
 }
 [data-theme="dark"] .decoder-nav {
@@ -2453,6 +2451,142 @@ footer {
 .decoder-footer a:hover { text-decoration: underline; }
 [data-theme="dark"] .decoder-footer { color: #94a3b8; }
 [data-theme="dark"] .decoder-footer a { color: #a5b4fc; }
+
+/* Camera scan button — secondary CTA under drop-area */
+.camera-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 14px;
+    animation: fadeSlideUp 0.8s ease both;
+    animation-delay: 0.3s;
+}
+.camera-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1.5px solid rgba(79, 70, 229, 0.35);
+    background: rgba(255, 255, 255, 0.55);
+    color: #4f46e5;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.2s ease;
+}
+.camera-btn:hover {
+    transform: translateY(-1px);
+    background: rgba(79, 70, 229, 0.08);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.22);
+}
+.camera-btn:focus-visible {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+}
+.camera-btn svg { width: 18px; height: 18px; }
+[data-theme="dark"] .camera-btn {
+    background: rgba(30, 41, 59, 0.55);
+    color: #a5b4fc;
+    border-color: rgba(129, 140, 248, 0.45);
+}
+[data-theme="dark"] .camera-btn:hover {
+    background: rgba(129, 140, 248, 0.12);
+}
+
+/* Camera modal — full-screen overlay with video preview */
+.camera-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+}
+.camera-modal[hidden] { display: none !important; }
+.camera-modal-inner {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    background: #0f172a;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: fadeSlideUp 0.3s ease both;
+}
+.camera-video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #000;
+    object-fit: cover;
+}
+.camera-frame {
+    position: absolute;
+    inset: 12% 8%;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    border-radius: 14px;
+    box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.35);
+    pointer-events: none;
+}
+.camera-frame::before {
+    content: '';
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    top: 50%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #4f46e5 30%, #a855f7 70%, transparent);
+    box-shadow: 0 0 14px rgba(79, 70, 229, 0.8);
+    animation: cameraScan 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes cameraScan {
+    0%, 100% { top: 10%; opacity: 0.3; }
+    50%      { top: 90%; opacity: 1; }
+}
+.camera-hint {
+    padding: 14px 16px;
+    text-align: center;
+    color: #e2e8f0;
+    font-size: 14px;
+    background: rgba(0, 0, 0, 0.4);
+}
+.camera-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(15, 23, 42, 0.7);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.camera-close:hover {
+    background: rgba(239, 68, 68, 0.85);
+    transform: scale(1.05);
+}
+.camera-close:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+.camera-close svg { width: 22px; height: 22px; }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
 
 @keyframes errorShake {
     0%, 100% { transform: translateX(0); }
