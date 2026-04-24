@@ -238,52 +238,94 @@
 
     // ===== CAMERA SCANNING =====
     let cameraActive = false;
+    let cameraStream = null;
+
+    function mapCameraError(e) {
+        const name = (e && e.name) || '';
+        const msg = (e && e.message) || '';
+        if (name === 'NotAllowedError' || name === 'PermissionDeniedError' || name === 'SecurityError') {
+            return strings.cameraDenied + ' (' + (name || 'denied') + ')';
+        }
+        if (name === 'NotFoundError' || name === 'DevicesNotFoundError' || name === 'OverconstrainedError') {
+            return strings.cameraNotFound + ' (' + name + ')';
+        }
+        if (name === 'NotReadableError' || name === 'TrackStartError') {
+            return 'Camera is in use by another application. Close it and try again. (' + name + ')';
+        }
+        return (name ? name + ': ' : '') + (msg || strings.cameraUnavailable);
+    }
 
     async function startCamera() {
         if (cameraActive) return;
         const reader = getReader();
         if (!reader) { showError('Decoder library failed to load. Please refresh the page.'); return; }
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.isSecureContext) {
-            showError(strings.cameraUnavailable);
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showError(strings.cameraUnavailable + ' (getUserMedia API missing)');
             return;
         }
+        if (!window.isSecureContext) {
+            showError(strings.cameraUnavailable + ' (requires HTTPS)');
+            return;
+        }
+
         hideError();
         resetResult();
         cameraModal.hidden = false;
         cameraActive = true;
+
+        // Step 1: request permission explicitly — this triggers the browser prompt
         try {
-            await reader.decodeFromConstraints(
-                { video: { facingMode: { ideal: 'environment' } } },
-                cameraVideo,
-                (result, err) => {
-                    if (result) {
-                        const format = result.getBarcodeFormat ? result.getBarcodeFormat() : '';
-                        const formatName = typeof format === 'number' && window.ZXing && window.ZXing.BarcodeFormat
-                            ? Object.keys(window.ZXing.BarcodeFormat).find(k => window.ZXing.BarcodeFormat[k] === format) || String(format)
-                            : String(format);
-                        resultType.textContent = formatName;
-                        resultValue.textContent = result.getText();
-                        resultBox.hidden = false;
-                        if (navigator.vibrate) { try { navigator.vibrate(120); } catch (_) {} }
-                        stopCamera();
-                    }
-                }
-            );
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+                audio: false
+            });
         } catch (e) {
-            const name = e && e.name;
-            if (name === 'NotAllowedError' || name === 'PermissionDeniedError') showError(strings.cameraDenied);
-            else if (name === 'NotFoundError' || name === 'DevicesNotFoundError') showError(strings.cameraNotFound);
-            else showError((e && e.message) || strings.cameraUnavailable);
+            showError(mapCameraError(e));
+            cameraActive = false;
+            cameraModal.hidden = true;
+            return;
+        }
+
+        // Step 2: attach stream to video and play
+        try {
+            cameraVideo.srcObject = cameraStream;
+            cameraVideo.setAttribute('playsinline', 'true');
+            await cameraVideo.play();
+        } catch (e) {
+            showError('Could not start video preview: ' + ((e && e.message) || e));
+            stopCamera();
+            return;
+        }
+
+        // Step 3: hand video element to ZXing for continuous decoding
+        try {
+            reader.decodeFromVideoElement(cameraVideo, (result) => {
+                if (!result) return;
+                const format = result.getBarcodeFormat ? result.getBarcodeFormat() : '';
+                const formatName = typeof format === 'number' && window.ZXing && window.ZXing.BarcodeFormat
+                    ? Object.keys(window.ZXing.BarcodeFormat).find(k => window.ZXing.BarcodeFormat[k] === format) || String(format)
+                    : String(format);
+                resultType.textContent = formatName;
+                resultValue.textContent = result.getText();
+                resultBox.hidden = false;
+                if (navigator.vibrate) { try { navigator.vibrate(120); } catch (_) {} }
+                stopCamera();
+            });
+        } catch (e) {
+            showError('Decoder init failed: ' + ((e && e.message) || e));
             stopCamera();
         }
     }
 
     function stopCamera() {
-        if (!cameraActive) return;
         cameraActive = false;
         try { if (codeReader && typeof codeReader.reset === 'function') codeReader.reset(); } catch (_) {}
-        if (cameraVideo && cameraVideo.srcObject) {
-            try { cameraVideo.srcObject.getTracks().forEach(t => t.stop()); } catch (_) {}
+        if (cameraStream) {
+            try { cameraStream.getTracks().forEach(t => t.stop()); } catch (_) {}
+            cameraStream = null;
+        }
+        if (cameraVideo) {
+            try { cameraVideo.pause(); } catch (_) {}
             cameraVideo.srcObject = null;
         }
         cameraModal.hidden = true;
