@@ -264,6 +264,151 @@
     let rafId = 0;
     let usingNativeDetector = false;
 
+    // Multi-scan state
+    let scanMode = 'single'; // 'single' | 'multi'
+    const scanMap = new Map(); // value -> { format, count, lastAt }
+    const SCAN_DEBOUNCE_MS = 1500;
+    let multiUI = null; // { toggle, badge, panel, list, copyBtn, clearBtn }
+
+    const multiStrings = {
+        single:   T.decoder_mode_single   || 'Single',
+        multi:    T.decoder_mode_multi    || 'Multi',
+        scanned:  T.decoder_scanned_count || 'Scanned',
+        copyAll:  T.decoder_copy_all      || 'Copy all',
+        clearAll: T.decoder_clear_all     || 'Clear',
+        empty:    T.decoder_list_empty    || 'Point camera at codes — they will appear here.',
+        resultsHeading: T.decoder_results_heading || 'Scanned codes'
+    };
+
+    function ensureMultiUI() {
+        if (multiUI || !cameraModal) return multiUI;
+        const inner = cameraModal.querySelector('.camera-modal-inner');
+        if (!inner) return null;
+
+        const toggle = document.createElement('div');
+        toggle.className = 'scan-mode-toggle';
+        toggle.setAttribute('role', 'tablist');
+        toggle.innerHTML =
+            '<button type="button" class="scan-mode-btn is-active" data-mode="single" role="tab" aria-selected="true">' + multiStrings.single + '</button>' +
+            '<button type="button" class="scan-mode-btn" data-mode="multi" role="tab" aria-selected="false">' + multiStrings.multi + '</button>';
+        inner.appendChild(toggle);
+
+        const badge = document.createElement('div');
+        badge.className = 'scan-badge';
+        badge.hidden = true;
+        badge.innerHTML = '<span class="scan-badge-label">' + multiStrings.scanned + '</span><span class="scan-badge-count">0</span>';
+        inner.appendChild(badge);
+
+        const panel = document.createElement('div');
+        panel.className = 'scan-list-panel';
+        panel.hidden = true;
+        panel.innerHTML =
+            '<ul class="scan-list" aria-live="polite"></ul>' +
+            '<div class="scan-list-empty">' + multiStrings.empty + '</div>' +
+            '<div class="scan-list-actions">' +
+                '<button type="button" class="scan-list-btn scan-list-copy">' + multiStrings.copyAll + '</button>' +
+                '<button type="button" class="scan-list-btn scan-list-clear">' + multiStrings.clearAll + '</button>' +
+            '</div>';
+        inner.appendChild(panel);
+
+        const list = panel.querySelector('.scan-list');
+        const copyBtn = panel.querySelector('.scan-list-copy');
+        const clearBtnEl = panel.querySelector('.scan-list-clear');
+
+        toggle.addEventListener('click', (ev) => {
+            const btn = ev.target.closest('.scan-mode-btn');
+            if (!btn) return;
+            setScanMode(btn.dataset.mode);
+        });
+
+        copyBtn.addEventListener('click', async (ev) => {
+            ev.stopPropagation();
+            const text = scanListToText();
+            if (!text) return;
+            try {
+                await navigator.clipboard.writeText(text);
+                copyBtn.textContent = strings.copied;
+                setTimeout(() => { copyBtn.textContent = multiStrings.copyAll; }, 1200);
+            } catch (_) {
+                copyBtn.textContent = strings.copyFailed;
+                setTimeout(() => { copyBtn.textContent = multiStrings.copyAll; }, 1200);
+            }
+        });
+
+        clearBtnEl.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            scanMap.clear();
+            renderScanList();
+        });
+
+        multiUI = { toggle, badge, panel, list, copyBtn, clearBtn: clearBtnEl };
+        return multiUI;
+    }
+
+    function setScanMode(mode) {
+        scanMode = (mode === 'multi') ? 'multi' : 'single';
+        if (!multiUI) return;
+        multiUI.toggle.querySelectorAll('.scan-mode-btn').forEach(b => {
+            const active = b.dataset.mode === scanMode;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        const isMulti = scanMode === 'multi';
+        multiUI.badge.hidden = !isMulti;
+        multiUI.panel.hidden = !isMulti;
+        if (isMulti) renderScanList();
+    }
+
+    function renderScanList() {
+        if (!multiUI) return;
+        const entries = Array.from(scanMap.entries());
+        const total = entries.reduce((n, [, v]) => n + v.count, 0);
+        multiUI.badge.querySelector('.scan-badge-count').textContent = String(total);
+        const empty = multiUI.panel.querySelector('.scan-list-empty');
+        if (entries.length === 0) {
+            multiUI.list.innerHTML = '';
+            empty.hidden = false;
+            return;
+        }
+        empty.hidden = true;
+        // Most recent first
+        entries.sort((a, b) => b[1].lastAt - a[1].lastAt);
+        multiUI.list.innerHTML = entries.map(([value, v]) =>
+            '<li class="scan-list-item">' +
+                '<span class="scan-list-count">×' + v.count + '</span>' +
+                '<span class="scan-list-format">' + escapeHtml(v.format || '') + '</span>' +
+                '<span class="scan-list-value">' + escapeHtml(value) + '</span>' +
+            '</li>'
+        ).join('');
+    }
+
+    function scanListToText() {
+        const entries = Array.from(scanMap.entries());
+        entries.sort((a, b) => b[1].count - a[1].count);
+        return entries.map(([value, v]) => v.count + '\t' + (v.format || '') + '\t' + value).join('\n');
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, ch => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[ch]));
+    }
+
+    function renderMultiResultsInMainBox() {
+        const entries = Array.from(scanMap.entries());
+        if (entries.length === 0) return;
+        entries.sort((a, b) => b[1].count - a[1].count);
+        resultType.textContent = entries.length + ' ' + (multiStrings.resultsHeading || 'codes');
+        resultValue.innerHTML = entries.map(([value, v]) =>
+            '<div class="result-multi-row">' +
+                '<span class="result-multi-count">×' + v.count + '</span>' +
+                '<span class="result-multi-format">' + escapeHtml(v.format || '') + '</span>' +
+                '<span class="result-multi-value">' + escapeHtml(value) + '</span>' +
+            '</div>'
+        ).join('');
+        resultBox.hidden = false;
+    }
+
     function mapCameraError(e) {
         const name = (e && e.name) || '';
         const msg = (e && e.message) || '';
@@ -300,8 +445,27 @@
     }
 
     function handleDetection(format, text) {
+        if (!text) return;
+        if (scanMode === 'multi') {
+            const now = Date.now();
+            const existing = scanMap.get(text);
+            if (existing && (now - existing.lastAt) < SCAN_DEBOUNCE_MS) {
+                existing.lastAt = now;
+                return;
+            }
+            if (existing) {
+                existing.count += 1;
+                existing.lastAt = now;
+                if (format && !existing.format) existing.format = format;
+            } else {
+                scanMap.set(text, { format: format || '', count: 1, lastAt: now });
+            }
+            renderScanList();
+            if (navigator.vibrate) { try { navigator.vibrate(60); } catch (_) {} }
+            return;
+        }
         resultType.textContent = format || '';
-        resultValue.textContent = text || '';
+        resultValue.textContent = text;
         resultBox.hidden = false;
         if (navigator.vibrate) { try { navigator.vibrate(120); } catch (_) {} }
         stopCamera();
@@ -386,6 +550,9 @@
         resetResult();
         cameraModal.hidden = false;
         cameraActive = true;
+        scanMap.clear();
+        ensureMultiUI();
+        setScanMode(scanMode);
 
         try {
             // Primary path: native BarcodeDetector (hardware-accelerated on Android/iOS/macOS)
@@ -408,6 +575,7 @@
     }
 
     function stopCamera() {
+        const wasMultiWithResults = (scanMode === 'multi') && scanMap.size > 0;
         cameraActive = false;
         if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
         try { if (codeReader && typeof codeReader.reset === 'function') codeReader.reset(); } catch (_) {}
@@ -424,6 +592,7 @@
         }
         cameraModal.hidden = true;
         usingNativeDetector = false;
+        if (wasMultiWithResults) renderMultiResultsInMainBox();
     }
 
     // Recompute scan-line travel distance on window resize (orientation change)
