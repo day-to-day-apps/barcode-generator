@@ -393,9 +393,9 @@
                 width: width,
                 height: height,
                 displayValue: false,
-                margin: 0,
-                background: 'transparent',
-                lineColor: o.color || '#111'
+                margin: 4,
+                background: '#ffffff',
+                lineColor: '#000000'
             });
             svgEl.setAttribute('role', 'img');
             svgEl.setAttribute('aria-label', (multiStrings.colCode || 'Code') + ' ' + value);
@@ -566,7 +566,6 @@
                     '<input type="number" class="scan-list-qty-input" min="0" inputmode="numeric" value="' + v.count + '" aria-label="' + escapeHtml(multiStrings.quantity) + '">' +
                     '<button type="button" class="scan-list-qty-btn" data-action="inc" aria-label="' + escapeHtml(multiStrings.increase) + '">+</button>' +
                 '</div>' +
-                '<svg class="scan-list-preview" data-pending="1" data-value="' + escapeHtml(value) + '" data-format="' + escapeHtml(v.format || '') + '" data-bar-width="1.4" data-bar-height="30" aria-hidden="true"></svg>' +
                 '<div class="scan-list-meta">' +
                     '<span class="scan-list-format">' + escapeHtml(v.format || '') + '</span>' +
                     '<span class="scan-list-value">' + escapeHtml(value) + '</span>' +
@@ -576,7 +575,6 @@
                 '</button>' +
             '</li>'
         ).join('');
-        schedulePreviewRender(multiUI.list);
     }
 
     function getScanQuantity(value) {
