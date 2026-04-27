@@ -277,7 +277,11 @@
         copyAll:  T.decoder_copy_all      || 'Copy all',
         clearAll: T.decoder_clear_all     || 'Clear',
         empty:    T.decoder_list_empty    || 'Point camera at codes — they will appear here.',
-        resultsHeading: T.decoder_results_heading || 'Scanned codes'
+        resultsHeading: T.decoder_results_heading || 'Scanned codes',
+        decrease: T.decoder_qty_decrease  || 'Decrease quantity',
+        increase: T.decoder_qty_increase  || 'Increase quantity',
+        quantity: T.decoder_qty_label     || 'Quantity',
+        remove:   T.decoder_qty_remove    || 'Remove'
     };
 
     function ensureMultiUI() {
@@ -343,6 +347,29 @@
             renderScanList();
         });
 
+        list.addEventListener('click', (ev) => {
+            const btn = ev.target.closest('button[data-action]');
+            if (!btn) return;
+            ev.stopPropagation();
+            const item = btn.closest('.scan-list-item');
+            if (!item) return;
+            const value = item.dataset.value;
+            const action = btn.dataset.action;
+            if (action === 'dec') setScanQuantity(value, getScanQuantity(value) - 1);
+            else if (action === 'inc') setScanQuantity(value, getScanQuantity(value) + 1);
+            else if (action === 'remove') setScanQuantity(value, 0);
+        });
+
+        list.addEventListener('change', (ev) => {
+            const input = ev.target.closest('input.scan-list-qty-input');
+            if (!input) return;
+            const item = input.closest('.scan-list-item');
+            if (!item) return;
+            const value = item.dataset.value;
+            const next = parseInt(input.value, 10);
+            setScanQuantity(value, Number.isFinite(next) ? next : getScanQuantity(value));
+        });
+
         multiUI = { toggle, badge, panel, list, copyBtn, clearBtn: clearBtnEl };
         return multiUI;
     }
@@ -377,12 +404,38 @@
         // Most recent first
         entries.sort((a, b) => b[1].lastAt - a[1].lastAt);
         multiUI.list.innerHTML = entries.map(([value, v]) =>
-            '<li class="scan-list-item">' +
-                '<span class="scan-list-count">×' + v.count + '</span>' +
+            '<li class="scan-list-item" data-value="' + escapeHtml(value) + '">' +
+                '<div class="scan-list-qty" role="group" aria-label="' + escapeHtml(multiStrings.quantity) + '">' +
+                    '<button type="button" class="scan-list-qty-btn" data-action="dec" aria-label="' + escapeHtml(multiStrings.decrease) + '">−</button>' +
+                    '<input type="number" class="scan-list-qty-input" min="0" inputmode="numeric" value="' + v.count + '" aria-label="' + escapeHtml(multiStrings.quantity) + '">' +
+                    '<button type="button" class="scan-list-qty-btn" data-action="inc" aria-label="' + escapeHtml(multiStrings.increase) + '">+</button>' +
+                '</div>' +
                 '<span class="scan-list-format">' + escapeHtml(v.format || '') + '</span>' +
                 '<span class="scan-list-value">' + escapeHtml(value) + '</span>' +
+                '<button type="button" class="scan-list-remove" data-action="remove" aria-label="' + escapeHtml(multiStrings.remove) + '" title="' + escapeHtml(multiStrings.remove) + '">' +
+                    '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
+                '</button>' +
             '</li>'
         ).join('');
+    }
+
+    function getScanQuantity(value) {
+        const entry = scanMap.get(value);
+        return entry ? entry.count : 0;
+    }
+
+    function setScanQuantity(value, qty) {
+        const next = Math.max(0, Math.floor(Number(qty) || 0));
+        if (next <= 0) {
+            scanMap.delete(value);
+        } else {
+            const entry = scanMap.get(value);
+            if (entry) {
+                entry.count = next;
+                entry.lastAt = Date.now();
+            }
+        }
+        renderScanList();
     }
 
     function scanListToText() {
@@ -399,17 +452,63 @@
 
     function renderMultiResultsInMainBox() {
         const entries = Array.from(scanMap.entries());
-        if (entries.length === 0) return;
+        if (entries.length === 0) {
+            resultBox.hidden = true;
+            return;
+        }
         entries.sort((a, b) => b[1].count - a[1].count);
         resultType.textContent = entries.length + ' ' + (multiStrings.resultsHeading || 'codes');
         resultValue.innerHTML = entries.map(([value, v]) =>
-            '<div class="result-multi-row">' +
-                '<span class="result-multi-count">×' + v.count + '</span>' +
+            '<div class="result-multi-row" data-value="' + escapeHtml(value) + '">' +
+                '<div class="scan-list-qty result-multi-qty" role="group" aria-label="' + escapeHtml(multiStrings.quantity) + '">' +
+                    '<button type="button" class="scan-list-qty-btn" data-action="dec" aria-label="' + escapeHtml(multiStrings.decrease) + '">−</button>' +
+                    '<input type="number" class="scan-list-qty-input" min="0" inputmode="numeric" value="' + v.count + '" aria-label="' + escapeHtml(multiStrings.quantity) + '">' +
+                    '<button type="button" class="scan-list-qty-btn" data-action="inc" aria-label="' + escapeHtml(multiStrings.increase) + '">+</button>' +
+                '</div>' +
                 '<span class="result-multi-format">' + escapeHtml(v.format || '') + '</span>' +
                 '<span class="result-multi-value">' + escapeHtml(value) + '</span>' +
+                '<button type="button" class="scan-list-remove" data-action="remove" aria-label="' + escapeHtml(multiStrings.remove) + '" title="' + escapeHtml(multiStrings.remove) + '">' +
+                    '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
+                '</button>' +
             '</div>'
         ).join('');
         resultBox.hidden = false;
+    }
+
+    if (resultValue && !resultValue.dataset.qtyBound) {
+        resultValue.dataset.qtyBound = '1';
+        const updateMainBox = (value, nextQty) => {
+            const next = Math.max(0, Math.floor(Number(nextQty) || 0));
+            if (next <= 0) {
+                scanMap.delete(value);
+            } else {
+                const entry = scanMap.get(value);
+                if (entry) { entry.count = next; entry.lastAt = Date.now(); }
+            }
+            if (multiUI) renderScanList();
+            renderMultiResultsInMainBox();
+        };
+        resultValue.addEventListener('click', (ev) => {
+            const btn = ev.target.closest('button[data-action]');
+            if (!btn) return;
+            const row = btn.closest('.result-multi-row');
+            if (!row) return;
+            ev.stopPropagation();
+            const value = row.dataset.value;
+            const entry = scanMap.get(value);
+            const cur = entry ? entry.count : 0;
+            const action = btn.dataset.action;
+            if (action === 'dec') updateMainBox(value, cur - 1);
+            else if (action === 'inc') updateMainBox(value, cur + 1);
+            else if (action === 'remove') updateMainBox(value, 0);
+        });
+        resultValue.addEventListener('change', (ev) => {
+            const input = ev.target.closest('input.scan-list-qty-input');
+            if (!input) return;
+            const row = input.closest('.result-multi-row');
+            if (!row) return;
+            updateMainBox(row.dataset.value, parseInt(input.value, 10));
+        });
     }
 
     function mapCameraError(e) {

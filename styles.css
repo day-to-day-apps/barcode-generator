@@ -2791,7 +2791,7 @@ footer {
 .scan-list::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.5); border-radius: 3px; }
 .scan-list-item {
     display: grid;
-    grid-template-columns: auto auto 1fr;
+    grid-template-columns: auto auto 1fr auto;
     align-items: center;
     gap: 10px;
     padding: 8px 12px;
@@ -2801,6 +2801,79 @@ footer {
 }
 .scan-list-item + .scan-list-item { margin-top: 4px; }
 .scan-list-item:hover { background: rgba(255, 255, 255, 0.05); }
+
+/* Quantity controls (− [n] +) */
+.scan-list-qty {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    overflow: hidden;
+}
+.scan-list-qty-btn {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: inherit;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.scan-list-qty-btn:hover { background: rgba(255, 255, 255, 0.12); }
+.scan-list-qty-btn:focus-visible {
+    outline: 2px solid #a5b4fc;
+    outline-offset: -2px;
+}
+.scan-list-qty-input {
+    width: 44px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-weight: 700;
+    text-align: center;
+    padding: 0;
+    -moz-appearance: textfield;
+}
+.scan-list-qty-input::-webkit-outer-spin-button,
+.scan-list-qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.scan-list-qty-input:focus-visible {
+    outline: 2px solid #a5b4fc;
+    outline-offset: -1px;
+    background: rgba(255, 255, 255, 0.08);
+}
+.scan-list-remove {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: rgba(248, 113, 113, 0.85);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.scan-list-remove:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+.scan-list-remove:focus-visible {
+    outline: 2px solid #ef4444;
+    outline-offset: 2px;
+}
 .scan-list-count {
     min-width: 36px;
     padding: 3px 8px;
@@ -2876,7 +2949,7 @@ footer {
 /* Multi-scan results rendered in the main result box after closing camera */
 .result-multi-row {
     display: grid;
-    grid-template-columns: auto auto 1fr;
+    grid-template-columns: auto auto 1fr auto;
     align-items: center;
     gap: 10px;
     padding: 8px 0;
@@ -2884,15 +2957,12 @@ footer {
     border-bottom: 1px solid rgba(148, 163, 184, 0.15);
 }
 .result-multi-row:last-child { border-bottom: none; }
-.result-multi-count {
-    min-width: 40px;
-    padding: 3px 10px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    text-align: center;
+.result-multi-qty {
+    background: rgba(79, 70, 229, 0.10);
+    border-color: rgba(79, 70, 229, 0.35);
+}
+[data-theme="dark"] .result-multi-qty {
+    background: rgba(129, 140, 248, 0.12);
 }
 .result-multi-format {
     padding: 2px 8px;
