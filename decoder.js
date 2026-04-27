@@ -284,6 +284,9 @@
         if (multiUI || !cameraModal) return multiUI;
         const inner = cameraModal.querySelector('.camera-modal-inner');
         if (!inner) return null;
+        const headerControls = inner.querySelector('.camera-header-controls');
+        const sidePanel = inner.querySelector('.camera-side');
+        if (!headerControls || !sidePanel) return null;
 
         const toggle = document.createElement('div');
         toggle.className = 'scan-mode-toggle';
@@ -291,17 +294,16 @@
         toggle.innerHTML =
             '<button type="button" class="scan-mode-btn is-active" data-mode="single" role="tab" aria-selected="true">' + multiStrings.single + '</button>' +
             '<button type="button" class="scan-mode-btn" data-mode="multi" role="tab" aria-selected="false">' + multiStrings.multi + '</button>';
-        inner.appendChild(toggle);
+        headerControls.appendChild(toggle);
 
         const badge = document.createElement('div');
         badge.className = 'scan-badge';
         badge.hidden = true;
         badge.innerHTML = '<span class="scan-badge-label">' + multiStrings.scanned + '</span><span class="scan-badge-count">0</span>';
-        inner.appendChild(badge);
+        headerControls.appendChild(badge);
 
         const panel = document.createElement('div');
         panel.className = 'scan-list-panel';
-        panel.hidden = true;
         panel.innerHTML =
             '<ul class="scan-list" aria-live="polite"></ul>' +
             '<div class="scan-list-empty">' + multiStrings.empty + '</div>' +
@@ -309,7 +311,7 @@
                 '<button type="button" class="scan-list-btn scan-list-copy">' + multiStrings.copyAll + '</button>' +
                 '<button type="button" class="scan-list-btn scan-list-clear">' + multiStrings.clearAll + '</button>' +
             '</div>';
-        inner.appendChild(panel);
+        sidePanel.appendChild(panel);
 
         const list = panel.querySelector('.scan-list');
         const copyBtn = panel.querySelector('.scan-list-copy');
@@ -355,7 +357,8 @@
         });
         const isMulti = scanMode === 'multi';
         multiUI.badge.hidden = !isMulti;
-        multiUI.panel.hidden = !isMulti;
+        const sidePanel = cameraModal && cameraModal.querySelector('.camera-side');
+        if (sidePanel) sidePanel.hidden = !isMulti;
         if (isMulti) renderScanList();
     }
 
@@ -493,12 +496,17 @@
             try {
                 const codes = await detector.detect(cameraVideo);
                 if (codes && codes.length > 0) {
-                    const c = codes[0];
-                    handleDetection((c.format || '').toUpperCase().replace(/_/g, ' '), c.rawValue || '');
-                    return;
+                    if (scanMode === 'multi') {
+                        for (const c of codes) {
+                            handleDetection((c.format || '').toUpperCase().replace(/_/g, ' '), c.rawValue || '');
+                        }
+                    } else {
+                        const c = codes[0];
+                        handleDetection((c.format || '').toUpperCase().replace(/_/g, ' '), c.rawValue || '');
+                    }
                 }
             } catch (_) { /* transient decode errors ignored */ }
-            rafId = requestAnimationFrame(loop);
+            if (cameraActive) rafId = requestAnimationFrame(loop);
         };
         rafId = requestAnimationFrame(loop);
     }

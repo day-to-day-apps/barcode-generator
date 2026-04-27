@@ -1976,18 +1976,15 @@ footer {
     align-items: stretch;
 }
 .decoder-main > .decoder-intro { grid-column: 1 / -1; grid-row: 1; }
-.decoder-main > .drop-area     { grid-column: 1;      grid-row: 2; }
-.decoder-main > .camera-row    { grid-column: 2;      grid-row: 2; }
-.decoder-main > .decoder-features,
+.decoder-main > .camera-row    { grid-column: 1 / -1; grid-row: 2; }
+.decoder-main > .drop-area     { grid-column: 1 / -1; grid-row: 3; }
+.decoder-main > .decoder-features { grid-column: 1 / -1; grid-row: 4; }
 .decoder-main > #spinner,
 .decoder-main > .preview-container,
 .decoder-main > #error-box,
 .decoder-main > #result-box { grid-column: 1 / -1; }
 @media (max-width: 720px) {
     .decoder-main { grid-template-columns: 1fr; }
-    .decoder-main > .drop-area   { grid-column: 1; grid-row: auto; }
-    .decoder-main > .camera-row  { grid-column: 1; grid-row: auto; }
-    .decoder-main > .decoder-intro { grid-row: auto; }
 }
 
 .decoder-intro {
@@ -2569,6 +2566,66 @@ footer {
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     animation: fadeSlideUp 0.3s ease both;
+    display: grid;
+    grid-template-areas:
+        "header"
+        "stage"
+        "side"
+        "hint";
+    grid-template-columns: 1fr;
+    max-height: calc(100vh - 40px);
+}
+@media (min-width: 860px) {
+    .camera-modal-inner {
+        max-width: 960px;
+        grid-template-areas:
+            "header header"
+            "side   stage"
+            "hint   hint";
+        grid-template-columns: 300px 1fr;
+    }
+}
+.camera-header {
+    grid-area: header;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    background: rgba(15, 23, 42, 0.85);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    min-height: 52px;
+}
+.camera-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+.camera-stage {
+    grid-area: stage;
+    position: relative;
+    background: #000;
+    overflow: hidden;
+    min-height: 0;
+}
+.camera-side {
+    grid-area: side;
+    background: rgba(15, 23, 42, 0.88);
+    border-top: 1px solid rgba(148, 163, 184, 0.12);
+    max-height: 40vh;
+    overflow: hidden;
+    display: flex;
+}
+.camera-side[hidden] { display: none !important; }
+@media (min-width: 860px) {
+    .camera-side {
+        max-height: none;
+        border-top: none;
+        border-right: 1px solid rgba(148, 163, 184, 0.12);
+    }
 }
 .camera-video {
     display: block;
@@ -2576,6 +2633,9 @@ footer {
     aspect-ratio: 4 / 3;
     background: #000;
     object-fit: cover;
+}
+@media (min-width: 860px) {
+    .camera-video { aspect-ratio: auto; height: 100%; }
 }
 .camera-frame {
     position: absolute;
@@ -2604,16 +2664,15 @@ footer {
     100% { transform: translate3d(0, var(--scan-travel, 180px), 0); opacity: 0.35; }
 }
 .camera-hint {
-    padding: 14px 16px;
+    grid-area: hint;
+    padding: 12px 16px;
     text-align: center;
     color: #e2e8f0;
     font-size: 14px;
     background: rgba(0, 0, 0, 0.4);
 }
 .camera-close {
-    position: absolute;
-    top: 12px;
-    right: 12px;
+    flex: 0 0 auto;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -2638,10 +2697,6 @@ footer {
 
 /* Scan mode toggle (Single / Multi) */
 .scan-mode-toggle {
-    position: absolute;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
     display: inline-flex;
     gap: 4px;
     padding: 4px;
@@ -2649,8 +2704,7 @@ footer {
     background: rgba(15, 23, 42, 0.7);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 .scan-mode-btn {
     appearance: none;
@@ -2678,10 +2732,6 @@ footer {
 
 /* Scan counter badge (multi mode) */
 .scan-badge {
-    position: absolute;
-    top: 72px;
-    left: 50%;
-    transform: translateX(-50%);
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -2695,8 +2745,8 @@ footer {
     text-transform: uppercase;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    z-index: 10;
 }
+.scan-badge[hidden] { display: none !important; }
 .scan-badge-count {
     min-width: 24px;
     padding: 2px 8px;
@@ -2709,19 +2759,13 @@ footer {
 
 /* Scan list panel (multi mode) */
 .scan-list-panel {
-    position: absolute;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    max-height: 38vh;
     display: flex;
     flex-direction: column;
-    background: rgba(15, 23, 42, 0.88);
+    flex: 1 1 auto;
+    width: 100%;
+    background: transparent;
     color: #e2e8f0;
-    border-radius: 16px;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
     overflow: hidden;
-    z-index: 10;
 }
 .scan-list {
     list-style: none;
