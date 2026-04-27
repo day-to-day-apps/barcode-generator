@@ -382,11 +382,9 @@
         const o = opts || {};
         const width = o.width || 1.6;
         const height = o.height || 32;
-        const fontSize = o.fontSize || 0;
         const upper = String(format || '').toUpperCase().replace(/\s/g, '_');
         if (JSBARCODE_2D_FORMATS.has(upper)) {
-            // Fallback for 2D codes — small placeholder.
-            svgEl.outerHTML = '<span class="scan-list-2d" title="' + escapeHtml(format || '') + '">' + escapeHtml(format || 'QR') + '</span>';
+            renderInlineQr(svgEl, value, format, height);
             return;
         }
         const fmt = jsBarcodeFormat(format);
@@ -409,6 +407,35 @@
         } catch (_) {
             svgEl.style.display = 'none';
         }
+    }
+
+    function renderInlineQr(svgEl, value, format, sizePx) {
+        const size = Math.max(48, Number(sizePx) || 64);
+        const fallbackToText = () => {
+            const span = document.createElement('span');
+            span.className = 'scan-list-2d';
+            span.title = String(format || '');
+            span.textContent = String(format || 'QR');
+            if (svgEl.parentNode) svgEl.parentNode.replaceChild(span, svgEl);
+        };
+        if (!window.QRCode || typeof window.QRCode.toDataURL !== 'function') {
+            fallbackToText();
+            return;
+        }
+        window.QRCode.toDataURL(String(value), {
+            margin: 1,
+            width: size,
+            errorCorrectionLevel: 'M'
+        }, (err, url) => {
+            if (err || !url) { fallbackToText(); return; }
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = (format || 'QR') + ' ' + value;
+            img.className = 'scan-list-preview scan-list-qr';
+            img.width = size;
+            img.height = size;
+            if (svgEl.parentNode) svgEl.parentNode.replaceChild(img, svgEl);
+        });
     }
 
     function schedulePreviewRender(rootEl) {
@@ -1121,15 +1148,26 @@
                 doc.addPage();
                 y = top;
             }
-            // Render barcode to data URL via offscreen SVG
-            const dataUrl = await barcodeToPngDataUrl(r.value, r.format, 360, 80);
-            if (dataUrl) {
-                try { doc.addImage(dataUrl, 'PNG', x, y, colW, 18); } catch (_) {}
+            const upper = String(r.format || '').toUpperCase().replace(/\s/g, '_');
+            const is2D = JSBARCODE_2D_FORMATS.has(upper);
+            const dataUrl = await barcodeToPngDataUrl(r.value, r.format, is2D ? 256 : 360, is2D ? 256 : 80);
+            if (is2D) {
+                if (dataUrl) {
+                    try { doc.addImage(dataUrl, 'PNG', x, y, 22, 22); } catch (_) {}
+                }
+                doc.setFontSize(9);
+                doc.text(r.count + '\u00d7  ' + r.value, x + 24, y + 10, { maxWidth: colW - 24 });
+                doc.setFontSize(7);
+                doc.text(r.format || '', x + 24, y + 16);
+            } else {
+                if (dataUrl) {
+                    try { doc.addImage(dataUrl, 'PNG', x, y, colW, 18); } catch (_) {}
+                }
+                doc.setFontSize(9);
+                doc.text(r.count + '\u00d7  ' + r.value, x, y + 22);
+                doc.setFontSize(7);
+                doc.text(r.format || '', x, y + 26);
             }
-            doc.setFontSize(9);
-            doc.text(r.count + '\u00d7  ' + r.value, x, y + 22);
-            doc.setFontSize(7);
-            doc.text(r.format || '', x, y + 26);
         }
         doc.save('scans-' + timestampStem() + '.pdf');
         showToast(tFormat(multiStrings.exportDone, 'PDF'));
@@ -1138,6 +1176,17 @@
     function barcodeToPngDataUrl(value, format, w, h) {
         return new Promise((resolve) => {
             try {
+                const upper = String(format || '').toUpperCase().replace(/\s/g, '_');
+                if (JSBARCODE_2D_FORMATS.has(upper)) {
+                    if (!window.QRCode || typeof window.QRCode.toDataURL !== 'function') { resolve(null); return; }
+                    const size = Math.max(128, Math.min(w || 256, h || 256));
+                    window.QRCode.toDataURL(String(value), {
+                        margin: 1,
+                        width: size,
+                        errorCorrectionLevel: 'M'
+                    }, (err, url) => { resolve(err ? null : url); });
+                    return;
+                }
                 const fmt = jsBarcodeFormat(format);
                 if (!fmt || !window.JsBarcode) { resolve(null); return; }
                 const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
