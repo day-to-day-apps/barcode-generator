@@ -249,13 +249,20 @@
         }
     });
 
-    // Clear button
+    // Clear button — also wipes scan history (Map + localStorage)
     clearBtn.addEventListener('click', () => {
         fileInput.value = '';
         previewImg.src = '';
         previewImg.hidden = true;
         resetResult();
         hideError();
+        if (scanMap.size > 0) {
+            scanMap.clear();
+            if (saveTimerId) { clearTimeout(saveTimerId); saveTimerId = 0; }
+            try { localStorage.removeItem(SCAN_STORAGE_KEY); } catch (_) { /* storage unavailable */ }
+            renderMultiResultsInMainBox();
+            try { renderScanList(); } catch (_) { /* multi UI not yet built */ }
+        }
     });
 
     // ===== CAMERA SCANNING =====
@@ -490,6 +497,7 @@
 
         confirmBtn.addEventListener('click', (ev) => {
             ev.stopPropagation();
+            stopCamera();
             openSummaryDialog();
         });
 
@@ -623,24 +631,22 @@
             '</div>';
         const rowsHtml = entries.map(([value, v]) =>
             '<div class="result-multi-row" data-value="' + escapeHtml(value) + '">' +
+                '<div class="result-multi-head">' +
+                    '<span class="result-multi-format">' + escapeHtml(v.format || '') + '</span>' +
+                    '<button type="button" class="scan-list-remove" data-action="remove" aria-label="' + escapeHtml(multiStrings.remove) + '" title="' + escapeHtml(multiStrings.remove) + '">' +
+                        '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
+                    '</button>' +
+                '</div>' +
+                '<div class="result-multi-value">' + escapeHtml(value) + '</div>' +
                 '<div class="scan-list-qty result-multi-qty" role="group" aria-label="' + escapeHtml(multiStrings.quantity) + '">' +
                     '<button type="button" class="scan-list-qty-btn" data-action="dec" aria-label="' + escapeHtml(multiStrings.decrease) + '">−</button>' +
                     '<input type="number" class="scan-list-qty-input" min="0" inputmode="numeric" value="' + v.count + '" aria-label="' + escapeHtml(multiStrings.quantity) + '">' +
                     '<button type="button" class="scan-list-qty-btn" data-action="inc" aria-label="' + escapeHtml(multiStrings.increase) + '">+</button>' +
                 '</div>' +
-                '<svg class="scan-list-preview" data-pending="1" data-value="' + escapeHtml(value) + '" data-format="' + escapeHtml(v.format || '') + '" data-bar-width="1.6" data-bar-height="36" aria-hidden="true"></svg>' +
-                '<div class="scan-list-meta">' +
-                    '<span class="result-multi-format">' + escapeHtml(v.format || '') + '</span>' +
-                    '<span class="result-multi-value">' + escapeHtml(value) + '</span>' +
-                '</div>' +
-                '<button type="button" class="scan-list-remove" data-action="remove" aria-label="' + escapeHtml(multiStrings.remove) + '" title="' + escapeHtml(multiStrings.remove) + '">' +
-                    '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
-                '</button>' +
             '</div>'
         ).join('');
         resultValue.innerHTML = headerHtml + rowsHtml;
         resultBox.hidden = false;
-        schedulePreviewRender(resultValue);
         const summaryTrigger = document.getElementById('result-multi-summary');
         if (summaryTrigger) summaryTrigger.addEventListener('click', openSummaryDialog);
     }
