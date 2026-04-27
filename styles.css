@@ -5,6 +5,13 @@
     box-sizing: border-box;
 }
 
+/* WCAG 2.4.7 (AA): visible focus indicator for keyboard users */
+:focus-visible {
+    outline: 3px solid var(--border-focus, #2563eb);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
 :root {
     --bg: #f0f2f5;
     --surface: #ffffff;

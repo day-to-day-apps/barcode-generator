@@ -382,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         printModal.style.display = 'flex';
+        printModal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
         updatePrintPreview();
     });
@@ -397,6 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closePrintModal() {
         printModal.style.display = 'none';
+        printModal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
     }
 

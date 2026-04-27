@@ -418,24 +418,30 @@
             span.textContent = String(format || 'QR');
             if (svgEl.parentNode) svgEl.parentNode.replaceChild(span, svgEl);
         };
-        if (!window.QRCode || typeof window.QRCode.toDataURL !== 'function') {
+        if (typeof window.QRious !== 'function') {
             fallbackToText();
             return;
         }
-        window.QRCode.toDataURL(String(value), {
-            margin: 1,
-            width: size,
-            errorCorrectionLevel: 'M'
-        }, (err, url) => {
-            if (err || !url) { fallbackToText(); return; }
-            const img = document.createElement('img');
-            img.src = url;
-            img.alt = (format || 'QR') + ' ' + value;
-            img.className = 'scan-list-preview scan-list-qr';
-            img.width = size;
-            img.height = size;
-            if (svgEl.parentNode) svgEl.parentNode.replaceChild(img, svgEl);
-        });
+        let url;
+        try {
+            url = new window.QRious({
+                value: String(value),
+                size: size,
+                level: 'M',
+                padding: 2
+            }).toDataURL();
+        } catch (_) {
+            fallbackToText();
+            return;
+        }
+        if (!url) { fallbackToText(); return; }
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = (format || 'QR') + ' ' + value;
+        img.className = 'scan-list-preview scan-list-qr';
+        img.width = size;
+        img.height = size;
+        if (svgEl.parentNode) svgEl.parentNode.replaceChild(img, svgEl);
     }
 
     function schedulePreviewRender(rootEl) {
@@ -1178,13 +1184,19 @@
             try {
                 const upper = String(format || '').toUpperCase().replace(/\s/g, '_');
                 if (JSBARCODE_2D_FORMATS.has(upper)) {
-                    if (!window.QRCode || typeof window.QRCode.toDataURL !== 'function') { resolve(null); return; }
+                    if (typeof window.QRious !== 'function') { resolve(null); return; }
                     const size = Math.max(128, Math.min(w || 256, h || 256));
-                    window.QRCode.toDataURL(String(value), {
-                        margin: 1,
-                        width: size,
-                        errorCorrectionLevel: 'M'
-                    }, (err, url) => { resolve(err ? null : url); });
+                    try {
+                        const url = new window.QRious({
+                            value: String(value),
+                            size: size,
+                            level: 'M',
+                            padding: 4
+                        }).toDataURL();
+                        resolve(url || null);
+                    } catch (_) {
+                        resolve(null);
+                    }
                     return;
                 }
                 const fmt = jsBarcodeFormat(format);

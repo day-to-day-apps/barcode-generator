@@ -66,7 +66,7 @@
     }
     </script>
 
-    <link rel="stylesheet" href="../styles.css?v=20260424050000">
+    <link rel="stylesheet" href="../styles.css?v=20260428000000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
@@ -373,10 +373,10 @@
     </div>
 
     <!-- ===== Print Labels Modal ===== -->
-    <div class="modal-overlay" id="print-modal" style="display:none;">
+    <div class="modal-overlay" id="print-modal" role="dialog" aria-modal="true" aria-labelledby="print-modal-title" aria-hidden="true" style="display:none;">
         <div class="modal">
             <div class="modal-header">
-                <h2>
+                <h2 id="print-modal-title">
                     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5.5 7V2h11v5M5.5 16.5H3a1.5 1.5 0 01-1.5-1.5V9.5A1.5 1.5 0 013 8h16a1.5 1.5 0 011.5 1.5V15a1.5 1.5 0 01-1.5 1.5h-2.5"/><rect x="5.5" y="13" width="11" height="7" rx="0.5"/></svg>
                     Preparar impresión de etiquetas
                 </h2>
@@ -633,9 +633,9 @@
     <!-- Hidden print container -->
     <div id="print-output" class="print-only"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
-    <script src="../i18n.js?v=20260424050000"></script>
-    <script src="../app.js?v=20260424050000"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js" integrity="sha384-Kk5SjBOKprEnGfyBWfD2zROFd1Cu8kwOXxG2GIhYPcoDL2rBJS9P8Ud1ZMy4412a" crossorigin="anonymous"></script>
+    <script src="../i18n.js?v=20260428000000"></script>
+    <script src="../app.js?v=20260428000000"></script>
     <script src="../analytics.js" defer></script>
 </body>
 </html>
