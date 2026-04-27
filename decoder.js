@@ -268,21 +268,182 @@
     let scanMode = 'single'; // 'single' | 'multi'
     const scanMap = new Map(); // value -> { format, count, lastAt }
     const SCAN_DEBOUNCE_MS = 1500;
-    let multiUI = null; // { toggle, badge, panel, list, copyBtn, clearBtn }
+    const SCAN_STORAGE_KEY = 'decoder.scanMap.v1';
+    const SCAN_STORAGE_LIMIT = 1000;
+    let multiUI = null; // { toggle, badge, panel, list, confirmBtn, clearBtn }
 
     const multiStrings = {
         single:   T.decoder_mode_single   || 'Single',
         multi:    T.decoder_mode_multi    || 'Multi',
         scanned:  T.decoder_scanned_count || 'Scanned',
         copyAll:  T.decoder_copy_all      || 'Copy all',
+        confirm:  T.decoder_confirm       || 'Confirm',
         clearAll: T.decoder_clear_all     || 'Clear',
         empty:    T.decoder_list_empty    || 'Point camera at codes — they will appear here.',
         resultsHeading: T.decoder_results_heading || 'Scanned codes',
         decrease: T.decoder_qty_decrease  || 'Decrease quantity',
         increase: T.decoder_qty_increase  || 'Increase quantity',
         quantity: T.decoder_qty_label     || 'Quantity',
-        remove:   T.decoder_qty_remove    || 'Remove'
+        remove:   T.decoder_qty_remove    || 'Remove',
+        summaryTitle:    T.decoder_summary_title    || 'Scan summary',
+        summarySubtitle: T.decoder_summary_subtitle || 'Review scanned codes and export the list',
+        summaryEmpty:    T.decoder_summary_empty    || 'No codes scanned yet.',
+        summaryOpen:     T.decoder_summary_open     || 'Full view',
+        summaryClose:    T.decoder_summary_close    || 'Close',
+        clearConfirm:    T.decoder_clear_confirm    || 'Clear the entire scanned list?',
+        exportCsv:       T.decoder_export_csv       || 'CSV',
+        exportXlsx:      T.decoder_export_xlsx      || 'Excel (XLSX)',
+        exportJson:      T.decoder_export_json      || 'JSON',
+        exportPdf:       T.decoder_export_pdf       || 'PDF',
+        exportTxtCopy:   T.decoder_export_txt_copy  || 'Copy as text',
+        exportTxtDownload: T.decoder_export_txt_download || 'Download .txt',
+        colCode:         T.decoder_export_col_code      || 'Code',
+        colFormat:       T.decoder_export_col_format    || 'Format',
+        colQuantity:     T.decoder_export_col_quantity  || 'Quantity',
+        colScannedAt:    T.decoder_export_col_scanned_at || 'Scanned at',
+        exportDone:      T.decoder_export_done       || 'Exported: {0}',
+        loadingLib:      T.decoder_loading_lib       || 'Loading...'
     };
+
+    // ===== Persistence (localStorage) =====
+    function loadScanMapFromStorage() {
+        try {
+            const raw = localStorage.getItem(SCAN_STORAGE_KEY);
+            if (!raw) return;
+            const parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) return;
+            for (const entry of parsed) {
+                if (!entry || typeof entry.value !== 'string') continue;
+                const count = Math.max(0, Math.floor(Number(entry.count) || 0));
+                if (count <= 0) continue;
+                scanMap.set(entry.value, {
+                    format: typeof entry.format === 'string' ? entry.format : '',
+                    count,
+                    lastAt: Number(entry.lastAt) || Date.now()
+                });
+                if (scanMap.size >= SCAN_STORAGE_LIMIT) break;
+            }
+        } catch (e) {
+            console.warn('[decoder] localStorage scanMap corrupted, resetting:', e);
+            try { localStorage.removeItem(SCAN_STORAGE_KEY); } catch (_) {}
+        }
+    }
+
+    let saveTimerId = 0;
+    function saveScanMap() {
+        if (saveTimerId) return;
+        saveTimerId = setTimeout(() => {
+            saveTimerId = 0;
+            try {
+                const arr = [];
+                let i = 0;
+                for (const [value, v] of scanMap) {
+                    if (i++ >= SCAN_STORAGE_LIMIT) break;
+                    arr.push({ value, format: v.format || '', count: v.count, lastAt: v.lastAt });
+                }
+                localStorage.setItem(SCAN_STORAGE_KEY, JSON.stringify(arr));
+            } catch (e) {
+                console.warn('[decoder] failed to save scanMap:', e);
+            }
+        }, 300);
+    }
+
+    loadScanMapFromStorage();
+
+    // ===== JsBarcode preview helpers =====
+    // Map ZXing-style format names → JsBarcode format ids.
+    const JSBARCODE_FORMAT_MAP = {
+        'EAN_13': 'EAN13', 'EAN13': 'EAN13', 'EAN-13': 'EAN13',
+        'EAN_8':  'EAN8',  'EAN8':  'EAN8',  'EAN-8':  'EAN8',
+        'UPC_A':  'UPC',   'UPCA':  'UPC',   'UPC':    'UPC',   'UPC-A':  'UPC',
+        'UPC_E':  'UPC',   'UPCE':  'UPC',   'UPC-E':  'UPC',
+        'CODE_128': 'CODE128', 'CODE128': 'CODE128', 'CODE-128': 'CODE128',
+        'CODE_39':  'CODE39',  'CODE39':  'CODE39',  'CODE-39':  'CODE39',
+        'CODE_93':  'CODE128', 'CODE93':  'CODE128',
+        'ITF':      'ITF',     'ITF14':   'ITF14',   'ITF-14':   'ITF14',
+        'CODABAR':  'codabar'
+    };
+    const JSBARCODE_2D_FORMATS = new Set(['QR_CODE', 'QRCODE', 'QR', 'DATA_MATRIX', 'DATAMATRIX', 'AZTEC', 'PDF_417', 'PDF417']);
+
+    function jsBarcodeFormat(format) {
+        const key = String(format || '').toUpperCase().replace(/\s/g, '_');
+        return JSBARCODE_FORMAT_MAP[key] || null;
+    }
+
+    function renderInlinePreview(svgEl, value, format, opts) {
+        if (!svgEl) return;
+        const o = opts || {};
+        const width = o.width || 1.6;
+        const height = o.height || 32;
+        const fontSize = o.fontSize || 0;
+        const upper = String(format || '').toUpperCase().replace(/\s/g, '_');
+        if (JSBARCODE_2D_FORMATS.has(upper)) {
+            // Fallback for 2D codes — small placeholder.
+            svgEl.outerHTML = '<span class="scan-list-2d" title="' + escapeHtml(format || '') + '">' + escapeHtml(format || 'QR') + '</span>';
+            return;
+        }
+        const fmt = jsBarcodeFormat(format);
+        if (!fmt || !window.JsBarcode) {
+            svgEl.style.display = 'none';
+            return;
+        }
+        try {
+            window.JsBarcode(svgEl, value, {
+                format: fmt,
+                width: width,
+                height: height,
+                displayValue: false,
+                margin: 0,
+                background: 'transparent',
+                lineColor: o.color || '#111'
+            });
+            svgEl.setAttribute('role', 'img');
+            svgEl.setAttribute('aria-label', (multiStrings.colCode || 'Code') + ' ' + value);
+        } catch (_) {
+            svgEl.style.display = 'none';
+        }
+    }
+
+    function schedulePreviewRender(rootEl) {
+        const run = () => {
+            const targets = rootEl.querySelectorAll('svg.scan-list-preview[data-pending="1"]');
+            targets.forEach(svg => {
+                svg.removeAttribute('data-pending');
+                renderInlinePreview(svg, svg.dataset.value, svg.dataset.format, {
+                    width: Number(svg.dataset.barWidth) || 1.6,
+                    height: Number(svg.dataset.barHeight) || 32
+                });
+            });
+        };
+        if (window.requestIdleCallback) {
+            window.requestIdleCallback(run, { timeout: 400 });
+        } else {
+            setTimeout(run, 16);
+        }
+    }
+
+    // ===== Toast (aria-live) =====
+    let toastEl = null;
+    let toastTimer = 0;
+    function ensureToast() {
+        if (toastEl) return toastEl;
+        toastEl = document.createElement('div');
+        toastEl.className = 'scan-toast';
+        toastEl.setAttribute('role', 'status');
+        toastEl.setAttribute('aria-live', 'polite');
+        document.body.appendChild(toastEl);
+        return toastEl;
+    }
+    function showToast(msg) {
+        const el = ensureToast();
+        el.textContent = msg;
+        el.classList.add('is-visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('is-visible'), 2400);
+    }
+    function tFormat(template, value) {
+        return String(template).replace('{0}', value);
+    }
 
     function ensureMultiUI() {
         if (multiUI || !cameraModal) return multiUI;
@@ -312,13 +473,13 @@
             '<ul class="scan-list" aria-live="polite"></ul>' +
             '<div class="scan-list-empty">' + multiStrings.empty + '</div>' +
             '<div class="scan-list-actions">' +
-                '<button type="button" class="scan-list-btn scan-list-copy">' + multiStrings.copyAll + '</button>' +
-                '<button type="button" class="scan-list-btn scan-list-clear">' + multiStrings.clearAll + '</button>' +
+                '<button type="button" class="scan-list-btn scan-list-confirm">' + escapeHtml(multiStrings.confirm) + '</button>' +
+                '<button type="button" class="scan-list-btn scan-list-clear">' + escapeHtml(multiStrings.clearAll) + '</button>' +
             '</div>';
         sidePanel.appendChild(panel);
 
         const list = panel.querySelector('.scan-list');
-        const copyBtn = panel.querySelector('.scan-list-copy');
+        const confirmBtn = panel.querySelector('.scan-list-confirm');
         const clearBtnEl = panel.querySelector('.scan-list-clear');
 
         toggle.addEventListener('click', (ev) => {
@@ -327,24 +488,19 @@
             setScanMode(btn.dataset.mode);
         });
 
-        copyBtn.addEventListener('click', async (ev) => {
+        confirmBtn.addEventListener('click', (ev) => {
             ev.stopPropagation();
-            const text = scanListToText();
-            if (!text) return;
-            try {
-                await navigator.clipboard.writeText(text);
-                copyBtn.textContent = strings.copied;
-                setTimeout(() => { copyBtn.textContent = multiStrings.copyAll; }, 1200);
-            } catch (_) {
-                copyBtn.textContent = strings.copyFailed;
-                setTimeout(() => { copyBtn.textContent = multiStrings.copyAll; }, 1200);
-            }
+            openSummaryDialog();
         });
 
         clearBtnEl.addEventListener('click', (ev) => {
             ev.stopPropagation();
+            if (scanMap.size === 0) return;
+            if (!window.confirm(multiStrings.clearConfirm)) return;
             scanMap.clear();
+            saveScanMap();
             renderScanList();
+            renderMultiResultsInMainBox();
         });
 
         list.addEventListener('click', (ev) => {
@@ -370,7 +526,7 @@
             setScanQuantity(value, Number.isFinite(next) ? next : getScanQuantity(value));
         });
 
-        multiUI = { toggle, badge, panel, list, copyBtn, clearBtn: clearBtnEl };
+        multiUI = { toggle, badge, panel, list, confirmBtn, clearBtn: clearBtnEl };
         return multiUI;
     }
 
@@ -410,13 +566,17 @@
                     '<input type="number" class="scan-list-qty-input" min="0" inputmode="numeric" value="' + v.count + '" aria-label="' + escapeHtml(multiStrings.quantity) + '">' +
                     '<button type="button" class="scan-list-qty-btn" data-action="inc" aria-label="' + escapeHtml(multiStrings.increase) + '">+</button>' +
                 '</div>' +
-                '<span class="scan-list-format">' + escapeHtml(v.format || '') + '</span>' +
-                '<span class="scan-list-value">' + escapeHtml(value) + '</span>' +
+                '<svg class="scan-list-preview" data-pending="1" data-value="' + escapeHtml(value) + '" data-format="' + escapeHtml(v.format || '') + '" data-bar-width="1.4" data-bar-height="30" aria-hidden="true"></svg>' +
+                '<div class="scan-list-meta">' +
+                    '<span class="scan-list-format">' + escapeHtml(v.format || '') + '</span>' +
+                    '<span class="scan-list-value">' + escapeHtml(value) + '</span>' +
+                '</div>' +
                 '<button type="button" class="scan-list-remove" data-action="remove" aria-label="' + escapeHtml(multiStrings.remove) + '" title="' + escapeHtml(multiStrings.remove) + '">' +
                     '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
                 '</button>' +
             '</li>'
         ).join('');
+        schedulePreviewRender(multiUI.list);
     }
 
     function getScanQuantity(value) {
@@ -435,6 +595,7 @@
                 entry.lastAt = Date.now();
             }
         }
+        saveScanMap();
         renderScanList();
     }
 
@@ -458,21 +619,32 @@
         }
         entries.sort((a, b) => b[1].count - a[1].count);
         resultType.textContent = entries.length + ' ' + (multiStrings.resultsHeading || 'codes');
-        resultValue.innerHTML = entries.map(([value, v]) =>
+        const headerHtml =
+            '<div class="result-multi-toolbar">' +
+                '<button type="button" id="result-multi-summary" class="decoder-btn decoder-btn-primary">' + escapeHtml(multiStrings.summaryOpen) + '</button>' +
+            '</div>';
+        const rowsHtml = entries.map(([value, v]) =>
             '<div class="result-multi-row" data-value="' + escapeHtml(value) + '">' +
                 '<div class="scan-list-qty result-multi-qty" role="group" aria-label="' + escapeHtml(multiStrings.quantity) + '">' +
                     '<button type="button" class="scan-list-qty-btn" data-action="dec" aria-label="' + escapeHtml(multiStrings.decrease) + '">−</button>' +
                     '<input type="number" class="scan-list-qty-input" min="0" inputmode="numeric" value="' + v.count + '" aria-label="' + escapeHtml(multiStrings.quantity) + '">' +
                     '<button type="button" class="scan-list-qty-btn" data-action="inc" aria-label="' + escapeHtml(multiStrings.increase) + '">+</button>' +
                 '</div>' +
-                '<span class="result-multi-format">' + escapeHtml(v.format || '') + '</span>' +
-                '<span class="result-multi-value">' + escapeHtml(value) + '</span>' +
+                '<svg class="scan-list-preview" data-pending="1" data-value="' + escapeHtml(value) + '" data-format="' + escapeHtml(v.format || '') + '" data-bar-width="1.6" data-bar-height="36" aria-hidden="true"></svg>' +
+                '<div class="scan-list-meta">' +
+                    '<span class="result-multi-format">' + escapeHtml(v.format || '') + '</span>' +
+                    '<span class="result-multi-value">' + escapeHtml(value) + '</span>' +
+                '</div>' +
                 '<button type="button" class="scan-list-remove" data-action="remove" aria-label="' + escapeHtml(multiStrings.remove) + '" title="' + escapeHtml(multiStrings.remove) + '">' +
                     '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
                 '</button>' +
             '</div>'
         ).join('');
+        resultValue.innerHTML = headerHtml + rowsHtml;
         resultBox.hidden = false;
+        schedulePreviewRender(resultValue);
+        const summaryTrigger = document.getElementById('result-multi-summary');
+        if (summaryTrigger) summaryTrigger.addEventListener('click', openSummaryDialog);
     }
 
     if (resultValue && !resultValue.dataset.qtyBound) {
@@ -485,6 +657,7 @@
                 const entry = scanMap.get(value);
                 if (entry) { entry.count = next; entry.lastAt = Date.now(); }
             }
+            saveScanMap();
             if (multiUI) renderScanList();
             renderMultiResultsInMainBox();
         };
@@ -560,8 +733,10 @@
                 existing.lastAt = now;
                 if (format && !existing.format) existing.format = format;
             } else {
+                if (scanMap.size >= SCAN_STORAGE_LIMIT) return;
                 scanMap.set(text, { format: format || '', count: 1, lastAt: now });
             }
+            saveScanMap();
             renderScanList();
             if (navigator.vibrate) { try { navigator.vibrate(60); } catch (_) {} }
             return;
@@ -657,7 +832,6 @@
         resetResult();
         cameraModal.hidden = false;
         cameraActive = true;
-        scanMap.clear();
         ensureMultiUI();
         setScanMode(scanMode);
 
@@ -711,6 +885,285 @@
         if (e.key === 'Escape' && cameraActive) stopCamera();
     });
     window.addEventListener('pagehide', stopCamera);
+
+    // ===== SUMMARY DIALOG + EXPORTERS =====
+    function getScanRecords() {
+        const arr = [];
+        for (const [value, v] of scanMap) {
+            arr.push({
+                value,
+                format: v.format || '',
+                count: v.count,
+                lastAt: v.lastAt,
+                lastAtIso: new Date(v.lastAt).toISOString()
+            });
+        }
+        arr.sort((a, b) => b.count - a.count || b.lastAt - a.lastAt);
+        return arr;
+    }
+
+    let summaryDialog = null;
+    function ensureSummaryDialog() {
+        if (summaryDialog) return summaryDialog;
+        summaryDialog = document.getElementById('scan-summary');
+        if (!summaryDialog) {
+            summaryDialog = document.createElement('dialog');
+            summaryDialog.id = 'scan-summary';
+            summaryDialog.className = 'scan-summary-dialog';
+            document.body.appendChild(summaryDialog);
+        }
+        summaryDialog.addEventListener('click', (ev) => {
+            if (ev.target === summaryDialog) summaryDialog.close();
+        });
+        return summaryDialog;
+    }
+
+    function openSummaryDialog() {
+        const dlg = ensureSummaryDialog();
+        const records = getScanRecords();
+        const rowsHtml = records.length === 0
+            ? '<p class="scan-summary-empty">' + escapeHtml(multiStrings.summaryEmpty) + '</p>'
+            : '<ul class="scan-summary-list">' + records.map(r =>
+                '<li class="scan-summary-row" data-value="' + escapeHtml(r.value) + '">' +
+                    '<span class="scan-summary-count" aria-label="' + escapeHtml(multiStrings.colQuantity) + '">' + r.count + '\u00d7</span>' +
+                    '<svg class="scan-summary-preview scan-list-preview" data-pending="1" data-value="' + escapeHtml(r.value) + '" data-format="' + escapeHtml(r.format) + '" data-bar-width="2" data-bar-height="64" aria-hidden="true"></svg>' +
+                    '<div class="scan-summary-meta">' +
+                        '<span class="scan-summary-format">' + escapeHtml(r.format) + '</span>' +
+                        '<span class="scan-summary-value">' + escapeHtml(r.value) + '</span>' +
+                    '</div>' +
+                '</li>'
+            ).join('') + '</ul>';
+        dlg.innerHTML =
+            '<form method="dialog" class="scan-summary-inner">' +
+                '<header class="scan-summary-header">' +
+                    '<div>' +
+                        '<h2 class="scan-summary-title">' + escapeHtml(multiStrings.summaryTitle) + '</h2>' +
+                        '<p class="scan-summary-subtitle">' + escapeHtml(multiStrings.summarySubtitle) + '</p>' +
+                    '</div>' +
+                    '<button type="submit" class="scan-summary-close" value="cancel" aria-label="' + escapeHtml(multiStrings.summaryClose) + '">\u00d7</button>' +
+                '</header>' +
+                '<div class="scan-summary-body">' + rowsHtml + '</div>' +
+                (records.length === 0 ? '' :
+                '<footer class="scan-summary-footer" role="group" aria-label="Export">' +
+                    '<button type="button" class="decoder-btn" data-export="csv">' + escapeHtml(multiStrings.exportCsv) + '</button>' +
+                    '<button type="button" class="decoder-btn" data-export="xlsx">' + escapeHtml(multiStrings.exportXlsx) + '</button>' +
+                    '<button type="button" class="decoder-btn" data-export="json">' + escapeHtml(multiStrings.exportJson) + '</button>' +
+                    '<button type="button" class="decoder-btn" data-export="pdf">' + escapeHtml(multiStrings.exportPdf) + '</button>' +
+                    '<button type="button" class="decoder-btn" data-export="txt-copy">' + escapeHtml(multiStrings.exportTxtCopy) + '</button>' +
+                    '<button type="button" class="decoder-btn" data-export="txt-dl">' + escapeHtml(multiStrings.exportTxtDownload) + '</button>' +
+                '</footer>') +
+            '</form>';
+        dlg.querySelectorAll('button[data-export]').forEach(btn => {
+            btn.addEventListener('click', () => handleExport(btn.dataset.export));
+        });
+        schedulePreviewRender(dlg);
+        if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+    }
+
+    function handleExport(kind) {
+        const records = getScanRecords();
+        if (records.length === 0) return;
+        try {
+            switch (kind) {
+                case 'csv':     exportCsv(records); break;
+                case 'xlsx':    exportXlsx(records); break;
+                case 'json':    exportJson(records); break;
+                case 'pdf':     exportPdf(records); break;
+                case 'txt-copy':   exportTxtCopy(records); break;
+                case 'txt-dl': exportTxtDownload(records); break;
+            }
+        } catch (e) {
+            console.error('[decoder] export failed:', e);
+        }
+    }
+
+    function downloadBlob(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }
+
+    function timestampStem() {
+        const d = new Date();
+        const pad = (n) => String(n).padStart(2, '0');
+        return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + pad(d.getHours()) + pad(d.getMinutes());
+    }
+
+    function csvEscape(value) {
+        const s = String(value == null ? '' : value);
+        if (/[",;\r\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+        return s;
+    }
+
+    function exportCsv(records) {
+        const sep = ';';
+        const header = [multiStrings.colCode, multiStrings.colFormat, multiStrings.colQuantity, multiStrings.colScannedAt].map(csvEscape).join(sep);
+        const lines = records.map(r => [r.value, r.format, r.count, r.lastAtIso].map(csvEscape).join(sep));
+        const csv = '\uFEFF' + header + '\r\n' + lines.join('\r\n') + '\r\n';
+        downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), 'scans-' + timestampStem() + '.csv');
+        showToast(tFormat(multiStrings.exportDone, 'CSV'));
+    }
+
+    function exportJson(records) {
+        const payload = {
+            exportedAt: new Date().toISOString(),
+            count: records.length,
+            records: records.map(r => ({ value: r.value, format: r.format, count: r.count, scannedAt: r.lastAtIso }))
+        };
+        const json = JSON.stringify(payload, null, 2);
+        downloadBlob(new Blob([json], { type: 'application/json;charset=utf-8' }), 'scans-' + timestampStem() + '.json');
+        showToast(tFormat(multiStrings.exportDone, 'JSON'));
+    }
+
+    function recordsToText(records) {
+        const sep = '\t';
+        const header = [multiStrings.colCode, multiStrings.colFormat, multiStrings.colQuantity, multiStrings.colScannedAt].join(sep);
+        const lines = records.map(r => [r.value, r.format, r.count, r.lastAtIso].join(sep));
+        return header + '\n' + lines.join('\n') + '\n';
+    }
+
+    async function exportTxtCopy(records) {
+        const text = recordsToText(records);
+        try {
+            await navigator.clipboard.writeText(text);
+            showToast(tFormat(multiStrings.exportDone, 'TXT'));
+        } catch (_) {
+            exportTxtDownload(records);
+        }
+    }
+
+    function exportTxtDownload(records) {
+        const text = recordsToText(records);
+        downloadBlob(new Blob([text], { type: 'text/plain;charset=utf-8' }), 'scans-' + timestampStem() + '.txt');
+        showToast(tFormat(multiStrings.exportDone, 'TXT'));
+    }
+
+    // Lazy-load SheetJS for XLSX export
+    let xlsxPromise = null;
+    function ensureXlsx() {
+        if (window.XLSX) return Promise.resolve(window.XLSX);
+        if (xlsxPromise) return xlsxPromise;
+        xlsxPromise = new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
+            s.async = true;
+            s.onload = () => resolve(window.XLSX);
+            s.onerror = () => { xlsxPromise = null; reject(new Error('xlsx load failed')); };
+            document.head.appendChild(s);
+        });
+        return xlsxPromise;
+    }
+
+    async function exportXlsx(records) {
+        showToast(multiStrings.loadingLib);
+        const XLSX = await ensureXlsx();
+        const data = [
+            [multiStrings.colCode, multiStrings.colFormat, multiStrings.colQuantity, multiStrings.colScannedAt],
+            ...records.map(r => [r.value, r.format, r.count, r.lastAtIso])
+        ];
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        ws['!cols'] = [{ wch: 24 }, { wch: 14 }, { wch: 10 }, { wch: 22 }];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Scans');
+        const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        downloadBlob(new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), 'scans-' + timestampStem() + '.xlsx');
+        showToast(tFormat(multiStrings.exportDone, 'XLSX'));
+    }
+
+    // Lazy-load jsPDF
+    let jspdfPromise = null;
+    function ensureJsPDF() {
+        if (window.jspdf && window.jspdf.jsPDF) return Promise.resolve(window.jspdf.jsPDF);
+        if (jspdfPromise) return jspdfPromise;
+        jspdfPromise = new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js';
+            s.async = true;
+            s.onload = () => resolve(window.jspdf && window.jspdf.jsPDF);
+            s.onerror = () => { jspdfPromise = null; reject(new Error('jspdf load failed')); };
+            document.head.appendChild(s);
+        });
+        return jspdfPromise;
+    }
+
+    async function exportPdf(records) {
+        showToast(multiStrings.loadingLib);
+        const JsPDF = await ensureJsPDF();
+        const doc = new JsPDF({ unit: 'mm', format: 'a4' });
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        const margin = 12;
+        const colGap = 6;
+        const colW = (pageW - margin * 2 - colGap) / 2;
+        const rowH = 28;
+        let x = margin, y = margin;
+        doc.setFontSize(14);
+        doc.text(multiStrings.summaryTitle, margin, y); y += 8;
+        doc.setFontSize(10);
+        doc.text(new Date().toLocaleString(), margin, y); y += 6;
+        const top = y;
+
+        for (let i = 0; i < records.length; i++) {
+            const r = records[i];
+            const col = i % 2;
+            x = margin + col * (colW + colGap);
+            if (col === 0 && i > 0) y += rowH;
+            if (y + rowH > pageH - margin) {
+                doc.addPage();
+                y = top;
+            }
+            // Render barcode to data URL via offscreen SVG
+            const dataUrl = await barcodeToPngDataUrl(r.value, r.format, 360, 80);
+            if (dataUrl) {
+                try { doc.addImage(dataUrl, 'PNG', x, y, colW, 18); } catch (_) {}
+            }
+            doc.setFontSize(9);
+            doc.text(r.count + '\u00d7  ' + r.value, x, y + 22);
+            doc.setFontSize(7);
+            doc.text(r.format || '', x, y + 26);
+        }
+        doc.save('scans-' + timestampStem() + '.pdf');
+        showToast(tFormat(multiStrings.exportDone, 'PDF'));
+    }
+
+    function barcodeToPngDataUrl(value, format, w, h) {
+        return new Promise((resolve) => {
+            try {
+                const fmt = jsBarcodeFormat(format);
+                if (!fmt || !window.JsBarcode) { resolve(null); return; }
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                window.JsBarcode(svg, value, { format: fmt, width: 2, height: 80, displayValue: true, margin: 4, background: '#ffffff', lineColor: '#000000' });
+                const xml = new XMLSerializer().serializeToString(svg);
+                const svgBlob = new Blob([xml], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(svgBlob);
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(img, 0, 0, w, h);
+                    URL.revokeObjectURL(url);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+                img.src = url;
+            } catch (_) {
+                resolve(null);
+            }
+        });
+    }
+
+    // Auto-render persisted scans on load
+    if (scanMap.size > 0) {
+        scanMode = 'multi';
+        renderMultiResultsInMainBox();
+    }
 
     // ===== THEME TOGGLE (shared with main app) =====
     const themeToggle = document.getElementById('theme-toggle');
