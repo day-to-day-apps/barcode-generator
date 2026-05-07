@@ -28,6 +28,11 @@ test-results/
 .env.local
 .env.*.local
 
+# Supabase — lokalna konfiguracja klienta (anon key wklejany przez devops)
+supabase-config.js
+supabase/.env
+
 # Logs
 *.log
 npm-debug.log*
+_fix.js

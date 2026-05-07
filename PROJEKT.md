@@ -287,6 +287,14 @@ supabase link --project-ref aoqxznukwbdgrggxloou
 
 > Notuje wykonane zmiany. Najnowsze na górze.
 
+### 2026-05-07 (paczka F/M1 — szkielet klienta Supabase)
+- ✅ **`supabase-client.js`** — lazy ESM singleton. Dynamiczny import SDK z `https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm` (CSP `script-src` już zezwala na jsDelivr). Eksportuje `getSupabase()`, `isSupabaseAvailable()`, `getSession()`, `onAuthStateChange()`. Storage key `bg.auth`, `persistSession: true`, `autoRefreshToken: true`. Graceful degradation gdy brak konfiguracji — moduł zwraca `null` i loguje `console.warn` zamiast wywalać aplikację.
+- ✅ **`supabase-config.example.js`** — szablon konfiguracji. Anon key jest publiczny i bezpieczny do osadzenia w kliencie (RLS pilnuje dostępu po stronie bazy); service_role NIGDY nie trafia do klienta.
+- ✅ **`.gitignore`** — dodane `supabase-config.js` i `supabase/.env`, żeby lokalne anon key nie trafiło przez przypadek do repo (mimo że jest publiczne, separujemy „config przykładowy" od „config produkcyjny").
+- ⏸ **Wymaga akcji użytkownika** (M1 dokończenie): utworzenie konta Supabase / weryfikacja istniejącego projektu `aoqxznukwbdgrggxloou`, pobranie anon key z dashboardu, wklejenie do `supabase-config.js`, dodanie zmiennych w Cloudflare Pages.
+- 🟢 **Testy:** 41/41 zielone (po retry SEO — `[de]/[fr]/[es]` flaky raz, drugie podejście czyste). Moduł Supabase nie jest jeszcze ładowany przez strony, więc nie wpływa na CWV ani na CSP w runtime.
+- **Powód:** ROADMAP M1 — fundament pod auth (M2) i prywatne kody (M2/M3). Lazy load oznacza zero kosztu dla użytkowników niezalogowanych (anonimowy ruch z reklam).
+
 ### 2026-05-07 (paczka D2 + B3 — preload LCP + audyt title/description)
 - ✅ **D2.** Dodano blok preload natychmiast po `<meta viewport>` w 10 plikach `index.html` (root + 9 języków):
   - `<link rel="preload" href="styles.css?v=…" as="style">` (root) lub `../styles.css` (subkatalogi) — wcześniejsze odkrycie krytycznego CSS przez parser HTML, przed blokami JSON-LD.
