@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Descodificador de código de barras — Scanner online grátis</title>
     <meta name="description" content="Descodificador de código de barras online grátis. Envie uma imagem ou arraste — EAN-13, UPC, Code 128, QR e mais. 100% no navegador.">
-    <meta name="keywords" content="descodificador código de barras, scanner online, ler código de barras, descodificador QR, descodificador EAN">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/pt/decoder.html">
     <link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps-contact.workers.dev/decoder.html">
@@ -51,6 +50,39 @@
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
     }
     </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Como descodificar um código de barras a partir de uma imagem",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Carregar imagem", "text": "Arraste uma imagem, clique para selecionar um ficheiro ou cole da área de transferência (Ctrl+V)." },
+            { "@type": "HowToStep", "position": 2, "name": "Descodificação automática", "text": "O descodificador funciona inteiramente no navegador com ZXing-JS — a sua imagem nunca sai do dispositivo." },
+            { "@type": "HowToStep", "position": 3, "name": "Ver resultados", "text": "Consulte o valor descodificado, o formato e copie com um clique." }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "Que formatos são suportados?", "acceptedAnswer": { "@type": "Answer", "text": "EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF, código QR, Data Matrix, Aztec, PDF417 e mais." } },
+            { "@type": "Question", "name": "A minha imagem é enviada para um servidor?", "acceptedAnswer": { "@type": "Answer", "text": "Não. Toda a descodificação ocorre localmente no navegador. As suas imagens nunca saem do dispositivo." } },
+            { "@type": "Question", "name": "Porque é que o meu código não é detetado?", "acceptedAnswer": { "@type": "Answer", "text": "Certifique-se de que a imagem está nítida, bem iluminada e que o código ocupa uma área significativa. Recorte apertado e evite reflexos ou desfocagem." } }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/pt/" },
+            { "@type": "ListItem", "position": 2, "name": "Descodificador", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/pt/decoder.html" }
+        ]
+    }
+    </script>
 </head>
 <body>
     <div class="app">
@@ -58,9 +90,16 @@
             <div class="lang-switch">
                 <button class="lang-current" id="lang-toggle">🇵🇹 PT ▾</button>
                 <div class="lang-dropdown" id="lang-dropdown">
-                    <a href="decoder.html" class="lang-option active">🇵🇹 PT</a>
                     <a href="../decoder.html" class="lang-option">🇬🇧 English</a>
                     <a href="../pl/decoder.html" class="lang-option">🇵🇱 Polski</a>
+                    <a href="../de/decoder.html" class="lang-option">🇩🇪 Deutsch</a>
+                    <a href="../fr/decoder.html" class="lang-option">🇫🇷 Français</a>
+                    <a href="../es/decoder.html" class="lang-option">🇪🇸 Español</a>
+                    <a href="../it/decoder.html" class="lang-option">🇮🇹 Italiano</a>
+                    <a href="decoder.html" class="lang-option active">🇵🇹 Português</a>
+                    <a href="../nl/decoder.html" class="lang-option">🇳🇱 Nederlands</a>
+                    <a href="../cs/decoder.html" class="lang-option">🇨🇿 Čeština</a>
+                    <a href="../uk/decoder.html" class="lang-option">🇺🇦 Українська</a>
                 </div>
             </div>
             <button class="theme-toggle" id="theme-toggle" title="Alternar tema" aria-label="Alternar tema">
@@ -91,9 +130,9 @@
                 <div class="decoder-feature"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="10 2 2 6 10 10 18 6 10 2"/><polyline points="2 10 10 14 18 10"/><polyline points="2 14 10 18 18 14"/></svg><span>20+ formatos</span></div>
             </div>
             <div class="camera-row">
-                <button id="camera-btn" class="camera-btn" type="button" aria-label="Scan barcode with camera">
+                <button id="camera-btn" class="camera-btn" type="button" aria-label="Ler código de barras com a câmara">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                    <span>Scan with camera</span>
+                    <span>Ler com a câmara</span>
                 </button>
             </div>
 
@@ -126,23 +165,11 @@
             <p>Baseado em <a href="https://github.com/zxing-js/library" rel="noopener noreferrer" target="_blank">ZXing</a> — código aberto.</p>
         </footer>
     </div>
-    <div id="camera-modal" class="camera-modal" role="dialog" aria-modal="true" aria-label="Camera barcode scanner" hidden>
-        <div class="camera-modal-inner">
-            <video id="camera-video" class="camera-video" playsinline muted autoplay></video>
-            <div class="camera-frame" aria-hidden="true"></div>
-            <button id="camera-close" class="camera-close" type="button" aria-label="Close camera">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
-            </button>
-            <div class="camera-hint">Point your camera at a barcode</div>
-        </div>
-    </div>
-
-
-    <div id="camera-modal" class="camera-modal" role="dialog" aria-modal="true" aria-label="Camera barcode scanner" hidden>
+    <div id="camera-modal" class="camera-modal" role="dialog" aria-modal="true" aria-label="Leitor de códigos por câmara" hidden>
         <div class="camera-modal-inner">
             <div class="camera-header">
                 <div class="camera-header-controls"></div>
-                <button id="camera-close" class="camera-close" type="button" aria-label="Close camera">
+                <button id="camera-close" class="camera-close" type="button" aria-label="Fechar câmara">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
                 </button>
             </div>
@@ -151,7 +178,7 @@
                 <div class="camera-frame" aria-hidden="true"></div>
             </div>
             <aside class="camera-side" hidden></aside>
-            <div class="camera-hint">Point your camera at a barcode</div>
+            <div class="camera-hint">Aponte a câmara para um código de barras</div>
         </div>
     </div>
 

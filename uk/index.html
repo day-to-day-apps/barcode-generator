@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="../styles.css?v=20260428000000" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
     <title>Генератор Штрих-кодів — Безкоштовний онлайн інструмент</title>
     <meta name="description" content="Безкоштовний онлайн генератор штрих-кодів. Створюйте EAN-13, Code 128, UPC, ITF та інші. Експорт у PNG або SVG. Друк етикеток.">
-    <meta name="keywords" content="генератор штрих-кодів, безкоштовний штрих-код, EAN-13, Code 128, UPC, створення штрих-кодів, друк етикеток, штрих-код онлайн">
     <meta name="author" content="Barcode Generator">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/uk/">
@@ -62,7 +65,52 @@
             "price": "0",
             "priceCurrency": "USD"
         },
-        "inLanguage": ["uk", "pl"]
+        "inLanguage": "uk"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Як згенерувати штрих-код",
+        "inLanguage": "uk",
+        "description": "Згенеруйте штрих-код онлайн у чотирьох кроках: виберіть формат, введіть дані, налаштуйте вигляд, завантажте або надрукуйте.",
+        "totalTime": "PT1M",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Виберіть формат", "text": "Виберіть стандарт зі списку — EAN-13, UPC-A, Code 128, QR Code, ITF та інші." },
+            { "@type": "HowToStep", "position": 2, "name": "Введіть дані", "text": "Введіть число або текст для кодування. Інструмент перевіряє контрольні суми й довжину в реальному часі." },
+            { "@type": "HowToStep", "position": 3, "name": "Налаштуйте вигляд", "text": "Налаштуйте розмір, кольори, поля та обертання. Перегляд оновлюється миттєво." },
+            { "@type": "HowToStep", "position": 4, "name": "Завантажте або надрукуйте", "text": "Експортуйте як PNG або SVG, або відкрийте діалог друку етикеток." }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "inLanguage": "uk",
+        "mainEntity": [
+            { "@type": "Question", "name": "Чи генератор справді безкоштовний?", "acceptedAnswer": { "@type": "Answer", "text": "Так — повністю безкоштовний, без реєстрації, без водяних знаків і без обмежень." } },
+            { "@type": "Question", "name": "Чи мої дані залишаються приватними?", "acceptedAnswer": { "@type": "Answer", "text": "Так. Генерація виконується на 100 % у вашому браузері. Нічого не надсилається на сервер." } },
+            { "@type": "Question", "name": "Які формати підтримуються?", "acceptedAnswer": { "@type": "Answer", "text": "18 стандартів: EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF-14, Codabar, MSI, Pharmacode і QR Code." } },
+            { "@type": "Question", "name": "Чи можу я декодувати код із зображення?", "acceptedAnswer": { "@type": "Answer", "text": "Так — використайте Декодер. Завантажте фото або вставте знімок екрана." } },
+            { "@type": "Question", "name": "Чи можу я друкувати етикетки?", "acceptedAnswer": { "@type": "Answer", "text": "Так — інструмент підтримує термопринтери (Zebra, Brother, Dymo) і аркуші A4 (Avery)." } },
+            { "@type": "Question", "name": "Чи можна використовувати коди комерційно?", "acceptedAnswer": { "@type": "Answer", "text": "Так. Номери EAN/UPC потрібно зареєструвати в GS1 для роздрібного продажу." } }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "inLanguage": "uk",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Головна", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/" },
+            { "@type": "ListItem", "position": 2, "name": "Генератор Штрих-кодів", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/uk/" }
+        ]
     }
     </script>
 
@@ -250,13 +298,13 @@
                     <div class="control-group">
                         <label id="text-align-label">Вирівнювання тексту</label>
                         <div class="btn-group" role="group" aria-labelledby="text-align-label">
-                            <button class="btn-option" data-value="left" data-target="text-align" aria-label="За лівим краєм">
+                            <button class="btn-option" data-value="left" data-target="text-align" aria-pressed="false" aria-label="За лівим краєм">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="2" y="7" width="8" height="1.5"/><rect x="2" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option active" data-value="center" data-target="text-align" aria-label="По центру">
+                            <button class="btn-option active" data-value="center" data-target="text-align" aria-pressed="true" aria-label="По центру">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="4" y="7" width="8" height="1.5"/><rect x="3" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option" data-value="right" data-target="text-align" aria-label="За правим краєм">
+                            <button class="btn-option" data-value="right" data-target="text-align" aria-pressed="false" aria-label="За правим краєм">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="6" y="7" width="8" height="1.5"/><rect x="4" y="11" width="10" height="1.5"/></svg>
                             </button>
                         </div>

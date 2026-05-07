@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="../styles.css?v=20260428000000" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
     <title>Generador de Códigos de Barras — Herramienta online gratuita</title>
-    <meta name="description" content="Generador de códigos de barras online gratuito. Crea EAN-13, Code 128, UPC, ITF y más. Exporta como PNG o SVG. Imprime etiquetas.">
-    <meta name="keywords" content="generador de códigos de barras, código de barras gratis, EAN-13, Code 128, UPC, crear código de barras, impresión de etiquetas, código de barras online">
+    <meta name="description" content="Generador de códigos de barras online gratuito. Cree EAN-13, Code 128, UPC, ITF y más. Exporte como PNG o SVG. Imprima etiquetas.">
     <meta name="author" content="Barcode Generator">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/es/">
@@ -62,7 +65,52 @@
             "price": "0",
             "priceCurrency": "EUR"
         },
-        "inLanguage": ["es", "pl"]
+        "inLanguage": "es"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Cómo generar un código de barras",
+        "inLanguage": "es",
+        "description": "Genera un código de barras online en cuatro pasos: elegir formato, introducir datos, personalizar apariencia, descargar o imprimir.",
+        "totalTime": "PT1M",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Elegir un formato", "text": "Selecciona un estándar de la lista — EAN-13, UPC-A, Code 128, QR Code, ITF y más." },
+            { "@type": "HowToStep", "position": 2, "name": "Introducir datos", "text": "Escribe el número o texto a codificar. La herramienta valida sumas de comprobación y longitud en tiempo real." },
+            { "@type": "HowToStep", "position": 3, "name": "Personalizar la apariencia", "text": "Ajusta tamaño, colores, márgenes y rotación. La vista previa se actualiza al instante." },
+            { "@type": "HowToStep", "position": 4, "name": "Descargar o imprimir", "text": "Exporta como PNG o SVG, o abre el diálogo de impresión de etiquetas." }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "inLanguage": "es",
+        "mainEntity": [
+            { "@type": "Question", "name": "¿Es realmente gratuito?", "acceptedAnswer": { "@type": "Answer", "text": "Sí — totalmente gratuito, sin registro, sin marcas de agua y sin límite." } },
+            { "@type": "Question", "name": "¿Mis datos son privados?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. La generación ocurre 100 % en tu navegador. Nada se envía a ningún servidor." } },
+            { "@type": "Question", "name": "¿Qué formatos se admiten?", "acceptedAnswer": { "@type": "Answer", "text": "18 estándares: EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF-14, Codabar, MSI, Pharmacode y QR Code." } },
+            { "@type": "Question", "name": "¿Puedo decodificar un código desde una imagen?", "acceptedAnswer": { "@type": "Answer", "text": "Sí — usa el Decodificador. Sube una foto o pega una captura." } },
+            { "@type": "Question", "name": "¿Puedo imprimir etiquetas?", "acceptedAnswer": { "@type": "Answer", "text": "Sí — la herramienta admite impresoras térmicas (Zebra, Brother, Dymo) y hojas A4 (formatos Avery)." } },
+            { "@type": "Question", "name": "¿Puedo usar los códigos comercialmente?", "acceptedAnswer": { "@type": "Answer", "text": "Sí. Los números EAN/UPC deben registrarse en GS1 si vendes al por menor." } }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "inLanguage": "es",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/" },
+            { "@type": "ListItem", "position": 2, "name": "Generador de Códigos de Barras", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/es/" }
+        ]
     }
     </script>
 
@@ -174,7 +222,7 @@
 
                     <div class="control-group">
                         <label for="barcode-text">Contenido del código</label>
-                        <input type="text" id="barcode-text" placeholder="Introduce texto o números..." value="Barcode 2026">
+                        <input type="text" id="barcode-text" placeholder="Introduzca texto o números…" value="Barcode 2026">
                     </div>
 
                     <div class="control-row">
@@ -250,13 +298,13 @@
                     <div class="control-group">
                         <label id="text-align-label">Alineación del texto</label>
                         <div class="btn-group" role="group" aria-labelledby="text-align-label">
-                            <button class="btn-option" data-value="left" data-target="text-align" aria-label="Alinear a la izquierda">
+                            <button class="btn-option" data-value="left" data-target="text-align" aria-pressed="false" aria-label="Alinear a la izquierda">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="2" y="7" width="8" height="1.5"/><rect x="2" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option active" data-value="center" data-target="text-align" aria-label="Centrar">
+                            <button class="btn-option active" data-value="center" data-target="text-align" aria-pressed="true" aria-label="Centrar">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="4" y="7" width="8" height="1.5"/><rect x="3" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option" data-value="right" data-target="text-align" aria-label="Alinear a la derecha">
+                            <button class="btn-option" data-value="right" data-target="text-align" aria-pressed="false" aria-label="Alinear a la derecha">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="6" y="7" width="8" height="1.5"/><rect x="4" y="11" width="10" height="1.5"/></svg>
                             </button>
                         </div>
@@ -298,7 +346,7 @@
                         <div class="barcode-container" id="barcode-container">
                             <svg id="barcode-svg"></svg>
                         </div>
-                        <p class="preview-hint" id="preview-hint" style="display:none;">Introduce texto y haz clic en «Generar» para ver tu código de barras</p>
+                        <p class="preview-hint" id="preview-hint" style="display:none;">Introduzca el texto y haga clic en «Generar» para ver su código de barras</p>
                     </div>
                     <div class="error-message" id="error-message" style="display:none;">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 6v5M10 13.5v.5"/></svg>
@@ -312,17 +360,17 @@
                     <div class="accent-card">
                         <span class="accent-icon">&#9889;</span>
                         <h3>Exportación en alta calidad</h3>
-                        <p>Descarga tu código de barras como PNG (resolución 3x) o SVG escalable. Listo para imprimir en etiquetas, embalajes y documentos.</p>
+                        <p>Descargue su código de barras como PNG (resolución 3×) o SVG escalable. Listo para imprimir en etiquetas, embalajes y documentos.</p>
                     </div>
                     <div class="accent-card">
                         <span class="accent-icon">&#128736;</span>
                         <h3>Control total de la apariencia</h3>
-                        <p>Personaliza tamaño, colores, márgenes y rotación. Cada detalle del código de barras bajo tu control — sin limitaciones.</p>
+                        <p>Personalice el tamaño, los colores, los márgenes y la rotación. Cada detalle del código de barras bajo su control, sin limitaciones.</p>
                     </div>
                     <div class="accent-card">
                         <span class="accent-icon">&#128274;</span>
                         <h3>Privacidad garantizada</h3>
-                        <p>La generación ocurre completamente en tu navegador. No se envían datos a ningún servidor — tus códigos de barras se quedan contigo.</p>
+                        <p>La generación se realiza por completo en su navegador. No se envían datos a ningún servidor: sus códigos de barras se quedan con usted.</p>
                     </div>
                 </div>
             </section>
@@ -541,17 +589,17 @@
                             <div class="field-row">
                                 <div class="field-col">
                                     <label for="label-product-name">Nombre del producto</label>
-                                    <input type="text" id="label-product-name" placeholder="ej. Leche UHT 3,2%">
+                                    <input type="text" id="label-product-name" placeholder="p. ej. Leche UHT 3,2 %">
                                 </div>
                                 <div class="field-col">
                                     <label for="label-price">Precio</label>
-                                    <input type="text" id="label-price" placeholder="ej. 4,99 €">
+                                    <input type="text" id="label-price" placeholder="p. ej. 4,99 €">
                                 </div>
                             </div>
                             <div class="field-row">
                                 <div class="field-col">
                                     <label for="label-description">Descripción adicional</label>
-                                    <input type="text" id="label-description" placeholder="ej. 1L, Oferta">
+                                    <input type="text" id="label-description" placeholder="p. ej. 1 L, Oferta">
                                 </div>
                                 <div class="field-col">
                                     <label for="label-copies">Número de copias</label>

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dekoder kodów kreskowych — Skanuj obraz online</title>
     <meta name="description" content="Darmowy dekoder kodów kreskowych online. Prześlij zdjęcie lub przeciągnij plik — obsługuje EAN-13, UPC, Code 128, QR i inne. W pełni po stronie przeglądarki.">
-    <meta name="keywords" content="dekoder kodów kreskowych, skaner online, odczyt kodu z obrazu, dekoder QR, dekoder EAN">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/pl/decoder.html">
     <link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps-contact.workers.dev/decoder.html">
@@ -54,6 +53,39 @@
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
     }
     </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Jak odczytać kod kreskowy z obrazu",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Wgraj obraz", "text": "Upuść obraz, kliknij aby wybrać plik lub wklej ze schowka (Ctrl+V)." },
+            { "@type": "HowToStep", "position": 2, "name": "Automatyczne dekodowanie", "text": "Dekoder działa w całości w Twojej przeglądarce dzięki ZXing-JS — obraz nie opuszcza Twojego urządzenia." },
+            { "@type": "HowToStep", "position": 3, "name": "Zobacz wyniki", "text": "Zobacz odczytaną wartość, format i skopiuj jednym kliknięciem." }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "Jakie formaty kodów są obsługiwane?", "acceptedAnswer": { "@type": "Answer", "text": "EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF, kod QR, Data Matrix, Aztec, PDF417 i inne." } },
+            { "@type": "Question", "name": "Czy mój obraz jest wysyłany na serwer?", "acceptedAnswer": { "@type": "Answer", "text": "Nie. Całe dekodowanie odbywa się lokalnie w przeglądarce. Twoje obrazy nigdy nie opuszczają urządzenia." } },
+            { "@type": "Question", "name": "Dlaczego mój kod nie został wykryty?", "acceptedAnswer": { "@type": "Answer", "text": "Upewnij się, że obraz jest ostry, dobrze oświetlony, a kod zajmuje znaczącą część kadru. Kadruj ciasno, unikaj odblasków i poruszenia." } }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Strona główna", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/pl/" },
+            { "@type": "ListItem", "position": 2, "name": "Dekoder", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/pl/decoder.html" }
+        ]
+    }
+    </script>
 </head>
 <body>
     <div class="app">
@@ -61,8 +93,16 @@
             <div class="lang-switch">
                 <button class="lang-current" id="lang-toggle">🇵🇱 PL ▾</button>
                 <div class="lang-dropdown" id="lang-dropdown">
-                    <a href="decoder.html" class="lang-option active">🇵🇱 Polski</a>
                     <a href="../decoder.html" class="lang-option">🇬🇧 English</a>
+                    <a href="decoder.html" class="lang-option active">🇵🇱 Polski</a>
+                    <a href="../de/decoder.html" class="lang-option">🇩🇪 Deutsch</a>
+                    <a href="../fr/decoder.html" class="lang-option">🇫🇷 Français</a>
+                    <a href="../es/decoder.html" class="lang-option">🇪🇸 Español</a>
+                    <a href="../it/decoder.html" class="lang-option">🇮🇹 Italiano</a>
+                    <a href="../pt/decoder.html" class="lang-option">🇵🇹 Português</a>
+                    <a href="../nl/decoder.html" class="lang-option">🇳🇱 Nederlands</a>
+                    <a href="../cs/decoder.html" class="lang-option">🇨🇿 Čeština</a>
+                    <a href="../uk/decoder.html" class="lang-option">🇺🇦 Українська</a>
                 </div>
             </div>
             <button class="theme-toggle" id="theme-toggle" title="Przełącz motyw" aria-label="Przełącz motyw">
@@ -135,11 +175,11 @@
             </p>
         </footer>
     </div>
-    <div id="camera-modal" class="camera-modal" role="dialog" aria-modal="true" aria-label="Camera barcode scanner" hidden>
+    <div id="camera-modal" class="camera-modal" role="dialog" aria-modal="true" aria-label="Skaner kodów kreskowych z kamery" hidden>
         <div class="camera-modal-inner">
             <div class="camera-header">
                 <div class="camera-header-controls"></div>
-                <button id="camera-close" class="camera-close" type="button" aria-label="Close camera">
+                <button id="camera-close" class="camera-close" type="button" aria-label="Zamknij kamerę">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
                 </button>
             </div>
@@ -148,7 +188,7 @@
                 <div class="camera-frame" aria-hidden="true"></div>
             </div>
             <aside class="camera-side" hidden></aside>
-            <div class="camera-hint">Point your camera at a barcode</div>
+            <div class="camera-hint">Skieruj kamerę na kod kreskowy</div>
         </div>
     </div>
 

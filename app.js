@@ -115,8 +115,12 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             const target = btn.dataset.target;
             if (target === 'text-align') {
-                document.querySelectorAll(`.btn-option[data-target="${target}"]`).forEach(b => b.classList.remove('active'));
+                document.querySelectorAll(`.btn-option[data-target="${target}"]`).forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
                 btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
                 textAlign = btn.dataset.value;
                 if (barcodeText.value.trim()) generateBarcode();
             }

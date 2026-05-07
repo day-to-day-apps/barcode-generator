@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="../styles.css?v=20260428000000" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
     <title>Générateur de Codes-barres — Outil en ligne gratuit</title>
     <meta name="description" content="Générateur de codes-barres en ligne gratuit. Créez des codes EAN-13, Code 128, UPC, ITF et plus. Exportez en PNG ou SVG. Imprimez des étiquettes.">
-    <meta name="keywords" content="générateur de codes-barres, code-barres gratuit, EAN-13, Code 128, UPC, créer code-barres, impression étiquettes, code-barres en ligne">
     <meta name="author" content="Barcode Generator">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/fr/">
@@ -62,7 +65,52 @@
             "price": "0",
             "priceCurrency": "EUR"
         },
-        "inLanguage": ["fr", "pl"]
+        "inLanguage": "fr"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Comment générer un code-barres",
+        "inLanguage": "fr",
+        "description": "Générez un code-barres en ligne en quatre étapes : choisir le format, saisir les données, personnaliser l'apparence, télécharger ou imprimer.",
+        "totalTime": "PT1M",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Choisir un format", "text": "Sélectionnez un standard dans la liste déroulante — EAN-13, UPC-A, Code 128, QR Code, ITF et plus encore." },
+            { "@type": "HowToStep", "position": 2, "name": "Saisir les données", "text": "Saisissez le numéro ou le texte à encoder. L'outil vérifie en temps réel les sommes de contrôle et la longueur." },
+            { "@type": "HowToStep", "position": 3, "name": "Personnaliser l'apparence", "text": "Ajustez la taille, les couleurs, les marges et la rotation. L'aperçu se met à jour instantanément." },
+            { "@type": "HowToStep", "position": 4, "name": "Télécharger ou imprimer", "text": "Exportez en PNG ou SVG, ou ouvrez la boîte de dialogue d'impression d'étiquettes." }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "inLanguage": "fr",
+        "mainEntity": [
+            { "@type": "Question", "name": "Le générateur est-il vraiment gratuit ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui — entièrement gratuit, sans inscription, sans filigrane et sans limite." } },
+            { "@type": "Question", "name": "Mes données restent-elles privées ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui. La génération se fait à 100 % dans votre navigateur. Rien n'est envoyé à un serveur." } },
+            { "@type": "Question", "name": "Quels formats sont pris en charge ?", "acceptedAnswer": { "@type": "Answer", "text": "18 standards : EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF-14, Codabar, MSI, Pharmacode et QR Code." } },
+            { "@type": "Question", "name": "Puis-je décoder un code-barres depuis une image ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui — utilisez le Décodeur. Téléchargez une photo ou collez une capture d'écran." } },
+            { "@type": "Question", "name": "Puis-je imprimer des étiquettes ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui — l'outil prend en charge les imprimantes thermiques (Zebra, Brother, Dymo) et les feuilles A4 (formats Avery)." } },
+            { "@type": "Question", "name": "Puis-je utiliser les codes-barres commercialement ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui. Les numéros EAN/UPC doivent toutefois être enregistrés auprès de GS1 pour la vente au détail." } }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "inLanguage": "fr",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/" },
+            { "@type": "ListItem", "position": 2, "name": "Générateur de Codes-barres", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/fr/" }
+        ]
     }
     </script>
 
@@ -250,13 +298,13 @@
                     <div class="control-group">
                         <label id="text-align-label">Alignement du texte</label>
                         <div class="btn-group" role="group" aria-labelledby="text-align-label">
-                            <button class="btn-option" data-value="left" data-target="text-align" aria-label="Aligner à gauche">
+                            <button class="btn-option" data-value="left" data-target="text-align" aria-pressed="false" aria-label="Aligner à gauche">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="2" y="7" width="8" height="1.5"/><rect x="2" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option active" data-value="center" data-target="text-align" aria-label="Centrer">
+                            <button class="btn-option active" data-value="center" data-target="text-align" aria-pressed="true" aria-label="Centrer">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="4" y="7" width="8" height="1.5"/><rect x="3" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option" data-value="right" data-target="text-align" aria-label="Aligner à droite">
+                            <button class="btn-option" data-value="right" data-target="text-align" aria-pressed="false" aria-label="Aligner à droite">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="6" y="7" width="8" height="1.5"/><rect x="4" y="11" width="10" height="1.5"/></svg>
                             </button>
                         </div>
@@ -408,14 +456,14 @@
                     <div class="print-section" id="thermal-section">
                         <h3>Modèle d'étiquette</h3>
                         <div class="label-templates">
-                            <button class="label-tpl active" data-w="50" data-h="25" data-name="Petite étiquette prix">
+                            <button class="label-tpl active" data-w="50" data-h="25" data-name="Petite étiquette de prix">
                                 <span class="tpl-icon">🏷️</span>
-                                <span class="tpl-name">Petite étiquette prix</span>
+                                <span class="tpl-name">Petite étiquette de prix</span>
                                 <span class="tpl-size">50 × 25 mm</span>
                             </button>
-                            <button class="label-tpl" data-w="58" data-h="40" data-name="Étiquette prix standard">
+                            <button class="label-tpl" data-w="58" data-h="40" data-name="Étiquette de prix standard">
                                 <span class="tpl-icon">🏷️</span>
-                                <span class="tpl-name">Étiquette prix standard</span>
+                                <span class="tpl-name">Étiquette de prix standard</span>
                                 <span class="tpl-size">58 × 40 mm</span>
                             </button>
                             <button class="label-tpl" data-w="58" data-h="30" data-name="Étiquette de rayon">

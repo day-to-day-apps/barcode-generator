@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="../styles.css?v=20260428000000" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
     <title>Generator Kodów Kreskowych — Darmowy generator online</title>
-    <meta name="description" content="Darmowy generator kodów kreskowych online. Twórz kody EAN-13, Code 128, UPC, ITF i inne. Eksportuj jako PNG lub SVG. Drukuj etykiety na drukarce termicznej lub A4.">
-    <meta name="keywords" content="generator kodów kreskowych, kody kreskowe online, EAN-13, Code 128, UPC, barcode generator, etykiety, drukowanie kodów">
+    <meta name="description" content="Darmowy generator kodów kreskowych online. Twórz kody EAN-13, Code 128, UPC, ITF i inne. Eksportuj jako PNG lub SVG. Drukuj etykiety termiczne lub A4.">
     <meta name="author" content="Generator Kodów Kreskowych">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/pl/">
@@ -62,7 +65,7 @@
             "price": "0",
             "priceCurrency": "PLN"
         },
-        "inLanguage": ["pl", "en"]
+        "inLanguage": "pl"
     }
     </script>
 
@@ -93,6 +96,18 @@
             { "@type": "Question", "name": "Czy mogę zdekodować kod kreskowy ze zdjęcia?", "acceptedAnswer": { "@type": "Answer", "text": "Tak — użyj Dekodera kodów kreskowych. Wgraj zdjęcie lub wklej zrzut ekranu i odczytaj EAN, UPC, Code 128, QR i inne." } },
             { "@type": "Question", "name": "Czy można drukować etykiety?", "acceptedAnswer": { "@type": "Answer", "text": "Tak — narzędzie zawiera okno druku etykiet dla drukarek termicznych (Zebra, Brother, Dymo) oraz arkuszy A4 (układy Avery)." } },
             { "@type": "Question", "name": "Czy mogę używać kodów komercyjnie?", "acceptedAnswer": { "@type": "Answer", "text": "Tak. Kody możesz używać w dowolnym projekcie komercyjnym i prywatnym. Numery EAN/UPC do sprzedaży detalicznej nadal muszą być zarejestrowane w GS1." } }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "inLanguage": "pl",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Strona główna", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/" },
+            { "@type": "ListItem", "position": 2, "name": "Generator Kodów Kreskowych", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/pl/" }
         ]
     }
     </script>
@@ -281,13 +296,13 @@
                     <div class="control-group">
                         <label id="text-align-label">Wyrównanie tekstu</label>
                         <div class="btn-group" role="group" aria-labelledby="text-align-label">
-                            <button class="btn-option" data-value="left" data-target="text-align" aria-label="Wyrównaj do lewej">
+                            <button class="btn-option" data-value="left" data-target="text-align" aria-pressed="false" aria-label="Wyrównaj do lewej">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="2" y="7" width="8" height="1.5"/><rect x="2" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option active" data-value="center" data-target="text-align" aria-label="Wyśrodkuj">
+                            <button class="btn-option active" data-value="center" data-target="text-align" aria-pressed="true" aria-label="Wyśrodkuj">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="4" y="7" width="8" height="1.5"/><rect x="3" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option" data-value="right" data-target="text-align" aria-label="Wyrównaj do prawej">
+                            <button class="btn-option" data-value="right" data-target="text-align" aria-pressed="false" aria-label="Wyrównaj do prawej">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="6" y="7" width="8" height="1.5"/><rect x="4" y="11" width="10" height="1.5"/></svg>
                             </button>
                         </div>

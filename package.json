@@ -1,0 +1,16 @@
+{
+  "name": "barcode-generator-smoke-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automated smoke tests for the 10-language barcode generator (Playwright).",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
+    "@playwright/test": "^1.49.0"
+  }
+}

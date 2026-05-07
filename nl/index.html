@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="../styles.css?v=20260428000000" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
     <title>Barcodegenerator — Gratis online tool</title>
     <meta name="description" content="Gratis online barcodegenerator. Maak EAN-13, Code 128, UPC, ITF en meer. Exporteer als PNG of SVG. Print labels.">
-    <meta name="keywords" content="barcodegenerator, gratis barcode, EAN-13, Code 128, UPC, barcode maker, labels printen, online barcode">
     <meta name="author" content="Barcode Generator">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/nl/">
@@ -62,7 +65,44 @@
             "price": "0",
             "priceCurrency": "USD"
         },
-        "inLanguage": ["nl", "pl"]
+        "inLanguage": "nl"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Hoe genereer je een barcode online",
+        "inLanguage": "nl",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Kies barcodetype", "text": "Selecteer een standaard zoals EAN-13, UPC, Code 128 of QR uit de keuzelijst." },
+            { "@type": "HowToStep", "position": 2, "name": "Voer waarde in", "text": "Typ de inhoud — cijfers, tekst of een URL afhankelijk van het gekozen type." },
+            { "@type": "HowToStep", "position": 3, "name": "Genereer en pas aan", "text": "Pas hoogte, breedte, kleur en lettergrootte aan; de voorvertoning wordt direct bijgewerkt." },
+            { "@type": "HowToStep", "position": 4, "name": "Exporteer of print", "text": "Download als PNG of SVG, of gebruik de etikettenprintmodus voor meerdere kopieën op één pagina." }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "inLanguage": "nl",
+        "mainEntity": [
+            { "@type": "Question", "name": "Welke barcodestandaarden worden ondersteund?", "acceptedAnswer": { "@type": "Answer", "text": "EAN-13, EAN-8, UPC-A, Code 128, Code 39, ITF, ITF-14, MSI, Codabar, Pharmacode en QR Code — in totaal 18 standaarden." } },
+            { "@type": "Question", "name": "Is de generator gratis?", "acceptedAnswer": { "@type": "Answer", "text": "Ja, volledig gratis. De applicatie wordt ondersteund door advertenties; er is geen betaalde versie." } },
+            { "@type": "Question", "name": "Worden mijn gegevens naar een server gestuurd?", "acceptedAnswer": { "@type": "Answer", "text": "Nee. De barcode wordt volledig in uw browser gegenereerd. De ingevoerde inhoud verlaat uw apparaat niet." } },
+            { "@type": "Question", "name": "Kan ik de barcode gebruiken voor commerciële producten?", "acceptedAnswer": { "@type": "Answer", "text": "Voor verkooppunten heeft u een GS1-prefix nodig (officiële EAN/UPC-registratie). De generator maakt het beeld; de cijferreeks moet u zelf aanvragen bij GS1." } }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/" },
+            { "@type": "ListItem", "position": 2, "name": "Barcodegenerator (NL)", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/nl/" }
+        ]
     }
     </script>
 
@@ -250,13 +290,13 @@
                     <div class="control-group">
                         <label id="text-align-label">Tekstuitlijning</label>
                         <div class="btn-group" role="group" aria-labelledby="text-align-label">
-                            <button class="btn-option" data-value="left" data-target="text-align" aria-label="Links uitlijnen">
+                            <button class="btn-option" data-value="left" data-target="text-align" aria-pressed="false" aria-label="Links uitlijnen">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="2" y="7" width="8" height="1.5"/><rect x="2" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option active" data-value="center" data-target="text-align" aria-label="Centreren">
+                            <button class="btn-option active" data-value="center" data-target="text-align" aria-pressed="true" aria-label="Centreren">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="4" y="7" width="8" height="1.5"/><rect x="3" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option" data-value="right" data-target="text-align" aria-label="Rechts uitlijnen">
+                            <button class="btn-option" data-value="right" data-target="text-align" aria-pressed="false" aria-label="Rechts uitlijnen">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="6" y="7" width="8" height="1.5"/><rect x="4" y="11" width="10" height="1.5"/></svg>
                             </button>
                         </div>

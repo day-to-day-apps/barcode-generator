@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="../styles.css?v=20260428000000" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
     <title>Generátor Čárových Kódů — Bezplatný online nástroj</title>
     <meta name="description" content="Bezplatný online generátor čárových kódů. Vytvořte EAN-13, Code 128, UPC, ITF a další. Export jako PNG nebo SVG. Tisk štítků.">
-    <meta name="keywords" content="generátor čárových kódů, čárový kód zdarma, EAN-13, Code 128, UPC, tvorba čárových kódů, tisk štítků, online čárový kód">
     <meta name="author" content="Barcode Generator">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/cs/">
@@ -62,7 +65,52 @@
             "price": "0",
             "priceCurrency": "USD"
         },
-        "inLanguage": ["cs", "pl"]
+        "inLanguage": "cs"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Jak vygenerovat čárový kód",
+        "inLanguage": "cs",
+        "description": "Vygenerujte čárový kód online ve čtyřech krocích: vyberte formát, zadejte data, upravte vzhled, stáhněte nebo vytiskněte.",
+        "totalTime": "PT1M",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Vyberte formát", "text": "Vyberte standard ze seznamu — EAN-13, UPC-A, Code 128, QR Code, ITF a další." },
+            { "@type": "HowToStep", "position": 2, "name": "Zadejte data", "text": "Napíšte číslo nebo text ke kódování. Nástroj v reálném čase ověřuje kontrolní součty a délku." },
+            { "@type": "HowToStep", "position": 3, "name": "Upravte vzhled", "text": "Nastavte velikost, barvy, okraje a otočení. Náhled se aktualizuje okamžitě." },
+            { "@type": "HowToStep", "position": 4, "name": "Stáhněte nebo vytiskněte", "text": "Exportujte jako PNG nebo SVG, nebo otevřete dialog tisku štítků." }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "inLanguage": "cs",
+        "mainEntity": [
+            { "@type": "Question", "name": "Je generátor opravdu zdarma?", "acceptedAnswer": { "@type": "Answer", "text": "Ano — zcela zdarma, bez registrace, bez vodoznaků a bez limitu." } },
+            { "@type": "Question", "name": "Zůstávají moje data soukromá?", "acceptedAnswer": { "@type": "Answer", "text": "Ano. Generování probíhá zcela ve vašem prohlížeči. Nic se neodesílá na server." } },
+            { "@type": "Question", "name": "Jaké formáty jsou podporovány?", "acceptedAnswer": { "@type": "Answer", "text": "18 standardů včetně EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF-14, Codabar, MSI, Pharmacode a QR Code." } },
+            { "@type": "Question", "name": "Mohu dekódovat kód z obrázku?", "acceptedAnswer": { "@type": "Answer", "text": "Ano — použijte Dekodér. Nahrajte fotografii nebo vložte snímek obrazovky." } },
+            { "@type": "Question", "name": "Mohu tisknout štítky?", "acceptedAnswer": { "@type": "Answer", "text": "Ano — nástroj podporuje termální tiskárny (Zebra, Brother, Dymo) i listy A4 (Avery)." } },
+            { "@type": "Question", "name": "Mohu kódy používat komerčně?", "acceptedAnswer": { "@type": "Answer", "text": "Ano. Čísla EAN/UPC musí být registrována u GS1, pokud prodáváte v maloobchodě." } }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "inLanguage": "cs",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Domů", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/" },
+            { "@type": "ListItem", "position": 2, "name": "Generátor Čárových Kódů", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/cs/" }
+        ]
     }
     </script>
 
@@ -250,13 +298,13 @@
                     <div class="control-group">
                         <label id="text-align-label">Zarovnání textu</label>
                         <div class="btn-group" role="group" aria-labelledby="text-align-label">
-                            <button class="btn-option" data-value="left" data-target="text-align" aria-label="Zarovnat doleva">
+                            <button class="btn-option" data-value="left" data-target="text-align" aria-pressed="false" aria-label="Zarovnat doleva">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="2" y="7" width="8" height="1.5"/><rect x="2" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option active" data-value="center" data-target="text-align" aria-label="Na střed">
+                            <button class="btn-option active" data-value="center" data-target="text-align" aria-pressed="true" aria-label="Na střed">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="4" y="7" width="8" height="1.5"/><rect x="3" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option" data-value="right" data-target="text-align" aria-label="Zarovnat doprava">
+                            <button class="btn-option" data-value="right" data-target="text-align" aria-pressed="false" aria-label="Zarovnat doprava">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="6" y="7" width="8" height="1.5"/><rect x="4" y="11" width="10" height="1.5"/></svg>
                             </button>
                         </div>

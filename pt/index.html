@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="../styles.css?v=20260428000000" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
     <title>Gerador de Códigos de Barras — Ferramenta online gratuita</title>
     <meta name="description" content="Gerador de códigos de barras online gratuito. Crie EAN-13, Code 128, UPC, ITF e mais. Exporte como PNG ou SVG. Imprima etiquetas.">
-    <meta name="keywords" content="gerador de códigos de barras, código de barras grátis, EAN-13, Code 128, UPC, criador de códigos de barras, impressão de etiquetas, código de barras online">
     <meta name="author" content="Barcode Generator">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/pt/">
@@ -62,7 +65,52 @@
             "price": "0",
             "priceCurrency": "USD"
         },
-        "inLanguage": ["pt", "pl"]
+        "inLanguage": "pt"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Como gerar um código de barras",
+        "inLanguage": "pt",
+        "description": "Gere um código de barras online em quatro passos: escolher formato, inserir dados, personalizar a aparência, baixar ou imprimir.",
+        "totalTime": "PT1M",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Escolher um formato", "text": "Selecione um padrão na lista — EAN-13, UPC-A, Code 128, QR Code, ITF e outros." },
+            { "@type": "HowToStep", "position": 2, "name": "Inserir dados", "text": "Digite o número ou texto a codificar. A ferramenta valida somas de verificação e comprimento em tempo real." },
+            { "@type": "HowToStep", "position": 3, "name": "Personalizar a aparência", "text": "Ajuste tamanho, cores, margens e rotação. A pré-visualização atualiza imediatamente." },
+            { "@type": "HowToStep", "position": 4, "name": "Baixar ou imprimir", "text": "Exporte como PNG ou SVG, ou abra o diálogo de impressão de etiquetas." }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "inLanguage": "pt",
+        "mainEntity": [
+            { "@type": "Question", "name": "O gerador é realmente gratuito?", "acceptedAnswer": { "@type": "Answer", "text": "Sim — totalmente gratuito, sem registro, sem marcas d'água e sem limite." } },
+            { "@type": "Question", "name": "Meus dados ficam privados?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. A geração ocorre 100 % no seu navegador. Nada é enviado a servidores." } },
+            { "@type": "Question", "name": "Quais formatos são suportados?", "acceptedAnswer": { "@type": "Answer", "text": "18 padrões: EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF-14, Codabar, MSI, Pharmacode e QR Code." } },
+            { "@type": "Question", "name": "Posso decodificar um código a partir de uma imagem?", "acceptedAnswer": { "@type": "Answer", "text": "Sim — use o Decodificador. Envie uma foto ou cole uma captura." } },
+            { "@type": "Question", "name": "Posso imprimir etiquetas?", "acceptedAnswer": { "@type": "Answer", "text": "Sim — a ferramenta suporta impressoras térmicas (Zebra, Brother, Dymo) e folhas A4 (modelos Avery)." } },
+            { "@type": "Question", "name": "Posso usar os códigos comercialmente?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. Os números EAN/UPC devem ser registrados na GS1 para venda no varejo." } }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "inLanguage": "pt",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/" },
+            { "@type": "ListItem", "position": 2, "name": "Gerador de Códigos de Barras", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/pt/" }
+        ]
     }
     </script>
 
@@ -250,13 +298,13 @@
                     <div class="control-group">
                         <label id="text-align-label">Alinhamento do texto</label>
                         <div class="btn-group" role="group" aria-labelledby="text-align-label">
-                            <button class="btn-option" data-value="left" data-target="text-align" aria-label="Alinhar à esquerda">
+                            <button class="btn-option" data-value="left" data-target="text-align" aria-pressed="false" aria-label="Alinhar à esquerda">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="2" y="7" width="8" height="1.5"/><rect x="2" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option active" data-value="center" data-target="text-align" aria-label="Centralizar">
+                            <button class="btn-option active" data-value="center" data-target="text-align" aria-pressed="true" aria-label="Centrar">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="4" y="7" width="8" height="1.5"/><rect x="3" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option" data-value="right" data-target="text-align" aria-label="Alinhar à direita">
+                            <button class="btn-option" data-value="right" data-target="text-align" aria-pressed="false" aria-label="Alinhar à direita">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="6" y="7" width="8" height="1.5"/><rect x="4" y="11" width="10" height="1.5"/></svg>
                             </button>
                         </div>

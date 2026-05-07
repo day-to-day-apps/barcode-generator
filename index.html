@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="styles.css?v=20260428000000" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
     <title>Barcode Generator — Free Online Tool</title>
     <meta name="description" content="Free online barcode generator. Create EAN-13, Code 128, UPC, ITF and more. Export as PNG or SVG. Print labels on thermal or A4 printers.">
-    <meta name="keywords" content="barcode generator, free barcode, EAN-13, Code 128, UPC, barcode maker, label printing, online barcode">
     <meta name="author" content="Barcode Generator">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/">
@@ -62,7 +65,7 @@
             "price": "0",
             "priceCurrency": "USD"
         },
-        "inLanguage": ["en", "pl"]
+        "inLanguage": "en"
     }
     </script>
 
@@ -93,6 +96,18 @@
             { "@type": "Question", "name": "Can I decode a barcode from an image?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — use the Barcode Decoder. Upload a photo or paste a screenshot and read EAN, UPC, Code 128, QR and more." } },
             { "@type": "Question", "name": "Can I print labels?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — the tool includes a label-print dialog for thermal printers (Zebra, Brother, Dymo) and A4 grid sheets (Avery layouts)." } },
             { "@type": "Question", "name": "Can I use generated barcodes commercially?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. You are free to use the barcodes in any commercial or personal project. EAN/UPC numbers must still be registered with GS1 if you sell retail." } }
+        ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "inLanguage": "en",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/" },
+            { "@type": "ListItem", "position": 2, "name": "Barcode Generator", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/" }
         ]
     }
     </script>
@@ -281,13 +296,13 @@
                     <div class="control-group">
                         <label id="text-align-label">Text alignment</label>
                         <div class="btn-group" role="group" aria-labelledby="text-align-label">
-                            <button class="btn-option" data-value="left" data-target="text-align" aria-label="Align left">
+                            <button class="btn-option" data-value="left" data-target="text-align" aria-pressed="false" aria-label="Align left">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="2" y="7" width="8" height="1.5"/><rect x="2" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option active" data-value="center" data-target="text-align" aria-label="Align center">
+                            <button class="btn-option active" data-value="center" data-target="text-align" aria-pressed="true" aria-label="Align center">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="4" y="7" width="8" height="1.5"/><rect x="3" y="11" width="10" height="1.5"/></svg>
                             </button>
-                            <button class="btn-option" data-value="right" data-target="text-align" aria-label="Align right">
+                            <button class="btn-option" data-value="right" data-target="text-align" aria-pressed="false" aria-label="Align right">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="3" width="12" height="1.5"/><rect x="6" y="7" width="8" height="1.5"/><rect x="4" y="11" width="10" height="1.5"/></svg>
                             </button>
                         </div>

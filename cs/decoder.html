@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dekodér čárových kódů — Bezplatný online skener</title>
     <meta name="description" content="Bezplatný online dekodér čárových kódů. Nahrajte obrázek nebo jej přetáhněte — EAN-13, UPC, Code 128, QR a další. 100% na straně klienta.">
-    <meta name="keywords" content="dekodér čárových kódů, online skener, čtení čárového kódu, QR dekodér, EAN dekodér">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/cs/decoder.html">
     <link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps-contact.workers.dev/decoder.html">
@@ -51,6 +50,39 @@
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
     }
     </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Jak dekódovat čárový kód z obrázku",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Nahrát obrázek", "text": "Přetáhněte obrázek, kliknutím vyberte soubor nebo vložte ze schránky (Ctrl+V)." },
+            { "@type": "HowToStep", "position": 2, "name": "Automatické dekódování", "text": "Dekodér běží zcela ve vašem prohlížeči pomocí ZXing-JS — obrázek nikdy neopustí vaše zařízení." },
+            { "@type": "HowToStep", "position": 3, "name": "Zobrazit výsledky", "text": "Zobrazte dekódovanou hodnotu, formát a zkopírujte ji jedním kliknutím." }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "Jaké formáty jsou podporovány?", "acceptedAnswer": { "@type": "Answer", "text": "EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF, QR kód, Data Matrix, Aztec, PDF417 a další." } },
+            { "@type": "Question", "name": "Nahrává se můj obrázek na server?", "acceptedAnswer": { "@type": "Answer", "text": "Ne. Veškeré dekódování probíhá lokálně ve vašem prohlížeči. Vaše obrázky nikdy neopustí zařízení." } },
+            { "@type": "Question", "name": "Proč se můj kód nedetekuje?", "acceptedAnswer": { "@type": "Answer", "text": "Ujistěte se, že je obrázek ostrý, dobře osvětlený a kód zabírá významnou část. Ořízněte těsně a vyhněte se odleskům a rozmazání." } }
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Domů", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/cs/" },
+            { "@type": "ListItem", "position": 2, "name": "Dekodér", "item": "https://barcode-generator.daytodayapps-contact.workers.dev/cs/decoder.html" }
+        ]
+    }
+    </script>
 </head>
 <body>
     <div class="app">
@@ -58,9 +90,16 @@
             <div class="lang-switch">
                 <button class="lang-current" id="lang-toggle">🇨🇿 CS ▾</button>
                 <div class="lang-dropdown" id="lang-dropdown">
-                    <a href="decoder.html" class="lang-option active">🇨🇿 CS</a>
                     <a href="../decoder.html" class="lang-option">🇬🇧 English</a>
                     <a href="../pl/decoder.html" class="lang-option">🇵🇱 Polski</a>
+                    <a href="../de/decoder.html" class="lang-option">🇩🇪 Deutsch</a>
+                    <a href="../fr/decoder.html" class="lang-option">🇫🇷 Français</a>
+                    <a href="../es/decoder.html" class="lang-option">🇪🇸 Español</a>
+                    <a href="../it/decoder.html" class="lang-option">🇮🇹 Italiano</a>
+                    <a href="../pt/decoder.html" class="lang-option">🇵🇹 Português</a>
+                    <a href="../nl/decoder.html" class="lang-option">🇳🇱 Nederlands</a>
+                    <a href="decoder.html" class="lang-option active">🇨🇿 Čeština</a>
+                    <a href="../uk/decoder.html" class="lang-option">🇺🇦 Українська</a>
                 </div>
             </div>
             <button class="theme-toggle" id="theme-toggle" title="Přepnout motiv" aria-label="Přepnout motiv">
@@ -91,9 +130,9 @@
                 <div class="decoder-feature"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="10 2 2 6 10 10 18 6 10 2"/><polyline points="2 10 10 14 18 10"/><polyline points="2 14 10 18 18 14"/></svg><span>20+ formátů</span></div>
             </div>
             <div class="camera-row">
-                <button id="camera-btn" class="camera-btn" type="button" aria-label="Scan barcode with camera">
+                <button id="camera-btn" class="camera-btn" type="button" aria-label="Skenovat čárový kód kamerou">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                    <span>Scan with camera</span>
+                    <span>Skenovat kamerou</span>
                 </button>
             </div>
 
@@ -126,23 +165,11 @@
             <p>Založeno na <a href="https://github.com/zxing-js/library" rel="noopener noreferrer" target="_blank">ZXing</a> — open source.</p>
         </footer>
     </div>
-    <div id="camera-modal" class="camera-modal" role="dialog" aria-modal="true" aria-label="Camera barcode scanner" hidden>
-        <div class="camera-modal-inner">
-            <video id="camera-video" class="camera-video" playsinline muted autoplay></video>
-            <div class="camera-frame" aria-hidden="true"></div>
-            <button id="camera-close" class="camera-close" type="button" aria-label="Close camera">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
-            </button>
-            <div class="camera-hint">Point your camera at a barcode</div>
-        </div>
-    </div>
-
-
-    <div id="camera-modal" class="camera-modal" role="dialog" aria-modal="true" aria-label="Camera barcode scanner" hidden>
+    <div id="camera-modal" class="camera-modal" role="dialog" aria-modal="true" aria-label="Skener čárových kódů kamerou" hidden>
         <div class="camera-modal-inner">
             <div class="camera-header">
                 <div class="camera-header-controls"></div>
-                <button id="camera-close" class="camera-close" type="button" aria-label="Close camera">
+                <button id="camera-close" class="camera-close" type="button" aria-label="Zavřít kameru">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
                 </button>
             </div>
@@ -151,7 +178,7 @@
                 <div class="camera-frame" aria-hidden="true"></div>
             </div>
             <aside class="camera-side" hidden></aside>
-            <div class="camera-hint">Point your camera at a barcode</div>
+            <div class="camera-hint">Namiřte kameru na čárový kód</div>
         </div>
     </div>
 

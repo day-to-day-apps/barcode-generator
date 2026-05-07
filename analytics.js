@@ -6,7 +6,7 @@
     // CONFIGURATION — Replace these with your real IDs when ready
     // ============================================================
     const GA4_MEASUREMENT_ID = ''; // e.g. 'G-XXXXXXXXXX'
-    const ADSENSE_PUBLISHER_ID = ''; // e.g. 'ca-pub-XXXXXXXXXXXXXXXX'
+    const ADSENSE_PUBLISHER_ID = 'ca-pub-2527047257613855';
 
     // ============================================================
     // Google Analytics 4

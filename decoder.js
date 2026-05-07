@@ -51,19 +51,18 @@
     const cameraVideo = document.getElementById('camera-video');
     const cameraClose = document.getElementById('camera-close');
 
-    // Translations fallback
     const strings = {
-        decoding: T.decoder_decoding || 'Decoding…',
-        notFound: T.decoder_not_found || 'No barcode detected in the image. Try a clearer photo or different angle.',
-        invalidFile: T.decoder_invalid_file || 'Please select a valid image file (JPG, PNG, WebP).',
-        tooLarge: T.decoder_too_large || 'Image too large (max 10 MB).',
-        copied: T.decoder_copied || 'Copied!',
-        copyFailed: T.decoder_copy_failed || 'Copy failed',
-        formatLabel: T.decoder_format_label || 'Format',
-        valueLabel: T.decoder_value_label || 'Value',
-        cameraUnavailable: T.decoder_camera_unavailable || 'Camera not available in this browser. Use HTTPS and grant permission.',
-        cameraDenied: T.decoder_camera_denied || 'Camera permission denied.',
-        cameraNotFound: T.decoder_camera_not_found || 'No camera found on this device.'
+        decoding: T.decoder_decoding,
+        notFound: T.decoder_not_found,
+        invalidFile: T.decoder_invalid_file,
+        tooLarge: T.decoder_too_large,
+        copied: T.decoder_copied,
+        copyFailed: T.decoder_copy_failed,
+        formatLabel: T.decoder_format_label,
+        valueLabel: T.decoder_value_label,
+        cameraUnavailable: T.decoder_camera_unavailable,
+        cameraDenied: T.decoder_camera_denied,
+        cameraNotFound: T.decoder_camera_not_found
     };
 
     const MAX_SIZE = 10 * 1024 * 1024;
