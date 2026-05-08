@@ -85,6 +85,7 @@
     </script>
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
     <div class="app">
         <header class="animated-header">
             <div class="lang-switch">
@@ -115,7 +116,7 @@
             <a href="decoder.html" class="active">Decodificador</a>
         </nav>
 
-        <main class="decoder-main">
+        <main id="main-content" tabindex="-1" class="decoder-main">
             <p class="decoder-intro">Suelte una imagen, haga clic para elegir un archivo o péguela desde el portapapeles (Ctrl+V). Todo ocurre en su navegador: las imágenes nunca salen del dispositivo.</p>
 
             <label for="file-input" id="drop-area" class="drop-area" tabindex="0">

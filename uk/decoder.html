@@ -85,6 +85,7 @@
     </script>
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Перейти до основного вмісту</a>
     <div class="app">
         <header class="animated-header">
             <div class="lang-switch">
@@ -115,7 +116,7 @@
             <a href="decoder.html" class="active">Декодер</a>
         </nav>
 
-        <main class="decoder-main">
+        <main id="main-content" tabindex="-1" class="decoder-main">
             <p class="decoder-intro">Перетягніть зображення, клацніть, щоб обрати файл, або вставте з буфера обміну (Ctrl+V). Усе відбувається у вашому браузері — зображення не залишають пристрій.</p>
 
             <label for="file-input" id="drop-area" class="drop-area" tabindex="0">

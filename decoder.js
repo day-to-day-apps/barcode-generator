@@ -35,6 +35,16 @@
     const LANG = document.documentElement.lang || 'en';
     const T = (window.BARCODE_I18N || {})[LANG] || (window.BARCODE_I18N || {})['en'] || {};
 
+    function formatName(format) {
+        if (typeof format === 'string') return format;
+        if (typeof format === 'number' && window.ZXing && window.ZXing.BarcodeFormat) {
+            const name = Object.keys(window.ZXing.BarcodeFormat)
+                .find((k) => window.ZXing.BarcodeFormat[k] === format);
+            if (name) return name.replace(/_/g, '-');
+        }
+        return String(format);
+    }
+
     const dropArea = document.getElementById('drop-area');
     const fileInput = document.getElementById('file-input');
     const previewImg = document.getElementById('preview-img');
@@ -167,7 +177,7 @@
 
             const result = await reader.decodeFromImageElement(previewImg);
 
-            resultType.textContent = result.getBarcodeFormat();
+            resultType.textContent = formatName(result.getBarcodeFormat());
             resultValue.textContent = result.getText();
             resultBox.hidden = false;
         } catch (e) {
@@ -838,10 +848,7 @@
         await reader.decodeFromConstraints(constraints, cameraVideo, (result) => {
             if (!result) return;
             const format = result.getBarcodeFormat ? result.getBarcodeFormat() : '';
-            const formatName = typeof format === 'number' && window.ZXing && window.ZXing.BarcodeFormat
-                ? Object.keys(window.ZXing.BarcodeFormat).find(k => window.ZXing.BarcodeFormat[k] === format) || String(format)
-                : String(format);
-            handleDetection(formatName, result.getText());
+            handleDetection(formatName(format), result.getText());
         });
 
         // ZXing attaches its own stream; capture the reference for cleanup and focus
