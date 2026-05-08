@@ -1,0 +1,14 @@
+node_modules
+tests
+playwright-report
+test-results
+.wrangler
+.git
+.github
+supabase
+package.json
+package-lock.json
+bun.lock
+bun.lockb
+playwright.config.*
+*.log
