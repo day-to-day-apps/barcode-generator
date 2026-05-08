@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account — Barcode Generator</title>
+    <meta name="description" content="Sign in to Barcode Generator to save and revisit your codes.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/nl/konto.html">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../styles.css?v=20260507000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="../i18n.js?v=20260507000000"></script>
+</head>
+<body>
+    <div class="app">
+        <header class="animated-header">
+            <div class="logo">
+                <h1 data-i18n="title">Account</h1>
+                <p class="subtitle" data-i18n="subtitle">Sign in with a magic link to save your barcodes.</p>
+            </div>
+            <nav aria-label="Primary"><a href="./" data-i18n="backToGenerator">&larr; Back to generator</a></nav>
+        </header>
+
+        <main id="main-content" class="container">
+            <section class="card" aria-labelledby="account-title">
+                <h2 id="account-title" data-i18n="signIn">Sign in</h2>
+
+                <div id="signed-out" hidden>
+                    <form id="magic-form" novalidate>
+                        <label for="email-input" data-i18n="email">Email address</label>
+                        <input
+                            id="email-input"
+                            name="email"
+                            type="email"
+                            autocomplete="email"
+                            inputmode="email"
+                            required
+                            aria-describedby="email-status"
+                            data-i18n-placeholder="emailPlaceholder"
+                            placeholder="you@example.com">
+                        <button type="submit" id="magic-submit" class="btn-primary" data-i18n="magicLink">Send magic link</button>
+                    </form>
+                </div>
+
+                <div id="signed-in" hidden>
+                    <p><span data-i18n="signedInAs">Signed in as</span> <strong id="user-email"></strong>.</p>
+                    <p>
+                        <a class="btn-primary" href="moje-kody.html" data-i18n="mySavedCodes">My saved codes</a>
+                        <button type="button" id="signout-btn" class="btn-action" data-i18n="signOut">Sign out</button>
+                    </p>
+                </div>
+
+                <div id="email-status" role="status" aria-live="polite"></div>
+                <noscript>This page requires JavaScript to sign in.</noscript>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 Barcode Generator. <a href="polityka-prywatnosci.html">Privacy</a></p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { getSupabase, getSession, onAuthStateChange } from '../supabase-client.js';
+
+        const LANG = document.documentElement.lang || 'en';
+        const I = window.BARCODE_I18N || {};
+        const T = (I[LANG] && I[LANG].account) || (I.en && I.en.account) || {};
+
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+            const key = el.getAttribute('data-i18n');
+            if (T[key]) el.textContent = T[key];
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (T[key]) el.setAttribute('placeholder', T[key]);
+        });
+        if (T.title) document.title = `${T.title} — Barcode Generator`;
+
+        const $ = (id) => document.getElementById(id);
+        const status = $('email-status');
+        const setStatus = (msg, isError = false) => {
+            status.textContent = '';
+            status.className = isError ? 'form-error' : 'form-success';
+            requestAnimationFrame(() => { status.textContent = msg; });
+        };
+
+        function renderSession(session) {
+            const signedIn = !!session?.user;
+            $('signed-in').hidden = !signedIn;
+            $('signed-out').hidden = signedIn;
+            if (signedIn) {
+                $('user-email').textContent = session.user.email ?? '';
+            }
+        }
+
+        async function init() {
+            const sb = await getSupabase();
+            if (!sb) {
+                setStatus(T.notConfigured || 'Account features are not configured.', true);
+                $('signed-out').hidden = false;
+                $('magic-submit').disabled = true;
+                return;
+            }
+
+            renderSession(await getSession());
+            await onAuthStateChange((_event, session) => renderSession(session));
+
+            $('magic-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = $('email-input').value.trim();
+                if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+                    setStatus(T.invalidEmail || 'Please enter a valid email address.', true);
+                    return;
+                }
+                $('magic-submit').disabled = true;
+                setStatus(T.sending || 'Sending…');
+                const redirectPath = LANG === 'en' ? '/konto.html' : `/${LANG}/konto.html`;
+                const { error } = await sb.auth.signInWithOtp({
+                    email,
+                    options: { emailRedirectTo: window.location.origin + redirectPath },
+                });
+                $('magic-submit').disabled = false;
+                if (error) {
+                    setStatus(error.message || T.sendFail || 'Could not send magic link.', true);
+                    return;
+                }
+                setStatus(T.checkInbox || 'Check your inbox — we sent a one-time sign-in link.');
+            });
+
+            $('signout-btn').addEventListener('click', async () => {
+                await sb.auth.signOut();
+                setStatus(T.signedOut || 'Signed out.');
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
