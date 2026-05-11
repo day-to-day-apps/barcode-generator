@@ -178,17 +178,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderQR(text) {
-        const inst = ensureQRInstance();
-        if (!inst || !qrPreview) return;
-        inst.update({
+        if (typeof QRCodeStyling === 'undefined' || !qrPreview) return;
+        qrInstance = new QRCodeStyling({
+            width: 440,
+            height: 440,
+            type: 'svg',
             data: text,
+            margin: 16,
             qrOptions: { errorCorrectionLevel: qrEcc ? qrEcc.value : 'M' },
             dotsOptions: { color: lineColor.value, type: 'square' },
             backgroundOptions: { color: bgColor.value },
+            imageOptions: { hideBackgroundDots: true, imageSize: 0.3, margin: 4 },
             image: qrLogoDataUrl || undefined,
         });
         qrPreview.innerHTML = '';
-        inst.append(qrPreview);
+        qrInstance.append(qrPreview);
         qrPreview.classList.add('active');
     }
 
@@ -323,6 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
+            let isValid = true;
             JsBarcode(barcodeSvg, text, {
                 format: barcodeType.value,
                 width: parseFloat(barWidth.value),
@@ -337,10 +342,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 fontOptions: '500',
                 valid: function(valid) {
                     if (!valid) {
+                        isValid = false;
                         showError((T.errInvalid || 'Invalid value for format {0}').replace('{0}', barcodeType.value));
                     }
                 }
             });
+
+            if (!isValid) {
+                barcodeSvg.replaceChildren();
+                barcodeContainer.style.display = 'none';
+                previewHint.style.display = 'block';
+                return;
+            }
 
             barcodeContainer.style.display = 'flex';
             previewHint.style.display = 'none';

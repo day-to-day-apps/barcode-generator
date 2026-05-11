@@ -3461,12 +3461,12 @@ footer {
     background: var(--primary-light);
 }
 /* Per-format left-border accent — colour-codes the category at a glance */
-.popular-card[data-format="EAN13"]   { border-left-color: #16a34a; } /* retail EU */
-.popular-card[data-format="UPC"]     { border-left-color: #16a34a; } /* retail US */
-.popular-card[data-format="CODE128"] { border-left-color: #2563eb; } /* logistics */
-.popular-card[data-format="CODE39"]  { border-left-color: #7c3aed; } /* industrial */
-.popular-card[data-format="ITF14"]   { border-left-color: #2563eb; } /* cartons */
-.popular-card[data-format="QR"]      { border-left-color: #0891b2; } /* mobile */
+.popular-card[data-format="EAN13"]   { border-left-color: #4f46e5; } /* indigo-600 / brand */
+.popular-card[data-format="UPC"]     { border-left-color: #6366f1; } /* indigo-500 */
+.popular-card[data-format="CODE128"] { border-left-color: #7c3aed; } /* violet-600 */
+.popular-card[data-format="CODE39"]  { border-left-color: #8b5cf6; } /* violet-500 */
+.popular-card[data-format="ITF14"]   { border-left-color: #3b82f6; } /* blue-500 */
+.popular-card[data-format="QR"]      { border-left-color: #06b6d4; } /* cyan-500 */
 
 .popular-card__preview {
     display: flex;
