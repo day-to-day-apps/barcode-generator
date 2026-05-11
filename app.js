@@ -153,47 +153,91 @@ document.addEventListener('DOMContentLoaded', () => {
         'codabar': 'A12345B',
     };
 
-    // ===== QR Code support (qr-code-styling) =====
+    // ===== QR Code support (qrcode-generator) =====
     const qrPreview = document.getElementById('qr-preview');
     const qrOptions = document.getElementById('qr-options');
     const qrEcc = document.getElementById('qr-ecc');
     const qrLogoInput = document.getElementById('qr-logo-input');
     let qrLogoDataUrl = null;
-    let qrInstance = null;
+    let qrMatrix = null; // last successfully built qrcode-generator instance
+    const QR_LOGO_SIZE_PCT = 22; // logo size relative to QR side (with bg padding)
 
-    function ensureQRInstance() {
-        if (qrInstance || typeof QRCodeStyling === 'undefined') return qrInstance;
-        qrInstance = new QRCodeStyling({
-            width: 440,
-            height: 440,
-            type: 'svg',
-            data: '',
-            margin: 16,
-            qrOptions: { errorCorrectionLevel: 'M' },
-            dotsOptions: { color: '#000000', type: 'square' },
-            backgroundOptions: { color: '#ffffff' },
-            imageOptions: { hideBackgroundDots: true, imageSize: 0.3, margin: 4 },
-        });
-        return qrInstance;
+    // Build a viewBox-based SVG string that scales fluidly when width/height = "100%".
+    // pxSize: explicit pixel dimensions for export (PNG raster, SVG download).
+    function buildQrSvgString(qr, { fg, bg, margin = 4, logoDataUrl = null, logoSizePct = QR_LOGO_SIZE_PCT, pxSize = null } = {}) {
+        const n = qr.getModuleCount();
+        const total = n + margin * 2;
+        const cell = 10;
+        const sz = total * cell;
+        const rects = [];
+        for (let r = 0; r < n; r++) {
+            for (let c = 0; c < n; c++) {
+                if (qr.isDark(r, c)) {
+                    rects.push(`<rect x="${(c + margin) * cell}" y="${(r + margin) * cell}" width="${cell}" height="${cell}"/>`);
+                }
+            }
+        }
+        let logoSvg = '';
+        if (logoDataUrl) {
+            const logoSize = Math.floor(sz * (logoSizePct / 100));
+            const lx = Math.floor((sz - logoSize) / 2);
+            const padPx = Math.max(4, Math.floor(cell * 0.8));
+            logoSvg = `<rect x="${lx - padPx}" y="${lx - padPx}" width="${logoSize + padPx * 2}" height="${logoSize + padPx * 2}" fill="${bg}"/>` +
+                `<image x="${lx}" y="${lx}" width="${logoSize}" height="${logoSize}" href="${logoDataUrl}"/>`;
+        }
+        const dim = pxSize ? `width="${pxSize}" height="${pxSize}"` : `width="100%" height="100%"`;
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${sz} ${sz}" ${dim} shape-rendering="crispEdges" role="img" aria-label="QR code">` +
+            `<rect width="${sz}" height="${sz}" fill="${bg}"/>` +
+            `<g fill="${fg}">${rects.join('')}</g>` +
+            logoSvg +
+            `</svg>`;
     }
 
     function renderQR(text) {
-        if (typeof QRCodeStyling === 'undefined' || !qrPreview) return;
-        qrInstance = new QRCodeStyling({
-            width: 440,
-            height: 440,
-            type: 'svg',
-            data: text,
-            margin: 16,
-            qrOptions: { errorCorrectionLevel: qrEcc ? qrEcc.value : 'M' },
-            dotsOptions: { color: lineColor.value, type: 'square' },
-            backgroundOptions: { color: bgColor.value },
-            imageOptions: { hideBackgroundDots: true, imageSize: 0.3, margin: 4 },
-            image: qrLogoDataUrl || undefined,
+        if (typeof window.qrcode === 'undefined' || !qrPreview) return;
+        // Auto-promote ECC to 'H' when a logo is present to preserve scan reliability.
+        let ecc = qrEcc ? qrEcc.value : 'M';
+        if (qrLogoDataUrl && ecc !== 'H') ecc = 'H';
+        try {
+            const qr = window.qrcode(0, ecc);
+            qr.addData(text);
+            qr.make();
+            qrMatrix = qr;
+            qrPreview.innerHTML = buildQrSvgString(qr, {
+                fg: lineColor.value,
+                bg: bgColor.value,
+                margin: 4,
+                logoDataUrl: qrLogoDataUrl,
+            });
+            qrPreview.classList.add('active');
+        } catch (_) {
+            qrMatrix = null;
+            qrPreview.innerHTML = '';
+        }
+    }
+
+    // Raster QR (current state) to PNG Blob at the requested pixel size.
+    function qrToPngBlob(pxSize = 1024) {
+        return new Promise((resolve, reject) => {
+            if (!qrMatrix) { reject(new Error('No QR matrix')); return; }
+            const svg = buildQrSvgString(qrMatrix, {
+                fg: lineColor.value,
+                bg: bgColor.value,
+                margin: 4,
+                logoDataUrl: qrLogoDataUrl,
+                pxSize,
+            });
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = pxSize;
+                canvas.height = pxSize;
+                canvas.getContext('2d').drawImage(img, 0, 0, pxSize, pxSize);
+                canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/png');
+            };
+            img.onerror = () => reject(new Error('SVG load failed'));
+            img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
         });
-        qrPreview.innerHTML = '';
-        qrInstance.append(qrPreview);
-        qrPreview.classList.add('active');
     }
 
     function isQR() { return barcodeType.value === 'QR'; }
@@ -218,19 +262,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!cfg) return;
             el.innerHTML = '';
             if (fmt === 'QR') {
-                if (typeof QRCodeStyling === 'undefined') return;
+                if (typeof window.qrcode === 'undefined') return;
                 try {
-                    const qr = new QRCodeStyling({
-                        width: 80,
-                        height: 80,
-                        type: 'svg',
-                        data: cfg.value,
-                        margin: 4,
-                        qrOptions: { errorCorrectionLevel: 'M' },
-                        dotsOptions: { color: '#000000', type: 'square' },
-                        backgroundOptions: { color: '#ffffff' }
-                    });
-                    qr.append(el);
+                    const qr = window.qrcode(0, 'M');
+                    qr.addData(cfg.value);
+                    qr.make();
+                    el.innerHTML = buildQrSvgString(qr, { fg: '#0f172a', bg: '#ffffff', margin: 2, pxSize: 80 });
                 } catch (_) { /* preview only */ }
                 return;
             }
@@ -409,9 +446,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Download PNG
     btnDownloadPng.addEventListener('click', async () => {
         if (isQR()) {
-            if (!qrInstance) { showToast(T.genFirst || 'Generate a barcode first'); return; }
-            await qrInstance.download({ name: `qr_${barcodeText.value.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40)}`, extension: 'png' });
-            showToast(T.pngDl || 'PNG file downloaded');
+            if (!qrMatrix) { showToast(T.genFirst || 'Generate a barcode first'); return; }
+            try {
+                const blob = await qrToPngBlob(1024);
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `qr_${barcodeText.value.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40)}.png`;
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+                showToast(T.pngDl || 'PNG file downloaded');
+            } catch {
+                showToast(T.copyFail || 'Could not export');
+            }
             return;
         }
         const svgEl = barcodeSvg;
@@ -444,8 +491,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Download SVG
     btnDownloadSvg.addEventListener('click', async () => {
         if (isQR()) {
-            if (!qrInstance) { showToast(T.genFirst || 'Generate a barcode first'); return; }
-            await qrInstance.download({ name: `qr_${barcodeText.value.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40)}`, extension: 'svg' });
+            if (!qrMatrix) { showToast(T.genFirst || 'Generate a barcode first'); return; }
+            const svg = buildQrSvgString(qrMatrix, {
+                fg: lineColor.value,
+                bg: bgColor.value,
+                margin: 4,
+                logoDataUrl: qrLogoDataUrl,
+                pxSize: 1024,
+            });
+            const blob = new Blob([`<?xml version="1.0" encoding="UTF-8"?>\n` + svg], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = `qr_${barcodeText.value.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40)}.svg`;
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
             showToast(T.svgDl || 'SVG file downloaded');
             return;
         }
@@ -469,9 +529,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Copy to clipboard
     btnCopy.addEventListener('click', async () => {
         if (isQR()) {
-            if (!qrInstance) { showToast(T.genFirst || 'Generate a barcode first'); return; }
+            if (!qrMatrix) { showToast(T.genFirst || 'Generate a barcode first'); return; }
             try {
-                const blob = await qrInstance.getRawData('png');
+                const blob = await qrToPngBlob(1024);
                 await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
                 showToast(T.copied || 'Copied to clipboard');
             } catch {

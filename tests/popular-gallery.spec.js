@@ -78,13 +78,13 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
       }
     });
 
-    test(`[${code}] main QR preview renders at >= 400px`, async ({ page }) => {
+    test(`[${code}] main QR preview fills panel (>= 280px)`, async ({ page }) => {
       await page.goto(path);
       await page.locator('.popular-card[data-format="QR"]').click();
       const svg = page.locator('#qr-preview svg');
       await expect(svg).toBeVisible({ timeout: 5000 });
-      const width = await svg.evaluate((el) => Number(el.getAttribute('width') || el.getBoundingClientRect().width));
-      expect(width).toBeGreaterThanOrEqual(400);
+      const width = await svg.evaluate((el) => el.getBoundingClientRect().width);
+      expect(width).toBeGreaterThanOrEqual(280);
     });
   }
 
