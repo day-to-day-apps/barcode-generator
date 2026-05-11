@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preload" href="../styles.css?v=20260428000000" as="style">
+    <link rel="preload" href="../styles.css?v=20260511000000" as="style">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
@@ -27,7 +27,7 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Generátor Čárových Kódů — Bezplatný online nástroj">
-    <meta property="og:description" content="Vytvořte profesionální čárové kódy během vteřin. 18 standardů, export PNG/SVG, tisk štítků.">
+    <meta property="og:description" content="Vytvořte profesionální čárové kódy během vteřin. 20 standardů + QR kód, export PNG/SVG, tisk štítků.">
     <meta property="og:url" content="https://barcode-generator.daytodayapps-contact.workers.dev/cs/">
     <meta property="og:image" content="https://barcode-generator.daytodayapps-contact.workers.dev/og-image.png">
     <meta property="og:locale" content="cs_CZ">
@@ -44,7 +44,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Generátor Čárových Kódů — Bezplatný online nástroj">
-    <meta name="twitter:description" content="Bezplatný online generátor čárových kódů — 18 standardů, export PNG/SVG, tisk štítků.">
+    <meta name="twitter:description" content="Bezplatný online generátor čárových kódů — 20 standardů + QR kód, export PNG/SVG, tisk štítků.">
     <meta name="twitter:image" content="https://barcode-generator.daytodayapps-contact.workers.dev/og-image.png">
 
     <!-- Favicon -->
@@ -57,7 +57,7 @@
         "@type": "WebApplication",
         "name": "Barcode Generator",
         "url": "https://barcode-generator.daytodayapps-contact.workers.dev/cs/",
-        "description": "Bezplatný online generátor čárových kódů. 18 standardů, export PNG/SVG, tisk štítků.",
+        "description": "Bezplatný online generátor čárových kódů. 20 standardů + QR kód, export PNG/SVG, tisk štítků.",
         "applicationCategory": "UtilityApplication",
         "operatingSystem": "Any",
         "offers": {
@@ -94,7 +94,7 @@
         "mainEntity": [
             { "@type": "Question", "name": "Je generátor opravdu zdarma?", "acceptedAnswer": { "@type": "Answer", "text": "Ano — zcela zdarma, bez registrace, bez vodoznaků a bez limitu." } },
             { "@type": "Question", "name": "Zůstávají moje data soukromá?", "acceptedAnswer": { "@type": "Answer", "text": "Ano. Generování probíhá zcela ve vašem prohlížeči. Nic se neodesílá na server." } },
-            { "@type": "Question", "name": "Jaké formáty jsou podporovány?", "acceptedAnswer": { "@type": "Answer", "text": "18 standardů včetně EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF-14, Codabar, MSI, Pharmacode a QR Code." } },
+            { "@type": "Question", "name": "Jaké formáty jsou podporovány?", "acceptedAnswer": { "@type": "Answer", "text": "20 standardů + QR kód včetně EAN-13, EAN-8, UPC-A, UPC-E, Code 128, Code 39, ITF-14, Codabar, MSI, Pharmacode a QR Code." } },
             { "@type": "Question", "name": "Mohu dekódovat kód z obrázku?", "acceptedAnswer": { "@type": "Answer", "text": "Ano — použijte Dekodér. Nahrajte fotografii nebo vložte snímek obrazovky." } },
             { "@type": "Question", "name": "Mohu tisknout štítky?", "acceptedAnswer": { "@type": "Answer", "text": "Ano — nástroj podporuje termální tiskárny (Zebra, Brother, Dymo) i listy A4 (Avery)." } },
             { "@type": "Question", "name": "Mohu kódy používat komerčně?", "acceptedAnswer": { "@type": "Answer", "text": "Ano. Čísla EAN/UPC musí být registrována u GS1, pokud prodáváte v maloobchodě." } }
@@ -114,7 +114,7 @@
     }
     </script>
 
-    <link rel="stylesheet" href="../styles.css?v=20260428000000">
+    <link rel="stylesheet" href="../styles.css?v=20260511000000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
@@ -194,6 +194,17 @@
         </div>
 
         <main id="main-content" tabindex="-1">
+            <section class="popular-section" aria-labelledby="popular-title">
+                <h2 id="popular-title" class="popular-section__title" data-i18n="popularTitle">Oblíbené formáty</h2>
+                <div class="popular-gallery">
+                    <button type="button" class="popular-card" data-format="EAN13" aria-pressed="false"><span class="popular-card__icon" aria-hidden="true"><svg viewBox="0 0 56 32"><path d="M2 0v32M5 0v32M7 0v32M11 0v32M14 0v32M17 0v32M21 0v32M24 0v32M28 0v32M32 0v32M35 0v32M39 0v32M43 0v32M47 0v32M50 0v32M54 0v32" stroke="currentColor" stroke-width="1.5"/></svg></span><span class="popular-card__label" data-i18n="popularEan13">EAN-13</span></button>
+                    <button type="button" class="popular-card" data-format="UPC" aria-pressed="false"><span class="popular-card__icon" aria-hidden="true"><svg viewBox="0 0 56 32"><path d="M3 0v32M6 0v32M9 0v32M13 0v32M16 0v32M20 0v32M23 0v32M27 0v32M30 0v32M34 0v32M37 0v32M41 0v32M44 0v32M48 0v32M51 0v32" stroke="currentColor" stroke-width="1.5"/></svg></span><span class="popular-card__label" data-i18n="popularUpc">UPC-A</span></button>
+                    <button type="button" class="popular-card" data-format="CODE128" aria-pressed="false"><span class="popular-card__icon" aria-hidden="true"><svg viewBox="0 0 56 32"><path d="M2 0v32M4 0v32M8 0v32M12 0v32M15 0v32M18 0v32M22 0v32M26 0v32M29 0v32M33 0v32M37 0v32M40 0v32M44 0v32M48 0v32M52 0v32" stroke="currentColor" stroke-width="1.5"/></svg></span><span class="popular-card__label" data-i18n="popularCode128">Code 128</span></button>
+                    <button type="button" class="popular-card" data-format="CODE39" aria-pressed="false"><span class="popular-card__icon" aria-hidden="true"><svg viewBox="0 0 56 32"><path d="M3 0v32M7 0v32M10 0v32M14 0v32M19 0v32M23 0v32M27 0v32M31 0v32M36 0v32M40 0v32M44 0v32M49 0v32M53 0v32" stroke="currentColor" stroke-width="1.5"/></svg></span><span class="popular-card__label" data-i18n="popularCode39">Code 39</span></button>
+                    <button type="button" class="popular-card" data-format="ITF14" aria-pressed="false"><span class="popular-card__icon" aria-hidden="true"><svg viewBox="0 0 56 32"><path d="M4 0v32M9 0v32M13 0v32M18 0v32M22 0v32M27 0v32M31 0v32M36 0v32M40 0v32M45 0v32M49 0v32" stroke="currentColor" stroke-width="2"/></svg></span><span class="popular-card__label" data-i18n="popularItf14">ITF-14</span></button>
+                    <button type="button" class="popular-card" data-format="QR" aria-pressed="false"><span class="popular-card__icon" aria-hidden="true"><svg viewBox="0 0 56 32"><g fill="currentColor"><rect x="4" y="4" width="7" height="7"/><rect x="4" y="21" width="7" height="7"/><rect x="45" y="4" width="7" height="7"/><rect x="17" y="4" width="3" height="3"/><rect x="23" y="8" width="3" height="3"/><rect x="29" y="4" width="3" height="3"/><rect x="36" y="7" width="3" height="3"/><rect x="17" y="15" width="3" height="3"/><rect x="23" y="19" width="3" height="3"/><rect x="30" y="15" width="3" height="3"/><rect x="37" y="19" width="3" height="3"/><rect x="45" y="19" width="3" height="3"/><rect x="49" y="25" width="3" height="3"/></g></svg></span><span class="popular-card__label" data-i18n="popularQr">QR Code</span></button>
+                </div>
+            </section>
             <div class="generator-panel">
                 <div class="controls">
                     <div class="control-group">
@@ -218,7 +229,24 @@
                             <option value="MSI1110">MSI-1110</option>
                             <option value="pharmacode">Pharmacode</option>
                             <option value="codabar">Codabar</option>
+                            <option value="QR">QR Code</option>
                         </select>
+                        <button type="button" class="btn-more" id="btn-more-formats" aria-expanded="false" aria-controls="barcode-type" data-i18n="btnMoreFormats">More formats</button>
+                    </div>
+                    <div class="qr-options" id="qr-options" hidden>
+                        <div class="qr-options__row">
+                            <label for="qr-ecc" data-i18n="qrEccLabel">Error correction</label>
+                            <select id="qr-ecc">
+                                <option value="L">L (7%)</option>
+                                <option value="M" selected>M (15%)</option>
+                                <option value="Q">Q (25%)</option>
+                                <option value="H">H (30%)</option>
+                            </select>
+                        </div>
+                        <div class="qr-options__row">
+                            <label for="qr-logo" data-i18n="qrLogoLabel">Logo (optional)</label>
+                            <input type="file" id="qr-logo" accept="image/png,image/jpeg,image/svg+xml">
+                        </div>
                     </div>
 
                     <div class="control-group">
@@ -346,6 +374,7 @@
                     <div class="preview-canvas" id="preview-canvas">
                         <div class="barcode-container" id="barcode-container">
                             <svg id="barcode-svg"></svg>
+                            <div id="qr-preview" aria-live="polite"></div>
                         </div>
                         <p class="preview-hint" id="preview-hint" style="display:none;">Zadejte text a klikněte na „Vygenerovat" pro zobrazení čárového kódu</p>
                     </div>
@@ -683,8 +712,9 @@
     <div id="print-output" class="print-only"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js" integrity="sha384-Kk5SjBOKprEnGfyBWfD2zROFd1Cu8kwOXxG2GIhYPcoDL2rBJS9P8Ud1ZMy4412a" crossorigin="anonymous"></script>
-    <script src="../i18n.js?v=20260428000000"></script>
-    <script src="../app.js?v=20260428000000"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js" integrity="sha384-50pczvCB0no/P1Foou0eD0Bul/9JKfIgx04I0bMpay6npYYwWTUgQxlGS5T7yKmn" crossorigin="anonymous"></script>
+    <script src="../i18n.js?v=20260511000000"></script>
+    <script src="../app.js?v=20260511000000"></script>
     <script src="../analytics.js" defer></script>
 </body>
 </html>

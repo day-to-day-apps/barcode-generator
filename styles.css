@@ -3413,3 +3413,149 @@ footer {
     }
     .scan-summary-preview { grid-column: 1 / -1; max-width: 100%; }
 }
+
+/* ===== Popular Gallery (6 quick-pick cards above generator) ===== */
+.popular-section {
+    margin: 0 0 24px;
+}
+.popular-section__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+}
+.popular-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+.popular-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 10px;
+    min-height: 88px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text);
+    font: inherit;
+    text-align: center;
+    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.popular-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    box-shadow: var(--shadow);
+}
+.popular-card:focus-visible {
+    outline: 3px solid var(--border-focus);
+    outline-offset: 2px;
+}
+.popular-card[aria-pressed="true"] {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+.popular-card__icon {
+    display: block;
+    width: 56px;
+    height: 32px;
+    background: #fff;
+    border-radius: 4px;
+    padding: 4px;
+    box-shadow: inset 0 0 0 1px var(--border);
+}
+.popular-card__icon svg { width: 100%; height: 100%; display: block; }
+.popular-card__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+}
+
+@media (max-width: 480px) {
+    .popular-gallery {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+    .popular-card { min-height: 76px; padding: 10px 6px; }
+    .popular-card__icon { width: 44px; height: 26px; }
+    .popular-card__label { font-size: 11px; }
+}
+
+/* ===== More-formats toggle ===== */
+.btn-more {
+    margin-top: 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color var(--transition), border-color var(--transition);
+}
+.btn-more::after {
+    content: '\25BC';
+    font-size: 10px;
+    transition: transform var(--transition);
+}
+.btn-more[aria-expanded="true"]::after { transform: rotate(180deg); }
+.btn-more:hover { color: var(--primary); border-color: var(--primary); }
+.btn-more:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
+
+/* Extended optgroup hidden state */
+optgroup.format-extended[hidden],
+.format-extended[hidden] { display: none; }
+
+/* ===== QR-specific options ===== */
+.qr-options[hidden] { display: none; }
+.qr-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    margin-top: 12px;
+    background: var(--primary-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+.qr-options__row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.qr-options__row label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+.qr-options input[type="file"] {
+    font-size: 13px;
+    padding: 6px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+}
+.qr-options input[type="file"]:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
+
+/* QR preview container (so QR can render alongside SVG <svg id="barcode-svg">) */
+#qr-preview { display: none; }
+#qr-preview.active { display: flex; justify-content: center; }
+#qr-preview canvas, #qr-preview svg { max-width: 100%; height: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+    .popular-card,
+    .btn-more,
+    .btn-more::after { transition: none; }
+    .popular-card:hover { transform: none; }
+}
