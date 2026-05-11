@@ -193,6 +193,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function isQR() { return barcodeType.value === 'QR'; }
 
+    function renderPopularPreviews() {
+        const samples = {
+            EAN13: '5901234123457',
+            UPC: '042100005264',
+            CODE128: 'SAMPLE-128',
+            CODE39: 'CODE 39',
+            ITF14: '10012345678902',
+            QR: 'https://barcode-generator.daytodayapps-contact.workers.dev/'
+        };
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        document.querySelectorAll('.popular-card__preview').forEach(el => {
+            const fmt = el.getAttribute('data-preview');
+            const value = samples[fmt];
+            if (!value) return;
+            el.innerHTML = '';
+            if (fmt === 'QR') {
+                if (typeof QRCodeStyling === 'undefined') return;
+                try {
+                    const qr = new QRCodeStyling({
+                        width: 64,
+                        height: 64,
+                        type: 'svg',
+                        data: value,
+                        qrOptions: { errorCorrectionLevel: 'M' },
+                        dotsOptions: { color: '#000000', type: 'square' },
+                        backgroundOptions: { color: '#ffffff' }
+                    });
+                    qr.append(el);
+                } catch (_) { /* preview only */ }
+                return;
+            }
+            if (typeof JsBarcode === 'undefined') return;
+            try {
+                const svg = document.createElementNS(SVG_NS, 'svg');
+                el.appendChild(svg);
+                JsBarcode(svg, value, {
+                    format: fmt,
+                    width: 1.4,
+                    height: 36,
+                    displayValue: false,
+                    margin: 0,
+                    background: '#ffffff',
+                    lineColor: '#000000'
+                });
+            } catch (_) { /* preview only */ }
+        });
+    }
+
     function syncTypeUI() {
         const qr = isQR();
         if (qrOptions) qrOptions.hidden = !qr;
@@ -232,25 +280,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ===== Mark extended formats (everything outside the core 7) =====
-    const CORE_FORMATS = new Set(['EAN13', 'EAN8', 'UPC', 'CODE128', 'CODE39', 'ITF14', 'QR']);
-    Array.from(barcodeType.options).forEach(opt => {
-        if (!CORE_FORMATS.has(opt.value)) {
-            opt.classList.add('format-extended');
-            opt.hidden = true;
-        }
-    });
-
-    // ===== More-formats toggle =====
-    const btnMore = document.getElementById('btn-more-formats');
-    if (btnMore) {
-        btnMore.addEventListener('click', () => {
-            const expanded = btnMore.getAttribute('aria-expanded') === 'true';
-            const next = !expanded;
-            btnMore.setAttribute('aria-expanded', String(next));
-            document.querySelectorAll('.format-extended').forEach(el => { el.hidden = !next; });
-        });
-    }
+    // ===== Render real previews inside popular cards =====
+    renderPopularPreviews();
 
     syncTypeUI();
 

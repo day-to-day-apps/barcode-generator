@@ -3460,16 +3460,25 @@ footer {
     border-color: var(--primary);
     background: var(--primary-light);
 }
-.popular-card__icon {
-    display: block;
-    width: 56px;
-    height: 32px;
+.popular-card__preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 48px;
     background: #fff;
     border-radius: 4px;
     padding: 4px;
     box-shadow: inset 0 0 0 1px var(--border);
+    overflow: hidden;
 }
-.popular-card__icon svg { width: 100%; height: 100%; display: block; }
+.popular-card__preview svg,
+.popular-card__preview canvas {
+    max-width: 100%;
+    height: auto;
+    max-height: 48px;
+    display: block;
+}
 .popular-card__label {
     font-size: 13px;
     font-weight: 600;
@@ -3483,38 +3492,11 @@ footer {
         gap: 8px;
     }
     .popular-card { min-height: 76px; padding: 10px 6px; }
-    .popular-card__icon { width: 44px; height: 26px; }
+    .popular-card__preview { height: 40px; }
+    .popular-card__preview svg,
+    .popular-card__preview canvas { max-height: 40px; }
     .popular-card__label { font-size: 11px; }
 }
-
-/* ===== More-formats toggle ===== */
-.btn-more {
-    margin-top: 8px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 8px 12px;
-    font: inherit;
-    font-size: 13px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: color var(--transition), border-color var(--transition);
-}
-.btn-more::after {
-    content: '\25BC';
-    font-size: 10px;
-    transition: transform var(--transition);
-}
-.btn-more[aria-expanded="true"]::after { transform: rotate(180deg); }
-.btn-more:hover { color: var(--primary); border-color: var(--primary); }
-.btn-more:focus-visible { outline: 3px solid var(--border-focus); outline-offset: 2px; }
-
-/* Extended optgroup hidden state */
-optgroup.format-extended[hidden],
-.format-extended[hidden] { display: none; }
 
 /* ===== QR-specific options ===== */
 .qr-options[hidden] { display: none; }
@@ -3554,8 +3536,6 @@ optgroup.format-extended[hidden],
 #qr-preview canvas, #qr-preview svg { max-width: 100%; height: auto; }
 
 @media (prefers-reduced-motion: reduce) {
-    .popular-card,
-    .btn-more,
-    .btn-more::after { transition: none; }
+    .popular-card { transition: none; }
     .popular-card:hover { transform: none; }
 }
