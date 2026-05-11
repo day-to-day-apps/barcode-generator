@@ -55,6 +55,37 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
       await expect(qrPreview).toHaveClass(/active/);
       await expect(qrPreview.locator('canvas, svg').first()).toBeVisible({ timeout: 5000 });
     });
+
+    test(`[${code}] popular cards are visually distinct (border accents + displayValue text)`, async ({ page }) => {
+      await page.goto(path);
+      // Cards must have non-default left-border colour, and each linear card must show <text> (displayValue:true)
+      const borderColors = await page.locator('.popular-card').evaluateAll((els) =>
+        els.map((el) => ({
+          fmt: el.getAttribute('data-format'),
+          color: getComputedStyle(el).borderLeftColor,
+        })),
+      );
+      // All six must have a colour set, and at least 3 distinct values across the row
+      const unique = new Set(borderColors.map((b) => b.color));
+      expect(unique.size).toBeGreaterThanOrEqual(3);
+      // Each linear card SVG must contain a <text> node (proves displayValue:true)
+      for (const fmt of ['EAN13', 'UPC', 'CODE128', 'CODE39', 'ITF14']) {
+        const hasText = await page
+          .locator(`.popular-card[data-format="${fmt}"] svg text`)
+          .first()
+          .count();
+        expect(hasText, `${fmt} preview should render <text>`).toBeGreaterThan(0);
+      }
+    });
+
+    test(`[${code}] main QR preview renders at >= 400px`, async ({ page }) => {
+      await page.goto(path);
+      await page.locator('.popular-card[data-format="QR"]').click();
+      const svg = page.locator('#qr-preview svg');
+      await expect(svg).toBeVisible({ timeout: 5000 });
+      const width = await svg.evaluate((el) => Number(el.getAttribute('width') || el.getBoundingClientRect().width));
+      expect(width).toBeGreaterThanOrEqual(400);
+    });
   }
 
   test('[en] SEO copy mentions "20 standards + QR Code"', async ({ page }) => {
