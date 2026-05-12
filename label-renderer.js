@@ -34,6 +34,7 @@
      * @param {string}  opts.description       - Description text.
      * @param {boolean} opts.cutLines          - Add visible cut guides.
      * @param {string}  opts.lineColor         - Barcode line color (hex).
+     * @param {number}  [opts.barWidth]        - JsBarcode bar width in px (default 1.2). Used to apply printer bar-width correction.
      * @param {Object}  [opts.t]               - i18n table; `t.barcErr` used for the error fallback.
      * @returns {string} HTML markup for one label.
      */
@@ -53,6 +54,7 @@
         const showDesc        = !!opts.showDesc && description.length > 0;
         const cutLines        = !!opts.cutLines;
         const lineColor       = opts.lineColor || '#000000';
+        const barWidth        = Math.max(0.5, Math.min(4, Number(opts.barWidth) || 1.2));
         const t               = opts.t || {};
 
         const bcHeight  = Math.round((heightMM * bcHeightPercent) / 100);
@@ -62,7 +64,7 @@
             // eslint-disable-next-line no-undef
             JsBarcode(tempSvg, text, {
                 format: type,
-                width: 1.2,
+                width: barWidth,
                 height: bcHeight * 2.5,
                 margin: 2,
                 fontSize: showBcText ? Math.max(fSize * 0.9, 8) : 0,

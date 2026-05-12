@@ -1,7 +1,7 @@
 # PROJEKT.md — Kompendium projektu „Generator Kodów Kreskowych" (wersja zarobkowa)
 
 > **Żywy dokument.** Aktualizowany po każdej istotnej wiadomości / zmianie.
-> Ostatnia aktualizacja: **2026-06-06**
+> Ostatnia aktualizacja: **2026-06-07**
 > Maintainer: GitHub Copilot (sesja interaktywna z użytkownikiem)
 > Zakres edycji: `Generator kodów kreskowych/wersja zarobkowa/`
 
@@ -286,6 +286,16 @@ supabase link --project-ref aoqxznukwbdgrggxloou
 ## 8. Dziennik sesji / changelog
 
 > Notuje wykonane zmiany. Najnowsze na górze.
+
+### 2026-06-07 (M3 Path A — hardening: quota triggers, bar-width correction, smoke tests, prefill, fix load-order)
+
+- ✅ **Quota DB triggers (migracja)** — `supabase/migrations/20260606000001_quota_triggers.sql`: `enforce_user_row_limit(p_table regclass, p_user uuid, p_limit int)` (SECURITY DEFINER) + 3 triggery `AFTER INSERT` dla `label_templates (5)`, `printer_profiles (5)`, `print_jobs (20)`. Raise `errcode '23514'` z message `'free_limit_reached'` przy przekroczeniu. Klient już mapuje ten kod. Migracja wymaga ręcznego uruchomienia (zob. checklist niżej) — nie ma jeszcze CI deploya migracji.
+- ✅ **`bar_width_correction` w pipeline druku** — `label-renderer.js` przyjmuje `opts.barWidth` (clamp 0.5–4, default 1.2) i przekazuje do `JsBarcode({ width })`. `print-builder.js` czyta `printer.bar_width_correction` (clamp 0.5–1.5, default 1.0) i mnoży `1.2 * correction` → przekazuje do `createLabelHTML`. Umożliwia kalibrację grubości pasków per profil drukarki (kompensacja rozlewania tonera/termiki).
+- ✅ **Smoke testy konta i druku** — `tests/m25-account.spec.js` (16/16): noindex+canonical workers.dev na `konto.html`, `moje-kody.html`, `szablony.html`, `drukarki.html`, `wydruk.html`, `historia-wydrukow.html`; struktura shell (nav + nag. + form) bez logowania. Dopełnia smoke per-language z `smoke.spec.js`.
+- ✅ **Pre-fill buildera z historii** — `wydruk.html` przyjmuje `?id=<job_id>`, na bootstrapie woła `getJobById(prefillId)` z `db-jobs.js` i wypełnia: name, template, printer, notes oraz items via `addRow(it)` (gdy brak items, fallback do pojedynczego `addRow()`). `historia-wydrukow.html` dorzucił akcję „Edit" w wierszu (`btn-edit` → `wydruk.html?id=…`). Bez aktywnego prefill builder działa jak dotychczas.
+- 🐛 **Fix: TypeError 'escapeHtml' na localized index.html** — 9 plików `*/index.html` (pl, de, fr, es, it, pt, nl, cs, uk) nie ładowało `../label-renderer.js`, przez co `app.js` wyrzucał `TypeError: Cannot read properties of undefined (reading 'escapeHtml')` przy load. Dodano `<script src="../label-renderer.js?v=20260601000000"></script>` między JsBarcode a `app.js` we wszystkich lokalach. Root `/index.html` (en) miał już wpis. Smoke suite po fixie: **76 passed / 1 skipped**.
+- 📋 **Wymagane od użytkownika (ręcznie):** uruchomienie migracji triggerów w Supabase SQL Editor — zobacz końcowy checklist tej wiadomości.
+- ⏸ **Pozostałe z Path A do późniejszej iteracji:** `xlsx-import.js`, `batch-scan.js`, automatyczny deploy migracji przez CLI/CI, testy z realną drukarką termiczną (walidacja `bar_width_correction`).
 
 ### 2026-06-06 (M2.5 Phase 6 — zamknięcie kamienia: i18n 10 lokali, sitemap, deploy)
 

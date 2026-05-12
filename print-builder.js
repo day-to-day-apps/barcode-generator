@@ -87,6 +87,8 @@ export function buildSheetHTML(opts) {
   const marginTop = Math.max(0, (Number(printer.margin_top_mm) || 0) + (Number(printer.offset_y_mm) || 0));
   const marginLeft = Math.max(0, (Number(printer.margin_left_mm) || 0) + (Number(printer.offset_x_mm) || 0));
   const fontSize = Number(template.fontSizePt) || 10;
+  const barWidthCorr = Math.max(0.5, Math.min(1.5, Number(printer.bar_width_correction) || 1.0));
+  const barWidth = 1.2 * barWidthCorr;
 
   const pageBlocks = pages.map((labels) => {
     const cells = labels.map((lbl) => {
@@ -106,6 +108,7 @@ export function buildSheetHTML(opts) {
         description: lbl.description,
         cutLines: false,
         lineColor,
+        barWidth,
         t: i18n,
       });
       return '<div class="pb-cell" style="width:' + labelW + 'mm;height:' + labelH + 'mm;">' + html + '</div>';

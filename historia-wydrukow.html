@@ -68,6 +68,7 @@
                 <p class="template-meta"></p>
             </div>
             <div class="code-actions">
+                <a class="btn-action btn-edit" data-i18n="edit" href="#">Edit</a>
                 <button type="button" class="btn-action btn-delete" data-i18n="delete">Delete</button>
             </div>
         </li>
@@ -129,6 +130,8 @@
                 const li = frag.querySelector('li');
                 li.querySelector('.code-name').textContent = job.name;
                 li.querySelector('.template-meta').textContent = formatDate(job.created_at);
+                const editLink = li.querySelector('.btn-edit');
+                if (editLink) editLink.setAttribute('href', `wydruk.html?id=${encodeURIComponent(job.id)}`);
                 li.querySelector('.btn-delete').addEventListener('click', async () => {
                     if (!confirm(T.deleteJobConfirm || 'Delete this print job?')) return;
                     const { error } = await deleteJob(job.id);

@@ -143,7 +143,7 @@
         import { getSession, onAuthStateChange } from './supabase-client.js';
         import { listTemplates } from './db-templates.js';
         import { listPrinters } from './db-printers.js';
-        import { savePrintJob, countJobs, FREE_JOBS_LIMIT, normaliseJobItem } from './db-jobs.js';
+        import { savePrintJob, countJobs, getJobById, FREE_JOBS_LIMIT, normaliseJobItem } from './db-jobs.js';
         import { parseCsvFile, rowsToJobItems, MAX_ROWS } from './csv-import.js';
         import { buildSheetHTML, openPrintWindow, MAX_LABELS } from './print-builder.js';
 
@@ -385,7 +385,23 @@
             }
             try {
                 await populateSelectors();
-                addRow();
+                const prefillId = new URLSearchParams(location.search).get('id');
+                let prefilled = false;
+                if (prefillId) {
+                    const { data: job, error: jobErr } = await getJobById(prefillId);
+                    if (jobErr) console.error(jobErr);
+                    if (job) {
+                        els.name.value = job.name || '';
+                        if (job.template_id) els.template.value = job.template_id;
+                        if (job.printer_profile_id) els.printer.value = job.printer_profile_id;
+                        els.notes.value = job.notes || '';
+                        for (const it of (job.items || [])) {
+                            if (!addRow(it)) break;
+                        }
+                        prefilled = (job.items || []).length > 0;
+                    }
+                }
+                if (!prefilled) addRow();
                 setStatus('loading', true);
                 els.panel.hidden = false;
             } catch (err) {
