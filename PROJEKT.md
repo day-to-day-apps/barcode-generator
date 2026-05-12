@@ -1,7 +1,7 @@
 # PROJEKT.md — Kompendium projektu „Generator Kodów Kreskowych" (wersja zarobkowa)
 
 > **Żywy dokument.** Aktualizowany po każdej istotnej wiadomości / zmianie.
-> Ostatnia aktualizacja: **2026-05-07**
+> Ostatnia aktualizacja: **2026-06-06**
 > Maintainer: GitHub Copilot (sesja interaktywna z użytkownikiem)
 > Zakres edycji: `Generator kodów kreskowych/wersja zarobkowa/`
 
@@ -286,6 +286,20 @@ supabase link --project-ref aoqxznukwbdgrggxloou
 ## 8. Dziennik sesji / changelog
 
 > Notuje wykonane zmiany. Najnowsze na górze.
+
+### 2026-06-06 (M2.5 Phase 6 — zamknięcie kamienia: i18n 10 lokali, sitemap, deploy)
+
+- ✅ **i18n 9 lokali** — `i18n.js` dopełniony: ~85 nowych kluczy `account.*` (Phase 1–5: tabLogin/tabRegister/tabReset, password*, signInCta/registerCta/resetCta, setNewPasswordTitle, weakPassword, passwordMismatch, registerCheckInbox, resetSent, resetTokenMissing, subtitleEmailPassword, rename/cancel/save, tags*, selectAll/deselectAll/deleteSelected, codesUsed/freeLimitReached/bulkDeleteConfirm, myTemplates+templatesTitle+widthMm/heightMm/margins*/fontSizePt/setAsDefault/defaultBadge/templateSaved/templateDeleted/template*Invalid, myPrinters+printersTitle+printerType*/pageWidthMm/labelWidthMm/cols/rows/gapX/gapY/dpi/offsetX/offsetY/barWidthCorrection/calibrationHelp/printerSaved, builderTitle+subtitleBuilder+printHistory+jobName+useTemplate+usePrinter+selectPrinter+items+itemsCount+addRow+importCsv+clearAll+colValue/CodeType/Name/Price/Copies+preview+previewSummary+printNow+popupBlocked+saveJob+jobSaved+jobsUsed+csvImported+csvFailed+csvFileTooLarge+newJob+emptyJobs+deleteJobConfirm) zsynchronizowanych dla `pl, de, fr, es, it, pt, nl, cs, uk`. Wcześniejsze klucze magic-link (`magicLink`, `checkInbox`) pozostawione jako legacy bez użycia. `i18n.js` ma teraz 2933 linie; parytet kluczy między wszystkimi 10 lokalami potwierdzony.
+- ✅ **sitemap.xml** — `lastmod` zaktualizowany na bieżącą datę dla wszystkich 22 wpisów (homepage + decoder × 11 lokali). Strony konta/builder/historii nadal poza sitemap (noindex,follow + canonical workers.dev, świadoma decyzja — to obszar prywatny użytkownika).
+- ✅ **Deploy potwierdzony** — push `65d7f16..2e78549` na `origin/main` o ~14:00 UTC; build Cloudflare Workers OK, propagacja <30 s, wszystkie surfaces (`/konto.html`, `/moje-kody.html`, `/szablony.html`, `/drukarki.html`, `/wydruk.html`, `/historia-wydrukow.html`) odpowiadają 200.
+- 🟡 **Odłożone do post-MVP / M3+:**
+  - Playwright TS specs (auth, codes, templates, printers, builder, csv-import) — szkielet zostanie dodany razem z setupem CI w M3.
+  - `xlsx-import.js` (SheetJS lazy via CDN) — odłożone, użytkownicy enterprise mogą eksportować z Excela do CSV.
+  - `batch-scan.js` (BarcodeDetector + getUserMedia) — odłożone, wymaga osobnej rundy UX.
+  - Pre-wypełniony builder przy `wydruk.html?id=<job_id>` — pomocna QoL, ale nie blokuje MVP.
+  - Aplikacja `bar_width_correction` z `printer_profiles` do `JsBarcode` w `print-builder.js` — wymaga testów na realnej drukarce termicznej.
+  - Egzekwowanie limitów (`label_templates:5`, `printer_profiles:5`, `print_jobs:20`) per-tabela triggerem DB; obecnie tylko walidacja client-side + RLS.
+- ✅ **M2.5 zamknięte.** Status M2 zmieniony na ukończony. Następny kamień: M3 (monetyzacja Pro / Stripe / wyższe limity) — patrz §6.
 
 ### 2026-06-05 (M2.5 Phase 5 — Print Builder + historia wydruków, EN-only)
 
