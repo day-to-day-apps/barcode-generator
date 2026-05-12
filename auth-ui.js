@@ -4,6 +4,7 @@
 // - eksponuje window.__authState dla diagnostyki/integracji
 
 import { getSupabase, getSession, onAuthStateChange } from './supabase-client.js';
+import { countCodes, FREE_CODES_LIMIT } from './db-codes.js';
 
 const ROUTES = {
   account: 'konto.html',
@@ -149,6 +150,14 @@ async function saveCurrentBarcode(btn) {
   label.textContent = t('saving');
 
   try {
+    const { count, error: countErr } = await countCodes();
+    if (countErr) throw countErr;
+    if (count >= FREE_CODES_LIMIT) {
+      const msg = (t('freeLimitReached') || 'Free limit reached. Delete a code first or upgrade.');
+      announce(msg);
+      label.textContent = original;
+      return;
+    }
     const { error } = await sb.from('saved_codes').insert({
       user_id: state.session.user.id,
       code_type: data.code_type,

@@ -8,11 +8,11 @@
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/moje-kody.html">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="styles.css?v=20260507000000">
+    <link rel="stylesheet" href="styles.css?v=20260612000000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="i18n.js?v=20260507000000"></script>
+    <script src="i18n.js?v=20260612000000"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"
             integrity="sha384-Kk5SjBOKprEnGfyBWfD2zROFd1Cu8kwOXxG2GIhYPcoDL2rBJS9P8Ud1ZMy4412a"
             crossorigin="anonymous"></script>
@@ -26,6 +26,10 @@
             </div>
             <nav aria-label="Primary">
                 <a href="./" data-i18n="backToGenerator">&larr; Generator</a>
+                <a href="szablony.html" data-i18n="myTemplates">My templates</a>
+                <a href="drukarki.html" data-i18n="myPrinters">My printers</a>
+                <a href="wydruk.html" data-i18n="builderTitle">Print builder</a>
+                <a href="historia-wydrukow.html" data-i18n="printHistory">Print history</a>
                 <a href="konto.html" data-i18n="title">Account</a>
             </nav>
         </header>
@@ -34,6 +38,21 @@
             <section class="card" aria-labelledby="codes-title">
                 <h2 id="codes-title" data-i18n="savedCodesTitle">Saved codes</h2>
                 <div id="status" role="status" aria-live="polite" data-i18n="loading">Loading…</div>
+
+                <div id="toolbar" class="codes-toolbar" hidden>
+                    <div class="codes-toolbar-left">
+                        <label class="checkbox-row">
+                            <input type="checkbox" id="select-all">
+                            <span data-i18n="selectAll">Select all</span>
+                        </label>
+                        <span id="selected-count" class="codes-counter-muted" aria-live="polite"></span>
+                    </div>
+                    <div class="codes-toolbar-right">
+                        <span id="codes-used" class="codes-counter"></span>
+                        <button type="button" id="btn-bulk-delete" class="btn-action btn-delete" disabled data-i18n="deleteSelected">Delete selected</button>
+                    </div>
+                </div>
+
                 <ul id="codes-list" class="codes-list" hidden></ul>
                 <div id="empty" hidden>
                     <p><span data-i18n="empty">You haven't saved any codes yet.</span> <a href="./" data-i18n="emptyCta">Generate a barcode</a>.</p>
@@ -52,20 +71,43 @@
 
     <template id="row-template">
         <li class="code-row">
+            <label class="code-select">
+                <input type="checkbox" class="row-checkbox" aria-label="Select code">
+            </label>
             <div class="code-preview"><svg class="code-svg" aria-hidden="true"></svg></div>
             <div class="code-meta">
+                <p class="code-name"></p>
                 <p class="code-type"></p>
                 <p class="code-value"></p>
+                <p class="code-tags" hidden></p>
                 <p class="code-date"></p>
+                <div class="code-rename-form" hidden>
+                    <input type="text" class="rename-input" maxlength="120">
+                    <button type="button" class="btn-action btn-rename-save" data-i18n="save">Save</button>
+                    <button type="button" class="btn-action btn-rename-cancel" data-i18n="cancel">Cancel</button>
+                </div>
+                <div class="code-tags-form" hidden>
+                    <input type="text" class="tags-input" maxlength="200">
+                    <small class="tags-hint" data-i18n="tagsHint">Comma-separated, max 20.</small>
+                    <button type="button" class="btn-action btn-tags-save" data-i18n="save">Save</button>
+                    <button type="button" class="btn-action btn-tags-cancel" data-i18n="cancel">Cancel</button>
+                </div>
             </div>
             <div class="code-actions">
-                <button type="button" class="btn-action btn-delete" data-i18n="delete" data-i18n-aria-label="delete" aria-label="Delete">Delete</button>
+                <a class="btn-action btn-regenerate" href="#" data-i18n="regenerate">Open in generator</a>
+                <button type="button" class="btn-action btn-rename" data-i18n="rename">Rename</button>
+                <button type="button" class="btn-action btn-edit-tags" data-i18n="tags">Tags</button>
+                <button type="button" class="btn-action btn-delete" data-i18n="delete" aria-label="Delete">Delete</button>
             </div>
         </li>
     </template>
 
     <script type="module">
-        import { getSupabase, getSession, onAuthStateChange } from './supabase-client.js';
+        import { getSession, onAuthStateChange } from './supabase-client.js';
+        import {
+            listCodes, updateCode, deleteCode, bulkDeleteCodes,
+            normaliseTagsInput, FREE_CODES_LIMIT,
+        } from './db-codes.js';
 
         const LANG = document.documentElement.lang || 'en';
         const I = window.BARCODE_I18N || {};
@@ -84,6 +126,11 @@
         const $ = (id) => document.getElementById(id);
         const list = $('codes-list');
         const status = $('status');
+        const toolbar = $('toolbar');
+        const selectAllCb = $('select-all');
+        const selectedCountEl = $('selected-count');
+        const codesUsedEl = $('codes-used');
+        const btnBulkDelete = $('btn-bulk-delete');
         const tmpl = $('row-template');
 
         const dateFmt = new Intl.DateTimeFormat(LANG, {
@@ -91,9 +138,24 @@
             hour: '2-digit', minute: '2-digit',
         });
 
-        function safeText(node, sel, value) {
-            const el = node.querySelector(sel);
-            if (el) el.textContent = value ?? '';
+        function fmt(key, vars) {
+            let s = T[key] || '';
+            if (!s) return '';
+            for (const [k, v] of Object.entries(vars || {})) {
+                s = s.replaceAll(`{${k}}`, String(v));
+            }
+            return s;
+        }
+
+        function updateCounters() {
+            const rows = list.querySelectorAll('.code-row');
+            const total = rows.length;
+            const selected = list.querySelectorAll('.row-checkbox:checked').length;
+            codesUsedEl.textContent = fmt('codesUsed', { n: total, max: FREE_CODES_LIMIT });
+            selectedCountEl.textContent = selected ? fmt('selectedCount', { n: selected }) : '';
+            btnBulkDelete.disabled = selected === 0;
+            selectAllCb.checked = total > 0 && selected === total;
+            selectAllCb.indeterminate = selected > 0 && selected < total;
         }
 
         function renderBarcode(svgEl, type, value) {
@@ -111,16 +173,162 @@
             }
         }
 
-        async function loadCodes(sb) {
+        function setNameDisplay(li, row) {
+            const nameEl = li.querySelector('.code-name');
+            nameEl.textContent = row.name || (T.unnamed || '(unnamed)');
+            nameEl.classList.toggle('is-unnamed', !row.name);
+        }
+
+        function setTagsDisplay(li, row) {
+            const tagsEl = li.querySelector('.code-tags');
+            const arr = Array.isArray(row.tags) ? row.tags : [];
+            if (arr.length === 0) {
+                tagsEl.hidden = true;
+                tagsEl.textContent = '';
+            } else {
+                tagsEl.hidden = false;
+                tagsEl.textContent = arr.map((t) => `#${t}`).join(' ');
+            }
+        }
+
+        function buildRow(row) {
+            const node = tmpl.content.cloneNode(true);
+            const li = node.querySelector('.code-row');
+            li.dataset.id = row.id;
+            li._row = { ...row };
+
+            setNameDisplay(li, row);
+            li.querySelector('.code-type').textContent = row.code_type;
+            li.querySelector('.code-value').textContent = row.value;
+            setTagsDisplay(li, row);
+            if (row.created_at) {
+                li.querySelector('.code-date').textContent = dateFmt.format(new Date(row.created_at));
+            }
+
+            const svgEl = li.querySelector('.code-svg');
+            if (svgEl) renderBarcode(svgEl, row.code_type, row.value);
+
+            li.querySelector('.btn-regenerate').setAttribute('href', `./?load=${encodeURIComponent(row.id)}`);
+
+            li.querySelector('.row-checkbox').addEventListener('change', updateCounters);
+
+            li.querySelector('.btn-rename').addEventListener('click', () => {
+                const form = li.querySelector('.code-rename-form');
+                const input = form.querySelector('.rename-input');
+                input.value = li._row.name || '';
+                form.hidden = false;
+                input.focus();
+                input.select();
+            });
+            li.querySelector('.btn-rename-cancel').addEventListener('click', () => {
+                li.querySelector('.code-rename-form').hidden = true;
+            });
+            li.querySelector('.btn-rename-save').addEventListener('click', async () => {
+                const form = li.querySelector('.code-rename-form');
+                const input = form.querySelector('.rename-input');
+                const newName = input.value.trim().slice(0, 120) || null;
+                const { error } = await updateCode(row.id, { name: newName });
+                if (error) {
+                    alert(T.updateFail || 'Could not update the code.');
+                    return;
+                }
+                li._row.name = newName;
+                setNameDisplay(li, li._row);
+                form.hidden = true;
+                announce(T.renameSuccess || 'Name updated.');
+            });
+
+            li.querySelector('.btn-edit-tags').addEventListener('click', () => {
+                const form = li.querySelector('.code-tags-form');
+                const input = form.querySelector('.tags-input');
+                input.value = (li._row.tags || []).join(', ');
+                input.placeholder = T.tagsPlaceholder || '';
+                form.hidden = false;
+                input.focus();
+            });
+            li.querySelector('.btn-tags-cancel').addEventListener('click', () => {
+                li.querySelector('.code-tags-form').hidden = true;
+            });
+            li.querySelector('.btn-tags-save').addEventListener('click', async () => {
+                const form = li.querySelector('.code-tags-form');
+                const input = form.querySelector('.tags-input');
+                const tags = normaliseTagsInput(input.value);
+                const { error } = await updateCode(row.id, { tags });
+                if (error) {
+                    alert(T.updateFail || 'Could not update the code.');
+                    return;
+                }
+                li._row.tags = tags;
+                setTagsDisplay(li, li._row);
+                form.hidden = true;
+                announce(T.tagsSaved || 'Tags saved.');
+            });
+
+            li.querySelector('.btn-delete').addEventListener('click', async (e) => {
+                if (!confirm(T.deleteConfirm || 'Delete this code?')) return;
+                e.currentTarget.disabled = true;
+                const { error } = await deleteCode(row.id);
+                if (error) {
+                    alert((T.deleteFail || 'Could not delete') + ': ' + (error.message || ''));
+                    e.currentTarget.disabled = false;
+                    return;
+                }
+                li.remove();
+                afterRemoval();
+            });
+
+            return node;
+        }
+
+        function announce(msg) {
+            status.textContent = '';
+            setTimeout(() => { status.textContent = msg; }, 30);
+            setTimeout(() => { if (status.textContent === msg) status.textContent = ''; }, 3000);
+        }
+
+        function afterRemoval() {
+            updateCounters();
+            if (!list.querySelector('.code-row')) {
+                list.hidden = true;
+                toolbar.hidden = true;
+                $('empty').hidden = false;
+            }
+        }
+
+        selectAllCb.addEventListener('change', () => {
+            const checked = selectAllCb.checked;
+            list.querySelectorAll('.row-checkbox').forEach((cb) => { cb.checked = checked; });
+            updateCounters();
+        });
+
+        btnBulkDelete.addEventListener('click', async () => {
+            const ids = [...list.querySelectorAll('.row-checkbox:checked')]
+                .map((cb) => cb.closest('.code-row').dataset.id);
+            if (ids.length === 0) return;
+            const msg = fmt('bulkDeleteConfirm', { n: ids.length })
+                || `Delete ${ids.length} selected codes?`;
+            if (!confirm(msg)) return;
+            btnBulkDelete.disabled = true;
+            const { error } = await bulkDeleteCodes(ids);
+            if (error) {
+                alert((T.deleteFail || 'Could not delete') + ': ' + (error.message || ''));
+                btnBulkDelete.disabled = false;
+                return;
+            }
+            ids.forEach((id) => {
+                const li = list.querySelector(`.code-row[data-id="${id}"]`);
+                if (li) li.remove();
+            });
+            afterRemoval();
+        });
+
+        async function loadCodes() {
             status.textContent = T.loading || 'Loading…';
             list.hidden = true;
+            toolbar.hidden = true;
             $('empty').hidden = true;
 
-            const { data, error } = await sb
-                .from('saved_codes')
-                .select('id, code_type, value, name, settings, created_at')
-                .order('created_at', { ascending: false });
-
+            const { data, error } = await listCodes();
             if (error) {
                 status.textContent = (T.loadFail || 'Could not load your codes') + ': ' + (error.message || '');
                 return;
@@ -132,66 +340,29 @@
             }
 
             list.innerHTML = '';
-            for (const row of data) {
-                const node = tmpl.content.cloneNode(true);
-                const li = node.querySelector('.code-row');
-                li.dataset.id = row.id;
-
-                safeText(node, '.code-type', row.code_type);
-                safeText(node, '.code-value', row.name ? `${row.name} — ${row.value}` : row.value);
-                if (row.created_at) {
-                    safeText(node, '.code-date', dateFmt.format(new Date(row.created_at)));
-                }
-
-                const svgEl = node.querySelector('.code-svg');
-                if (svgEl) renderBarcode(svgEl, row.code_type, row.value);
-
-                node.querySelector('.btn-delete').addEventListener('click', async (e) => {
-                    if (!confirm(T.deleteConfirm || 'Delete this code?')) return;
-                    e.currentTarget.disabled = true;
-                    const { error: delErr } = await sb
-                        .from('saved_codes')
-                        .delete()
-                        .eq('id', row.id);
-                    if (delErr) {
-                        alert((T.deleteFail || 'Could not delete') + ': ' + (delErr.message || ''));
-                        e.currentTarget.disabled = false;
-                        return;
-                    }
-                    li.remove();
-                    if (!list.querySelector('.code-row')) {
-                        list.hidden = true;
-                        $('empty').hidden = false;
-                    }
-                });
-
-                list.appendChild(node);
-            }
+            for (const row of data) list.appendChild(buildRow(row));
             list.hidden = false;
+            toolbar.hidden = false;
             status.textContent = '';
+            updateCounters();
         }
 
         async function init() {
-            const sb = await getSupabase();
-            if (!sb) {
-                status.textContent = T.notConfigured || 'Account features are not configured.';
-                return;
-            }
-
             const session = await getSession();
             if (!session?.user) {
                 status.textContent = '';
                 $('signed-out').hidden = false;
             } else {
-                await loadCodes(sb);
+                await loadCodes();
             }
 
             await onAuthStateChange(async (_event, s) => {
                 if (s?.user) {
                     $('signed-out').hidden = true;
-                    await loadCodes(sb);
+                    await loadCodes();
                 } else {
                     list.hidden = true;
+                    toolbar.hidden = true;
                     $('empty').hidden = true;
                     $('signed-out').hidden = false;
                     status.textContent = '';

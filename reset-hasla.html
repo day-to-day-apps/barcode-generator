@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set new password — Barcode Generator</title>
+    <meta name="description" content="Set a new password for your Barcode Generator account.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/reset-hasla.html">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=20260601000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="i18n.js?v=20260601000000"></script>
+</head>
+<body>
+    <div class="app">
+        <header class="animated-header">
+            <div class="logo">
+                <h1 data-i18n="setNewPasswordTitle">Set new password</h1>
+            </div>
+            <nav aria-label="Primary"><a href="./konto.html" data-i18n="backToLogin">&larr; Back to sign in</a></nav>
+        </header>
+
+        <main id="main-content" class="container">
+            <section class="card" aria-labelledby="reset-title">
+                <h2 id="reset-title" data-i18n="setNewPasswordTitle">Set new password</h2>
+
+                <form id="reset-password-form" novalidate>
+                    <label for="new-password" data-i18n="password">Password</label>
+                    <input id="new-password" name="password" type="password" autocomplete="new-password" required minlength="8" data-i18n-placeholder="passwordPlaceholder" placeholder="At least 8 characters">
+                    <label for="new-password-confirm" data-i18n="confirmPassword">Confirm password</label>
+                    <input id="new-password-confirm" name="password-confirm" type="password" autocomplete="new-password" required minlength="8">
+                    <button type="submit" id="reset-password-submit" class="btn-primary" data-i18n="setNewPasswordCta">Update password</button>
+                </form>
+
+                <div id="status" role="status" aria-live="polite"></div>
+                <noscript>This page requires JavaScript.</noscript>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 Barcode Generator. <a href="polityka-prywatnosci.html">Privacy</a></p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { getSupabase, onAuthStateChange } from './supabase-client.js';
+        import { setNewPassword, validatePassword } from './auth-email-password.js';
+
+        const LANG = document.documentElement.lang || 'en';
+        const I = window.BARCODE_I18N || {};
+        const T = (I[LANG] && I[LANG].account) || (I.en && I.en.account) || {};
+
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+            const key = el.getAttribute('data-i18n');
+            if (T[key]) el.textContent = T[key];
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (T[key]) el.setAttribute('placeholder', T[key]);
+        });
+        if (T.setNewPasswordTitle) document.title = `${T.setNewPasswordTitle} — Barcode Generator`;
+
+        const $ = (id) => document.getElementById(id);
+        const status = $('status');
+        const form = $('reset-password-form');
+        const setStatus = (msg, isError = false) => {
+            status.textContent = '';
+            status.className = isError ? 'form-error' : 'form-success';
+            requestAnimationFrame(() => { status.textContent = msg; });
+        };
+
+        let hasRecoverySession = false;
+
+        async function init() {
+            const sb = await getSupabase();
+            if (!sb) {
+                setStatus(T.notConfigured || 'Account features are not configured.', true);
+                form.querySelector('button').disabled = true;
+                return;
+            }
+
+            await onAuthStateChange((event, session) => {
+                if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+                    hasRecoverySession = true;
+                }
+            });
+
+            const { data } = await sb.auth.getSession();
+            if (data?.session) hasRecoverySession = true;
+
+            setTimeout(() => {
+                if (!hasRecoverySession) {
+                    setStatus(T.resetTokenMissing || 'Reset link is invalid or expired. Request a new one.', true);
+                }
+            }, 1500);
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const password = $('new-password').value;
+                const confirm = $('new-password-confirm').value;
+                if (!validatePassword(password)) return setStatus(T.weakPassword || 'Password must be at least 8 characters.', true);
+                if (password !== confirm) return setStatus(T.passwordMismatch || 'Passwords do not match.', true);
+                if (!hasRecoverySession) return setStatus(T.resetTokenMissing || 'Reset link is invalid or expired. Request a new one.', true);
+                const submitBtn = $('reset-password-submit');
+                submitBtn.disabled = true;
+                setStatus(T.sending || 'Updating…');
+                const { error } = await setNewPassword({ password });
+                submitBtn.disabled = false;
+                if (error) return setStatus(error.message || T.passwordUpdateFail || 'Could not update password.', true);
+                setStatus(T.passwordUpdated || 'Password updated. You can sign in now.');
+                form.reset();
+                setTimeout(() => { window.location.href = './konto.html'; }, 2000);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>

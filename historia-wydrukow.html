@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print history — Barcode Generator</title>
+    <meta name="description" content="Browse, re-open, and delete saved batch print jobs.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/historia-wydrukow.html">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=20260612000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="i18n.js?v=20260612000000"></script>
+</head>
+<body>
+    <div class="app">
+        <header class="animated-header">
+            <div class="logo">
+                <h1 data-i18n="printHistoryTitle">Print history</h1>
+                <p class="subtitle" data-i18n="subtitlePrintHistory">Saved batch print jobs.</p>
+            </div>
+            <nav aria-label="Primary">
+                <a href="./" data-i18n="backToGenerator">&larr; Generator</a>
+                <a href="moje-kody.html" data-i18n="myCodes">My codes</a>
+                <a href="szablony.html" data-i18n="myTemplates">My templates</a>
+                <a href="drukarki.html" data-i18n="myPrinters">My printers</a>
+                <a href="wydruk.html" data-i18n="builderTitle">Print builder</a>
+                <a href="konto.html" data-i18n="title">Account</a>
+            </nav>
+        </header>
+
+        <main id="main-content" class="container">
+            <section class="card" aria-labelledby="history-title">
+                <h2 id="history-title" data-i18n="printHistoryTitle">Print history</h2>
+                <div id="status" role="status" aria-live="polite" data-i18n="loading">Loading…</div>
+
+                <div id="history-panel" hidden>
+                    <div class="codes-toolbar">
+                        <div class="codes-toolbar-left">
+                            <span id="jobs-counter" class="codes-counter"></span>
+                        </div>
+                        <div class="codes-toolbar-right">
+                            <a href="wydruk.html" class="btn-primary" data-i18n="newJob">New print job</a>
+                        </div>
+                    </div>
+                    <ul id="jobs-list" class="codes-list" aria-live="polite"></ul>
+                    <p id="empty-state" class="empty-state" hidden data-i18n="emptyJobs">No saved print jobs yet.</p>
+                </div>
+
+                <div id="signed-out" class="empty-state" hidden>
+                    <p data-i18n="signedOutMsg">Sign in to see your print history.</p>
+                    <a class="btn-primary" href="konto.html" data-i18n="goToAccount">Go to account</a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 Barcode Generator. <a href="polityka-prywatnosci.html">Privacy</a></p>
+        </footer>
+    </div>
+
+    <template id="job-row-template">
+        <li class="code-row">
+            <div class="template-summary">
+                <p class="code-name"></p>
+                <p class="template-meta"></p>
+            </div>
+            <div class="code-actions">
+                <button type="button" class="btn-action btn-delete" data-i18n="delete">Delete</button>
+            </div>
+        </li>
+    </template>
+
+    <script type="module">
+        import { getSession, onAuthStateChange } from './supabase-client.js';
+        import { listJobs, deleteJob, FREE_JOBS_LIMIT } from './db-jobs.js';
+
+        const LANG = document.documentElement.lang || 'en';
+        const I = window.BARCODE_I18N || {};
+        const T = (I[LANG] && I[LANG].account) || (I.en && I.en.account) || {};
+
+        function translate(root = document) {
+            root.querySelectorAll('[data-i18n]').forEach((el) => {
+                const key = el.getAttribute('data-i18n');
+                if (T[key]) el.textContent = T[key];
+            });
+        }
+        translate();
+
+        const $ = (id) => document.getElementById(id);
+        const els = {
+            status: $('status'),
+            panel: $('history-panel'),
+            list: $('jobs-list'),
+            empty: $('empty-state'),
+            counter: $('jobs-counter'),
+            signedOut: $('signed-out'),
+            rowTpl: $('job-row-template'),
+        };
+
+        function setStatus(key, hide) {
+            if (!els.status) return;
+            if (hide) { els.status.hidden = true; els.status.textContent = ''; return; }
+            els.status.hidden = false;
+            els.status.textContent = T[key] || key;
+        }
+
+        function formatDate(iso) {
+            try {
+                return new Date(iso).toLocaleString(LANG);
+            } catch (_e) { return iso; }
+        }
+
+        function renderJobs(rows) {
+            els.list.innerHTML = '';
+            if (!rows.length) {
+                els.empty.hidden = false;
+                els.counter.textContent = '';
+                return;
+            }
+            els.empty.hidden = true;
+            const tpl = T.jobsUsed || '{n}/{max} jobs saved';
+            els.counter.textContent = tpl.replace('{n}', String(rows.length)).replace('{max}', String(FREE_JOBS_LIMIT));
+
+            for (const job of rows) {
+                const frag = els.rowTpl.content.cloneNode(true);
+                const li = frag.querySelector('li');
+                li.querySelector('.code-name').textContent = job.name;
+                li.querySelector('.template-meta').textContent = formatDate(job.created_at);
+                li.querySelector('.btn-delete').addEventListener('click', async () => {
+                    if (!confirm(T.deleteJobConfirm || 'Delete this print job?')) return;
+                    const { error } = await deleteJob(job.id);
+                    if (error) { alert(T.jobDeleteFail || 'Could not delete job.'); return; }
+                    await load();
+                });
+                translate(li);
+                els.list.appendChild(frag);
+            }
+        }
+
+        async function load() {
+            const { data, error } = await listJobs();
+            if (error) {
+                setStatus('jobLoadFail');
+                console.error(error);
+                return;
+            }
+            renderJobs(data || []);
+            setStatus('loading', true);
+            els.panel.hidden = false;
+        }
+
+        async function bootstrap() {
+            const { data: { session } } = await getSession();
+            if (!session) {
+                setStatus('loading', true);
+                els.signedOut.hidden = false;
+                return;
+            }
+            await load();
+        }
+
+        onAuthStateChange((event) => {
+            if (event === 'SIGNED_OUT') location.reload();
+        });
+
+        bootstrap();
+    </script>
+</body>
+</html>

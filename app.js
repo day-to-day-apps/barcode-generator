@@ -711,72 +711,29 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('change', updatePrintPreview);
     });
 
-    // Generate a single label HTML
+    // Generate a single label HTML (delegates to shared LabelRenderer module).
     function createLabelHTML(widthMM, heightMM, forPrint) {
-        const text = barcodeText.value.trim();
-        const fSize = parseInt(labelFontSize.value);
-        const bcHeightPercent = parseInt(labelBarcodeHeight.value);
-        const showName = labelShowName.checked;
-        const showPrice = labelShowPrice.checked;
-        const showBcText = labelShowBarcodeText.checked;
-        const showDesc = labelShowDesc.checked && labelDescription.value.trim();
-        const productName = labelProductName.value.trim();
-        const price = labelPrice.value.trim();
-        const description = labelDescription.value.trim();
-
-        // Calculate barcode dimensions
-        const bcHeight = Math.round((heightMM * bcHeightPercent) / 100);
-        const bcWidthPx = Math.max(widthMM * 2.5, 60);
-
-        // Create temp SVG for barcode
-        const tempSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        try {
-            JsBarcode(tempSvg, text, {
-                format: barcodeType.value,
-                width: 1.2,
-                height: bcHeight * 2.5,
-                margin: 2,
-                fontSize: showBcText ? Math.max(fSize * 0.9, 8) : 0,
-                lineColor: lineColor.value,
-                background: 'transparent',
-                displayValue: showBcText,
-                font: 'Inter, sans-serif',
-                fontOptions: '500',
-                textMargin: 1,
-            });
-        } catch (e) {
-            return `<div class="label-preview" style="width:${widthMM}mm;height:${heightMM}mm;justify-content:center;"><span style="font-size:8pt;color:#dc2626;">${T.barcErr || 'Barcode error'}</span></div>`;
-        }
-
-        const svgHTML = tempSvg.outerHTML;
-
-        const cutClass = labelCutLines.checked ? ' label-cut-lines' : '';
-        let html = `<div class="label-preview${cutClass}" style="width:${widthMM}mm;height:${heightMM}mm;gap:${Math.max(1, Math.floor(heightMM / 20))}px;">`;
-
-        if (showName && productName) {
-            html += `<div class="label-product-name" style="font-size:${fSize}pt;max-width:${widthMM - 2}mm;">${escapeHtml(productName)}</div>`;
-        }
-
-        // Barcode SVG
-        html += `<div class="label-barcode" style="max-width:${widthMM - 4}mm;max-height:${bcHeight}mm;overflow:hidden;display:flex;align-items:center;justify-content:center;">${svgHTML}</div>`;
-
-        if (showPrice && price) {
-            html += `<div class="label-price-text" style="font-size:${Math.round(fSize * 1.3)}pt;">${escapeHtml(price)}</div>`;
-        }
-
-        if (showDesc && description) {
-            html += `<div class="label-description-text" style="font-size:${Math.max(fSize - 2, 6)}pt;max-width:${widthMM - 2}mm;">${escapeHtml(description)}</div>`;
-        }
-
-        html += '</div>';
-        return html;
+        return window.LabelRenderer.createLabelHTML({
+            widthMM: widthMM,
+            heightMM: heightMM,
+            text: barcodeText.value.trim(),
+            type: barcodeType.value,
+            fSize: parseInt(labelFontSize.value),
+            bcHeightPercent: parseInt(labelBarcodeHeight.value),
+            showName: labelShowName.checked,
+            showPrice: labelShowPrice.checked,
+            showBcText: labelShowBarcodeText.checked,
+            showDesc: labelShowDesc.checked,
+            productName: labelProductName.value,
+            price: labelPrice.value,
+            description: labelDescription.value,
+            cutLines: labelCutLines.checked,
+            lineColor: lineColor.value,
+            t: T,
+        });
     }
 
-    function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
+    const escapeHtml = window.LabelRenderer.escapeHtml;
 
     // Update print preview
     function updatePrintPreview() {
@@ -909,4 +866,46 @@ document.addEventListener('DOMContentLoaded', () => {
         window.print();
         setTimeout(() => { printOutput.style.display = 'none'; }, 1000);
     });
+
+    // ===== LOAD SAVED CODE VIA ?load=<uuid> =====
+    (async function tryLoadSavedCode() {
+        const params = new URLSearchParams(location.search);
+        const loadId = params.get('load');
+        if (!loadId) return;
+        try {
+            const mod = await import('./db-codes.js');
+            const { data, error } = await mod.getCodeById(loadId);
+            if (error || !data) {
+                showToast(T.loadCodeFail || 'Could not load the saved code.');
+                return;
+            }
+            if (data.code_type) {
+                barcodeType.value = data.code_type;
+                barcodeType.dispatchEvent(new Event('change'));
+            }
+            barcodeText.value = data.value || '';
+            const s = data.settings || {};
+            const apply = (id, val) => {
+                if (val === undefined || val === null) return;
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (el.type === 'checkbox') el.checked = !!val;
+                else el.value = val;
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+                el.dispatchEvent(new Event('change', { bubbles: true }));
+            };
+            apply('bar-width', s['barcode-width'] ?? s['bar-width']);
+            apply('bar-height', s['barcode-height'] ?? s['bar-height']);
+            apply('bar-margin', s['barcode-margin'] ?? s['bar-margin']);
+            apply('font-size', s['font-size']);
+            apply('line-color', s['fg-color'] ?? s['line-color']);
+            apply('bg-color', s['bg-color']);
+            apply('rotation', s['rotation']);
+            apply('show-text', s['show-text']);
+            generateBarcode();
+        } catch (err) {
+            console.warn('[load] failed:', err?.message);
+            showToast(T.loadCodeFail || 'Could not load the saved code.');
+        }
+    })();
 });

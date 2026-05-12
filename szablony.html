@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Label templates — Barcode Generator</title>
+    <meta name="description" content="Create and manage reusable label templates for batch barcode printing.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/szablony.html">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=20260612000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="i18n.js?v=20260612000000"></script>
+</head>
+<body>
+    <div class="app">
+        <header class="animated-header">
+            <div class="logo">
+                <h1 data-i18n="templatesTitle">Label templates</h1>
+                <p class="subtitle" data-i18n="subtitleTemplates">Reusable label layouts for batch printing.</p>
+            </div>
+            <nav aria-label="Primary">
+                <a href="./" data-i18n="backToGenerator">&larr; Generator</a>
+                <a href="moje-kody.html" data-i18n="myCodes">My codes</a>
+                <a href="drukarki.html" data-i18n="myPrinters">My printers</a>
+                <a href="wydruk.html" data-i18n="builderTitle">Print builder</a>
+                <a href="historia-wydrukow.html" data-i18n="printHistory">Print history</a>
+                <a href="konto.html" data-i18n="title">Account</a>
+            </nav>
+        </header>
+
+        <main id="main-content" class="container">
+            <section class="card" aria-labelledby="templates-title">
+                <h2 id="templates-title" data-i18n="templatesTitle">Label templates</h2>
+                <div id="status" role="status" aria-live="polite" data-i18n="loading">Loading…</div>
+
+                <div id="toolbar" class="codes-toolbar templates-toolbar" hidden>
+                    <div class="codes-toolbar-left">
+                        <span id="templates-used" class="codes-counter"></span>
+                    </div>
+                    <div class="codes-toolbar-right">
+                        <button type="button" id="btn-new" class="btn-primary" data-i18n="newTemplate">New template</button>
+                    </div>
+                </div>
+
+                <form id="template-form" class="template-form" hidden>
+                    <div class="form-row">
+                        <label for="t-name" data-i18n="templateName">Template name</label>
+                        <input type="text" id="t-name" maxlength="120" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="t-page-size" data-i18n="pageSize">Page size</label>
+                        <select id="t-page-size">
+                            <option value="A4">A4 (210×297 mm)</option>
+                            <option value="A5">A5 (148×210 mm)</option>
+                            <option value="Letter">Letter (216×279 mm)</option>
+                            <option value="custom" data-i18n="pageSizeCustom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="form-row form-row-2" id="t-custom-size" hidden>
+                        <div>
+                            <label for="t-width" data-i18n="widthMm">Width (mm)</label>
+                            <input type="number" id="t-width" min="10" max="1000" step="1" value="210">
+                        </div>
+                        <div>
+                            <label for="t-height" data-i18n="heightMm">Height (mm)</label>
+                            <input type="number" id="t-height" min="10" max="1000" step="1" value="297">
+                        </div>
+                    </div>
+                    <fieldset class="form-row form-fieldset">
+                        <legend data-i18n="margins">Margins (mm)</legend>
+                        <div class="form-grid-4">
+                            <div>
+                                <label for="t-margin-top" data-i18n="marginTop">Top</label>
+                                <input type="number" id="t-margin-top" min="0" max="100" step="0.5" value="10">
+                            </div>
+                            <div>
+                                <label for="t-margin-right" data-i18n="marginRight">Right</label>
+                                <input type="number" id="t-margin-right" min="0" max="100" step="0.5" value="10">
+                            </div>
+                            <div>
+                                <label for="t-margin-bottom" data-i18n="marginBottom">Bottom</label>
+                                <input type="number" id="t-margin-bottom" min="0" max="100" step="0.5" value="10">
+                            </div>
+                            <div>
+                                <label for="t-margin-left" data-i18n="marginLeft">Left</label>
+                                <input type="number" id="t-margin-left" min="0" max="100" step="0.5" value="10">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-row">
+                        <label for="t-font-size" data-i18n="fontSizePt">Font size (pt)</label>
+                        <input type="number" id="t-font-size" min="4" max="72" step="0.5" value="10">
+                    </div>
+                    <div class="form-row">
+                        <label class="checkbox-row">
+                            <input type="checkbox" id="t-default">
+                            <span data-i18n="setAsDefault">Set as default</span>
+                        </label>
+                    </div>
+                    <div id="form-error" class="form-error" role="alert" hidden></div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary" data-i18n="save">Save</button>
+                        <button type="button" id="btn-cancel" class="btn-action" data-i18n="cancel">Cancel</button>
+                    </div>
+                </form>
+
+                <ul id="templates-list" class="codes-list templates-list" hidden></ul>
+                <div id="empty" hidden>
+                    <p><span data-i18n="emptyTemplates">No templates yet.</span></p>
+                </div>
+                <div id="signed-out" hidden>
+                    <p data-i18n="signInPrompt">Please sign in to view your saved codes.</p>
+                    <p><a class="btn-primary" href="konto.html" data-i18n="signIn">Sign in</a></p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 Barcode Generator. <a href="polityka-prywatnosci.html">Privacy</a></p>
+        </footer>
+    </div>
+
+    <template id="row-template">
+        <li class="code-row template-row">
+            <div class="template-summary">
+                <p class="code-name"></p>
+                <p class="template-meta"></p>
+            </div>
+            <div class="code-actions">
+                <button type="button" class="btn-action btn-edit" data-i18n="rename">Edit</button>
+                <button type="button" class="btn-action btn-default" data-i18n="setAsDefault">Set as default</button>
+                <button type="button" class="btn-action btn-delete" data-i18n="delete">Delete</button>
+            </div>
+        </li>
+    </template>
+
+    <script type="module">
+        import { getSession, onAuthStateChange } from './supabase-client.js';
+        import {
+            listTemplates, insertTemplate, updateTemplate, deleteTemplate,
+            setDefaultTemplate, countTemplates, normaliseTemplateConfig,
+            getPagePreset, FREE_TEMPLATES_LIMIT, DEFAULT_TEMPLATE_CONFIG,
+        } from './db-templates.js';
+
+        const LANG = document.documentElement.lang || 'en';
+        const I = window.BARCODE_I18N || {};
+        const T = (I[LANG] && I[LANG].account) || (I.en && I.en.account) || {};
+
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+            const key = el.getAttribute('data-i18n');
+            if (T[key]) el.textContent = T[key];
+        });
+        if (T.templatesTitle) document.title = `${T.templatesTitle} — Barcode Generator`;
+
+        const $ = (id) => document.getElementById(id);
+        const list = $('templates-list');
+        const status = $('status');
+        const toolbar = $('toolbar');
+        const usedEl = $('templates-used');
+        const tmpl = $('row-template');
+        const form = $('template-form');
+        const btnNew = $('btn-new');
+        const btnCancel = $('btn-cancel');
+        const formError = $('form-error');
+        const pageSizeSel = $('t-page-size');
+        const customSizeRow = $('t-custom-size');
+
+        let editingId = null;
+
+        const dateFmt = new Intl.DateTimeFormat(LANG, {
+            year: 'numeric', month: 'short', day: 'numeric',
+        });
+
+        function fmt(key, vars) {
+            let s = T[key] || '';
+            if (!s) return '';
+            for (const [k, v] of Object.entries(vars || {})) {
+                s = s.replaceAll(`{${k}}`, String(v));
+            }
+            return s;
+        }
+
+        function updateCounters() {
+            const total = list.querySelectorAll('.code-row').length;
+            usedEl.textContent = fmt('templatesUsed', { n: total, max: FREE_TEMPLATES_LIMIT });
+            btnNew.disabled = total >= FREE_TEMPLATES_LIMIT;
+            btnNew.title = btnNew.disabled ? (T.freeTemplatesLimitReached || '') : '';
+        }
+
+        function summariseConfig(cfg) {
+            const c = cfg || {};
+            const w = c.widthMm ?? '?';
+            const h = c.heightMm ?? '?';
+            const size = c.pageSize === 'custom' ? `${w}×${h} mm` : `${c.pageSize} (${w}×${h} mm)`;
+            const fs = c.fontSizePt ?? '?';
+            return `${size} · ${fs} pt`;
+        }
+
+        function buildRow(row) {
+            const node = tmpl.content.cloneNode(true);
+            const li = node.querySelector('.code-row');
+            li.dataset.id = row.id;
+            li._row = { ...row };
+
+            const nameEl = li.querySelector('.code-name');
+            nameEl.textContent = row.name || (T.unnamed || '(unnamed)');
+            if (row.is_default) {
+                const badge = document.createElement('span');
+                badge.className = 'badge-default';
+                badge.textContent = T.defaultBadge || 'Default';
+                nameEl.appendChild(document.createTextNode(' '));
+                nameEl.appendChild(badge);
+            }
+            li.querySelector('.template-meta').textContent = summariseConfig(row.config);
+
+            const btnDefault = li.querySelector('.btn-default');
+            if (row.is_default) btnDefault.disabled = true;
+
+            li.querySelector('.btn-edit').addEventListener('click', () => openForm(li._row));
+            btnDefault.addEventListener('click', async () => {
+                btnDefault.disabled = true;
+                const { error } = await setDefaultTemplate(row.id);
+                if (error) {
+                    alert((T.templateSaveFail || 'Could not save') + ': ' + (error.message || ''));
+                    btnDefault.disabled = false;
+                    return;
+                }
+                announce(T.templateSaved || 'Template saved.');
+                await loadTemplates();
+            });
+            li.querySelector('.btn-delete').addEventListener('click', async (e) => {
+                if (!confirm(T.templateDeleteConfirm || 'Delete this template?')) return;
+                e.currentTarget.disabled = true;
+                const { error } = await deleteTemplate(row.id);
+                if (error) {
+                    alert((T.deleteFail || 'Could not delete') + ': ' + (error.message || ''));
+                    e.currentTarget.disabled = false;
+                    return;
+                }
+                li.remove();
+                announce(T.templateDeleted || 'Template deleted.');
+                afterRemoval();
+            });
+
+            return node;
+        }
+
+        function announce(msg) {
+            status.textContent = '';
+            setTimeout(() => { status.textContent = msg; }, 30);
+            setTimeout(() => { if (status.textContent === msg) status.textContent = ''; }, 3000);
+        }
+
+        function afterRemoval() {
+            updateCounters();
+            if (!list.querySelector('.code-row')) {
+                list.hidden = true;
+                $('empty').hidden = false;
+            }
+        }
+
+        function setFormValues(cfg, name, isDefault) {
+            $('t-name').value = name || '';
+            pageSizeSel.value = cfg.pageSize || 'A4';
+            customSizeRow.hidden = pageSizeSel.value !== 'custom';
+            $('t-width').value = cfg.widthMm ?? 210;
+            $('t-height').value = cfg.heightMm ?? 297;
+            $('t-margin-top').value = cfg.marginTopMm ?? 10;
+            $('t-margin-right').value = cfg.marginRightMm ?? 10;
+            $('t-margin-bottom').value = cfg.marginBottomMm ?? 10;
+            $('t-margin-left').value = cfg.marginLeftMm ?? 10;
+            $('t-font-size').value = cfg.fontSizePt ?? 10;
+            $('t-default').checked = !!isDefault;
+        }
+
+        function openForm(row) {
+            editingId = row?.id || null;
+            formError.hidden = true;
+            formError.textContent = '';
+            const cfg = row?.config || DEFAULT_TEMPLATE_CONFIG;
+            setFormValues(cfg, row?.name, row?.is_default);
+            form.hidden = false;
+            $('t-name').focus();
+        }
+
+        function closeForm() {
+            editingId = null;
+            form.hidden = true;
+            formError.hidden = true;
+        }
+
+        pageSizeSel.addEventListener('change', () => {
+            const isCustom = pageSizeSel.value === 'custom';
+            customSizeRow.hidden = !isCustom;
+            if (!isCustom) {
+                const p = getPagePreset(pageSizeSel.value);
+                if (p) {
+                    $('t-width').value = p.widthMm;
+                    $('t-height').value = p.heightMm;
+                }
+            }
+        });
+
+        btnNew.addEventListener('click', () => {
+            if (btnNew.disabled) return;
+            openForm(null);
+        });
+        btnCancel.addEventListener('click', closeForm);
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            formError.hidden = true;
+            formError.textContent = '';
+
+            const name = $('t-name').value.trim().slice(0, 120);
+            if (!name) {
+                formError.textContent = T.templateNameRequired || 'Template name is required.';
+                formError.hidden = false;
+                return;
+            }
+
+            const { config, errors } = normaliseTemplateConfig({
+                pageSize: pageSizeSel.value,
+                widthMm: $('t-width').value,
+                heightMm: $('t-height').value,
+                marginTopMm: $('t-margin-top').value,
+                marginRightMm: $('t-margin-right').value,
+                marginBottomMm: $('t-margin-bottom').value,
+                marginLeftMm: $('t-margin-left').value,
+                fontSizePt: $('t-font-size').value,
+            });
+            if (errors.length) {
+                formError.textContent = errors.map((k) => T[k] || k).join(' ');
+                formError.hidden = false;
+                return;
+            }
+
+            const isDefault = $('t-default').checked;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+
+            try {
+                if (editingId) {
+                    const { error } = await updateTemplate(editingId, { name, config });
+                    if (error) throw error;
+                    if (isDefault) {
+                        const { error: defErr } = await setDefaultTemplate(editingId);
+                        if (defErr) throw defErr;
+                    }
+                } else {
+                    const { count, error: countErr } = await countTemplates();
+                    if (countErr) throw countErr;
+                    if (count >= FREE_TEMPLATES_LIMIT) {
+                        formError.textContent = T.freeTemplatesLimitReached || 'Free limit reached.';
+                        formError.hidden = false;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                    const session = await getSession();
+                    if (!session?.user) throw new Error('not_signed_in');
+                    const payload = {
+                        user_id: session.user.id,
+                        name,
+                        config,
+                        is_default: false,
+                    };
+                    const { data: inserted, error } = await insertTemplate(payload);
+                    if (error) throw error;
+                    if (isDefault && inserted?.id) {
+                        const { error: defErr } = await setDefaultTemplate(inserted.id);
+                        if (defErr) throw defErr;
+                    }
+                }
+                announce(T.templateSaved || 'Template saved.');
+                closeForm();
+                await loadTemplates();
+            } catch (err) {
+                formError.textContent = (T.templateSaveFail || 'Could not save the template.')
+                    + (err?.message ? ' (' + err.message + ')' : '');
+                formError.hidden = false;
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+
+        async function loadTemplates() {
+            status.textContent = T.loading || 'Loading…';
+            list.hidden = true;
+            toolbar.hidden = true;
+            $('empty').hidden = true;
+
+            const { data, error } = await listTemplates();
+            if (error) {
+                status.textContent = (T.templateLoadFail || 'Could not load your templates')
+                    + ': ' + (error.message || '');
+                return;
+            }
+            list.innerHTML = '';
+            if (!data || data.length === 0) {
+                status.textContent = '';
+                toolbar.hidden = false;
+                updateCounters();
+                $('empty').hidden = false;
+                return;
+            }
+            for (const row of data) list.appendChild(buildRow(row));
+            list.hidden = false;
+            toolbar.hidden = false;
+            status.textContent = '';
+            updateCounters();
+        }
+
+        async function init() {
+            const session = await getSession();
+            if (!session?.user) {
+                status.textContent = '';
+                $('signed-out').hidden = false;
+            } else {
+                await loadTemplates();
+            }
+
+            await onAuthStateChange(async (_event, s) => {
+                if (s?.user) {
+                    $('signed-out').hidden = true;
+                    await loadTemplates();
+                } else {
+                    list.hidden = true;
+                    toolbar.hidden = true;
+                    $('empty').hidden = true;
+                    closeForm();
+                    $('signed-out').hidden = false;
+                    status.textContent = '';
+                }
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>

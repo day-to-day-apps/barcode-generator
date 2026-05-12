@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printer profiles — Barcode Generator</title>
+    <meta name="description" content="Configure thermal printers and A4 label sheet layouts for batch barcode printing.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/drukarki.html">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=20260612000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="i18n.js?v=20260612000000"></script>
+</head>
+<body>
+    <div class="app">
+        <header class="animated-header">
+            <div class="logo">
+                <h1 data-i18n="printersTitle">Printer profiles</h1>
+                <p class="subtitle" data-i18n="subtitlePrinters">Configure thermal printers and A4 sheet layouts.</p>
+            </div>
+            <nav aria-label="Primary">
+                <a href="./" data-i18n="backToGenerator">&larr; Generator</a>
+                <a href="moje-kody.html" data-i18n="myCodes">My codes</a>
+                <a href="szablony.html" data-i18n="myTemplates">My templates</a>
+                <a href="wydruk.html" data-i18n="builderTitle">Print builder</a>
+                <a href="historia-wydrukow.html" data-i18n="printHistory">Print history</a>
+                <a href="konto.html" data-i18n="title">Account</a>
+            </nav>
+        </header>
+
+        <main id="main-content" class="container">
+            <section class="card" aria-labelledby="printers-title">
+                <h2 id="printers-title" data-i18n="printersTitle">Printer profiles</h2>
+                <div id="status" role="status" aria-live="polite" data-i18n="loading">Loading…</div>
+
+                <div id="toolbar" class="codes-toolbar templates-toolbar" hidden>
+                    <div class="codes-toolbar-left">
+                        <span id="printers-used" class="codes-counter"></span>
+                    </div>
+                    <div class="codes-toolbar-right">
+                        <button type="button" id="btn-new" class="btn-primary" data-i18n="newPrinter">New printer profile</button>
+                    </div>
+                </div>
+
+                <form id="printer-form" class="template-form" hidden>
+                    <div class="form-row">
+                        <label for="p-name" data-i18n="printerName">Profile name</label>
+                        <input type="text" id="p-name" maxlength="80" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="p-preset" data-i18n="printerPreset">Base preset</label>
+                        <select id="p-preset">
+                            <option value="" data-i18n="printerPresetCustom">Custom (no preset)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label for="p-type" data-i18n="printerType">Printer type</label>
+                        <select id="p-type">
+                            <option value="thermal" data-i18n="printerTypeThermal">Thermal label printer</option>
+                            <option value="a4-sheet" data-i18n="printerTypeA4Sheet">A4 label sheet</option>
+                            <option value="custom" data-i18n="printerTypeCustom">Custom layout</option>
+                        </select>
+                    </div>
+                    <div class="form-row form-row-2">
+                        <div>
+                            <label for="p-page-w" data-i18n="pageWidthMm">Page width (mm)</label>
+                            <input type="number" id="p-page-w" min="1" max="1000" step="0.1" value="100">
+                        </div>
+                        <div>
+                            <label for="p-page-h" data-i18n="pageHeightMm">Page height (mm)</label>
+                            <input type="number" id="p-page-h" min="1" max="1000" step="0.1" value="150">
+                        </div>
+                    </div>
+                    <div class="form-row form-row-2">
+                        <div>
+                            <label for="p-label-w" data-i18n="labelWidthMm">Label width (mm)</label>
+                            <input type="number" id="p-label-w" min="1" max="1000" step="0.1" value="100">
+                        </div>
+                        <div>
+                            <label for="p-label-h" data-i18n="labelHeightMm">Label height (mm)</label>
+                            <input type="number" id="p-label-h" min="1" max="1000" step="0.1" value="150">
+                        </div>
+                    </div>
+                    <div class="form-row form-row-2">
+                        <div>
+                            <label for="p-cols" data-i18n="cols">Columns</label>
+                            <input type="number" id="p-cols" min="1" max="50" step="1" value="1">
+                        </div>
+                        <div>
+                            <label for="p-rows" data-i18n="rows">Rows</label>
+                            <input type="number" id="p-rows" min="1" max="200" step="1" value="1">
+                        </div>
+                    </div>
+                    <fieldset class="form-row form-fieldset">
+                        <legend data-i18n="margins">Margins &amp; gaps (mm)</legend>
+                        <div class="form-grid-4">
+                            <div>
+                                <label for="p-margin-top" data-i18n="marginTopShort">Top margin</label>
+                                <input type="number" id="p-margin-top" min="0" max="200" step="0.1" value="0">
+                            </div>
+                            <div>
+                                <label for="p-margin-left" data-i18n="marginLeftShort">Left margin</label>
+                                <input type="number" id="p-margin-left" min="0" max="200" step="0.1" value="0">
+                            </div>
+                            <div>
+                                <label for="p-gap-x" data-i18n="gapX">Horizontal gap</label>
+                                <input type="number" id="p-gap-x" min="0" max="200" step="0.1" value="0">
+                            </div>
+                            <div>
+                                <label for="p-gap-y" data-i18n="gapY">Vertical gap</label>
+                                <input type="number" id="p-gap-y" min="0" max="200" step="0.1" value="0">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="form-row form-fieldset">
+                        <legend data-i18n="calibrationHelp">Calibration</legend>
+                        <div class="form-grid-4">
+                            <div>
+                                <label for="p-dpi" data-i18n="dpi">Resolution (DPI)</label>
+                                <input type="number" id="p-dpi" min="72" max="1200" step="1" value="203">
+                            </div>
+                            <div>
+                                <label for="p-offset-x" data-i18n="offsetX">Horizontal offset</label>
+                                <input type="number" id="p-offset-x" min="-20" max="20" step="0.1" value="0">
+                            </div>
+                            <div>
+                                <label for="p-offset-y" data-i18n="offsetY">Vertical offset</label>
+                                <input type="number" id="p-offset-y" min="-20" max="20" step="0.1" value="0">
+                            </div>
+                            <div>
+                                <label for="p-bwc" data-i18n="barWidthCorrection">Bar width correction</label>
+                                <input type="number" id="p-bwc" min="0.5" max="1.5" step="0.01" value="1.0">
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-row checkbox-row">
+                        <label>
+                            <input type="checkbox" id="p-default">
+                            <span data-i18n="setAsDefault">Set as default</span>
+                        </label>
+                    </div>
+                    <div class="form-error" id="form-error" role="alert" hidden></div>
+                    <div class="form-actions">
+                        <button type="button" id="btn-cancel" class="btn-action" data-i18n="cancel">Cancel</button>
+                        <button type="submit" id="btn-save" class="btn-primary" data-i18n="save">Save</button>
+                    </div>
+                </form>
+
+                <ul id="printers-list" class="codes-list" hidden></ul>
+                <div id="empty" hidden>
+                    <p><span data-i18n="emptyPrinters">No printer profiles yet.</span> <button type="button" class="btn-link" id="btn-empty-new" data-i18n="emptyPrintersCta">Add your first printer profile.</button></p>
+                </div>
+                <div id="signed-out" hidden>
+                    <p data-i18n="signInPrompt">Please sign in to manage your printer profiles.</p>
+                    <p><a class="btn-primary" href="konto.html" data-i18n="signIn">Sign in</a></p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 Barcode Generator. <a href="polityka-prywatnosci.html">Privacy</a></p>
+        </footer>
+    </div>
+
+    <template id="row-template">
+        <li class="code-row template-row">
+            <div class="template-summary">
+                <p class="code-name"></p>
+                <p class="template-meta"></p>
+                <span class="badge-default" data-i18n="defaultBadge" hidden>Default</span>
+            </div>
+            <div class="code-actions">
+                <button type="button" class="btn-action btn-edit" data-i18n="edit">Edit</button>
+                <button type="button" class="btn-action btn-default" data-i18n="setAsDefault">Set as default</button>
+                <button type="button" class="btn-action btn-delete" data-i18n="delete">Delete</button>
+            </div>
+        </li>
+    </template>
+
+    <script type="module">
+        import { getSession, onAuthStateChange } from './supabase-client.js';
+        import {
+            loadPresets, findPresetById,
+            listPrinters, countPrinters,
+            insertPrinter, updatePrinter, deletePrinter,
+            setDefaultPrinter, normalisePrinterPayload,
+            FREE_PRINTERS_LIMIT,
+        } from './db-printers.js';
+
+        const LANG = document.documentElement.lang || 'en';
+        const I = window.BARCODE_I18N || {};
+        const T = (I[LANG] && I[LANG].account) || (I.en && I.en.account) || {};
+
+        function translate(root = document) {
+            root.querySelectorAll('[data-i18n]').forEach((el) => {
+                const key = el.getAttribute('data-i18n');
+                if (T[key]) el.textContent = T[key];
+            });
+        }
+        translate();
+
+        const $ = (id) => document.getElementById(id);
+        const els = {
+            status: $('status'),
+            toolbar: $('toolbar'),
+            counter: $('printers-used'),
+            btnNew: $('btn-new'),
+            btnEmptyNew: $('btn-empty-new'),
+            form: $('printer-form'),
+            list: $('printers-list'),
+            empty: $('empty'),
+            signedOut: $('signed-out'),
+            preset: $('p-preset'),
+            type: $('p-type'),
+            formError: $('form-error'),
+            rowTpl: $('row-template'),
+            btnCancel: $('btn-cancel'),
+            btnSave: $('btn-save'),
+        };
+
+        let presets = [];
+        let editingId = null;
+
+        function setStatus(key, hide) {
+            if (!els.status) return;
+            if (hide) {
+                els.status.hidden = true;
+                els.status.textContent = '';
+            } else {
+                els.status.hidden = false;
+                els.status.textContent = T[key] || key;
+            }
+        }
+
+        function summarisePrinter(p) {
+            const layout = `${p.cols}×${p.rows}`;
+            return `${p.page_w_mm}×${p.page_h_mm} mm · ${layout} · ${p.dpi} DPI`;
+        }
+
+        async function populatePresets() {
+            presets = await loadPresets();
+            const groups = {};
+            for (const p of presets) {
+                (groups[p.vendor] ||= []).push(p);
+            }
+            for (const vendor of Object.keys(groups).sort()) {
+                const og = document.createElement('optgroup');
+                og.label = vendor;
+                for (const p of groups[vendor]) {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = p.model;
+                    og.appendChild(opt);
+                }
+                els.preset.appendChild(og);
+            }
+        }
+
+        function fillFormFromPreset(presetId) {
+            const preset = findPresetById(presets, presetId);
+            if (!preset) return;
+            $('p-type').value = preset.printer_type;
+            $('p-page-w').value = preset.page_w_mm;
+            $('p-page-h').value = preset.page_h_mm;
+            $('p-label-w').value = preset.label_w_mm;
+            $('p-label-h').value = preset.label_h_mm;
+            $('p-cols').value = preset.cols;
+            $('p-rows').value = preset.rows;
+            $('p-margin-top').value = preset.margin_top_mm;
+            $('p-margin-left').value = preset.margin_left_mm;
+            $('p-gap-x').value = preset.gap_x_mm;
+            $('p-gap-y').value = preset.gap_y_mm;
+            $('p-dpi').value = preset.dpi;
+        }
+
+        function readForm() {
+            return {
+                name: $('p-name').value,
+                base_preset_id: els.preset.value || null,
+                printer_type: $('p-type').value,
+                page_w_mm: $('p-page-w').value,
+                page_h_mm: $('p-page-h').value,
+                label_w_mm: $('p-label-w').value,
+                label_h_mm: $('p-label-h').value,
+                cols: $('p-cols').value,
+                rows: $('p-rows').value,
+                margin_top_mm: $('p-margin-top').value,
+                margin_left_mm: $('p-margin-left').value,
+                gap_x_mm: $('p-gap-x').value,
+                gap_y_mm: $('p-gap-y').value,
+                dpi: $('p-dpi').value,
+                offset_x_mm: $('p-offset-x').value,
+                offset_y_mm: $('p-offset-y').value,
+                bar_width_correction: $('p-bwc').value,
+            };
+        }
+
+        function resetForm() {
+            els.form.reset();
+            $('p-default').checked = false;
+            els.formError.hidden = true;
+            els.formError.textContent = '';
+            editingId = null;
+        }
+
+        function showForm(printer) {
+            resetForm();
+            if (printer) {
+                editingId = printer.id;
+                $('p-name').value = printer.name;
+                els.preset.value = printer.base_preset_id || '';
+                $('p-type').value = printer.printer_type;
+                $('p-page-w').value = printer.page_w_mm;
+                $('p-page-h').value = printer.page_h_mm;
+                $('p-label-w').value = printer.label_w_mm;
+                $('p-label-h').value = printer.label_h_mm;
+                $('p-cols').value = printer.cols;
+                $('p-rows').value = printer.rows;
+                $('p-margin-top').value = printer.margin_top_mm;
+                $('p-margin-left').value = printer.margin_left_mm;
+                $('p-gap-x').value = printer.gap_x_mm;
+                $('p-gap-y').value = printer.gap_y_mm;
+                $('p-dpi').value = printer.dpi;
+                $('p-offset-x').value = printer.offset_x_mm;
+                $('p-offset-y').value = printer.offset_y_mm;
+                $('p-bwc').value = printer.bar_width_correction;
+                $('p-default').checked = !!printer.is_default;
+            }
+            els.form.hidden = false;
+            els.list.hidden = true;
+            els.empty.hidden = true;
+            $('p-name').focus();
+        }
+
+        function hideForm() {
+            els.form.hidden = true;
+            resetForm();
+        }
+
+        function renderList(rows) {
+            els.list.textContent = '';
+            for (const p of rows) {
+                const node = els.rowTpl.content.firstElementChild.cloneNode(true);
+                node.querySelector('.code-name').textContent = p.name;
+                node.querySelector('.template-meta').textContent = summarisePrinter(p);
+                const badge = node.querySelector('.badge-default');
+                if (p.is_default) badge.hidden = false;
+                node.querySelector('.btn-edit').addEventListener('click', () => showForm(p));
+                node.querySelector('.btn-default').addEventListener('click', () => onSetDefault(p.id));
+                node.querySelector('.btn-delete').addEventListener('click', () => onDelete(p.id));
+                els.list.appendChild(node);
+            }
+            els.list.hidden = rows.length === 0;
+            els.empty.hidden = rows.length !== 0;
+        }
+
+        async function refresh() {
+            setStatus('loading');
+            const { data, error } = await listPrinters();
+            if (error) {
+                setStatus('printerLoadFail');
+                return;
+            }
+            const { count } = await countPrinters();
+            els.counter.textContent = (T.printersUsed || '{n}/{max} printers configured')
+                .replace('{n}', String(count))
+                .replace('{max}', String(FREE_PRINTERS_LIMIT));
+            renderList(data || []);
+            setStatus('', true);
+            els.toolbar.hidden = false;
+        }
+
+        async function onSave(ev) {
+            ev.preventDefault();
+            els.formError.hidden = true;
+            const raw = readForm();
+            const { payload, errors } = normalisePrinterPayload(raw);
+            if (errors.length > 0) {
+                els.formError.textContent = (T[errors[0]] || errors[0]);
+                els.formError.hidden = false;
+                return;
+            }
+            if (!editingId) {
+                const { count } = await countPrinters();
+                if (count >= FREE_PRINTERS_LIMIT) {
+                    els.formError.textContent = (T.freePrintersLimitReached || 'Limit reached')
+                        .replace('{max}', String(FREE_PRINTERS_LIMIT));
+                    els.formError.hidden = false;
+                    return;
+                }
+            }
+            els.btnSave.disabled = true;
+            const wantsDefault = $('p-default').checked;
+            const op = editingId
+                ? updatePrinter(editingId, payload)
+                : insertPrinter(payload);
+            const { data, error } = await op;
+            els.btnSave.disabled = false;
+            if (error) {
+                els.formError.textContent = T.printerSaveFail || 'Save failed';
+                els.formError.hidden = false;
+                return;
+            }
+            if (wantsDefault && data?.id) {
+                await setDefaultPrinter(data.id);
+            }
+            hideForm();
+            await refresh();
+        }
+
+        async function onDelete(id) {
+            if (!confirm(T.printerDeleteConfirm || 'Delete?')) return;
+            const { error } = await deletePrinter(id);
+            if (error) {
+                setStatus('printerSaveFail');
+                return;
+            }
+            await refresh();
+        }
+
+        async function onSetDefault(id) {
+            const { error } = await setDefaultPrinter(id);
+            if (error) {
+                setStatus('printerSaveFail');
+                return;
+            }
+            await refresh();
+        }
+
+        async function init() {
+            await populatePresets();
+            els.btnNew.addEventListener('click', () => showForm(null));
+            els.btnEmptyNew.addEventListener('click', () => showForm(null));
+            els.btnCancel.addEventListener('click', hideForm);
+            els.form.addEventListener('submit', onSave);
+            els.preset.addEventListener('change', (e) => {
+                if (e.target.value) fillFormFromPreset(e.target.value);
+            });
+
+            const { data: session } = await getSession();
+            if (!session) {
+                setStatus('', true);
+                els.signedOut.hidden = false;
+                return;
+            }
+            els.signedOut.hidden = true;
+            await refresh();
+        }
+
+        onAuthStateChange((event) => {
+            if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+                location.reload();
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>

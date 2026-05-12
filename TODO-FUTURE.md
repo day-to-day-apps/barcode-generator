@@ -67,3 +67,97 @@ Do zrobienia: uruchomiÄ‡ Lighthouse CI lub Chrome DevTools MCP i zweryfikowaÄ‡ C
 - UsunÄ…Ä‡ meta `keywords` z dekoderÃ³w (przestarzaÅ‚e, zero wartoÅ›ci SEO).
 - SprawdziÄ‡ czy w `styles.css` nie ma duplikatÃ³w sekcji FAQ/HowTo (audyt zgÅ‚osiÅ‚ podejrzenie).
 - RozwaÅ¼yÄ‡ zmianÄ™ nazw plikÃ³w przy duÅ¼ych refaktorach CSS, Å¼eby obejÅ›Ä‡ agresywny cache `styles.css` (`max-age=31536000, immutable` w `_headers`).
+
+
+## Manual config — Supabase Dashboard (poza repo)
+
+Wymagane do dzia³ania flow email+has³o (Phase 1) oraz przysz³ych funkcji. **Bez tego linki w mailach nie zadzia³aj¹.**
+
+### Authentication › URL Configuration
+Dodaæ do listy **Redirect URLs** (Allow list):
+- `https://barcode-generator.daytodayapps-contact.workers.dev/konto.html`
+- `https://barcode-generator.daytodayapps-contact.workers.dev/reset-hasla.html`
+- Po dodaniu lokalizacji w Phase 6: analogiczne URL-e dla `/pl/`, `/de/`, `/fr/`, `/es/`, `/it/`, `/pt/`, `/nl/`, `/cs/`, `/uk/` (oba pliki w ka¿dej).
+- Lokalny development: `http://localhost:8080/konto.html`, `http://localhost:8080/reset-hasla.html` (lub port u¿ywany przez `wrangler pages dev`).
+- **Site URL**: ustawiæ na `https://barcode-generator.daytodayapps-contact.workers.dev` (bez trailing slash).
+
+### Authentication › Email Templates
+Skonfigurowaæ treœci (najlepiej EN-first, potem rozszerzyæ):
+- **Confirm signup** — temat „Confirm your email — Barcode Generator", body z `{{ .ConfirmationURL }}`, krótki tekst „Click the link below to confirm your email…".
+- **Reset password** — temat „Reset your password — Barcode Generator", body z `{{ .ConfirmationURL }}`, krótki tekst „You requested a password reset. Click the link below…". Link powinien prowadziæ do `/reset-hasla.html`.
+- **Magic Link** — niewykorzystywane (Phase 1 usunê³o ten flow), mo¿na zostawiæ default lub wy³¹czyæ.
+- **Change Email Address** — analogicznie do reset password.
+
+### Authentication › Providers › Email
+- **Enable Email provider:** ON
+- **Confirm email:** ON (zalecane — wymusza weryfikacjê adresu przed pierwszym logowaniem)
+- **Secure email change:** ON
+- **Secure password change:** ON
+- **Minimum password length:** 8 (zgodnie z walidacj¹ w `auth-email-password.js`)
+
+### Authentication › Rate Limits (opcjonalnie)
+Zostawiæ defaulty, ale rozwa¿yæ obni¿enie limitów dla `/auth/v1/recover` (reset) jeœli zauwa¿ymy nadu¿ycia.
+
+---
+
+## Manual config — Cloudflare Pages (poza repo)
+
+### Environment variables (Production + Preview)
+- `SUPABASE_URL` = `https://aoqxznukwbdgrggxloou.supabase.co`
+- `SUPABASE_ANON_KEY` = publiczny anon key z Supabase Dashboard › Project Settings › API
+- Anon key jest bezpieczny do osadzenia w kliencie (RLS pilnuje dostêpu). **Service role NIGDY w env Pages.**
+
+### Build configuration
+- Bez build command (statyczne pliki). Output directory: katalog z `index.html`.
+
+---
+
+## Manual config — Phase 3 prep (Supabase Storage)
+
+Przed wdro¿eniem Phase 3 (szablony etykiet z logo):
+- Utworzyæ bucket `logos` (Public: OFF).
+- Polityka RLS: `auth.uid()::text = (storage.foldername(name))[1]` — user mo¿e pisaæ/czytaæ tylko pliki w prefiksie `<uid>/...`.
+- Limit pliku: 5 MB (ustawiony w bucket settings).
+- Allowed MIME types: `image/png`, `image/jpeg`, `image/svg+xml`, `image/webp`.
+
+---
+
+## Manual config — Phase 5 prep (SheetJS via CDN)
+
+Przed wdro¿eniem importu XLSX:
+- Pin wersjê `xlsx@0.20.3` z jsDelivr.
+- Wygenerowaæ i wkleiæ SRI hash do `_headers` (lub bezpoœrednio do `<script integrity="…">`).
+- Sprawdziæ licencjê (SheetJS Community Edition = Apache-2.0, OK do projektu komercyjnego).
+
+---
+
+## Phase 1 — od³o¿one do Phase 6 (t³umaczenia i18n)
+
+`i18n.js` w Phase 1 dosta³ ~26 nowych kluczy `account.*` (tabLogin, tabRegister, tabReset, password, confirmPassword, signInCta, registerCta, resetCta, acceptTerms, weakPassword, passwordMismatch, registerCheckInbox, resetSent, setNewPasswordTitle, passwordUpdated, resetTokenMissing, subtitleEmailPassword, …) **tylko w lokalizacji EN**. Pozosta³e 9 (`pl`, `de`, `fr`, `es`, `it`, `pt`, `nl`, `cs`, `uk`) nadal zawiera stare klucze magic-link (`magicLink`, `checkInbox`) i **nie zawiera** nowych kluczy email+has³o.
+
+Do zrobienia w Phase 6:
+- Usun¹æ `magicLink`/`checkInbox` z 9 lokalizacji.
+- Dodaæ t³umaczenia ~26 kluczy account.* dla 9 lokalizacji (~234 stringi).
+- Dodaæ t³umaczenia przysz³ych ~150 kluczy (`designer.*`, `printer.*`, `printJob.*`, `myJobs.*`) × 9 lokalizacji.
+- Zaktualizowaæ `subtitleEmailPassword` jako zastêpnik `subtitle` w sekcji `account` dla wszystkich lokalizacji.
+
+---
+
+## Phase 6 — pe³na lista zadañ koñcowych
+
+- **sitemap.xml** — dodaæ nowe strony (`reset-hasla.html`, `szablony.html`, `drukarki.html`, `wydruk.html`, `historia-wydrukow.html`); pocz¹tkowo tylko EN bez `hreflang` (do uzupe³nienia po przet³umaczeniu).
+- **PROJEKT.md** — wpis do zmieni³a changelog dla M2.5 (Print Builder + Printer Profiles); zaktualizowaæ M2 › ?.
+- **Playwright** — 6 spec files: `auth-flow.spec.ts`, `library-crud.spec.ts`, `print-designer.spec.ts`, `printer-profiles.spec.ts`, `print-builder.spec.ts`, `csv-import.spec.ts`.
+- **`DOCS-PRINT-BUILDER.md`** (opcjonalnie) — user guide dla sklepów: CSV z magazynu, kalibracja drukarki, troubleshooting.
+
+---
+
+## Przysz³oœæ — egzekwowanie limitów free planu na poziomie DB
+
+Obecnie limity (`saved_codes:10`) s¹ tylko triggerem `enforce_limit_trigger` na `saved_codes`. Po Phase 4/5 dochodz¹:
+- `label_templates`: 5
+- `printer_profiles`: 3
+- `print_jobs`: 20 (rolling window 30 dni?)
+- `print_job_items` per job: 500
+
+Do zrobienia: rozbudowaæ `check_user_quota(table_name)` (lub osobne triggery per tabela), z mo¿liwoœci¹ bypassu dla u¿ytkowników Pro (gdy w³¹czymy subskrypcje).
