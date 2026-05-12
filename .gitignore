@@ -28,8 +28,8 @@ test-results/
 .env.local
 .env.*.local
 
-# Supabase — lokalna konfiguracja klienta (anon key wklejany przez devops)
-supabase-config.js
+# Supabase — secrets only. supabase-config.js zawiera publishable anon key,
+# który jest projektowany jako publiczny (RLS pilnuje dostępu) → commitujemy.
 supabase/.env
 
 # Logs
