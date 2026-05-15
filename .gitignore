@@ -36,3 +36,9 @@ supabase/.env
 *.log
 npm-debug.log*
 _fix.js
+
+# Local dev screenshots (auth UX iteration)
+_devshots/
+
+# Phase 4 E2E agent — contains credential fallback, do not commit
+tests/phase4-agent.spec.js

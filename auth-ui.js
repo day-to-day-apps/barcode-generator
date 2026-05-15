@@ -13,6 +13,8 @@ const ROUTES = {
 
 const FALLBACK_TEXT = {
   signIn: 'Sign in',
+  headerCtaCreate: 'Create free account',
+  headerCtaLogin: 'I have an account',
   myCodes: 'My codes',
   signOut: 'Sign out',
   saveCode: 'Save this code',
@@ -46,7 +48,10 @@ function buildHeaderControls() {
   wrap.setAttribute('role', 'group');
   wrap.setAttribute('aria-label', 'Account');
   wrap.innerHTML = `
-    <a class="auth-link auth-signin" href="${ROUTES.account}" hidden>${t('signIn')}</a>
+    <span class="auth-anon" hidden>
+      <a class="btn-auth-primary auth-signin-cta" href="${ROUTES.account}#register">${t('headerCtaCreate')}</a>
+      <a class="auth-link-secondary auth-signin-link" href="${ROUTES.account}#login">${t('headerCtaLogin')}</a>
+    </span>
     <span class="auth-user" hidden>
       <a class="auth-link auth-mycodes" href="${ROUTES.myCodes}">${t('myCodes')}</a>
       <span class="auth-email" aria-live="polite"></span>
@@ -67,15 +72,15 @@ function buildHeaderControls() {
 
 function renderHeaderState(controls) {
   if (!controls) return;
-  const signIn = controls.querySelector('.auth-signin');
+  const anon = controls.querySelector('.auth-anon');
   const userBox = controls.querySelector('.auth-user');
   const email = controls.querySelector('.auth-email');
   if (state.session?.user) {
-    signIn.hidden = true;
+    if (anon) anon.hidden = true;
     userBox.hidden = false;
     email.textContent = state.session.user.email ?? '';
   } else {
-    signIn.hidden = false;
+    if (anon) anon.hidden = false;
     userBox.hidden = true;
     email.textContent = '';
   }

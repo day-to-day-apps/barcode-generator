@@ -8,22 +8,22 @@
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/wydruk.html">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="styles.css?v=20260612000000">
+    <link rel="stylesheet" href="styles.css?v=20260613100000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="i18n.js?v=20260612000000"></script>
+    <script src="i18n.js?v=20260613100000"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js" defer></script>
-    <script src="label-renderer.js?v=20260612000000" defer></script>
+    <script src="label-renderer.js?v=20260613100000" defer></script>
 </head>
-<body>
+<body data-page="wydruk">
     <div class="app">
         <header class="animated-header">
             <div class="logo">
                 <h1 data-i18n="builderTitle">Print builder</h1>
                 <p class="subtitle" data-i18n="subtitleBuilder">Compose batch print sheets from templates, printers, and item lists.</p>
             </div>
-            <nav aria-label="Primary">
+            <nav class="app-nav" aria-label="Primary" data-signed-in="false">
                 <a href="./" data-i18n="backToGenerator">&larr; Generator</a>
                 <a href="moje-kody.html" data-i18n="myCodes">My codes</a>
                 <a href="szablony.html" data-i18n="myTemplates">My templates</a>
@@ -377,7 +377,7 @@
         }
 
         async function bootstrap() {
-            const { data: { session } } = await getSession();
+            const session = await getSession();
             if (!session) {
                 setStatus('loading', true);
                 els.signedOut.hidden = false;
@@ -417,5 +417,6 @@
 
         bootstrap();
     </script>
+    <script type="module" src="nav-enhance.js?v=20260613100000"></script>
 </body>
 </html>

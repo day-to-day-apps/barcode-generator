@@ -17,14 +17,14 @@
             integrity="sha384-Kk5SjBOKprEnGfyBWfD2zROFd1Cu8kwOXxG2GIhYPcoDL2rBJS9P8Ud1ZMy4412a"
             crossorigin="anonymous"></script>
 </head>
-<body>
+<body data-page="moje-kody">
     <div class="app">
         <header class="animated-header">
             <div class="logo">
                 <h1 data-i18n="myCodes">My codes</h1>
                 <p class="subtitle" data-i18n="subtitleMyCodes">Your saved barcodes.</p>
             </div>
-            <nav aria-label="Primary">
+            <nav class="app-nav" aria-label="Primary" data-signed-in="false">
                 <a href="./" data-i18n="backToGenerator">&larr; Generator</a>
                 <a href="konto.html" data-i18n="title">Account</a>
             </nav>
@@ -201,5 +201,6 @@
 
         init();
     </script>
+    <script type="module" src="../nav-enhance.js?v=20260613100000"></script>
 </body>
 </html>

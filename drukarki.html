@@ -8,20 +8,20 @@
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/drukarki.html">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="styles.css?v=20260612000000">
+    <link rel="stylesheet" href="styles.css?v=20260613100000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="i18n.js?v=20260612000000"></script>
+    <script src="i18n.js?v=20260613100000"></script>
 </head>
-<body>
+<body data-page="drukarki">
     <div class="app">
         <header class="animated-header">
             <div class="logo">
                 <h1 data-i18n="printersTitle">Printer profiles</h1>
                 <p class="subtitle" data-i18n="subtitlePrinters">Configure thermal printers and A4 sheet layouts.</p>
             </div>
-            <nav aria-label="Primary">
+            <nav class="app-nav" aria-label="Primary" data-signed-in="false">
                 <a href="./" data-i18n="backToGenerator">&larr; Generator</a>
                 <a href="moje-kody.html" data-i18n="myCodes">My codes</a>
                 <a href="szablony.html" data-i18n="myTemplates">My templates</a>
@@ -451,12 +451,11 @@
         }
 
         onAuthStateChange((event) => {
-            if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-                location.reload();
-            }
+            if (event === 'SIGNED_OUT') location.reload();
         });
 
         init();
     </script>
+    <script type="module" src="nav-enhance.js?v=20260613100000"></script>
 </body>
 </html>
