@@ -157,58 +157,204 @@ document.addEventListener('DOMContentLoaded', () => {
     const qrPreview = document.getElementById('qr-preview');
     const qrOptions = document.getElementById('qr-options');
     const qrEcc = document.getElementById('qr-ecc');
-    const qrLogoInput = document.getElementById('qr-logo-input');
+    const qrLogoInput = document.getElementById('qr-logo');
+    const qrLogoSize = document.getElementById('qr-logo-size');
+    const qrLogoSizeVal = document.getElementById('qr-logo-size-val');
+    const qrLogoShape = document.getElementById('qr-logo-shape');
+    const qrEyeStyle = document.getElementById('qr-eye-style');
+    const qrQuietZone = document.getElementById('qr-quiet-zone');
+    const qrQuietZoneVal = document.getElementById('qr-quiet-zone-val');
+    const qrColorMode = document.getElementById('qr-color-mode');
+    function getQrColorMode() {
+        const checked = document.querySelector('input[name="qr-color-mode-radio"]:checked');
+        return checked ? checked.value : 'solid';
+    }
+    const qrFgWrap = document.getElementById('qr-fg-wrap');
+    const qrFgColor = document.getElementById('qr-fg-color');
+    const qrBgColor = document.getElementById('qr-bg-color');
+    const qrBgTransparent = document.getElementById('qr-bg-transparent');
+    const qrGradWrap = document.getElementById('qr-gradient-wrap');
+    const qrGradStart = document.getElementById('qr-grad-start');
+    const qrGradEnd = document.getElementById('qr-grad-end');
+    const qrGradAngle = document.getElementById('qr-grad-angle');
+    const qrGradAngleVal = document.getElementById('qr-grad-angle-val');
+    const qrCaption = document.getElementById('qr-caption');
+    const qrCaptionSize = document.getElementById('qr-caption-size');
+    const qrCaptionSizeVal = document.getElementById('qr-caption-size-val');
     let qrLogoDataUrl = null;
     let qrMatrix = null; // last successfully built qrcode-generator instance
-    const QR_LOGO_SIZE_PCT = 22; // logo size relative to QR side (with bg padding)
+    const QR_LOGO_SIZE_PCT = 22; // default logo size relative to QR side
+    let qrUniqId = 0;
+
+    function escapeXml(s) {
+        return String(s).replace(/[<>&"']/g, ch => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;' }[ch]));
+    }
 
     // Build a viewBox-based SVG string that scales fluidly when width/height = "100%".
     // pxSize: explicit pixel dimensions for export (PNG raster, SVG download).
-    function buildQrSvgString(qr, { fg, bg, margin = 4, logoDataUrl = null, logoSizePct = QR_LOGO_SIZE_PCT, pxSize = null } = {}) {
+    function buildQrSvgString(qr, opts = {}) {
+        const {
+            fg = '#000000',
+            bg = '#ffffff',
+            margin = 4,
+            logoDataUrl = null,
+            logoSizePct = QR_LOGO_SIZE_PCT,
+            logoShape = 'square',
+            pxSize = null,
+            eyeStyle = 'square',
+            gradient = null,
+            caption = '',
+            captionSize = 14,
+        } = opts;
+
         const n = qr.getModuleCount();
-        const total = n + margin * 2;
         const cell = 10;
-        const sz = total * cell;
-        const rects = [];
+        const qrPx = (n + margin * 2) * cell;
+        const capPx = caption ? Math.round(captionSize * 1.6 + cell * 2) : 0;
+        const sz = qrPx + capPx;
+        const bgIsTransparent = bg === 'transparent' || bg === 'none';
+        const bgFill = bgIsTransparent ? 'none' : bg;
+        const fillRef = gradient ? `url(#qrFg-${++qrUniqId})` : fg;
+
+        // Helper: is module (r,c) part of one of the 3 finder eyes (7x7 each)?
+        function inEye(r, c) {
+            if (r < 7 && c < 7) return 'tl';
+            if (r < 7 && c >= n - 7) return 'tr';
+            if (r >= n - 7 && c < 7) return 'bl';
+            return null;
+        }
+
+        const shapes = [];
         for (let r = 0; r < n; r++) {
             for (let c = 0; c < n; c++) {
-                if (qr.isDark(r, c)) {
-                    rects.push(`<rect x="${(c + margin) * cell}" y="${(r + margin) * cell}" width="${cell}" height="${cell}"/>`);
-                }
+                if (inEye(r, c)) continue; // eyes rendered separately
+                if (!qr.isDark(r, c)) continue;
+                const x = (c + margin) * cell;
+                const y = (r + margin) * cell;
+                shapes.push(`<rect x="${x}" y="${y}" width="${cell}" height="${cell}"/>`);
             }
         }
+
+        // Render one finder eye as a stroked hollow frame + filled center.
+        // This avoids painting an opaque bg patch over a transparent background.
+        function renderEye(rr, cc) {
+            const x = (cc + margin) * cell;
+            const y = (rr + margin) * cell;
+            const outerRx = eyeStyle === 'rounded' ? cell * 1.5 : 0;
+            const innerRx = eyeStyle === 'rounded' ? cell * 0.5 : 0;
+            return [
+                `<rect x="${x + cell * 0.5}" y="${y + cell * 0.5}" width="${cell * 6}" height="${cell * 6}" rx="${outerRx}" ry="${outerRx}" fill="none" stroke="${fillRef}" stroke-width="${cell}"/>`,
+                `<rect x="${x + cell * 2}" y="${y + cell * 2}" width="${cell * 3}" height="${cell * 3}" rx="${innerRx}" ry="${innerRx}"/>`,
+            ].join('');
+        }
+
+        const eyesSvg = renderEye(0, 0) + renderEye(0, n - 7) + renderEye(n - 7, 0);
+
+        let defsSvg = '';
+        if (gradient) {
+            const { start = '#ec4899', end = '#4f46e5', angle = 135 } = gradient;
+            // Single linear gradient spanning the entire QR area (userSpaceOnUse).
+            // SVG angle: 0 deg = horizontal left-to-right; we offset by -90 so 0 = top-to-bottom (CSS convention).
+            const cx = qrPx / 2;
+            const cy = qrPx / 2;
+            const theta = (Number(angle) - 90) * Math.PI / 180;
+            const r = Math.hypot(qrPx, qrPx) / 2;
+            const gx1 = (cx - r * Math.cos(theta)).toFixed(2);
+            const gy1 = (cy - r * Math.sin(theta)).toFixed(2);
+            const gx2 = (cx + r * Math.cos(theta)).toFixed(2);
+            const gy2 = (cy + r * Math.sin(theta)).toFixed(2);
+            defsSvg += `<linearGradient id="qrFg-${qrUniqId}" gradientUnits="userSpaceOnUse" x1="${gx1}" y1="${gy1}" x2="${gx2}" y2="${gy2}"><stop offset="0%" stop-color="${start}"/><stop offset="100%" stop-color="${end}"/></linearGradient>`;
+        }
+
         let logoSvg = '';
         if (logoDataUrl) {
-            const logoSize = Math.floor(sz * (logoSizePct / 100));
-            const lx = Math.floor((sz - logoSize) / 2);
+            const logoSize = Math.floor(qrPx * (logoSizePct / 100));
+            const lx = Math.floor((qrPx - logoSize) / 2);
             const padPx = Math.max(4, Math.floor(cell * 0.8));
-            logoSvg = `<rect x="${lx - padPx}" y="${lx - padPx}" width="${logoSize + padPx * 2}" height="${logoSize + padPx * 2}" fill="${bg}"/>` +
-                `<image x="${lx}" y="${lx}" width="${logoSize}" height="${logoSize}" href="${logoDataUrl}"/>`;
+            // Logo backdrop: when bg is transparent, fall back to white so the logo stays legible.
+            const logoPad = bgIsTransparent ? '#ffffff' : bg;
+            if (logoShape === 'circle') {
+                const r = (logoSize + padPx * 2) / 2;
+                const cx = lx + logoSize / 2;
+                const cy = lx + logoSize / 2;
+                const clipId = `qrLogoClip-${qrUniqId || ++qrUniqId}`;
+                defsSvg += `<clipPath id="${clipId}"><circle cx="${cx}" cy="${cy}" r="${logoSize / 2}"/></clipPath>`;
+                logoSvg = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${logoPad}"/>` +
+                    `<image x="${lx}" y="${lx}" width="${logoSize}" height="${logoSize}" href="${logoDataUrl}" clip-path="url(#${clipId})" preserveAspectRatio="xMidYMid slice"/>`;
+            } else {
+                logoSvg = `<rect x="${lx - padPx}" y="${lx - padPx}" width="${logoSize + padPx * 2}" height="${logoSize + padPx * 2}" rx="${cell * 0.5}" ry="${cell * 0.5}" fill="${logoPad}"/>` +
+                    `<image x="${lx}" y="${lx}" width="${logoSize}" height="${logoSize}" href="${logoDataUrl}" preserveAspectRatio="xMidYMid meet"/>`;
+            }
         }
-        const dim = pxSize ? `width="${pxSize}" height="${pxSize}"` : `width="100%" height="100%"`;
-        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${sz} ${sz}" ${dim} shape-rendering="crispEdges" role="img" aria-label="QR code">` +
-            `<rect width="${sz}" height="${sz}" fill="${bg}"/>` +
-            `<g fill="${fg}">${rects.join('')}</g>` +
+
+        let captionSvg = '';
+        if (caption) {
+            const cy = qrPx + cell + captionSize;
+            captionSvg = `<text x="${qrPx / 2}" y="${cy}" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="${captionSize}" font-weight="600" fill="${fg}">${escapeXml(caption)}</text>`;
+        }
+
+        const dim = pxSize ? `width="${pxSize}" height="${Math.round(pxSize * sz / qrPx)}"` : `width="100%" height="100%"`;
+        const ariaLabel = caption ? `QR code: ${escapeXml(caption)}` : 'QR code';
+        const bgRect = bgIsTransparent ? '' : `<rect width="${qrPx}" height="${sz}" fill="${bgFill}"/>`;
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${qrPx} ${sz}" ${dim} shape-rendering="crispEdges" role="img" aria-label="${ariaLabel}">` +
+            (defsSvg ? `<defs>${defsSvg}</defs>` : '') +
+            bgRect +
+            `<g fill="${fillRef}">${shapes.join('')}${eyesSvg}</g>` +
             logoSvg +
+            captionSvg +
             `</svg>`;
+    }
+
+    function getQrOptsFromDom(pxSize = null) {
+        const mode = getQrColorMode();
+        const gradient = mode === 'gradient' ? {
+            start: qrGradStart ? qrGradStart.value : '#ec4899',
+            end: qrGradEnd ? qrGradEnd.value : '#4f46e5',
+            angle: qrGradAngle ? Number(qrGradAngle.value) : 135,
+        } : null;
+        const fg = qrFgColor ? qrFgColor.value : (lineColor ? lineColor.value : '#000000');
+        const bgValue = qrBgTransparent && qrBgTransparent.checked
+            ? 'transparent'
+            : (qrBgColor ? qrBgColor.value : (bgColor ? bgColor.value : '#ffffff'));
+        return {
+            fg,
+            bg: bgValue,
+            margin: qrQuietZone ? Number(qrQuietZone.value) : 4,
+            logoDataUrl: qrLogoDataUrl,
+            logoSizePct: qrLogoSize ? Number(qrLogoSize.value) : QR_LOGO_SIZE_PCT,
+            logoShape: qrLogoShape ? qrLogoShape.value : 'square',
+            eyeStyle: qrEyeStyle ? qrEyeStyle.value : 'square',
+            gradient,
+            caption: qrCaption ? qrCaption.value.trim().slice(0, 60) : '',
+            captionSize: qrCaptionSize ? Number(qrCaptionSize.value) : 14,
+            pxSize,
+        };
     }
 
     function renderQR(text) {
         if (typeof window.qrcode === 'undefined' || !qrPreview) return;
-        // Auto-promote ECC to 'H' when a logo is present to preserve scan reliability.
-        let ecc = qrEcc ? qrEcc.value : 'M';
-        if (qrLogoDataUrl && ecc !== 'H') ecc = 'H';
+        // UTF-8 encoding override: qrcode-generator defaults to Latin-1 which mangles
+        // Polish/diacritic characters. Patch once per session.
+        if (window.qrcode && window.qrcode.stringToBytes && !window.qrcode.__utf8Patched) {
+            window.qrcode.stringToBytes = s => Array.from(new TextEncoder().encode(s));
+            window.qrcode.__utf8Patched = true;
+        }
+        // Auto-promote ECC based on logo coverage to preserve scan reliability.
+        const ECC_RANK = { L: 0, M: 1, Q: 2, H: 3 };
+        const ECC_NAMES = ['L', 'M', 'Q', 'H'];
+        let eccRank = ECC_RANK[qrEcc ? qrEcc.value : 'M'] ?? 1;
+        if (qrLogoDataUrl) {
+            const logoPct = qrLogoSize ? Number(qrLogoSize.value) : QR_LOGO_SIZE_PCT;
+            if (logoPct >= 25) eccRank = Math.max(eccRank, 3);
+            else if (logoPct >= 18) eccRank = Math.max(eccRank, 2);
+        }
+        const ecc = ECC_NAMES[eccRank];
         try {
             const qr = window.qrcode(0, ecc);
             qr.addData(text);
             qr.make();
             qrMatrix = qr;
-            qrPreview.innerHTML = buildQrSvgString(qr, {
-                fg: lineColor.value,
-                bg: bgColor.value,
-                margin: 4,
-                logoDataUrl: qrLogoDataUrl,
-            });
+            qrPreview.innerHTML = buildQrSvgString(qr, getQrOptsFromDom());
             qrPreview.classList.add('active');
         } catch (_) {
             qrMatrix = null;
@@ -220,13 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function qrToPngBlob(pxSize = 1024) {
         return new Promise((resolve, reject) => {
             if (!qrMatrix) { reject(new Error('No QR matrix')); return; }
-            const svg = buildQrSvgString(qrMatrix, {
-                fg: lineColor.value,
-                bg: bgColor.value,
-                margin: 4,
-                logoDataUrl: qrLogoDataUrl,
-                pxSize,
-            });
+            const svg = buildQrSvgString(qrMatrix, getQrOptsFromDom(pxSize));
             const img = new Image();
             img.onload = () => {
                 const canvas = document.createElement('canvas');
@@ -248,10 +388,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // human-readable text make the 6 cards immediately distinguishable.
         const presets = {
             EAN13:   { value: '5901234123457',  width: 1.0, height: 38, fontSize: 9,  textMargin: 1, margin: 4 },
+            EAN8:    { value: '96385074',       width: 1.4, height: 38, fontSize: 9,  textMargin: 1, margin: 4 },
             UPC:     { value: '042100005264',   width: 1.1, height: 38, fontSize: 9,  textMargin: 1, margin: 4 },
             CODE128: { value: 'CODE-128',       width: 1.6, height: 40, fontSize: 10, textMargin: 1, margin: 2 },
             CODE39:  { value: 'CODE 39',        width: 1.4, height: 40, fontSize: 10, textMargin: 1, margin: 2 },
-            ITF14:   { value: '10012345678902', width: 1.2, height: 40, fontSize: 9,  textMargin: 1, margin: 6 },
             QR:      { value: 'https://barcode-generator.daytodayapps-contact.workers.dev/' }
         };
         const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -297,6 +437,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (qrPreview) qrPreview.classList.toggle('active', qr);
         // Hide JsBarcode SVG host when in QR mode; show otherwise
         barcodeSvg.style.display = qr ? 'none' : '';
+        // Hide barcode-only controls (bar width/height/margin, font size, show-text label, text-align)
+        document.querySelectorAll('.non-qr-control').forEach(el => { el.hidden = qr; });
     }
 
     barcodeType.addEventListener('change', () => {
@@ -312,21 +454,67 @@ document.addEventListener('DOMContentLoaded', () => {
         qrLogoInput.addEventListener('change', () => {
             const file = qrLogoInput.files && qrLogoInput.files[0];
             if (!file) { qrLogoDataUrl = null; if (isQR()) generateBarcode(); return; }
+            if (file.size > 2 * 1024 * 1024) { showToast(T.errLogoSize || 'Logo file too large (max 2 MB)'); return; }
             const reader = new FileReader();
             reader.onload = e => { qrLogoDataUrl = e.target.result; if (isQR()) generateBarcode(); };
             reader.readAsDataURL(file);
         });
     }
 
+    // Live updates for all new QR options
+    function bindQrLive(el, evt = 'input') {
+        if (!el) return;
+        el.addEventListener(evt, () => { if (isQR() && barcodeText.value.trim()) scheduleRegen(); });
+    }
+    if (qrLogoSize && qrLogoSizeVal) qrLogoSize.addEventListener('input', () => { qrLogoSizeVal.textContent = qrLogoSize.value; });
+    if (qrQuietZone && qrQuietZoneVal) qrQuietZone.addEventListener('input', () => { qrQuietZoneVal.textContent = qrQuietZone.value; });
+    if (qrGradAngle && qrGradAngleVal) qrGradAngle.addEventListener('input', () => { qrGradAngleVal.textContent = qrGradAngle.value; });
+    if (qrCaptionSize && qrCaptionSizeVal) qrCaptionSize.addEventListener('input', () => { qrCaptionSizeVal.textContent = qrCaptionSize.value; });
+    bindQrLive(qrLogoSize);
+    bindQrLive(qrLogoShape, 'change');
+    bindQrLive(qrEyeStyle, 'change');
+    bindQrLive(qrQuietZone);
+    bindQrLive(qrFgColor);
+    bindQrLive(qrBgColor);
+    bindQrLive(qrGradStart);
+    bindQrLive(qrGradEnd);
+    bindQrLive(qrGradAngle);
+    bindQrLive(qrCaption);
+    bindQrLive(qrCaptionSize);
+    function syncQrColorMode() {
+        const isGradient = getQrColorMode() === 'gradient';
+        if (qrGradWrap) qrGradWrap.hidden = !isGradient;
+        if (qrFgWrap) qrFgWrap.hidden = isGradient;
+        if (qrBgColor) qrBgColor.disabled = !!(qrBgTransparent && qrBgTransparent.checked);
+    }
+    if (qrColorMode) qrColorMode.addEventListener('change', (e) => {
+        if (!e.target || e.target.name !== 'qr-color-mode-radio') return;
+        syncQrColorMode();
+        if (isQR() && barcodeText.value.trim()) scheduleRegen();
+    });
+    if (qrBgTransparent) qrBgTransparent.addEventListener('change', () => {
+        syncQrColorMode();
+        if (isQR() && barcodeText.value.trim()) scheduleRegen();
+    });
+    syncQrColorMode();
+
     // ===== Popular Gallery wiring =====
     document.querySelectorAll('.popular-card').forEach(card => {
         card.addEventListener('click', () => {
             const fmt = card.dataset.format;
             if (!fmt) return;
+            // Anti-jump: zapamiętaj pozycję scrolla i przywróć po reflow
+            const prevY = window.scrollY;
+            const prevX = window.scrollX;
             barcodeType.value = fmt;
             document.querySelectorAll('.popular-card').forEach(c => c.setAttribute('aria-pressed', c === card ? 'true' : 'false'));
             barcodeType.dispatchEvent(new Event('change'));
-            barcodeText.focus();
+            barcodeText.focus({ preventScroll: true });
+            requestAnimationFrame(() => {
+                if (window.scrollY !== prevY || window.scrollX !== prevX) {
+                    window.scrollTo({ top: prevY, left: prevX, behavior: 'instant' });
+                }
+            });
         });
     });
 

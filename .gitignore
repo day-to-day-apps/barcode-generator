@@ -23,6 +23,10 @@ dist/
 playwright-report/
 test-results/
 
+# Comprehensive test artifacts (screenshots, axe.json, DOM, console logs)
+tests/artifacts/*
+!tests/artifacts/.gitkeep
+
 # Env
 .env
 .env.local

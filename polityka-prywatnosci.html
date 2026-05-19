@@ -41,6 +41,10 @@
                 <li>Wybranego motywu (jasny/ciemny) — klucz <code>barcode-theme</code></li>
                 <li>Listy zeskanowanych kodów w dekoderze (treść kodu, format, ilość, czas) — klucz <code>decoder.scanMap.v1</code>, do 1000 wpisów. Dane pozostają wyłącznie w Twojej przeglądarce i nie są wysyłane na serwer. Możesz je w każdej chwili usunąć przyciskiem „Wyczyść” w dekoderze lub czyszcząc dane strony w ustawieniach przeglądarki.</li>
             </ul>
+            <p>Stosujemy też jeden funkcjonalny plik cookie:</p>
+            <ul>
+                <li><code>bc_pending_code</code> — zapisywany tylko wtedy, gdy klikniesz „Zapisz ten kod” bez zalogowania. Przechowuje wygenerowany kod kreskowy (typ, wartość, ustawienia wizualne) na maksymalnie 24 godziny, aby po zalogowaniu lub założeniu konta dało się go automatycznie zapisać. Cookie jest ograniczone do tej domeny (<code>SameSite=Strict</code>), nie zawiera danych osobowych i kasuje się natychmiast po użyciu lub po wygaśnięciu.</li>
+            </ul>
             <p>Nie używamy plików cookies do śledzenia użytkowników.</p>
 
             <h2>4. Usługi zewnętrzne</h2>

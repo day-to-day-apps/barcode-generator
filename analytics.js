@@ -89,6 +89,7 @@
         banner.querySelector('.cookie-accept').addEventListener('click', function() {
             localStorage.setItem(CONSENT_KEY, 'accepted');
             banner.remove();
+            injectSidebarAds();
         });
         banner.querySelector('.cookie-reject').addEventListener('click', function() {
             localStorage.setItem(CONSENT_KEY, 'rejected');
@@ -96,10 +97,79 @@
         });
     }
 
-    // Show consent banner after page loads
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', showConsentBanner);
-    } else {
-        showConsentBanner();
+    // ============================================================
+    // Sidebar ad slot injection (po zgodzie na cookies)
+    // Wymaga elementów <aside class="ad-sidebar" data-ad="sidebar-left|sidebar-right">.
+    // TODO: zastąp poniższe SLOT_ID realnymi wartościami z konsoli AdSense.
+    // ============================================================
+    const AD_SLOTS = {
+        'sidebar-left':   { id: '0000000001', minH: 600, format: 'auto', fullWidthResp: true },
+        'sidebar-right':  { id: '0000000002', minH: 600, format: 'auto', fullWidthResp: true },
+        'top-banner':     { id: '0000000003', minH: 90,  format: 'auto', fullWidthResp: true },
+        'mid-content':    { id: '0000000004', minH: 250, format: 'rectangle', fullWidthResp: false },
+        'content-2':      { id: '0000000005', minH: 250, format: 'rectangle', fullWidthResp: false },
+        'sticky-bottom':  { id: '0000000006', minH: 50,  format: 'auto', fullWidthResp: true },
+    };
+
+    function injectAd(slot) {
+        if (!slot || slot.dataset.adInjected === '1') return;
+        const slotKey = slot.getAttribute('data-ad');
+        const cfg = AD_SLOTS[slotKey];
+        if (!cfg) return;
+        const ins = document.createElement('ins');
+        ins.className = 'adsbygoogle';
+        ins.style.display = 'block';
+        ins.style.width = '100%';
+        ins.style.minHeight = cfg.minH + 'px';
+        ins.setAttribute('data-ad-client', ADSENSE_PUBLISHER_ID);
+        ins.setAttribute('data-ad-slot', cfg.id);
+        ins.setAttribute('data-ad-format', cfg.format);
+        if (cfg.fullWidthResp) ins.setAttribute('data-full-width-responsive', 'true');
+        slot.appendChild(ins);
+        slot.dataset.adInjected = '1';
+        try {
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {
+            /* AdSense init may throw before script load — ignore */
+        }
     }
+
+    function injectAllAds() {
+        if (!ADSENSE_PUBLISHER_ID) return;
+        document.querySelectorAll('.ad-sidebar[data-ad], .ad-slot[data-ad], .ad-sticky-bottom[data-ad]')
+            .forEach(injectAd);
+        setupStickyBottomClose();
+    }
+
+    function setupStickyBottomClose() {
+        const sticky = document.querySelector('.ad-sticky-bottom');
+        if (!sticky || sticky.dataset.stickyInit === '1') return;
+        sticky.dataset.stickyInit = '1';
+        document.body.classList.add('has-sticky-ad');
+        const closeBtn = sticky.querySelector('.ad-sticky-bottom__close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                sticky.classList.add('is-hidden');
+                document.body.classList.remove('has-sticky-ad');
+                try { sessionStorage.setItem('sticky-ad-dismissed', '1'); } catch (e) { /* ignore */ }
+            });
+        }
+        try {
+            if (sessionStorage.getItem('sticky-ad-dismissed') === '1') {
+                sticky.classList.add('is-hidden');
+                document.body.classList.remove('has-sticky-ad');
+            }
+        } catch (e) { /* ignore */ }
+    }
+
+    function maybeInjectAds() {
+        if (hasConsent()) injectAllAds();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', maybeInjectAds);
+    } else {
+        maybeInjectAds();
+    }
+
 })();

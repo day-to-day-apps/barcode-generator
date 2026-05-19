@@ -15,7 +15,29 @@ export default defineConfig({
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    {
+      name: 'tester-pl-desktop',
+      testDir: './tests/comprehensive',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, locale: 'pl-PL', baseURL: 'http://127.0.0.1:8765/pl/' },
+    },
+    {
+      name: 'tester-pl-mobile',
+      testDir: './tests/comprehensive',
+      use: { ...devices['Pixel 5'], viewport: { width: 390, height: 844 }, locale: 'pl-PL', baseURL: 'http://127.0.0.1:8765/pl/' },
+    },
+    {
+      name: 'tester-en-desktop',
+      testDir: './tests/comprehensive',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, locale: 'en-US', baseURL: 'http://127.0.0.1:8765/en/' },
+    },
+    {
+      name: 'tester-en-mobile',
+      testDir: './tests/comprehensive',
+      use: { ...devices['Pixel 5'], viewport: { width: 390, height: 844 }, locale: 'en-US', baseURL: 'http://127.0.0.1:8765/en/' },
+    },
   ],
+  globalSetup: './tests/comprehensive/_helpers/global-setup.js',
+  globalTeardown: './tests/comprehensive/_helpers/global-teardown.js',
   webServer: {
     command: 'python -m http.server 8765 --bind 127.0.0.1',
     url: 'http://127.0.0.1:8765/',

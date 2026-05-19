@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preload" href="../styles.css?v=20260512000000" as="style">
+    <link rel="preload" href="../styles.css?v=20260613130000" as="style">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
@@ -112,7 +112,7 @@
     }
     </script>
 
-    <link rel="stylesheet" href="../styles.css?v=20260512000000">
+    <link rel="stylesheet" href="../styles.css?v=20260613130000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
@@ -196,10 +196,10 @@
                 <h2 id="popular-title" class="popular-section__title" data-i18n="popularTitle">Popularne formaty</h2>
                 <div class="popular-gallery">
                     <button type="button" class="popular-card" data-format="EAN13" aria-pressed="false"><span class="popular-card__preview" data-preview="EAN13" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularEan13">EAN-13</span></button>
+                    <button type="button" class="popular-card" data-format="EAN8" aria-pressed="false"><span class="popular-card__preview" data-preview="EAN8" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularEan8">EAN-8</span></button>
                     <button type="button" class="popular-card" data-format="UPC" aria-pressed="false"><span class="popular-card__preview" data-preview="UPC" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularUpc">UPC-A</span></button>
                     <button type="button" class="popular-card" data-format="CODE128" aria-pressed="false"><span class="popular-card__preview" data-preview="CODE128" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularCode128">Code 128</span></button>
                     <button type="button" class="popular-card" data-format="CODE39" aria-pressed="false"><span class="popular-card__preview" data-preview="CODE39" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularCode39">Code 39</span></button>
-                    <button type="button" class="popular-card" data-format="ITF14" aria-pressed="false"><span class="popular-card__preview" data-preview="ITF14" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularItf14">ITF-14</span></button>
                     <button type="button" class="popular-card" data-format="QR" aria-pressed="false"><span class="popular-card__preview" data-preview="QR" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularQr">QR Code</span></button>
                 </div>
             </section>
@@ -244,9 +244,98 @@
                                 <option value="H">H (30%)</option>
                             </select>
                         </div>
+                        <div class="qr-options__row qr-options__row--full">
+                            <span class="qr-color-toggle__label" id="qr-color-mode-label" data-i18n="qrColorMode">Color mode</span>
+                            <div class="qr-color-toggle" role="radiogroup" aria-labelledby="qr-color-mode-label" id="qr-color-mode">
+                                <label class="qr-color-toggle__option">
+                                    <input type="radio" name="qr-color-mode-radio" value="solid" checked>
+                                    <span data-i18n="qrSolid">Solid</span>
+                                </label>
+                                <label class="qr-color-toggle__option">
+                                    <input type="radio" name="qr-color-mode-radio" value="gradient">
+                                    <span data-i18n="qrGradient">Gradient</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="qr-options__row" id="qr-fg-wrap">
+                            <label for="qr-fg-color" data-i18n="qrFgColor">Foreground</label>
+                            <input type="color" id="qr-fg-color" value="#000000">
+                        </div>
+                        <div class="qr-options__row qr-options__row--bg">
+                            <label for="qr-bg-color" data-i18n="qrBgColor">Background</label>
+                            <div class="qr-bg-row">
+                                <input type="color" id="qr-bg-color" value="#ffffff">
+                                <label class="qr-bg-transparent">
+                                    <input type="checkbox" id="qr-bg-transparent">
+                                    <span data-i18n="qrBgTransparent">Transparent</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="qr-options__gradient" id="qr-gradient-wrap" hidden>
+                            <div class="qr-options__row qr-options__row--grid2">
+                                <div>
+                                    <label for="qr-grad-start" data-i18n="qrGradStart">Gradient start</label>
+                                    <input type="color" id="qr-grad-start" value="#ec4899">
+                                </div>
+                                <div>
+                                    <label for="qr-grad-end" data-i18n="qrGradEnd">Gradient end</label>
+                                    <input type="color" id="qr-grad-end" value="#4f46e5">
+                                </div>
+                            </div>
+                            <div class="qr-options__row">
+                                <label for="qr-grad-angle" data-i18n="qrGradAngle">Gradient angle</label>
+                                <div class="range-wrapper">
+                                    <input type="range" id="qr-grad-angle" min="0" max="360" step="5" value="135">
+                                    <span class="range-value" id="qr-grad-angle-val">135</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="qr-options__row">
+                            <label for="qr-eye-style" data-i18n="qrEyeStyle">Finder pattern</label>
+                            <select id="qr-eye-style">
+                                <option value="square" data-i18n="qrEyeSquare">Square</option>
+                                <option value="rounded" data-i18n="qrEyeRounded">Rounded</option>
+                            </select>
+                        </div>
+                        <div class="qr-options__row">
+                            <label for="qr-quiet-zone" data-i18n="qrQuietZone">Quiet zone</label>
+                            <div class="range-wrapper">
+                                <input type="range" id="qr-quiet-zone" min="1" max="8" step="1" value="4">
+                                <span class="range-value" id="qr-quiet-zone-val">4</span>
+                            </div>
+                        </div>
                         <div class="qr-options__row">
                             <label for="qr-logo" data-i18n="qrLogoLabel">Logo (optional)</label>
                             <input type="file" id="qr-logo" accept="image/png,image/jpeg,image/svg+xml">
+                        </div>
+                        <div class="qr-options__row qr-options__row--grid2">
+                            <div>
+                                <label for="qr-logo-size" data-i18n="qrLogoSize">Logo size (%)</label>
+                                <div class="range-wrapper">
+                                    <input type="range" id="qr-logo-size" min="10" max="28" step="1" value="22">
+                                    <span class="range-value" id="qr-logo-size-val">22</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="qr-logo-shape" data-i18n="qrLogoShape">Logo shape</label>
+                                <select id="qr-logo-shape">
+                                    <option value="square" data-i18n="qrLogoSquare">Square</option>
+                                    <option value="circle" data-i18n="qrLogoCircle">Circle</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="qr-options__row qr-options__row--grid2">
+                            <div>
+                                <label for="qr-caption" data-i18n="qrCaption">Caption</label>
+                                <input type="text" id="qr-caption" maxlength="60" placeholder="">
+                            </div>
+                            <div>
+                                <label for="qr-caption-size" data-i18n="qrCaptionSize">Caption size</label>
+                                <div class="range-wrapper">
+                                    <input type="range" id="qr-caption-size" min="10" max="32" step="1" value="14">
+                                    <span class="range-value" id="qr-caption-size-val">14</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -255,7 +344,7 @@
                         <input type="text" id="barcode-text" placeholder="Wpisz dowolny tekst lub cyfry..." value="Barcode 2026">
                     </div>
 
-                    <div class="control-row">
+                    <div class="control-row non-qr-control">
                         <div class="control-group">
                             <label for="bar-width">Szerokość kreski</label>
                             <div class="range-wrapper">
@@ -272,7 +361,7 @@
                         </div>
                     </div>
 
-                    <div class="control-row">
+                    <div class="control-row non-qr-control">
                         <div class="control-group">
                             <label for="bar-margin">Margines (px)</label>
                             <div class="range-wrapper">
@@ -316,7 +405,7 @@
                                 <option value="L">270° (w lewo)</option>
                             </select>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group non-qr-control">
                             <label for="show-text">Pokaż tekst pod kodem</label>
                             <label class="toggle">
                                 <input type="checkbox" id="show-text" checked>
@@ -325,7 +414,7 @@
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="control-group non-qr-control">
                         <label id="text-align-label">Wyrównanie tekstu</label>
                         <div class="btn-group" role="group" aria-labelledby="text-align-label">
                             <button class="btn-option" data-value="left" data-target="text-align" aria-pressed="false" aria-label="Wyrównaj do lewej">
@@ -492,7 +581,18 @@
                     </details>
                 </div>
             </section>
+
+            <!-- Ad: Rectangle bottom -->
+            <div class="ad-slot ad-rectangle" data-ad="content-2">
+                <!-- AdSense slot: 336×280 rectangle -->
+            </div>
         </main>
+
+        <!-- Ad: Sticky bottom (mobile only) -->
+        <div class="ad-sticky-bottom" data-ad="sticky-bottom" aria-label="Reklama">
+            <button type="button" class="ad-sticky-bottom__close" aria-label="Zamknij reklamę">&times;</button>
+            <!-- AdSense slot: 320×50 mobile anchor -->
+        </div>
 
         <footer>
             <p>Generator Kodów Kreskowych &copy; 2026 &mdash; Darmowe narzędzie online</p>
@@ -766,9 +866,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js" integrity="sha384-Kk5SjBOKprEnGfyBWfD2zROFd1Cu8kwOXxG2GIhYPcoDL2rBJS9P8Ud1ZMy4412a" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" integrity="sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz" crossorigin="anonymous"></script>
-    <script src="../i18n.js?v=20260512000000"></script>
-    <script src="../label-renderer.js?v=20260601000000"></script>
-    <script src="../app.js?v=20260512000000"></script>
-    <script src="../analytics.js" defer></script>
+    <script src="../i18n.js?v=20260613130000"></script>
+    <script src="../label-renderer.js?v=20260613130000"></script>
+    <script src="../app.js?v=20260613130000"></script>
+    <script src="../analytics.js?v=2026-c" defer></script>
 </body>
 </html>
