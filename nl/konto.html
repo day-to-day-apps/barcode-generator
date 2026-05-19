@@ -4,24 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account — Barcode Generator</title>
-    <meta name="description" content="Sign in to Barcode Generator to save and revisit your codes.">
+    <meta name="description" content="Sign in to Barcode Generator with email and password to save and revisit your codes.">
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps-contact.workers.dev/nl/konto.html">
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-    <link rel="stylesheet" href="../styles.css?v=20260507000000">
+    <link rel="stylesheet" href="../styles.css?v=20260613130000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="../i18n.js?v=20260507000000"></script>
+    <script src="../i18n.js?v=20260613130000"></script>
 </head>
-<body>
+<body data-page="konto">
     <div class="app">
         <header class="animated-header">
             <div class="logo">
                 <h1 data-i18n="title">Account</h1>
-                <p class="subtitle" data-i18n="subtitle">Sign in with a magic link to save your barcodes.</p>
+                <p class="subtitle" data-i18n="subtitleEmailPassword">Sign in with email and password to save your barcodes.</p>
             </div>
-            <nav aria-label="Primary"><a href="./" data-i18n="backToGenerator">&larr; Back to generator</a></nav>
+            <nav class="app-nav" aria-label="Primary" data-signed-in="false">
+                <a href="./" data-i18n="backToGenerator">&larr; Back to generator</a>
+                <a href="moje-kody.html" data-i18n="myCodes">My codes</a>
+                <a href="szablony.html" data-i18n="myTemplates">My templates</a>
+                <a href="drukarki.html" data-i18n="myPrinters">My printers</a>
+                <a href="wydruk.html" data-i18n="builderTitle">Print builder</a>
+                <a href="historia-wydrukow.html" data-i18n="printHistory">Print history</a>
+            </nav>
         </header>
 
         <main id="main-content" class="container">
@@ -29,28 +36,107 @@
                 <h2 id="account-title" data-i18n="signIn">Sign in</h2>
 
                 <div id="signed-out" hidden>
-                    <form id="magic-form" novalidate>
-                        <label for="email-input" data-i18n="email">Email address</label>
-                        <input
-                            id="email-input"
-                            name="email"
-                            type="email"
-                            autocomplete="email"
-                            inputmode="email"
-                            required
-                            aria-describedby="email-status"
-                            data-i18n-placeholder="emailPlaceholder"
-                            placeholder="you@example.com">
-                        <button type="submit" id="magic-submit" class="btn-primary" data-i18n="magicLink">Send magic link</button>
-                    </form>
+                    <div class="auth-tabs" role="tablist" aria-label="Account actions">
+                        <button type="button" role="tab" id="tab-login" aria-controls="panel-login" aria-selected="true" class="auth-tab is-active" data-tab="login" data-i18n="tabLogin">Sign in</button>
+                        <button type="button" role="tab" id="tab-register" aria-controls="panel-register" aria-selected="false" class="auth-tab" data-tab="register" data-i18n="tabRegister">Create account</button>
+                        <button type="button" role="tab" id="tab-reset" aria-controls="panel-reset" aria-selected="false" class="auth-tab" data-tab="reset" data-i18n="tabReset">Forgot password</button>
+                    </div>
+
+                    <div id="panel-login" role="tabpanel" aria-labelledby="tab-login">
+                        <form id="login-form" novalidate>
+                            <label for="login-email" data-i18n="email">Email address</label>
+                            <input id="login-email" name="email" type="email" autocomplete="email" inputmode="email" required data-i18n-placeholder="emailPlaceholder" placeholder="you@example.com">
+                            <label for="login-password" data-i18n="password">Password</label>
+                            <div class="password-field">
+                                <input id="login-password" name="password" type="password" autocomplete="current-password" required minlength="8" data-i18n-placeholder="passwordPlaceholder" placeholder="At least 8 characters">
+                                <button type="button" class="password-toggle" data-target="login-password" aria-pressed="false" aria-label="Show password" data-i18n-aria-label="showPassword">
+                                    <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a19.77 19.77 0 0 1 4.22-5.94"/><path d="M9.9 4.24A11.05 11.05 0 0 1 12 4c7 0 11 8 11 8a19.65 19.65 0 0 1-3.17 4.19"/><path d="M14.12 14.12A3 3 0 1 1 9.88 9.88"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
+                            </div>
+                            <button type="submit" id="login-submit" class="btn-primary" data-i18n="signInCta">Sign in</button>
+                        </form>
+                    </div>
+
+                    <div id="panel-register" role="tabpanel" aria-labelledby="tab-register" hidden>
+                        <form id="register-form" novalidate>
+                            <label for="register-email" data-i18n="email">Email address</label>
+                            <input id="register-email" name="email" type="email" autocomplete="email" inputmode="email" required data-i18n-placeholder="emailPlaceholder" placeholder="you@example.com">
+                            <label for="register-password" data-i18n="password">Password</label>
+                            <div class="password-field">
+                                <input id="register-password" name="password" type="password" autocomplete="new-password" required minlength="8" data-i18n-placeholder="passwordPlaceholder" placeholder="At least 8 characters">
+                                <button type="button" class="password-toggle" data-target="register-password" aria-pressed="false" aria-label="Show password" data-i18n-aria-label="showPassword">
+                                    <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a19.77 19.77 0 0 1 4.22-5.94"/><path d="M9.9 4.24A11.05 11.05 0 0 1 12 4c7 0 11 8 11 8a19.65 19.65 0 0 1-3.17 4.19"/><path d="M14.12 14.12A3 3 0 1 1 9.88 9.88"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
+                            </div>
+                            <label for="register-password-confirm" data-i18n="confirmPassword">Confirm password</label>
+                            <div class="password-field">
+                                <input id="register-password-confirm" name="password-confirm" type="password" autocomplete="new-password" required minlength="8">
+                                <button type="button" class="password-toggle" data-target="register-password-confirm" aria-pressed="false" aria-label="Show password" data-i18n-aria-label="showPassword">
+                                    <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a19.77 19.77 0 0 1 4.22-5.94"/><path d="M9.9 4.24A11.05 11.05 0 0 1 12 4c7 0 11 8 11 8a19.65 19.65 0 0 1-3.17 4.19"/><path d="M14.12 14.12A3 3 0 1 1 9.88 9.88"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
+                            </div>
+                            <label class="checkbox-row">
+                                <input id="register-terms" name="terms" type="checkbox" required>
+                                <span data-i18n="acceptTerms">I agree to the privacy policy.</span>
+                            </label>
+                            <button type="submit" id="register-submit" class="btn-primary" data-i18n="registerCta">Create account</button>
+                        </form>
+                    </div>
+
+                    <div id="panel-reset" role="tabpanel" aria-labelledby="tab-reset" hidden>
+                        <form id="reset-form" novalidate>
+                            <label for="reset-email" data-i18n="email">Email address</label>
+                            <input id="reset-email" name="email" type="email" autocomplete="email" inputmode="email" required data-i18n-placeholder="emailPlaceholder" placeholder="you@example.com">
+                            <button type="submit" id="reset-submit" class="btn-primary" data-i18n="resetCta">Send reset link</button>
+                        </form>
+                    </div>
                 </div>
 
                 <div id="signed-in" hidden>
-                    <p><span data-i18n="signedInAs">Signed in as</span> <strong id="user-email"></strong>.</p>
-                    <p>
-                        <a class="btn-primary" href="moje-kody.html" data-i18n="mySavedCodes">My saved codes</a>
+                    <div class="dashboard-header">
+                        <p class="dashboard-meta"><span data-i18n="signedInAs">Signed in as</span> <strong id="user-email"></strong></p>
+                        <p class="dashboard-subtitle" data-i18n="dashboardSubtitle">Choose what you'd like to do.</p>
+                    </div>
+                    <nav class="dashboard-tiles" aria-label="Account sections">
+                        <a class="dashboard-tile" href="moje-kody.html">
+                            <span class="dashboard-tile-icon" aria-hidden="true">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="4" width="2" height="16"/><rect x="6" y="4" width="1" height="16"/><rect x="8" y="4" width="3" height="16"/><rect x="12" y="4" width="1" height="16"/><rect x="14" y="4" width="2" height="16"/><rect x="17" y="4" width="1" height="16"/><rect x="19" y="4" width="2" height="16"/></svg>
+                            </span>
+                            <strong data-i18n="dashTileCodes">My codes</strong>
+                            <span class="dashboard-tile-desc" data-i18n="dashTileCodesDesc">Saved barcodes</span>
+                            <span class="dashboard-tile-kpi" data-tile-kpi="codes" hidden></span>
+                        </a>
+                        <a class="dashboard-tile" href="szablony.html">
+                            <span class="dashboard-tile-icon" aria-hidden="true">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                            </span>
+                            <strong data-i18n="dashTileTemplates">Label templates</strong>
+                            <span class="dashboard-tile-desc" data-i18n="dashTileTemplatesDesc">Your label designs</span>
+                            <span class="dashboard-tile-kpi" data-tile-kpi="templates" hidden></span>
+                        </a>
+                        <a class="dashboard-tile" href="drukarki.html">
+                            <span class="dashboard-tile-icon" aria-hidden="true">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                            </span>
+                            <strong data-i18n="dashTilePrinters">Printers</strong>
+                            <span class="dashboard-tile-desc" data-i18n="dashTilePrintersDesc">Profiles &amp; calibration</span>
+                            <span class="dashboard-tile-kpi" data-tile-kpi="printers" hidden></span>
+                        </a>
+                        <a class="dashboard-tile" href="historia-wydrukow.html">
+                            <span class="dashboard-tile-icon" aria-hidden="true">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+                            </span>
+                            <strong data-i18n="dashTileHistory">Print history</strong>
+                            <span class="dashboard-tile-desc" data-i18n="dashTileHistoryDesc">Print jobs and copies</span>
+                            <span class="dashboard-tile-kpi" data-tile-kpi="jobs" hidden></span>
+                        </a>
+                    </nav>
+                    <div class="dashboard-actions">
                         <button type="button" id="signout-btn" class="btn-action" data-i18n="signOut">Sign out</button>
-                    </p>
+                    </div>
                 </div>
 
                 <div id="email-status" role="status" aria-live="polite"></div>
@@ -65,6 +151,19 @@
 
     <script type="module">
         import { getSupabase, getSession, onAuthStateChange } from '../supabase-client.js';
+        import {
+            signUp,
+            signIn,
+            requestPasswordReset,
+            signOut,
+            validateEmail,
+            validatePassword,
+        } from '../auth-email-password.js';
+        import { loadDashboardStats, clearDashboardStats } from '../dashboard-stats.js';
+        import { countCodes, FREE_CODES_LIMIT } from '../db-codes.js';
+        import { countTemplates, FREE_TEMPLATES_LIMIT } from '../db-templates.js';
+        import { countPrinters, FREE_PRINTERS_LIMIT } from '../db-printers.js';
+        import { countJobs, FREE_JOBS_LIMIT } from '../db-jobs.js';
 
         const LANG = document.documentElement.lang || 'en';
         const I = window.BARCODE_I18N || {};
@@ -77,6 +176,10 @@
         document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
             const key = el.getAttribute('data-i18n-placeholder');
             if (T[key]) el.setAttribute('placeholder', T[key]);
+        });
+        document.querySelectorAll('[data-i18n-aria-label]').forEach((el) => {
+            const key = el.getAttribute('data-i18n-aria-label');
+            if (T[key]) el.setAttribute('aria-label', T[key]);
         });
         if (T.title) document.title = `${T.title} — Barcode Generator`;
 
@@ -92,9 +195,33 @@
             const signedIn = !!session?.user;
             $('signed-in').hidden = !signedIn;
             $('signed-out').hidden = signedIn;
-            if (signedIn) {
-                $('user-email').textContent = session.user.email ?? '';
+            if (signedIn) $('user-email').textContent = session.user.email ?? '';
+            const heading = $('account-title');
+            if (heading) {
+                const key = signedIn ? 'dashboardTitle' : 'signIn';
+                heading.textContent = T[key] || (signedIn ? 'Your account' : 'Sign in');
             }
+            if (signedIn) {
+                loadDashboardStats({
+                    helpers: { countCodes, countTemplates, countPrinters, countJobs },
+                    limits: { FREE_CODES_LIMIT, FREE_TEMPLATES_LIMIT, FREE_PRINTERS_LIMIT, FREE_JOBS_LIMIT },
+                    i18n: T,
+                });
+            } else {
+                clearDashboardStats();
+            }
+        }
+
+        function switchTab(name) {
+            ['login', 'register', 'reset'].forEach((n) => {
+                const tab = document.getElementById(`tab-${n}`);
+                const panel = document.getElementById(`panel-${n}`);
+                const active = n === name;
+                tab.setAttribute('aria-selected', String(active));
+                tab.classList.toggle('is-active', active);
+                panel.hidden = !active;
+            });
+            setStatus('');
         }
 
         async function init() {
@@ -102,43 +229,93 @@
             if (!sb) {
                 setStatus(T.notConfigured || 'Account features are not configured.', true);
                 $('signed-out').hidden = false;
-                $('magic-submit').disabled = true;
                 return;
             }
 
             renderSession(await getSession());
             await onAuthStateChange((_event, session) => renderSession(session));
 
-            $('magic-form').addEventListener('submit', async (e) => {
+            document.querySelectorAll('.auth-tab').forEach((btn) => {
+                btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+            });
+
+            const initialHash = (location.hash || '').replace('#', '');
+            if (['login', 'register', 'reset'].includes(initialHash)) {
+                switchTab(initialHash);
+            }
+
+            $('login-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const email = $('email-input').value.trim();
-                if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-                    setStatus(T.invalidEmail || 'Please enter a valid email address.', true);
-                    return;
-                }
-                $('magic-submit').disabled = true;
-                setStatus(T.sending || 'Sending…');
+                const email = $('login-email').value;
+                const password = $('login-password').value;
+                if (!validateEmail(email)) return setStatus(T.invalidEmail || 'Please enter a valid email address.', true);
+                if (!validatePassword(password)) return setStatus(T.weakPassword || 'Password must be at least 8 characters.', true);
+                $('login-submit').disabled = true;
+                setStatus(T.sending || 'Signing in…');
+                const { error } = await signIn({ email, password });
+                $('login-submit').disabled = false;
+                if (error) return setStatus(error.message || T.signInFail || 'Could not sign in.', true);
+                setStatus('');
+            });
+
+            $('register-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = $('register-email').value;
+                const password = $('register-password').value;
+                const confirm = $('register-password-confirm').value;
+                const terms = $('register-terms').checked;
+                if (!validateEmail(email)) return setStatus(T.invalidEmail || 'Please enter a valid email address.', true);
+                if (!validatePassword(password)) return setStatus(T.weakPassword || 'Password must be at least 8 characters.', true);
+                if (password !== confirm) return setStatus(T.passwordMismatch || 'Passwords do not match.', true);
+                if (!terms) return setStatus(T.mustAcceptTerms || 'You must accept the privacy policy.', true);
+                $('register-submit').disabled = true;
+                setStatus(T.sending || 'Creating account…');
                 const redirectPath = LANG === 'en' ? '/konto.html' : `/${LANG}/konto.html`;
-                const { error } = await sb.auth.signInWithOtp({
-                    email,
-                    options: { emailRedirectTo: window.location.origin + redirectPath },
-                });
-                $('magic-submit').disabled = false;
-                if (error) {
-                    setStatus(error.message || T.sendFail || 'Could not send magic link.', true);
-                    return;
-                }
-                setStatus(T.checkInbox || 'Check your inbox — we sent a one-time sign-in link.');
+                const { error } = await signUp({ email, password, redirectPath });
+                $('register-submit').disabled = false;
+                if (error) return setStatus(error.message || T.registerFail || 'Could not create the account.', true);
+                setStatus(T.registerCheckInbox || 'Account created. Check your inbox to confirm your email.');
+            });
+
+            $('reset-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = $('reset-email').value;
+                if (!validateEmail(email)) return setStatus(T.invalidEmail || 'Please enter a valid email address.', true);
+                $('reset-submit').disabled = true;
+                setStatus(T.sending || 'Sending…');
+                const redirectPath = LANG === 'en' ? '/reset-hasla.html' : `/${LANG}/reset-hasla.html`;
+                const { error } = await requestPasswordReset({ email, redirectPath });
+                $('reset-submit').disabled = false;
+                if (error) return setStatus(error.message || T.resetFail || 'Could not send reset email.', true);
+                setStatus(T.resetSent || 'Check your inbox — we sent a password reset link.');
             });
 
             $('signout-btn').addEventListener('click', async () => {
-                await sb.auth.signOut();
+                await signOut();
                 setStatus(T.signedOut || 'Signed out.');
+            });
+
+            document.querySelectorAll('.password-toggle').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const input = document.getElementById(btn.dataset.target);
+                    if (!input) return;
+                    const showing = input.type === 'text';
+                    input.type = showing ? 'password' : 'text';
+                    btn.setAttribute('aria-pressed', String(!showing));
+                    const labelKey = showing ? 'showPassword' : 'hidePassword';
+                    btn.setAttribute('aria-label', T[labelKey] || (showing ? 'Show password' : 'Hide password'));
+                    const open = btn.querySelector('.eye-open');
+                    const closed = btn.querySelector('.eye-closed');
+                    // SVG: hidden IDL property is HTMLElement-only — use attribute
+                    if (open) open.toggleAttribute('hidden', !showing);
+                    if (closed) closed.toggleAttribute('hidden', showing);
+                });
             });
         }
 
         init();
     </script>
+    <script type="module" src="../nav-enhance.js?v=20260613130000"></script>
 </body>
 </html>
 

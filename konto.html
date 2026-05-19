@@ -107,6 +107,7 @@
                             </span>
                             <strong data-i18n="dashTileCodes">My codes</strong>
                             <span class="dashboard-tile-desc" data-i18n="dashTileCodesDesc">Saved barcodes</span>
+                            <span class="dashboard-tile-kpi" data-tile-kpi="codes" hidden></span>
                         </a>
                         <a class="dashboard-tile" href="szablony.html">
                             <span class="dashboard-tile-icon" aria-hidden="true">
@@ -114,6 +115,7 @@
                             </span>
                             <strong data-i18n="dashTileTemplates">Label templates</strong>
                             <span class="dashboard-tile-desc" data-i18n="dashTileTemplatesDesc">Your label designs</span>
+                            <span class="dashboard-tile-kpi" data-tile-kpi="templates" hidden></span>
                         </a>
                         <a class="dashboard-tile" href="drukarki.html">
                             <span class="dashboard-tile-icon" aria-hidden="true">
@@ -121,6 +123,7 @@
                             </span>
                             <strong data-i18n="dashTilePrinters">Printers</strong>
                             <span class="dashboard-tile-desc" data-i18n="dashTilePrintersDesc">Profiles &amp; calibration</span>
+                            <span class="dashboard-tile-kpi" data-tile-kpi="printers" hidden></span>
                         </a>
                         <a class="dashboard-tile" href="historia-wydrukow.html">
                             <span class="dashboard-tile-icon" aria-hidden="true">
@@ -128,6 +131,7 @@
                             </span>
                             <strong data-i18n="dashTileHistory">Print history</strong>
                             <span class="dashboard-tile-desc" data-i18n="dashTileHistoryDesc">Print jobs and copies</span>
+                            <span class="dashboard-tile-kpi" data-tile-kpi="jobs" hidden></span>
                         </a>
                     </nav>
                     <div class="dashboard-actions">
@@ -155,6 +159,11 @@
             validateEmail,
             validatePassword,
         } from './auth-email-password.js';
+        import { loadDashboardStats, clearDashboardStats } from './dashboard-stats.js';
+        import { countCodes, FREE_CODES_LIMIT } from './db-codes.js';
+        import { countTemplates, FREE_TEMPLATES_LIMIT } from './db-templates.js';
+        import { countPrinters, FREE_PRINTERS_LIMIT } from './db-printers.js';
+        import { countJobs, FREE_JOBS_LIMIT } from './db-jobs.js';
 
         const LANG = document.documentElement.lang || 'en';
         const I = window.BARCODE_I18N || {};
@@ -191,6 +200,15 @@
             if (heading) {
                 const key = signedIn ? 'dashboardTitle' : 'signIn';
                 heading.textContent = T[key] || (signedIn ? 'Your account' : 'Sign in');
+            }
+            if (signedIn) {
+                loadDashboardStats({
+                    helpers: { countCodes, countTemplates, countPrinters, countJobs },
+                    limits: { FREE_CODES_LIMIT, FREE_TEMPLATES_LIMIT, FREE_PRINTERS_LIMIT, FREE_JOBS_LIMIT },
+                    i18n: T,
+                });
+            } else {
+                clearDashboardStats();
             }
         }
 

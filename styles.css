@@ -4458,6 +4458,17 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
 .dashboard-tile-icon { color: var(--primary); display: inline-flex; }
 .dashboard-tile strong { font-size: 15px; }
 .dashboard-tile-desc { font-size: 12px; color: var(--text-secondary); }
+.dashboard-tile-kpi {
+    margin-top: 2px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+    letter-spacing: 0.01em;
+}
+.dashboard-tile-kpi[data-kpi-state="warn"] { color: #b45309; }
+.dashboard-tile-kpi[data-kpi-state="full"] { color: #b91c1c; }
+[data-theme="dark"] .dashboard-tile-kpi[data-kpi-state="warn"] { color: #fbbf24; }
+[data-theme="dark"] .dashboard-tile-kpi[data-kpi-state="full"] { color: #f87171; }
 .dashboard-actions { margin-top: 4px; text-align: left; }
 .dashboard-actions .btn-action { margin-top: 0; }
 @media (max-width: 520px) {
