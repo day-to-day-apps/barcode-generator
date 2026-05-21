@@ -97,6 +97,8 @@
                 <a class="btn-action btn-regenerate" href="#" data-i18n="regenerate">Open in generator</a>
                 <button type="button" class="btn-action btn-rename" data-i18n="rename">Rename</button>
                 <button type="button" class="btn-action btn-edit-tags" data-i18n="tags">Tags</button>
+                <button type="button" class="btn-action btn-toggle-public" aria-pressed="false" data-i18n="makePublic">Make public</button>
+                <button type="button" class="btn-action btn-copy-link" hidden data-i18n="copyLink">Copy link</button>
                 <button type="button" class="btn-action btn-delete" data-i18n="delete" aria-label="Delete">Delete</button>
             </div>
         </li>
@@ -106,7 +108,7 @@
         import { getSession, onAuthStateChange } from './supabase-client.js';
         import {
             listCodes, updateCode, deleteCode, bulkDeleteCodes,
-            normaliseTagsInput, FREE_CODES_LIMIT,
+            setCodePublic, normaliseTagsInput, FREE_CODES_LIMIT,
         } from './db-codes.js';
 
         const LANG = document.documentElement.lang || 'en';
@@ -191,6 +193,22 @@
             }
         }
 
+        function shareUrl(slug) {
+            return slug ? `${location.origin}/c/${slug}` : '';
+        }
+
+        function applyShareState(li) {
+            const r = li._row || {};
+            const btn = li.querySelector('.btn-toggle-public');
+            const copy = li.querySelector('.btn-copy-link');
+            const isPublic = !!r.is_public;
+            btn.textContent = isPublic ? (T.makePrivate || 'Make private') : (T.makePublic || 'Make public');
+            btn.setAttribute('aria-pressed', isPublic ? 'true' : 'false');
+            const hasSlug = !!r.share_slug;
+            copy.hidden = !(isPublic && hasSlug);
+            li.classList.toggle('is-public', isPublic);
+        }
+
         function buildRow(row) {
             const node = tmpl.content.cloneNode(true);
             const li = node.querySelector('.code-row');
@@ -262,6 +280,34 @@
                 setTagsDisplay(li, li._row);
                 form.hidden = true;
                 announce(T.tagsSaved || 'Tags saved.');
+            });
+
+            const btnTogglePublic = li.querySelector('.btn-toggle-public');
+            const btnCopyLink = li.querySelector('.btn-copy-link');
+            applyShareState(li);
+            btnTogglePublic.addEventListener('click', async () => {
+                const makePublic = !li._row.is_public;
+                btnTogglePublic.disabled = true;
+                const { data, error } = await setCodePublic(row.id, makePublic);
+                btnTogglePublic.disabled = false;
+                if (error) {
+                    alert((T.updateFail || 'Could not update the code.') + ': ' + (error.message || ''));
+                    return;
+                }
+                li._row.is_public = !!data?.is_public;
+                if (data?.share_slug) li._row.share_slug = data.share_slug;
+                applyShareState(li);
+                announce(li._row.is_public ? (T.codePublic || 'Code is public.') : (T.codePrivate || 'Code is private.'));
+            });
+            btnCopyLink.addEventListener('click', async () => {
+                const url = shareUrl(li._row.share_slug);
+                if (!url) return;
+                try {
+                    await navigator.clipboard.writeText(url);
+                    announce(T.linkCopied || 'Link copied.');
+                } catch (_err) {
+                    prompt(T.copyManual || 'Copy this link:', url);
+                }
             });
 
             li.querySelector('.btn-delete').addEventListener('click', async (e) => {

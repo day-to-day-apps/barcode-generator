@@ -16,8 +16,20 @@ export async function listCodes() {
   if (!sb) return { data: null, error: new Error('supabase_unavailable') };
   return sb
     .from('saved_codes')
-    .select('id, code_type, value, name, tags, settings, created_at, updated_at')
+    .select('id, code_type, value, name, tags, settings, is_public, share_slug, created_at, updated_at')
     .order('created_at', { ascending: false });
+}
+
+// M4: przełącz widoczność publiczną. Po włączeniu trigger nadaje share_slug (jeśli pusty).
+export async function setCodePublic(id, isPublic) {
+  const sb = await client();
+  if (!sb) return { data: null, error: new Error('supabase_unavailable') };
+  return sb
+    .from('saved_codes')
+    .update({ is_public: !!isPublic })
+    .eq('id', id)
+    .select('id, is_public, share_slug')
+    .single();
 }
 
 export async function getCodeById(id) {
