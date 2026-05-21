@@ -1,14 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Print builder â€” Barcode Generator</title>
+    <title>Print builder — Barcode Generator</title>
     <meta name="description" content="Compose multi-barcode print sheets from saved templates, printer profiles, manual rows, and CSV imports.">
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps.com/wydruk.html">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="styles.css?v=20260521120000">
+    <link rel="stylesheet" href="styles.css?v=20260521140000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@
         <main id="main-content" class="container">
             <section class="card" aria-labelledby="builder-title">
                 <h2 id="builder-title" data-i18n="builderTitle">Print builder</h2>
-                <div id="status" role="status" aria-live="polite" data-i18n="loading">Loadingâ€¦</div>
+                <div id="status" role="status" aria-live="polite" data-i18n="loading">Loading…</div>
 
                 <div id="builder-panel" hidden>
                     <form id="builder-form" class="template-form" autocomplete="off">
@@ -48,7 +48,7 @@
                             <div>
                                 <label for="b-template" data-i18n="useTemplate">Template</label>
                                 <select id="b-template">
-                                    <option value="" data-i18n="optional">â€” optional â€”</option>
+                                    <option value="" data-i18n="optional">— optional —</option>
                                 </select>
                             </div>
                             <div>
@@ -364,13 +364,13 @@
             for (const t of templates) {
                 const opt = document.createElement('option');
                 opt.value = t.id;
-                opt.textContent = t.name + (t.is_default ? ' â…' : '');
+                opt.textContent = t.name + (t.is_default ? ' ★' : '');
                 els.template.appendChild(opt);
             }
             for (const p of printers) {
                 const opt = document.createElement('option');
                 opt.value = p.id;
-                opt.textContent = p.name + (p.is_default ? ' â…' : '');
+                opt.textContent = p.name + (p.is_default ? ' ★' : '');
                 if (p.is_default) opt.selected = true;
                 els.printer.appendChild(opt);
             }

@@ -1,14 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Set new password â€” Barcode Generator</title>
+    <title>Set new password — Barcode Generator</title>
     <meta name="description" content="Set a new password for your Barcode Generator account.">
     <meta name="robots" content="noindex, nofollow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps.com/reset-hasla.html">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="styles.css?v=20260521120000">
+    <link rel="stylesheet" href="styles.css?v=20260521140000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -61,7 +61,7 @@
             const key = el.getAttribute('data-i18n-placeholder');
             if (T[key]) el.setAttribute('placeholder', T[key]);
         });
-        if (T.setNewPasswordTitle) document.title = `${T.setNewPasswordTitle} â€” Barcode Generator`;
+        if (T.setNewPasswordTitle) document.title = `${T.setNewPasswordTitle} — Barcode Generator`;
 
         const $ = (id) => document.getElementById(id);
         const status = $('status');
@@ -106,7 +106,7 @@
                 if (!hasRecoverySession) return setStatus(T.resetTokenMissing || 'Reset link is invalid or expired. Request a new one.', true);
                 const submitBtn = $('reset-password-submit');
                 submitBtn.disabled = true;
-                setStatus(T.sending || 'Updatingâ€¦');
+                setStatus(T.sending || 'Updating…');
                 const { error } = await setNewPassword({ password });
                 submitBtn.disabled = false;
                 if (error) return setStatus(error.message || T.passwordUpdateFail || 'Could not update password.', true);

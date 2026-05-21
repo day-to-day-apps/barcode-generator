@@ -1,14 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My codes â€” Barcode Generator</title>
+    <title>My codes — Barcode Generator</title>
     <meta name="description" content="Browse, regenerate and delete the barcodes you've saved.">
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps.com/it/moje-kody.html">
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-    <link rel="stylesheet" href="../styles.css?v=20260521120000">
+    <link rel="stylesheet" href="../styles.css?v=20260521140000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -33,7 +33,7 @@
         <main id="main-content" class="container">
             <section class="card" aria-labelledby="codes-title">
                 <h2 id="codes-title" data-i18n="savedCodesTitle">Saved codes</h2>
-                <div id="status" role="status" aria-live="polite" data-i18n="loading">Loadingâ€¦</div>
+                <div id="status" role="status" aria-live="polite" data-i18n="loading">Loading…</div>
                 <ul id="codes-list" class="codes-list" hidden></ul>
                 <div id="empty" hidden>
                     <p><span data-i18n="empty">You haven't saved any codes yet.</span> <a href="./" data-i18n="emptyCta">Generate a barcode</a>.</p>
@@ -79,7 +79,7 @@
             const key = el.getAttribute('data-i18n-aria-label');
             if (T[key]) el.setAttribute('aria-label', T[key]);
         });
-        if (T.myCodes) document.title = `${T.myCodes} â€” Barcode Generator`;
+        if (T.myCodes) document.title = `${T.myCodes} — Barcode Generator`;
 
         const $ = (id) => document.getElementById(id);
         const list = $('codes-list');
@@ -112,7 +112,7 @@
         }
 
         async function loadCodes(sb) {
-            status.textContent = T.loading || 'Loadingâ€¦';
+            status.textContent = T.loading || 'Loading…';
             list.hidden = true;
             $('empty').hidden = true;
 
@@ -138,7 +138,7 @@
                 li.dataset.id = row.id;
 
                 safeText(node, '.code-type', row.code_type);
-                safeText(node, '.code-value', row.name ? `${row.name} â€” ${row.value}` : row.value);
+                safeText(node, '.code-value', row.name ? `${row.name} — ${row.value}` : row.value);
                 if (row.created_at) {
                     safeText(node, '.code-date', dateFmt.format(new Date(row.created_at)));
                 }
