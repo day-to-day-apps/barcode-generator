@@ -1911,15 +1911,26 @@ footer {
 }
 
 /* ===== Ad Slots ===== */
+/* Sloty nie rezerwują miejsca — AdSense odkrywa pozycję po markup,
+   a kontener rośnie dopiero gdy ins ma data-ad-status="filled".
+   Unfilled = całkowity collapse (patrz reguły poniżej). */
 .ad-slot {
     width: 100%;
     max-width: 1200px;
     margin: 16px auto;
-    min-height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Remove min-height when ad loads; keep minimal for empty state */
+}
+
+/* Collapse unfilled AdSense slots — bez pustych miejsc na stronie */
+ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
+.ad-slot:has(> ins.adsbygoogle[data-ad-status="unfilled"]):not(:has(> ins.adsbygoogle[data-ad-status="filled"])),
+.ad-sidebar:has(> ins.adsbygoogle[data-ad-status="unfilled"]):not(:has(> ins.adsbygoogle[data-ad-status="filled"])),
+.ad-sticky-bottom:has(> ins.adsbygoogle[data-ad-status="unfilled"]):not(:has(> ins.adsbygoogle[data-ad-status="filled"])) {
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .ad-leaderboard {

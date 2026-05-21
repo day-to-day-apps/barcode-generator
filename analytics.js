@@ -120,7 +120,8 @@
         ins.className = 'adsbygoogle';
         ins.style.display = 'block';
         ins.style.width = '100%';
-        ins.style.minHeight = cfg.minH + 'px';
+        // Brak min-height: slot rośnie dopiero po wypełnieniu (data-ad-status="filled").
+        // Reguły CSS kolapsują unfilled — patrz styles.css.
         ins.setAttribute('data-ad-client', ADSENSE_PUBLISHER_ID);
         ins.setAttribute('data-ad-slot', cfg.id);
         ins.setAttribute('data-ad-format', cfg.format);
