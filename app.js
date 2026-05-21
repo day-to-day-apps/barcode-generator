@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const defaults = {
         'CODE128': 'Barcode 2026',
-        'QR': 'https://barcode-generator.daytodayapps-contact.workers.dev/',
+        'QR': 'https://barcode-generator.daytodayapps.com/',
         'CODE128A': 'HELLO123',
         'CODE128B': 'Hello-123',
         'CODE128C': '123456',
@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
             UPC:     { value: '042100005264',   width: 1.1, height: 38, fontSize: 9,  textMargin: 1, margin: 4 },
             CODE128: { value: 'CODE-128',       width: 1.6, height: 40, fontSize: 10, textMargin: 1, margin: 2 },
             CODE39:  { value: 'CODE 39',        width: 1.4, height: 40, fontSize: 10, textMargin: 1, margin: 2 },
-            QR:      { value: 'https://barcode-generator.daytodayapps-contact.workers.dev/' }
+            QR:      { value: 'https://barcode-generator.daytodayapps.com/' }
         };
         const SVG_NS = 'http://www.w3.org/2000/svg';
         const monoFont = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';

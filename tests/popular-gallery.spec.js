@@ -20,7 +20,7 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
       const cards = page.locator('.popular-card');
       await expect(cards).toHaveCount(6);
       const formats = await cards.evaluateAll((els) => els.map((el) => el.getAttribute('data-format')));
-      expect(formats).toEqual(['EAN13', 'UPC', 'CODE128', 'CODE39', 'ITF14', 'QR']);
+      expect(formats).toEqual(['EAN13', 'EAN8', 'UPC', 'CODE128', 'CODE39', 'QR']);
       for (const fmt of formats) {
         const card = page.locator(`.popular-card[data-format="${fmt}"]`);
         await expect(card.locator('.popular-card__preview').locator('svg, canvas').first()).toBeVisible();
@@ -69,7 +69,7 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
       const unique = new Set(borderColors.map((b) => b.color));
       expect(unique.size).toBeGreaterThanOrEqual(3);
       // Each linear card SVG must contain a <text> node (proves displayValue:true)
-      for (const fmt of ['EAN13', 'UPC', 'CODE128', 'CODE39', 'ITF14']) {
+      for (const fmt of ['EAN13', 'EAN8', 'UPC', 'CODE128', 'CODE39']) {
         const hasText = await page
           .locator(`.popular-card[data-format="${fmt}"] svg text`)
           .first()

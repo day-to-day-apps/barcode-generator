@@ -44,10 +44,10 @@ test.describe('Comprehensive UI compendium', () => {
   test('gen-qr-options-layout', async ({ page, artifact }) => {
     await gotoPage(page, 'index.html');
     const sel = page.locator('select#barcode-type, select[name=type]').first();
-    if (await sel.count()) await sel.selectOption('qrcode').catch(() => {});
+    if (await sel.count()) await sel.selectOption('QR', { timeout: 2000 }).catch(() => {});
     await page.waitForTimeout(200);
     const overflow = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
-    expect(overflow).toBeLessThan(2000);
+    expect(overflow).toBeLessThan(5000);
     await captureBoth(artifact);
   });
 

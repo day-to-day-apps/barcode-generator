@@ -1,7 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-const BASE = 'https://barcode-generator.daytodayapps-contact.workers.dev';
+const BASE = 'https://barcode-generator.daytodayapps.com';
 const LANGS = [
   { code: 'en', path: '/', canonical: `${BASE}/` },
   { code: 'pl', path: '/pl/', canonical: `${BASE}/pl/` },

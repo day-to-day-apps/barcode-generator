@@ -30,13 +30,13 @@ test.describe('M2.5 pages — noindex,follow', () => {
   }
 });
 
-test.describe('M2.5 pages — canonical points to workers.dev', () => {
+test.describe('M2.5 pages — canonical points to daytodayapps.com', () => {
   for (const path of NOINDEX_PAGES) {
-    test(`${path} canonical hostname is workers.dev`, async ({ page }) => {
+    test(`${path} canonical hostname is daytodayapps.com`, async ({ page }) => {
       await page.goto(path);
       const href = await page.locator('link[rel="canonical"]').getAttribute('href');
       expect(href).toBeTruthy();
-      expect(href).toMatch(/barcode-generator\.daytodayapps-contact\.workers\.dev/);
+      expect(href).toMatch(/barcode-generator\.daytodayapps\.com/);
     });
   }
 });
