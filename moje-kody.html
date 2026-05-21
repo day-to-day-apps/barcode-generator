@@ -53,7 +53,23 @@
                     </div>
                 </div>
 
+                <div id="filter-bar" class="codes-filter" hidden>
+                    <div class="codes-filter-field">
+                        <label for="filter-search" data-i18n="filterSearchLabel">Search</label>
+                        <input type="search" id="filter-search" class="filter-search-input" autocomplete="off">
+                    </div>
+                    <div class="codes-filter-field">
+                        <label for="filter-type" data-i18n="filterByType">Code type</label>
+                        <select id="filter-type" class="filter-type-select"></select>
+                    </div>
+                    <button type="button" id="filter-clear" class="btn-action" data-i18n="filterClear" hidden>Clear filters</button>
+                    <span id="filter-count" class="codes-counter-muted" aria-live="polite"></span>
+                </div>
+
                 <ul id="codes-list" class="codes-list" hidden></ul>
+                <div id="no-matches" hidden>
+                    <p data-i18n="filterNoMatches">No codes match the filters.</p>
+                </div>
                 <div id="empty" hidden>
                     <p><span data-i18n="empty">You haven't saved any codes yet.</span> <a href="./" data-i18n="emptyCta">Generate a barcode</a>.</p>
                 </div>
@@ -134,6 +150,16 @@
         const codesUsedEl = $('codes-used');
         const btnBulkDelete = $('btn-bulk-delete');
         const tmpl = $('row-template');
+
+        const filterBar = $('filter-bar');
+        const filterSearchInput = $('filter-search');
+        const filterTypeSelect = $('filter-type');
+        const filterClearBtn = $('filter-clear');
+        const filterCountEl = $('filter-count');
+        const noMatchesEl = $('no-matches');
+
+        filterSearchInput.placeholder = T.filterSearchPlaceholder || '';
+        filterClearBtn.setAttribute('aria-label', T.filterClear || 'Clear filters');
 
         const dateFmt = new Intl.DateTimeFormat(LANG, {
             year: 'numeric', month: 'short', day: 'numeric',
@@ -337,13 +363,78 @@
             if (!list.querySelector('.code-row')) {
                 list.hidden = true;
                 toolbar.hidden = true;
+                filterBar.hidden = true;
+                noMatchesEl.hidden = true;
                 $('empty').hidden = false;
+            } else {
+                rebuildTypeOptions();
+                applyFilter();
             }
         }
 
+        function rebuildTypeOptions() {
+            const current = filterTypeSelect.value;
+            const types = new Set();
+            list.querySelectorAll('.code-row').forEach((li) => {
+                if (li._row?.code_type) types.add(li._row.code_type);
+            });
+            const sorted = [...types].sort();
+            const allLabel = T.filterAllTypes || 'All types';
+            filterTypeSelect.innerHTML = '';
+            const allOpt = document.createElement('option');
+            allOpt.value = '';
+            allOpt.textContent = allLabel;
+            filterTypeSelect.appendChild(allOpt);
+            for (const t of sorted) {
+                const opt = document.createElement('option');
+                opt.value = t;
+                opt.textContent = t;
+                filterTypeSelect.appendChild(opt);
+            }
+            filterTypeSelect.value = sorted.includes(current) ? current : '';
+        }
+
+        function applyFilter() {
+            const q = (filterSearchInput.value || '').trim().toLowerCase();
+            const type = filterTypeSelect.value || '';
+            const rows = list.querySelectorAll('.code-row');
+            const total = rows.length;
+            let visible = 0;
+            rows.forEach((li) => {
+                const r = li._row || {};
+                const haystack = [
+                    r.name || '',
+                    r.value || '',
+                    Array.isArray(r.tags) ? r.tags.join(' ') : '',
+                ].join(' ').toLowerCase();
+                const matchQ = !q || haystack.includes(q);
+                const matchT = !type || r.code_type === type;
+                const show = matchQ && matchT;
+                li.hidden = !show;
+                if (show) visible++;
+            });
+            const active = !!q || !!type;
+            filterClearBtn.hidden = !active;
+            if (active) {
+                filterCountEl.textContent = fmt('filterResultsCount', { n: visible, total });
+            } else {
+                filterCountEl.textContent = '';
+            }
+            noMatchesEl.hidden = !(active && visible === 0 && total > 0);
+        }
+
+        filterSearchInput.addEventListener('input', applyFilter);
+        filterTypeSelect.addEventListener('change', applyFilter);
+        filterClearBtn.addEventListener('click', () => {
+            filterSearchInput.value = '';
+            filterTypeSelect.value = '';
+            applyFilter();
+            filterSearchInput.focus();
+        });
+
         selectAllCb.addEventListener('change', () => {
             const checked = selectAllCb.checked;
-            list.querySelectorAll('.row-checkbox').forEach((cb) => { cb.checked = checked; });
+            list.querySelectorAll('.code-row:not([hidden]) .row-checkbox').forEach((cb) => { cb.checked = checked; });
             updateCounters();
         });
 
@@ -372,6 +463,8 @@
             status.textContent = T.loading || 'Loading…';
             list.hidden = true;
             toolbar.hidden = true;
+            filterBar.hidden = true;
+            noMatchesEl.hidden = true;
             $('empty').hidden = true;
 
             const { data, error } = await listCodes();
@@ -389,8 +482,11 @@
             for (const row of data) list.appendChild(buildRow(row));
             list.hidden = false;
             toolbar.hidden = false;
+            filterBar.hidden = false;
             status.textContent = '';
             updateCounters();
+            rebuildTypeOptions();
+            applyFilter();
         }
 
         async function init() {
