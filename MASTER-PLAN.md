@@ -46,7 +46,7 @@ Goal: logged-in account panel must feel finished before we point the world at it
 - [x] no a11y regressions
 
 ### A5. Commit Track A
-- [-] `feat(account): regenerate 9 locale konto.html with full dashboard + KPI tiles` (in progress this turn)
+- [x] `feat(account): regenerate 9 locale konto.html with full dashboard + KPI tiles` — commit `22715cc` (local, 2 ahead of `origin/main`, not pushed)
 
 ---
 

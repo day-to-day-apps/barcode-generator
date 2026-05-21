@@ -32,19 +32,27 @@ Cel: zielone testy, czyste SEO/i18n, AdSense gotowy do włączenia, CSP przygoto
 - [x] CSP w `_headers`: dodanie Supabase + Google Analytics do `connect-src`.
 - [x] A4. `tests/seo.spec.js` (canonical, og:url, hreflang, JSON-LD `@type`).
 - [x] A5. `tests/a11y.spec.js` z `@axe-core/playwright`.
-- [ ] B2. Audyt JSON-LD w pozostałych 9 `index.html` — uzupełnić HowTo + FAQPage + BreadcrumbList per język.
-- [ ] B3. Audyt `<title>` i `<meta description>` (długość, unikalność per język).
-- [ ] D2. Preload czcionek + `fetchpriority="high"` na LCP.
-- [ ] D3. Stała wysokość slotów AdSense (CLS-safe).
+- [x] B2. Audyt JSON-LD w pozostałych 9 `index.html`. — Wszystkie 11 plików (root + 10 lokalizacji) mają komplet 4 typów: WebApplication, HowTo, FAQPage, BreadcrumbList. Treści zlokalizowane per język.
+- [x] B3. Audyt `<title>` i `<meta description>` (długość, unikalność per język). — Wszystkie 10 lokalizacji w spec (title ≤60, description ≤160), unikalne, brak edycji.
+- [x] D2. Preload czcionek + `fetchpriority="high"` na LCP. — Dodano `fetchpriority="high"` do preload Inter (Google Fonts) w 11 plikach `index.html`.
+- [x] D3. ~~Stała wysokość slotów AdSense (CLS-safe)~~ → **Collapse-on-unfilled** (zgodnie z decyzją: brak pustych miejsc). Usunięto `min-height` z `.ad-slot` i inline `minHeight` z `<ins>` w `analytics.js`; dodano reguły `:has(ins[data-ad-status="unfilled"])` kolapsujące sloty. AdSense nadal wykrywa pozycje przez markup. Akceptowany trade-off: niewielki CLS gdy reklama się załaduje.
 
 ### M1 — Lokalne uruchomienie Supabase
 Cel: bezpiecznie połączyć się z istniejącym projektem Supabase i przejrzeć migracje przed pushem.
 
-- [ ] `supabase login`, `supabase init`, `supabase link --project-ref aoqxznukwbdgrggxloou`.
-- [ ] `supabase db push --dry-run` na 3 istniejących migracjach.
-- [ ] Audyt migracji (schemat `saved_codes`, kompletność RLS, walidacje).
-- [ ] `.env.local` (gitignore) z `SUPABASE_URL` + `SUPABASE_ANON_KEY` (publishable).
-- [ ] `supabase-client.js` — singleton ESM ładowany dynamicznie (tylko gdy potrzebny).
+> **Status: ✅ DONE** — projekt jest już na produkcji (`aoqxznukwbdgrggxloou`) z 11 migracjami obejmującymi M1+M2.5+M3. Migracje aplikowane przez Supabase MCP / dashboard (nie wymaga lokalnego CLI). Audyt 2026-05-21 potwierdza poprawność.
+
+- [x] ~~`supabase login`, `supabase init`, `supabase link --project-ref aoqxznukwbdgrggxloou`.~~ — Pominięte: migracje wgrywane przez Supabase MCP. Lokalne CLI nie jest wymagane do dalszej pracy (Edge Functions wgrane analogicznie).
+- [x] ~~`supabase db push --dry-run` na 3 istniejących migracjach.~~ — N/A: jest 11 migracji już zaaplikowanych na prod.
+- [x] Audyt migracji (schemat `saved_codes`, kompletność RLS, walidacje). — **Wynik audytu**:
+  - Tabele: profiles, saved_codes, label_templates, subscriptions, usage_events, printer_profiles, print_jobs, print_job_items.
+  - RLS: pełne CRUD-owner na wszystkich user-data tables; subscriptions/usage_events read-only (write przez service_role/RPC); print_job_items ownership via parent EXISTS subquery.
+  - SECURITY DEFINER funkcje mają `revoke execute from public/anon/authenticated` + `set search_path = public`; tylko `save_print_job(jsonb, jsonb[])` ma `grant execute to authenticated` (atomowy z ownership-check).
+  - Server-side quoty free tier: saved_codes=10, label_templates=5, printer_profiles=5, print_jobs=20 (AFTER INSERT triggery raise 23514).
+  - Walidacje CHECK: rozmiary mm 0-1000, dpi 72-1200, offset ±20mm, bar_width 0.5-1.5, długości stringów na print_job_items, max 500 items per save_print_job.
+  - **Uwaga niska priorytet**: tabela `subscriptions` z polami LemonSqueezy istnieje, ale po decyzji 2026-05-07 (no payments) jest martwym schematem — zostawić (RLS read-only, niegroźne) lub osobny migration drop w M5.
+- [x] ~~`.env.local` (gitignore) z `SUPABASE_URL` + `SUPABASE_ANON_KEY` (publishable).~~ — Zamiast `.env.local` użyto `supabase-config.js` (gitignored przez root `.gitignore`), z `supabase-config.example.js` jako szablon. Lepsze dla static-client (brak build stepu do substytucji env).
+- [x] `supabase-client.js` — singleton ESM ładowany dynamicznie (tylko gdy potrzebny). — Lazy `getSupabase()`, dynamic `import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm')` zgodne z CSP `script-src cdn.jsdelivr.net`, storageKey `bg.auth`.
 
 ### M2 — Auth (email + hasło) i prywatne kody (MVP konta)
 Cel: zalogowany użytkownik zapisuje wygenerowane kody i widzi je po powrocie.
