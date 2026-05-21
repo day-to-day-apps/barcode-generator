@@ -5,6 +5,19 @@
 
 ---
 
+## Aktualny status (sprint)
+
+- **HEAD lokalny:** `b32a501` — 8 commitów przed `origin/main` (NIE PUSHUJ bez wyraźnej zgody).
+- **Ostatnie commity (this sprint):**
+  - `b32a501` docs: consolidate TODO-FUTURE into ROADMAP, README as index
+  - `39fc525` feat(css): dark-mode focus + `#qr-preview` mobile hardening
+  - `e5a6570` fix: cache-bust v=20260613130000 (45 HTML)
+  - `d905715` feat(domain): migrate to barcode-generator.daytodayapps.com
+- **Bieżące zadanie:** drop dead `subscriptions` table + `subscription_status` enum (ROADMAP §Backlog / M1 audit). Plan w `/memories/session/plan.md` (A3).
+- **Aktywny plan rozwoju:** [ROADMAP.md](ROADMAP.md) — M0/M1 done, M2 (Stripe) ↔ M3 (PDF/analytics) ↔ M4/M5 dalej.
+
+---
+
 ## TL;DR — co to za projekt
 
 Komercyjny generator kodów kreskowych (Cloudflare Pages, vanilla JS, 10 języków).
