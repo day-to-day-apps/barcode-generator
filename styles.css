@@ -4837,19 +4837,19 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
 }
 
 .topbar .lang-switch {
-    position: static;
+    position: relative;
     top: auto;
     left: auto;
 }
 
 .topbar .theme-toggle {
-    position: static;
+    position: relative;
     top: auto;
     right: auto;
 }
 
 .topbar .auth-controls {
-    position: static;
+    position: relative;
     top: auto;
     right: auto;
 }

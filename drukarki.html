@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Printer profiles — Barcode Generator</title>
+    <title>Printer profiles â€” Barcode Generator</title>
     <meta name="description" content="Configure thermal printers and A4 label sheet layouts for batch barcode printing.">
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps.com/drukarki.html">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="styles.css?v=20260613130000">
+    <link rel="stylesheet" href="styles.css?v=20260521120000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -34,7 +34,7 @@
         <main id="main-content" class="container">
             <section class="card" aria-labelledby="printers-title">
                 <h2 id="printers-title" data-i18n="printersTitle">Printer profiles</h2>
-                <div id="status" role="status" aria-live="polite" data-i18n="loading">Loading…</div>
+                <div id="status" role="status" aria-live="polite" data-i18n="loading">Loadingâ€¦</div>
 
                 <div id="toolbar" class="codes-toolbar templates-toolbar" hidden>
                     <div class="codes-toolbar-left">
@@ -236,8 +236,8 @@
         }
 
         function summarisePrinter(p) {
-            const layout = `${p.cols}×${p.rows}`;
-            return `${p.page_w_mm}×${p.page_h_mm} mm · ${layout} · ${p.dpi} DPI`;
+            const layout = `${p.cols}Ă—${p.rows}`;
+            return `${p.page_w_mm}Ă—${p.page_h_mm} mm Â· ${layout} Â· ${p.dpi} DPI`;
         }
 
         async function populatePresets() {

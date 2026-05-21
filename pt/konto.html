@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account — Barcode Generator</title>
+    <title>Account â€” Barcode Generator</title>
     <meta name="description" content="Sign in to Barcode Generator with email and password to save and revisit your codes.">
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps.com/pt/konto.html">
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-    <link rel="stylesheet" href="../styles.css?v=20260613130000">
+    <link rel="stylesheet" href="../styles.css?v=20260521120000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -181,7 +181,7 @@
             const key = el.getAttribute('data-i18n-aria-label');
             if (T[key]) el.setAttribute('aria-label', T[key]);
         });
-        if (T.title) document.title = `${T.title} — Barcode Generator`;
+        if (T.title) document.title = `${T.title} â€” Barcode Generator`;
 
         const $ = (id) => document.getElementById(id);
         const status = $('email-status');
@@ -251,7 +251,7 @@
                 if (!validateEmail(email)) return setStatus(T.invalidEmail || 'Please enter a valid email address.', true);
                 if (!validatePassword(password)) return setStatus(T.weakPassword || 'Password must be at least 8 characters.', true);
                 $('login-submit').disabled = true;
-                setStatus(T.sending || 'Signing in…');
+                setStatus(T.sending || 'Signing inâ€¦');
                 const { error } = await signIn({ email, password });
                 $('login-submit').disabled = false;
                 if (error) return setStatus(error.message || T.signInFail || 'Could not sign in.', true);
@@ -269,7 +269,7 @@
                 if (password !== confirm) return setStatus(T.passwordMismatch || 'Passwords do not match.', true);
                 if (!terms) return setStatus(T.mustAcceptTerms || 'You must accept the privacy policy.', true);
                 $('register-submit').disabled = true;
-                setStatus(T.sending || 'Creating account…');
+                setStatus(T.sending || 'Creating accountâ€¦');
                 const redirectPath = LANG === 'en' ? '/konto.html' : `/${LANG}/konto.html`;
                 const { error } = await signUp({ email, password, redirectPath });
                 $('register-submit').disabled = false;
@@ -282,12 +282,12 @@
                 const email = $('reset-email').value;
                 if (!validateEmail(email)) return setStatus(T.invalidEmail || 'Please enter a valid email address.', true);
                 $('reset-submit').disabled = true;
-                setStatus(T.sending || 'Sending…');
+                setStatus(T.sending || 'Sendingâ€¦');
                 const redirectPath = LANG === 'en' ? '/reset-hasla.html' : `/${LANG}/reset-hasla.html`;
                 const { error } = await requestPasswordReset({ email, redirectPath });
                 $('reset-submit').disabled = false;
                 if (error) return setStatus(error.message || T.resetFail || 'Could not send reset email.', true);
-                setStatus(T.resetSent || 'Check your inbox — we sent a password reset link.');
+                setStatus(T.resetSent || 'Check your inbox â€” we sent a password reset link.');
             });
 
             $('signout-btn').addEventListener('click', async () => {
@@ -306,7 +306,7 @@
                     btn.setAttribute('aria-label', T[labelKey] || (showing ? 'Show password' : 'Hide password'));
                     const open = btn.querySelector('.eye-open');
                     const closed = btn.querySelector('.eye-closed');
-                    // SVG: hidden IDL property is HTMLElement-only — use attribute
+                    // SVG: hidden IDL property is HTMLElement-only â€” use attribute
                     if (open) open.toggleAttribute('hidden', !showing);
                     if (closed) closed.toggleAttribute('hidden', showing);
                 });

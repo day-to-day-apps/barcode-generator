@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My codes — Barcode Generator</title>
+    <title>My codes â€” Barcode Generator</title>
     <meta name="description" content="Browse, regenerate and delete the barcodes you've saved.">
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps.com/moje-kody.html">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="styles.css?v=20260613130000">
+    <link rel="stylesheet" href="styles.css?v=20260521120000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -37,7 +37,7 @@
         <main id="main-content" class="container">
             <section class="card" aria-labelledby="codes-title">
                 <h2 id="codes-title" data-i18n="savedCodesTitle">Saved codes</h2>
-                <div id="status" role="status" aria-live="polite" data-i18n="loading">Loading…</div>
+                <div id="status" role="status" aria-live="polite" data-i18n="loading">Loadingâ€¦</div>
 
                 <div id="toolbar" class="codes-toolbar" hidden>
                     <div class="codes-toolbar-left">
@@ -139,7 +139,7 @@
             const key = el.getAttribute('data-i18n-aria-label');
             if (T[key]) el.setAttribute('aria-label', T[key]);
         });
-        if (T.myCodes) document.title = `${T.myCodes} — Barcode Generator`;
+        if (T.myCodes) document.title = `${T.myCodes} â€” Barcode Generator`;
 
         const $ = (id) => document.getElementById(id);
         const list = $('codes-list');
@@ -460,7 +460,7 @@
         });
 
         async function loadCodes() {
-            status.textContent = T.loading || 'Loading…';
+            status.textContent = T.loading || 'Loadingâ€¦';
             list.hidden = true;
             toolbar.hidden = true;
             filterBar.hidden = true;
