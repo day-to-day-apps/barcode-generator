@@ -45,29 +45,33 @@ Cel: bezpiecznie połączyć się z istniejącym projektem Supabase i przejrzeć
 - [x] ~~`supabase login`, `supabase init`, `supabase link --project-ref aoqxznukwbdgrggxloou`.~~ — Pominięte: migracje wgrywane przez Supabase MCP. Lokalne CLI nie jest wymagane do dalszej pracy (Edge Functions wgrane analogicznie).
 - [x] ~~`supabase db push --dry-run` na 3 istniejących migracjach.~~ — N/A: jest 11 migracji już zaaplikowanych na prod.
 - [x] Audyt migracji (schemat `saved_codes`, kompletność RLS, walidacje). — **Wynik audytu**:
-  - Tabele: profiles, saved_codes, label_templates, subscriptions, usage_events, printer_profiles, print_jobs, print_job_items.
-  - RLS: pełne CRUD-owner na wszystkich user-data tables; subscriptions/usage_events read-only (write przez service_role/RPC); print_job_items ownership via parent EXISTS subquery.
+  - Tabele: profiles, saved_codes, label_templates, usage_events, printer_profiles, print_jobs, print_job_items. ~~subscriptions~~ — dropped 2026-05-21 (commit `cb51c40`, migracja `20260613140000_drop_subscriptions.sql`).
+  - RLS: pełne CRUD-owner na wszystkich user-data tables; usage_events read-only (write przez service_role/RPC); print_job_items ownership via parent EXISTS subquery.
   - SECURITY DEFINER funkcje mają `revoke execute from public/anon/authenticated` + `set search_path = public`; tylko `save_print_job(jsonb, jsonb[])` ma `grant execute to authenticated` (atomowy z ownership-check).
   - Server-side quoty free tier: saved_codes=10, label_templates=5, printer_profiles=5, print_jobs=20 (AFTER INSERT triggery raise 23514).
   - Walidacje CHECK: rozmiary mm 0-1000, dpi 72-1200, offset ±20mm, bar_width 0.5-1.5, długości stringów na print_job_items, max 500 items per save_print_job.
-  - **Uwaga niska priorytet**: tabela `subscriptions` z polami LemonSqueezy istnieje, ale po decyzji 2026-05-07 (no payments) jest martwym schematem — zostawić (RLS read-only, niegroźne) lub osobny migration drop w M5.
+  - ~~**Uwaga niska priorytet**: tabela `subscriptions` martwa po decyzji 2026-05-07.~~ — **Rozwiązane 2026-05-21**: drop tabeli + enum `subscription_status` + `is_pro()` zwraca stale `false` (free-tier-only). Migracja `20260613140000_drop_subscriptions.sql`.
 - [x] ~~`.env.local` (gitignore) z `SUPABASE_URL` + `SUPABASE_ANON_KEY` (publishable).~~ — Zamiast `.env.local` użyto `supabase-config.js` (gitignored przez root `.gitignore`), z `supabase-config.example.js` jako szablon. Lepsze dla static-client (brak build stepu do substytucji env).
 - [x] `supabase-client.js` — singleton ESM ładowany dynamicznie (tylko gdy potrzebny). — Lazy `getSupabase()`, dynamic `import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm')` zgodne z CSP `script-src cdn.jsdelivr.net`, storageKey `bg.auth`.
 
 ### M2 — Auth (email + hasło) i prywatne kody (MVP konta)
-Cel: zalogowany użytkownik zapisuje wygenerowane kody i widzi je po powrocie.
 
-- [ ] Strona `/konto.html` (lub modal) — rejestracja / logowanie / reset hasła.
-- [ ] Stan sesji w UI: header „Zaloguj" ↔ „Mój profil / Wyloguj".
-- [ ] Akcja „Zapisz ten kod" w generatorze (widoczna tylko dla zalogowanych).
-- [ ] Lista zapisanych kodów `/moje-kody.html` z regeneracją i usuwaniem.
-- [ ] Tłumaczenia kluczy `account.*` w `i18n.js` dla 10 języków.
-- [ ] Test E2E: rejestracja → zapis kodu → wylogowanie → ponowne logowanie → kod widoczny.
+> **Status: ✅ DONE** — audyt 2026-05-21 potwierdza pełną funkcjonalność. Testy `auth-save.spec.js` + `m25-account.spec.js` zielone (16/16, 1 skip).
+
+- [x] Strona `/konto.html` (taby login/register/reset) + `/reset-hasla.html`.
+- [x] Stan sesji w UI: `auth-ui.js` z `onAuthStateChange`, header „Zaloguj" ↔ menu konta + Sign out.
+- [x] Akcja „Zapisz ten kod" w generatorze (widoczna tylko dla zalogowanych, `app.js` + `auth-ui.js`).
+- [x] Lista zapisanych kodów `/moje-kody.html` — list/regenerate/rename/bulk-delete/tags/filter (CRUD przez `db-codes.js`).
+- [x] Tłumaczenia kluczy `account.*` w `i18n.js` dla 10 języków.
+- [x] Test E2E `tests/auth-save.spec.js` — rejestracja → zapis → wylogowanie → relogowanie → kod widoczny.
 
 ### M3 — Logowanie Google + magic link
-- [ ] Konfiguracja OAuth Google w panelu Supabase (Client ID/Secret).
-- [ ] Przycisk „Zaloguj z Google" obok formularza email/hasło.
-- [ ] (Opcjonalnie) magic link jako trzecia metoda.
+
+> **Status: ⏭ SKIPPED (out of scope MVP)** — decyzja 2026-05-21. Email/password + reset wystarczają dla MVP. Klucze i18n `magicLink` istnieją jako leftover (do usunięcia w Backlog). Może wrócić po D1+D2 jeśli będzie real-world potrzeba.
+
+- [ ] ~~Konfiguracja OAuth Google w panelu Supabase.~~
+- [ ] ~~Przycisk „Zaloguj z Google".~~
+- [ ] ~~Magic link jako trzecia metoda.~~
 
 ### M4 — Publiczne udostępnianie kodów (opcjonalne)
 - [ ] Kolumna `is_public` + losowy `share_slug` (≥12 znaków base62).
