@@ -2,6 +2,9 @@
 # EN is now the default at / — PL moved to /pl/
 # Old /en/* URLs redirect to root to preserve SEO
 
+# Force canonical domain — block direct access via *.pages.dev
+https://barcode-generator-5ee.pages.dev/*  https://barcode-generator.daytodayapps.com/:splat  301!
+
 /en/          /          301
 /en           /          301
 /en/*         /:splat    301
