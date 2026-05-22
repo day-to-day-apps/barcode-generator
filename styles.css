@@ -308,7 +308,7 @@ input[type="text"] {
     font-family: inherit;
     font-size: 13px;
     color: var(--text);
-    background-color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.8);
     transition: all var(--transition);
     outline: none;
     appearance: none;
@@ -331,7 +331,7 @@ select:hover {
 select:focus,
 input[type="text"]:focus {
     border-color: transparent;
-    background-color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.95);
     box-shadow:
         0 0 0 3px rgba(79, 70, 229, 0.1),
         inset 0 0 0 1.5px rgba(79, 70, 229, 0.25),
@@ -1716,7 +1716,7 @@ footer {
 [data-theme="dark"] select,
 [data-theme="dark"] input[type="text"],
 [data-theme="dark"] input[type="number"] {
-    background-color: rgba(15, 23, 42, 0.6);
+    background: rgba(15, 23, 42, 0.6);
     border-color: var(--border);
     color: var(--text);
 }
@@ -1736,7 +1736,7 @@ footer {
     outline: 3px solid var(--border-focus);
     outline-offset: 2px;
     border-color: transparent;
-    background-color: rgba(15, 23, 42, 0.85);
+    background: rgba(15, 23, 42, 0.85);
     box-shadow:
         0 0 0 3px rgba(129, 140, 248, 0.25),
         inset 0 0 0 1.5px rgba(167, 139, 250, 0.4);
