@@ -392,6 +392,8 @@ document.addEventListener('DOMContentLoaded', () => {
             UPC:     { value: '042100005264',   width: 1.1, height: 38, fontSize: 9,  textMargin: 1, margin: 4 },
             CODE128: { value: 'CODE-128',       width: 1.6, height: 40, fontSize: 10, textMargin: 1, margin: 2 },
             CODE39:  { value: 'CODE 39',        width: 1.4, height: 40, fontSize: 10, textMargin: 1, margin: 2 },
+            ITF14:   { format: 'ITF14',   value: '98249880215005', width: 1.2, height: 38, fontSize: 9, textMargin: 1, margin: 4 },
+            CODABAR: { format: 'codabar', value: 'A12345B',        width: 1.6, height: 40, fontSize: 10, textMargin: 1, margin: 2 },
             QR:      { value: 'https://barcode-generator.daytodayapps.com/' }
         };
         const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -416,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const svg = document.createElementNS(SVG_NS, 'svg');
                 el.appendChild(svg);
                 JsBarcode(svg, cfg.value, {
-                    format: fmt,
+                    format: cfg.format || fmt,
                     width: cfg.width,
                     height: cfg.height,
                     displayValue: true,
