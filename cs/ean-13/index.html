@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="../../styles.css?v=20260521120000" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" fetchpriority="high">
+
+    <title>Generátor EAN-13 — zdarma, online</title>
+    <meta name="description" content="Bezplatný generátor čárových kódů EAN-13. Zadejte 12 číslic — kontrolní číslice se vypočítá automaticky. Export PNG/SVG, tisk štítků. Bez registrace.">
+    <meta name="author" content="Generátor čárových kódů">
+    <meta name="robots" content="index, follow">
+
+    <link rel="canonical" href="https://barcode-generator.daytodayapps.com/cs/ean-13/">
+    <link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/">
+    <link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/">
+    <link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/">
+    <link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/">
+    <link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Generátor EAN-13 — zdarma, online">
+    <meta property="og:description" content="Vygenerujte platný kód EAN-13 během několika sekund. Automatická kontrolní číslice, export PNG/SVG, tisk štítků.">
+    <meta property="og:url" content="https://barcode-generator.daytodayapps.com/cs/ean-13/">
+    <meta property="og:image" content="https://barcode-generator.daytodayapps.com/og-image.png">
+    <meta property="og:locale" content="cs_CZ">
+    <meta property="og:locale:alternate" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Generátor EAN-13 — zdarma, online">
+    <meta name="twitter:description" content="Vygenerujte platný kód EAN-13 během několika sekund. Automatická kontrolní číslice, export PNG/SVG.">
+    <meta name="twitter:image" content="https://barcode-generator.daytodayapps.com/og-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+
+    <!-- Schema.org: WebPage -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Generátor EAN-13",
+        "url": "https://barcode-generator.daytodayapps.com/cs/ean-13/",
+        "description": "Bezplatný online generátor kódů EAN-13. Automatická kontrolní číslice, export PNG/SVG, tisk štítků.",
+        "inLanguage": "cs",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "Generátor čárových kódů",
+            "url": "https://barcode-generator.daytodayapps.com/cs/"
+        }
+    }
+    </script>
+
+    <!-- Schema.org: HowTo -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Jak vygenerovat kód EAN-13",
+        "description": "Vytvořte platný kód EAN-13 ve čtyřech krocích: otevřete generátor, zadejte 12 číslic, nástroj doplní kontrolní číslici, exportujte nebo vytiskněte.",
+        "totalTime": "PT1M",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Otevřete generátor", "text": "Klikněte na tlačítko níže — generátor se otevře s předvybraným formátem EAN-13." },
+            { "@type": "HowToStep", "position": 2, "name": "Zadejte 12 číslic", "text": "Prvních 2–3 číslic je prefix GS1 (země/vydavatel), další identifikují výrobce a produkt." },
+            { "@type": "HowToStep", "position": 3, "name": "Kontrolní číslice vypočtena automaticky", "text": "Třináctá číslice je vypočítána automaticky algoritmem modulo-10 EAN-13." },
+            { "@type": "HowToStep", "position": 4, "name": "Export PNG nebo SVG", "text": "Stáhněte jako PNG nebo SVG, nebo otevřete okno tisku štítků (termální tiskárny a archy A4)." }
+        ]
+    }
+    </script>
+
+    <!-- Schema.org: FAQPage -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "Kolik číslic má kód EAN-13?", "acceptedAnswer": { "@type": "Answer", "text": "Přesně 13: 12 datových číslic a 1 kontrolní číslice. Zadáváte 12 číslic — generátor doplní třináctou." } },
+            { "@type": "Question", "name": "Jak se počítá kontrolní číslice EAN-13?", "acceptedAnswer": { "@type": "Answer", "text": "Jde o kontrolní součet modulo-10. Každá z prvních 12 číslic se střídavě násobí 1 a 3 (pozice 1 = ×1, pozice 2 = ×3, …), výsledky se sečtou a kontrolní číslice je hodnota, která doplní součet na nejbližší násobek 10." } },
+            { "@type": "Question", "name": "Jaký je rozdíl mezi EAN-13 a UPC-A?", "acceptedAnswer": { "@type": "Answer", "text": "UPC-A je 12místný americký standard. EAN-13 je mezinárodní 13místná verze. EAN-13 začínající nulou je ekvivalentní 12místnému UPC-A." } },
+            { "@type": "Question", "name": "Musím EAN-13 zaregistrovat u GS1, abych mohl prodávat v obchodech?", "acceptedAnswer": { "@type": "Answer", "text": "Ano. Pro prodej produktu v maloobchodě musí být prefix GS1 přidělen vaší firmě národní organizací GS1 (v České republice: GS1 Czech Republic). Tento nástroj generuje pouze vizuální kód — nerezervuje číslo." } },
+            { "@type": "Question", "name": "Mohu vytisknout EAN-13 na termální tiskárně?", "acceptedAnswer": { "@type": "Answer", "text": "Ano. Generátor obsahuje okno tisku štítků s přednastaveními pro tiskárny Zebra, Brother a Dymo i pro archy A4 (Avery)." } },
+            { "@type": "Question", "name": "Je generátor EAN-13 opravdu zdarma?", "acceptedAnswer": { "@type": "Answer", "text": "Ano — plně zdarma, bez registrace, bez vodoznaků, bez limitů. Generování probíhá ze 100 % v prohlížeči — vaše data se neodesílají na server." } }
+        ]
+    }
+    </script>
+
+    <link rel="stylesheet" href="../../styles.css?v=20260521120000">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Style landing (spike, scoped) */
+        .landing { max-width: 880px; margin: 0 auto; padding: 0 1rem; }
+        .landing__hero { padding: 2rem 0 1.5rem; text-align: center; }
+        .landing__hero h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); margin: 0 0 .75rem; line-height: 1.2; }
+        .landing__lead { font-size: 1.1rem; line-height: 1.6; margin: 0 auto 1.5rem; max-width: 640px; opacity: .9; }
+        .landing__cta {
+            display: inline-block; padding: .9rem 1.75rem; font-size: 1rem; font-weight: 600;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; border-radius: 10px;
+            text-decoration: none; box-shadow: 0 4px 14px rgba(79, 70, 229, .35);
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .landing__cta:hover, .landing__cta:focus-visible { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79, 70, 229, .45); }
+        .landing__cta:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+        .landing__section { padding: 1.5rem 0; border-top: 1px solid rgba(125, 125, 125, .2); }
+        .landing__section h2 { font-size: 1.5rem; margin: 0 0 .75rem; color: #4f46e5; }
+        .landing__section strong { color: #4f46e5; }
+        .landing__section p, .landing__section li { line-height: 1.65; }
+        .lang-flag { width: 20px; height: 14px; border-radius: 2px; vertical-align: middle; margin-right: 6px; box-shadow: 0 0 0 1px rgba(0,0,0,.1); }
+        .landing__section ul, .landing__section ol { padding-left: 1.4rem; margin: .5rem 0; }
+        .landing__sample { display: flex; justify-content: center; margin: 1.5rem 0; }
+        .landing__sample svg { max-width: 100%; height: auto; background: #fff; padding: 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+        .landing__specs { display: grid; grid-template-columns: max-content 1fr; gap: .5rem 1rem; margin: .75rem 0; }
+        .landing__specs dt { font-weight: 600; }
+        .landing__specs dd { margin: 0; }
+        .landing__faq details { padding: .75rem 1rem; margin: .5rem 0; background: rgba(125, 125, 125, .08); border-radius: 8px; }
+        .landing__faq summary { font-weight: 600; cursor: pointer; }
+        .landing__faq summary:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+        .landing__faq details[open] summary { margin-bottom: .5rem; }
+        .landing__related { display: flex; flex-wrap: wrap; gap: .5rem; }
+        .landing__related a {
+            padding: .4rem .8rem; background: rgba(79, 70, 229, .1); color: inherit;
+            border-radius: 6px; text-decoration: none; font-size: .9rem;
+        }
+        .landing__related a:hover { background: rgba(79, 70, 229, .2); }
+        .landing__final-cta { text-align: center; padding: 2rem 0; }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Přejít na hlavní obsah</a>
+    <div class="app">
+        <header class="animated-header">
+            <div class="lang-switch">
+                <button class="lang-current" id="lang-toggle" aria-haspopup="true" aria-expanded="false"><svg class="lang-flag" viewBox="0 0 6 4" aria-hidden="true"><rect width="6" height="2" fill="#fff"/><rect y="2" width="6" height="2" fill="#d7141a"/><path d="M0,0 L3,2 L0,4 Z" fill="#11457e"/></svg>CS ▾</button>
+                <div class="lang-dropdown" id="lang-dropdown">
+                    <a href="../../ean-13/" class="lang-option"><svg class="lang-flag" viewBox="0 0 60 40" aria-hidden="true"><rect width="60" height="40" fill="#012169"/><path d="M0,0 L60,40 M60,0 L0,40" stroke="#fff" stroke-width="8"/><path d="M30,0 v40 M0,20 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v40 M0,20 h60" stroke="#c8102e" stroke-width="6"/></svg>English</a>
+                    <a href="../../pl/ean-13/" class="lang-option"><svg class="lang-flag" viewBox="0 0 6 4" aria-hidden="true"><rect width="6" height="2" fill="#fff"/><rect y="2" width="6" height="2" fill="#dc143c"/></svg>Polski</a>
+                    <a href="../../cs/ean-13/" class="lang-option active"><svg class="lang-flag" viewBox="0 0 6 4" aria-hidden="true"><rect width="6" height="2" fill="#fff"/><rect y="2" width="6" height="2" fill="#d7141a"/><path d="M0,0 L3,2 L0,4 Z" fill="#11457e"/></svg>Čeština</a>
+                    <a href="../../uk/ean-13/" class="lang-option"><svg class="lang-flag" viewBox="0 0 6 4" aria-hidden="true"><rect width="6" height="2" fill="#0057b7"/><rect y="2" width="6" height="2" fill="#ffd700"/></svg>Українська</a>
+                </div>
+            </div>
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                    <rect x="2" y="4" width="3" height="24" rx="1" fill="currentColor"/>
+                    <rect x="7" y="4" width="1.5" height="24" rx="0.5" fill="currentColor"/>
+                    <rect x="10.5" y="4" width="3" height="24" rx="1" fill="currentColor"/>
+                    <rect x="15.5" y="4" width="1.5" height="24" rx="0.5" fill="currentColor"/>
+                    <rect x="19" y="4" width="2" height="24" rx="0.5" fill="currentColor"/>
+                    <rect x="23" y="4" width="3" height="24" rx="1" fill="currentColor"/>
+                    <rect x="28" y="4" width="1.5" height="24" rx="0.5" fill="currentColor"/>
+                </svg>
+                <a href="../" style="color:inherit;text-decoration:none"><h1>Generátor čárových kódů</h1></a>
+            </div>
+            <p class="subtitle">Generátor EAN-13 — rychlý, zdarma, plně v prohlížeči</p>
+        </header>
+
+        <nav class="decoder-nav" aria-label="Hlavní navigace">
+            <a href="../">Generátor</a>
+            <a href="../decoder.html">Dekodér</a>
+        </nav>
+
+        <main id="main-content" tabindex="-1" class="landing">
+            <section class="landing__hero">
+                <h1>Generátor EAN-13</h1>
+                <p class="landing__lead">
+                    Vygenerujte platný kód <strong>EAN-13</strong> online během několika sekund. Zadejte 12 číslic — kontrolní číslice bude doplněna automaticky. Exportujte jako PNG nebo SVG, nebo vytiskněte na termální tiskárně či arších A4. 100 % zdarma, bez registrace, běží v prohlížeči.
+                </p>
+                <a href="../?type=ean13" class="landing__cta" data-cta="hero">Otevřít generátor EAN-13 →</a>
+            </section>
+
+            <div class="landing__sample">
+                <svg width="230" height="130" viewBox="0 0 230 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ukázkový kód EAN-13: 5901234123457">
+                    <rect width="230" height="130" fill="#fff"/>
+                    <g fill="#111"><rect x="20" y="10" width="2" height="100"/><rect x="24" y="10" width="2" height="100"/><rect x="32" y="10" width="2" height="90"/><rect x="36" y="10" width="4" height="90"/><rect x="42" y="10" width="2" height="90"/><rect x="48" y="10" width="6" height="90"/><rect x="58" y="10" width="4" height="90"/><rect x="66" y="10" width="2" height="90"/><rect x="72" y="10" width="4" height="90"/><rect x="78" y="10" width="4" height="90"/><rect x="84" y="10" width="2" height="90"/><rect x="94" y="10" width="2" height="90"/><rect x="98" y="10" width="2" height="90"/><rect x="106" y="10" width="4" height="90"/><rect x="112" y="10" width="2" height="100"/><rect x="116" y="10" width="2" height="100"/><rect x="120" y="10" width="4" height="90"/><rect x="128" y="10" width="4" height="90"/><rect x="134" y="10" width="4" height="90"/><rect x="140" y="10" width="4" height="90"/><rect x="148" y="10" width="2" height="90"/><rect x="158" y="10" width="2" height="90"/><rect x="162" y="10" width="2" height="90"/><rect x="166" y="10" width="6" height="90"/><rect x="176" y="10" width="2" height="90"/><rect x="182" y="10" width="6" height="90"/><rect x="190" y="10" width="2" height="90"/><rect x="198" y="10" width="2" height="90"/><rect x="204" y="10" width="2" height="100"/><rect x="208" y="10" width="2" height="100"/></g>
+                    <g fill="#111" font-family="ui-monospace, 'Courier New', monospace" font-size="11">
+                        <text x="8" y="122">5</text>
+                        <text x="32" y="122">901234</text>
+                        <text x="120" y="122">123457</text>
+                    </g>
+                </svg>
+            </div>
+
+            <section class="landing__section" aria-labelledby="co-je">
+                <h2 id="co-je">Co je EAN-13?</h2>
+                <p>
+                    <strong>EAN-13</strong> (European Article Number, 13 číslic) je celosvětový standard čárových kódů pro maloobchodní produkty. Zaveden organizací GS1 v 70. letech, dnes se používá ve více než 100 zemích k identifikaci obchodního zboží v místech prodeje. EAN-13 je nadmnožinou 12místného UPC-A používaného v USA a Kanadě.
+                </p>
+                <p>
+                    Každý EAN-13 obsahuje 12 datových číslic a 1 kontrolní číslici. Prvních 2–3 číslic je <em>prefix GS1</em> přidělený národní číslovací organizaci (např. 859 = Česká republika, 590 = Polsko, 400–440 = Německo, 30–37 = Francie). Zbývající číslice identifikují výrobce a konkrétní produkt.
+                </p>
+            </section>
+
+            <section class="landing__section" aria-labelledby="spec">
+                <h2 id="spec">Specifikace EAN-13</h2>
+                <dl class="landing__specs">
+                    <dt>Počet číslic</dt>             <dd>13 (12 datových + 1 kontrolní)</dd>
+                    <dt>Povolené znaky</dt>           <dd>Pouze číslice 0–9</dd>
+                    <dt>Algoritmus kontrolní číslice</dt><dd>Modulo-10 s vahami (1, 3, 1, 3, …)</dd>
+                    <dt>Standardní rozměry</dt>       <dd>37,29 mm × výška 25,93 mm (nominálně)</dd>
+                    <dt>Klidová zóna</dt>             <dd>≥ 7 modulů vlevo, ≥ 7 vpravo</dd>
+                    <dt>Standardizace</dt>            <dd>GS1 (dříve EAN International + UCC)</dd>
+                </dl>
+            </section>
+
+            <section class="landing__section" aria-labelledby="pouziti">
+                <h2 id="pouziti">Kdy použít EAN-13</h2>
+                <ul>
+                    <li><strong>Maloobchodní produkty</strong> — vyžadováno většinou obchodních řetězců (supermarkety, lékárny, elektronika) pro skenování u pokladny.</li>
+                    <li><strong>Knihy mimo ISBN</strong> — pro neknižní maloobchodní edice, dárkové sady, merchandise.</li>
+                    <li><strong>Interní inventář</strong> — pokud potřebujete standardní, skenovatelný kód bez registrace u GS1, použijte prefixy 02 nebo 20–29 (vyhrazené pro interní použití).</li>
+                    <li><strong>Marketplace</strong> — Amazon, eBay a podobné platformy akceptují EAN-13 jako identifikátor produktu (GTIN-13).</li>
+                </ul>
+            </section>
+
+            <section class="landing__section" aria-labelledby="howto">
+                <h2 id="howto">Jak vygenerovat kód EAN-13</h2>
+                <ol>
+                    <li><strong>Otevřete generátor</strong> — klikněte na tlačítko níže; EAN-13 je již vybrán.</li>
+                    <li><strong>Zadejte 12 číslic</strong> — nástroj kontroluje délku a přijímá pouze číslice.</li>
+                    <li><strong>Kontrolní číslice doplněna automaticky</strong> — třináctá číslice vypočítána modulo-10.</li>
+                    <li><strong>Exportujte nebo vytiskněte</strong> — stáhněte PNG/SVG, nebo otevřete okno tisku štítků (termo/A4).</li>
+                </ol>
+            </section>
+
+            <section class="landing__section landing__faq" aria-labelledby="faq">
+                <h2 id="faq">Nejčastější dotazy</h2>
+
+                <details>
+                    <summary>Kolik číslic má kód EAN-13?</summary>
+                    <p>Přesně 13: 12 datových číslic, které zadáváte, a 1 kontrolní číslice automaticky vypočítaná generátorem.</p>
+                </details>
+
+                <details>
+                    <summary>Jak se počítá kontrolní číslice?</summary>
+                    <p>Každou z prvních 12 číslic střídavě násobíte 1 a 3 (pozice 1 = ×1, pozice 2 = ×3, …), výsledky sečtete a kontrolní číslice je hodnota, která doplní součet na nejbližší násobek 10. Příklad: pro <code>590123412345</code> vážený součet = 53, takže kontrolní číslice = 7 → <code>5901234123457</code>.</p>
+                </details>
+
+                <details>
+                    <summary>Jaký je rozdíl mezi EAN-13 a UPC-A?</summary>
+                    <p>UPC-A má 12 číslic a je americkým standardem. EAN-13 má 13 číslic a je mezinárodní rozšířenou verzí. Každý 12místný UPC-A je ekvivalentní EAN-13 vzniklému přidáním úvodní <code>0</code>.</p>
+                </details>
+
+                <details>
+                    <summary>Musím EAN-13 zaregistrovat u GS1, abych mohl prodávat v obchodech?</summary>
+                    <p>Ano. Pro prodej produktu v maloobchodě musí být prefix GS1 přidělen vaší firmě národní organizací GS1 (v České republice: GS1 Czech Republic). Tento nástroj generuje pouze vizuální kód — nerezervuje číslo.</p>
+                </details>
+
+                <details>
+                    <summary>Mohu vytisknout EAN-13 na termální tiskárně?</summary>
+                    <p>Ano. Generátor obsahuje okno tisku štítků s připravenými přednastaveními pro tiskárny Zebra, Brother a Dymo i pro archy A4 (Avery).</p>
+                </details>
+
+                <details>
+                    <summary>Je generátor EAN-13 opravdu zdarma?</summary>
+                    <p>Ano — plně zdarma, bez registrace, bez vodoznaků, bez limitů. Generování probíhá ze 100 % v prohlížeči — vaše data se neodesílají na server.</p>
+                </details>
+            </section>
+
+            <section class="landing__section" aria-labelledby="related">
+                <h2 id="related">Související formáty kódů</h2>
+                <div class="landing__related">
+                    <a href="../?type=ean8">EAN-8</a>
+                    <a href="../?type=upc">UPC-A</a>
+                    <a href="../?type=code128">Code 128</a>
+                    <a href="../?type=itf14">ITF-14</a>
+                    <a href="../?type=qr">QR kód</a>
+                    <a href="../decoder.html">Dekodér kódů</a>
+                </div>
+            </section>
+
+            <div class="landing__final-cta">
+                <a href="../?type=ean13" class="landing__cta" data-cta="footer">Otevřít generátor EAN-13 →</a>
+            </div>
+        </main>
+
+        <footer style="text-align:center;padding:1.5rem 1rem;font-size:.875rem;opacity:.75">
+            <p>
+                <a href="../">Hlavní stránka</a> ·
+                <a href="../decoder.html">Dekodér</a> ·
+                <a href="../../polityka-prywatnosci.html">Zásady ochrany osobních údajů</a> ·
+                <a href="../../regulamin.html">Podmínky použití</a>
+            </p>
+            <p>© Generátor čárových kódů. Funguje 100 % v prohlížeči — vaše data zůstávají soukromá.</p>
+        </footer>
+    </div>
+    <script>
+        (function(){
+            var btn = document.getElementById('lang-toggle');
+            var dd = document.getElementById('lang-dropdown');
+            if (!btn || !dd) return;
+            btn.addEventListener('click', function(e){
+                e.stopPropagation();
+                var open = dd.classList.toggle('open');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+            document.addEventListener('click', function(){
+                dd.classList.remove('open');
+                btn.setAttribute('aria-expanded', 'false');
+            });
+        })();
+    </script>
+</body>
+</html>

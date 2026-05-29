@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preload" href="../styles.css?v=20260521120000" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" fetchpriority="high">
+
+    <title>EAN-13 Barcode Generator — Free Online Tool</title>
+    <meta name="description" content="Free EAN-13 barcode generator. Enter 12 digits, get a valid EAN-13 with auto-calculated check digit. Export PNG or SVG, print labels. No signup.">
+    <meta name="author" content="Barcode Generator">
+    <meta name="robots" content="index, follow">
+
+    <link rel="canonical" href="https://barcode-generator.daytodayapps.com/ean-13/">
+    <link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/">
+    <link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/">
+    <link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/ean-13/">
+    <link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/ean-13/">
+    <link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/ean-13/">
+    <link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/ean-13/">
+    <link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/ean-13/">
+    <link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/ean-13/">
+    <link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/">
+    <link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/">
+    <link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="EAN-13 Barcode Generator — Free Online Tool">
+    <meta property="og:description" content="Generate a valid EAN-13 barcode in seconds. Auto check digit, PNG/SVG export, label printing.">
+    <meta property="og:url" content="https://barcode-generator.daytodayapps.com/ean-13/">
+    <meta property="og:image" content="https://barcode-generator.daytodayapps.com/og-image.png">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:locale:alternate" content="pl_PL">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EAN-13 Barcode Generator — Free Online Tool">
+    <meta name="twitter:description" content="Generate a valid EAN-13 barcode in seconds. Auto check digit, PNG/SVG export.">
+    <meta name="twitter:image" content="https://barcode-generator.daytodayapps.com/og-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+
+    <!-- Schema.org: WebPage -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "EAN-13 Barcode Generator",
+        "url": "https://barcode-generator.daytodayapps.com/ean-13/",
+        "description": "Free online EAN-13 barcode generator. Auto check-digit, PNG/SVG export, label printing.",
+        "inLanguage": "en",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": "Barcode Generator",
+            "url": "https://barcode-generator.daytodayapps.com/"
+        }
+    }
+    </script>
+
+    <!-- Schema.org: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "inLanguage": "en",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://barcode-generator.daytodayapps.com/" },
+            { "@type": "ListItem", "position": 2, "name": "EAN-13 Generator", "item": "https://barcode-generator.daytodayapps.com/ean-13/" }
+        ]
+    }
+    </script>
+
+    <!-- Schema.org: HowTo -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How to generate an EAN-13 barcode",
+        "description": "Create a valid EAN-13 barcode in four steps: open the generator, enter 12 digits, let the tool add the check digit, export or print.",
+        "totalTime": "PT1M",
+        "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Open the generator", "text": "Click the button below to open the generator with EAN-13 already selected." },
+            { "@type": "HowToStep", "position": 2, "name": "Enter 12 digits", "text": "Type 12 numeric characters. The first 2–3 are the GS1 prefix (country/issuer), followed by the manufacturer and product number." },
+            { "@type": "HowToStep", "position": 3, "name": "Check digit added automatically", "text": "The 13th digit is computed automatically using the standard EAN-13 modulo-10 algorithm." },
+            { "@type": "HowToStep", "position": 4, "name": "Export PNG or SVG", "text": "Download as PNG or SVG, or open the label dialog to print on thermal or A4 sheets." }
+        ]
+    }
+    </script>
+
+    <!-- Schema.org: FAQPage -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            { "@type": "Question", "name": "How many digits does an EAN-13 barcode have?", "acceptedAnswer": { "@type": "Answer", "text": "EAN-13 has exactly 13 digits: 12 data digits plus 1 check digit. You enter 12 digits; the generator computes the 13th automatically." } },
+            { "@type": "Question", "name": "What is the EAN-13 check digit and how is it calculated?", "acceptedAnswer": { "@type": "Answer", "text": "The check digit is a modulo-10 checksum. Multiply each of the first 12 digits alternately by 1 and 3 (starting with 1 at position 1), sum them, then the check digit is the value that brings the total up to the next multiple of 10." } },
+            { "@type": "Question", "name": "What is the difference between EAN-13 and UPC-A?", "acceptedAnswer": { "@type": "Answer", "text": "UPC-A is a 12-digit US/Canada standard; EAN-13 is the 13-digit international superset. An EAN-13 starting with 0 is equivalent to a 12-digit UPC-A." } },
+            { "@type": "Question", "name": "Do I need to register an EAN-13 with GS1 to sell retail?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. If you sell products through retailers, the GS1 prefix must be assigned to your company by your national GS1 office. This tool only generates the visual barcode — it does not register the number." } },
+            { "@type": "Question", "name": "Can I print the EAN-13 on a thermal label printer?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The generator includes a label-print dialog with presets for Zebra, Brother and Dymo thermal printers, plus A4 Avery sheets." } },
+            { "@type": "Question", "name": "Is the EAN-13 generator really free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — fully free, no signup, no watermarks, no limits. Generation runs 100% in your browser; your data is not sent to any server." } }
+        ]
+    }
+    </script>
+
+    <link rel="stylesheet" href="../styles.css?v=20260521120000">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Landing-specific styles (scoped, spike-only) */
+        .landing { max-width: 880px; margin: 0 auto; padding: 0 1rem; }
+        .landing__hero { padding: 2rem 0 1.5rem; text-align: center; }
+        .landing__hero h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); margin: 0 0 .75rem; line-height: 1.2; }
+        .landing__lead { font-size: 1.1rem; line-height: 1.6; margin: 0 auto 1.5rem; max-width: 640px; opacity: .9; }
+        .landing__cta {
+            display: inline-block; padding: .9rem 1.75rem; font-size: 1rem; font-weight: 600;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; border-radius: 10px;
+            text-decoration: none; box-shadow: 0 4px 14px rgba(79, 70, 229, .35);
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .landing__cta:hover, .landing__cta:focus-visible { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79, 70, 229, .45); }
+        .landing__cta:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+        .landing__section { padding: 1.5rem 0; border-top: 1px solid rgba(125, 125, 125, .2); }
+        .landing__section h2 { font-size: 1.5rem; margin: 0 0 .75rem; color: #4f46e5; }
+        .landing__section strong { color: #4f46e5; }
+        .landing__section p, .landing__section li { line-height: 1.65; }
+        .lang-flag { width: 20px; height: 14px; border-radius: 2px; vertical-align: middle; margin-right: 6px; box-shadow: 0 0 0 1px rgba(0,0,0,.1); }
+        .landing__section ul, .landing__section ol { padding-left: 1.4rem; margin: .5rem 0; }
+        .landing__sample { display: flex; justify-content: center; margin: 1.5rem 0; }
+        .landing__sample svg { max-width: 100%; height: auto; background: #fff; padding: 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+        .landing__specs { display: grid; grid-template-columns: max-content 1fr; gap: .5rem 1rem; margin: .75rem 0; }
+        .landing__specs dt { font-weight: 600; }
+        .landing__specs dd { margin: 0; }
+        .landing__faq details { padding: .75rem 1rem; margin: .5rem 0; background: rgba(125, 125, 125, .08); border-radius: 8px; }
+        .landing__faq summary { font-weight: 600; cursor: pointer; }
+        .landing__faq summary:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
+        .landing__faq details[open] summary { margin-bottom: .5rem; }
+        .landing__related { display: flex; flex-wrap: wrap; gap: .5rem; }
+        .landing__related a {
+            padding: .4rem .8rem; background: rgba(79, 70, 229, .1); color: inherit;
+            border-radius: 6px; text-decoration: none; font-size: .9rem;
+        }
+        .landing__related a:hover { background: rgba(79, 70, 229, .2); }
+        .landing__final-cta { text-align: center; padding: 2rem 0; }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="app">
+        <header class="animated-header">
+            <div class="lang-switch">
+                <button class="lang-current" id="lang-toggle" aria-haspopup="true" aria-expanded="false"><svg class="lang-flag" viewBox="0 0 60 40" aria-hidden="true"><rect width="60" height="40" fill="#012169"/><path d="M0,0 L60,40 M60,0 L0,40" stroke="#fff" stroke-width="8"/><path d="M30,0 v40 M0,20 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v40 M0,20 h60" stroke="#c8102e" stroke-width="6"/></svg>EN ▾</button>
+                <div class="lang-dropdown" id="lang-dropdown">
+                    <a href="./" class="lang-option active"><svg class="lang-flag" viewBox="0 0 60 40" aria-hidden="true"><rect width="60" height="40" fill="#012169"/><path d="M0,0 L60,40 M60,0 L0,40" stroke="#fff" stroke-width="8"/><path d="M30,0 v40 M0,20 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v40 M0,20 h60" stroke="#c8102e" stroke-width="6"/></svg>English</a>
+                    <a href="../pl/ean-13/" class="lang-option"><svg class="lang-flag" viewBox="0 0 6 4" aria-hidden="true"><rect width="6" height="2" fill="#fff"/><rect y="2" width="6" height="2" fill="#dc143c"/></svg>Polski</a>
+                </div>
+            </div>
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                    <rect x="2" y="4" width="3" height="24" rx="1" fill="currentColor"/>
+                    <rect x="7" y="4" width="1.5" height="24" rx="0.5" fill="currentColor"/>
+                    <rect x="10.5" y="4" width="3" height="24" rx="1" fill="currentColor"/>
+                    <rect x="15.5" y="4" width="1.5" height="24" rx="0.5" fill="currentColor"/>
+                    <rect x="19" y="4" width="2" height="24" rx="0.5" fill="currentColor"/>
+                    <rect x="23" y="4" width="3" height="24" rx="1" fill="currentColor"/>
+                    <rect x="28" y="4" width="1.5" height="24" rx="0.5" fill="currentColor"/>
+                </svg>
+                <a href="../" style="color:inherit;text-decoration:none"><h1>Barcode Generator</h1></a>
+            </div>
+            <p class="subtitle">EAN-13 generator — fast, free, fully in your browser</p>
+        </header>
+
+        <nav class="decoder-nav" aria-label="Main navigation">
+            <a href="../">Generator</a>
+            <a href="../decoder.html">Decoder</a>
+        </nav>
+
+        <main id="main-content" tabindex="-1" class="landing">
+            <section class="landing__hero">
+                <h1>EAN-13 Barcode Generator</h1>
+                <p class="landing__lead">
+                    Generate a valid <strong>EAN-13</strong> barcode online in seconds. Enter 12 digits — the check digit is added automatically. Export as PNG or SVG, or print on thermal and A4 label sheets. 100% free, no signup, runs entirely in your browser.
+                </p>
+                <a href="../?type=ean13" class="landing__cta" data-cta="hero">Open EAN-13 generator →</a>
+            </section>
+
+            <div class="landing__sample">
+                <svg width="230" height="130" viewBox="0 0 230 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Example EAN-13 barcode: 5901234123457">
+                    <rect width="230" height="130" fill="#fff"/>
+                    <g fill="#111"><rect x="20" y="10" width="2" height="100"/><rect x="24" y="10" width="2" height="100"/><rect x="32" y="10" width="2" height="90"/><rect x="36" y="10" width="4" height="90"/><rect x="42" y="10" width="2" height="90"/><rect x="48" y="10" width="6" height="90"/><rect x="58" y="10" width="4" height="90"/><rect x="66" y="10" width="2" height="90"/><rect x="72" y="10" width="4" height="90"/><rect x="78" y="10" width="4" height="90"/><rect x="84" y="10" width="2" height="90"/><rect x="94" y="10" width="2" height="90"/><rect x="98" y="10" width="2" height="90"/><rect x="106" y="10" width="4" height="90"/><rect x="112" y="10" width="2" height="100"/><rect x="116" y="10" width="2" height="100"/><rect x="120" y="10" width="4" height="90"/><rect x="128" y="10" width="4" height="90"/><rect x="134" y="10" width="4" height="90"/><rect x="140" y="10" width="4" height="90"/><rect x="148" y="10" width="2" height="90"/><rect x="158" y="10" width="2" height="90"/><rect x="162" y="10" width="2" height="90"/><rect x="166" y="10" width="6" height="90"/><rect x="176" y="10" width="2" height="90"/><rect x="182" y="10" width="6" height="90"/><rect x="190" y="10" width="2" height="90"/><rect x="198" y="10" width="2" height="90"/><rect x="204" y="10" width="2" height="100"/><rect x="208" y="10" width="2" height="100"/></g>
+                    <g fill="#111" font-family="ui-monospace, 'Courier New', monospace" font-size="11">
+                        <text x="8" y="122">5</text>
+                        <text x="32" y="122">901234</text>
+                        <text x="120" y="122">123457</text>
+                    </g>
+                </svg>
+            </div>
+
+            <section class="landing__section" aria-labelledby="what-is">
+                <h2 id="what-is">What is EAN-13?</h2>
+                <p>
+                    <strong>EAN-13</strong> (European Article Number, 13 digits) is the worldwide standard for retail product barcodes. It was adopted by GS1 in the 1970s and is now used in over 100 countries to identify trade items at the point of sale. EAN-13 is a superset of the 12-digit UPC-A used in the US and Canada.
+                </p>
+                <p>
+                    Every EAN-13 contains 12 data digits plus 1 check digit. The first 2–3 digits are the <em>GS1 prefix</em> assigned to a national numbering authority (e.g., 590 = Poland, 400–440 = Germany, 30–37 = France). The remaining digits identify the manufacturer and the specific product.
+                </p>
+            </section>
+
+            <section class="landing__section" aria-labelledby="spec">
+                <h2 id="spec">EAN-13 specification</h2>
+                <dl class="landing__specs">
+                    <dt>Total digits</dt>          <dd>13 (12 data + 1 check)</dd>
+                    <dt>Allowed characters</dt>    <dd>Digits 0–9 only</dd>
+                    <dt>Check digit algorithm</dt> <dd>Modulo-10 with weights (1, 3, 1, 3, …)</dd>
+                    <dt>Standard width</dt>        <dd>37.29 mm (nominal) × 25.93 mm height</dd>
+                    <dt>Quiet zone</dt>            <dd>≥ 7 modules left, ≥ 7 modules right</dd>
+                    <dt>Standardised by</dt>       <dd>GS1 (formerly EAN International + UCC)</dd>
+                </dl>
+            </section>
+
+            <section class="landing__section" aria-labelledby="uses">
+                <h2 id="uses">When to use EAN-13</h2>
+                <ul>
+                    <li><strong>Retail products</strong> — required by most retailers (supermarkets, pharmacies, electronics) for scanning at checkout.</li>
+                    <li><strong>Books outside ISBN scope</strong> — for non-book retail editions, gift sets, or merchandise.</li>
+                    <li><strong>Internal inventory</strong> — when you want a standardised, scanner-friendly code without registering with GS1, use prefixes 02 or 20–29 (restricted to internal use).</li>
+                    <li><strong>Marketplaces</strong> — Amazon, eBay and similar platforms accept EAN-13 as a product identifier (GTIN-13).</li>
+                </ul>
+            </section>
+
+            <section class="landing__section" aria-labelledby="howto">
+                <h2 id="howto">How to generate an EAN-13 barcode</h2>
+                <ol>
+                    <li><strong>Open the generator</strong> — click the button below; EAN-13 is preselected.</li>
+                    <li><strong>Enter 12 digits</strong> — the tool validates length and accepts only digits.</li>
+                    <li><strong>Check digit auto-added</strong> — the 13th digit is computed automatically using modulo-10.</li>
+                    <li><strong>Export or print</strong> — download PNG/SVG, or open the label dialog for thermal/A4 printing.</li>
+                </ol>
+            </section>
+
+            <section class="landing__section landing__faq" aria-labelledby="faq">
+                <h2 id="faq">Frequently asked questions</h2>
+
+                <details>
+                    <summary>How many digits does an EAN-13 barcode have?</summary>
+                    <p>Exactly 13: 12 data digits that you enter, plus 1 check digit that the generator computes automatically.</p>
+                </details>
+
+                <details>
+                    <summary>How is the check digit calculated?</summary>
+                    <p>Multiply each of the first 12 digits alternately by 1 and 3 (position 1 = ×1, position 2 = ×3, …), sum the results, then the check digit is the value that brings the total up to the next multiple of 10. Example: for <code>590123412345</code> the weighted sum is 53, so the check digit is 7 — giving <code>5901234123457</code>.</p>
+                </details>
+
+                <details>
+                    <summary>What is the difference between EAN-13 and UPC-A?</summary>
+                    <p>UPC-A has 12 digits and is the US/Canada standard. EAN-13 has 13 digits and is the international superset. Any 12-digit UPC-A is equivalent to the EAN-13 obtained by prepending a leading <code>0</code>.</p>
+                </details>
+
+                <details>
+                    <summary>Do I need to register an EAN-13 with GS1 to sell retail?</summary>
+                    <p>Yes. If you sell through retailers, the GS1 prefix must be assigned to your company by your national GS1 office. This tool generates the visual barcode only — it does not register or reserve the number for you.</p>
+                </details>
+
+                <details>
+                    <summary>Can I print EAN-13 on a thermal label printer?</summary>
+                    <p>Yes. The generator includes a label-print dialog with presets for Zebra, Brother and Dymo thermal printers, as well as A4 sheets (Avery layouts).</p>
+                </details>
+
+                <details>
+                    <summary>Is the EAN-13 generator really free?</summary>
+                    <p>Yes — fully free, no signup, no watermarks, no limits. Generation runs 100% in your browser; your data is never sent to any server.</p>
+                </details>
+            </section>
+
+            <section class="landing__section" aria-labelledby="related">
+                <h2 id="related">Related barcode formats</h2>
+                <div class="landing__related">
+                    <a href="../?type=ean8">EAN-8</a>
+                    <a href="../?type=upc">UPC-A</a>
+                    <a href="../?type=code128">Code 128</a>
+                    <a href="../?type=itf14">ITF-14</a>
+                    <a href="../?type=qr">QR Code</a>
+                    <a href="../decoder.html">Barcode Decoder</a>
+                </div>
+            </section>
+
+            <div class="landing__final-cta">
+                <a href="../?type=ean13" class="landing__cta" data-cta="footer">Open EAN-13 generator →</a>
+            </div>
+        </main>
+
+        <footer style="text-align:center;padding:1.5rem 1rem;font-size:.875rem;opacity:.75">
+            <p>
+                <a href="../">Home</a> ·
+                <a href="../decoder.html">Decoder</a> ·
+                <a href="../polityka-prywatnosci.html">Privacy policy</a> ·
+                <a href="../regulamin.html">Terms</a>
+            </p>
+            <p>© Barcode Generator. Runs 100% in your browser — your data stays private.</p>
+        </footer>
+    </div>
+    <script>
+        (function(){
+            var btn = document.getElementById('lang-toggle');
+            var dd = document.getElementById('lang-dropdown');
+            if (!btn || !dd) return;
+            btn.addEventListener('click', function(e){
+                e.stopPropagation();
+                var open = dd.classList.toggle('open');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+            document.addEventListener('click', function(){
+                dd.classList.remove('open');
+                btn.setAttribute('aria-expanded', 'false');
+            });
+        })();
+    </script>
+</body>
+</html>

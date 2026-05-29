@@ -7,14 +7,21 @@
 
 ## Aktualny status (sprint)
 
-- **HEAD lokalny:** `b32a501` — 8 commitów przed `origin/main` (NIE PUSHUJ bez wyraźnej zgody).
-- **Ostatnie commity (this sprint):**
-  - `b32a501` docs: consolidate TODO-FUTURE into ROADMAP, README as index
-  - `39fc525` feat(css): dark-mode focus + `#qr-preview` mobile hardening
-  - `e5a6570` fix: cache-bust v=20260613130000 (45 HTML)
-  - `d905715` feat(domain): migrate to barcode-generator.daytodayapps.com
-- **Bieżące zadanie:** drop dead `subscriptions` table + `subscription_status` enum (ROADMAP §Backlog / M1 audit). Plan w `/memories/session/plan.md` (A3).
-- **Aktywny plan rozwoju:** [ROADMAP.md](ROADMAP.md) — M0/M1 done, M2 (Stripe) ↔ M3 (PDF/analytics) ↔ M4/M5 dalej.
+- **HEAD = `origin/main` = `0b69ec9`** (w sync, nic nieopublikowanego).
+- **Ostatnie commity:**
+  - `0b69ec9` redirect: force canonical domain, 301 from pages.dev → daytodayapps.com
+  - `b75a631` fix(i18n): UTF-8 we flagach i strzałkach (recovery z mojibake)
+  - `314f2bd` fix(ui): UTF-8 HTML + naprawa tiling strzałki w `<select>` (dark/focus)
+  - `0d8499c` fix(lang): pozycjonowanie dropdownu języków + bump styles.css cache
+  - `1b0535e` test: M5 codes filter UI smoke + functional
+  - `846b8bf` feat(ui): M5 search/filter on `/moje-kody.html` (10 langs)
+  - `59c31dd` test: M4 public share e2e
+  - `22131d5` feat(pages-fn): M4 SSR `/c/[slug]` shared code preview
+  - `af5161e` feat(ui): M4 public sharing toggle + copy link (10 langs)
+  - `00a0017` feat(db): M4 public sharing — `is_public` + `share_slug` + `get_shared_code` RPC
+  - `cb51c40` feat(db): drop dead `subscriptions` table and `subscription_status` enum
+- **Wykonane w tej sesji (po `b32a501`):** A3 (drop subscriptions), M4 (public sharing end-to-end), M5 (search/filter), lang dropdown + UTF-8 recovery, canonical domain enforcement.
+- **Aktywny plan rozwoju:** [ROADMAP.md](ROADMAP.md). Następne otwarte: D2 SEO content per typ kodu (5 typów × 10 lokali), E (Lighthouse CI ≥95, PWA opcjonalnie), osobna `/qr/` strona razem z D2. Stripe/Pro = SKIPPED (decyzja MVP, monetyzacja przez AdSense).
 
 ---
 

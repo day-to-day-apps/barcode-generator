@@ -1096,4 +1096,32 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast(T.loadCodeFail || 'Could not load the saved code.');
         }
     })();
+
+    // ===== PRESELECT FORMAT VIA ?type=<shortcut> (deep-links from SEO landing pages) =====
+    (function tryPresetFormat() {
+        const params = new URLSearchParams(location.search);
+        const raw = params.get('type');
+        if (!raw) return;
+        const map = {
+            ean13: 'EAN13', ean8: 'EAN8',
+            upc: 'UPC', 'upc-a': 'UPC', upca: 'UPC',
+            code128: 'CODE128', 'code-128': 'CODE128',
+            code39: 'CODE39', 'code-39': 'CODE39',
+            itf14: 'ITF14', 'itf-14': 'ITF14', itf: 'ITF',
+            qr: 'QR', qrcode: 'QR', 'qr-code': 'QR',
+            codabar: 'codabar', pharmacode: 'pharmacode',
+            msi: 'MSI'
+        };
+        const fmt = map[raw.toLowerCase()];
+        if (!fmt) return;
+        const hasOption = Array.from(barcodeType.options).some(o => o.value === fmt);
+        if (!hasOption) return;
+        barcodeType.value = fmt;
+        barcodeType.dispatchEvent(new Event('change'));
+        const text = document.getElementById('barcode-text');
+        if (text) {
+            text.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            text.focus({ preventScroll: true });
+        }
+    })();
 });

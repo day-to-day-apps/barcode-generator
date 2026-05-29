@@ -1,601 +1,1878 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
-        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/pl/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/pl/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/de/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/de/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/cs/codabar/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/fr/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/fr/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/es/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/es/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/de/codabar/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/it/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/it/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/pt/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/pt/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/codabar/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/nl/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/nl/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/es/codabar/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/cs/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/fr/codabar/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/it/codabar/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/nl/codabar/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pl/codabar/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pt/codabar/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/uk/codabar/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/codabar/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/codabar/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/cs/code-128/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/de/code-128/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/code-128/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/es/code-128/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/fr/code-128/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/it/code-128/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/nl/code-128/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pl/code-128/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pt/code-128/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/uk/code-128/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-128/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-128/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/cs/code-39/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/de/code-39/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/code-39/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/es/code-39/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/fr/code-39/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/it/code-39/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/nl/code-39/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pl/code-39/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pt/code-39/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/uk/code-39/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/code-39/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/code-39/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
     </url>
     <url>
         <loc>https://barcode-generator.daytodayapps.com/cs/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/uk/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/uk/decoder.html</loc>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
-    </url>
-</urlset>
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
-        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/pl/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/pl/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/de/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/fr/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/es/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/it/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/pt/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/nl/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/cs/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/uk/</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://barcode-generator.daytodayapps.com/de/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/fr/decoder.html</loc>
+        <loc>https://barcode-generator.daytodayapps.com/decoder.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://barcode-generator.daytodayapps.com/es/decoder.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/fr/decoder.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://barcode-generator.daytodayapps.com/it/decoder.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/pt/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://barcode-generator.daytodayapps.com/nl/decoder.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/cs/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <loc>https://barcode-generator.daytodayapps.com/pl/decoder.html</loc>
         <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pt/decoder.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
         <loc>https://barcode-generator.daytodayapps.com/uk/decoder.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
-</urlset>
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/en/"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
-        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/drukarki.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/drukarki.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/drukarki.html"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>1.0</priority>
+        <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/en/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/en/"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
-        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/cs/ean-13/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
+        <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/de/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/de/ean-13/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/fr/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/ean-13/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/es/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/es/ean-13/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/it/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/fr/ean-13/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/pt/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/it/ean-13/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/nl/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/nl/ean-13/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pl/ean-13/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pt/ean-13/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/uk/ean-13/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/ean-13/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/ean-13/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/historia-wydrukow.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/historia-wydrukow.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/historia-wydrukow.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
     </url>
     <url>
         <loc>https://barcode-generator.daytodayapps.com/cs/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/"/>
         <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/de/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/es/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/fr/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/it/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/nl/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pl/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pt/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
     </url>
     <url>
         <loc>https://barcode-generator.daytodayapps.com/uk/</loc>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/"/>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/"/>
         <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/"/>
-        <lastmod>2026-05-19</lastmod>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/cs/itf-14/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/de/itf-14/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/itf-14/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/es/itf-14/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/fr/itf-14/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/it/itf-14/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/nl/itf-14/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pl/itf-14/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pt/itf-14/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/uk/itf-14/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/itf-14/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/itf-14/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/cs/konto.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/de/konto.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/konto.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/es/konto.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/fr/konto.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/it/konto.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/nl/konto.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pl/konto.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pt/konto.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/uk/konto.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/konto.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/konto.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/cs/moje-kody.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/de/moje-kody.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/moje-kody.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/es/moje-kody.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/fr/moje-kody.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/it/moje-kody.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/nl/moje-kody.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pl/moje-kody.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pt/moje-kody.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/uk/moje-kody.html</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/moje-kody.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/moje-kody.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/dashboard/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/dashboard/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/dashboard/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/htmlReport/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/htmlReport/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/htmlReport/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/recorder/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/recorder/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/recorder/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/traceViewer/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/traceViewer/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/traceViewer/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/traceViewer/snapshot.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/traceViewer/snapshot.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/traceViewer/snapshot.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/traceViewer/uiMode.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/traceViewer/uiMode.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/node_modules/playwright-core/lib/vite/traceViewer/uiMode.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/playwright-report/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/playwright-report/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/playwright-report/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/playwright-report/trace/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/playwright-report/trace/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/playwright-report/trace/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/playwright-report/trace/snapshot.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/playwright-report/trace/snapshot.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/playwright-report/trace/snapshot.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/playwright-report/trace/uiMode.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/playwright-report/trace/uiMode.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/playwright-report/trace/uiMode.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
     </url>
     <url>
         <loc>https://barcode-generator.daytodayapps.com/polityka-prywatnosci.html</loc>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.3</priority>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/polityka-prywatnosci.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/polityka-prywatnosci.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
     </url>
     <url>
         <loc>https://barcode-generator.daytodayapps.com/regulamin.html</loc>
-        <lastmod>2026-05-19</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.3</priority>
-    </url>
-    <url>
-        <loc>https://barcode-generator.daytodayapps.com/de/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/regulamin.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/regulamin.html"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/fr/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/reset-hasla.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/reset-hasla.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/reset-hasla.html"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/es/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/supabase/admin/node_modules/tslib/tslib.es6.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/supabase/admin/node_modules/tslib/tslib.es6.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/supabase/admin/node_modules/tslib/tslib.es6.html"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/it/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/supabase/admin/node_modules/tslib/tslib.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/supabase/admin/node_modules/tslib/tslib.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/supabase/admin/node_modules/tslib/tslib.html"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/pt/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/supabase/email-templates/confirm-signup.en.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/supabase/email-templates/confirm-signup.en.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/supabase/email-templates/confirm-signup.en.html"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/nl/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/supabase/email-templates/confirm-signup.pl.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/supabase/email-templates/confirm-signup.pl.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/supabase/email-templates/confirm-signup.pl.html"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/cs/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/szablony.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/szablony.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/szablony.html"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
     <url>
-        <loc>https://barcode-generator.daytodayapps.com/uk/decoder.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/decoder.html"/>
-        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/decoder.html"/>
-        <lastmod>2026-05-19</lastmod>
+        <loc>https://barcode-generator.daytodayapps.com/tests/artifacts/INDEX.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/tests/artifacts/INDEX.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/tests/artifacts/INDEX.html"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/cs/upc-a/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/de/upc-a/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/upc-a/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/es/upc-a/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/fr/upc-a/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/it/upc-a/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/nl/upc-a/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pl/upc-a/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/pt/upc-a/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/uk/upc-a/</loc>
+        <xhtml:link rel="alternate" hreflang="cs" href="https://barcode-generator.daytodayapps.com/cs/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://barcode-generator.daytodayapps.com/de/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://barcode-generator.daytodayapps.com/es/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://barcode-generator.daytodayapps.com/fr/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="it" href="https://barcode-generator.daytodayapps.com/it/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="nl" href="https://barcode-generator.daytodayapps.com/nl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://barcode-generator.daytodayapps.com/pt/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://barcode-generator.daytodayapps.com/uk/upc-a/"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/upc-a/"/>
+        <lastmod>2026-05-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://barcode-generator.daytodayapps.com/wydruk.html</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/wydruk.html"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/wydruk.html"/>
+        <lastmod>2026-05-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
