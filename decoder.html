@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Apply saved theme before first paint to avoid a flash of the wrong theme
+        (function(){try{var t=localStorage.getItem('barcode-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+    </script>
     <title>Barcode Decoder — Free Online Scanner from Image</title>
     <meta name="description" content="Decode barcodes from images online. Upload a photo or drag & drop — supports EAN-13, UPC, Code 128, QR code and more. 100% client-side, private.">
     <meta name="robots" content="index, follow">

@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Apply saved theme before first paint to avoid a flash of the wrong theme
+        (function(){try{var t=localStorage.getItem('barcode-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+    </script>
     <link rel="preload" href="../styles.css?v=20260521120000" as="style">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -123,8 +127,9 @@
 <body>
     <a class="skip-link" href="#main-content">Vai al contenuto principale</a>
     <div class="app">
-        <header class="animated-header">
-            <div class="lang-switch">
+        <div class="topbar" role="region" aria-label="Site controls">
+            <div class="topbar__left">
+                <div class="lang-switch">
                 <button class="lang-current" id="lang-toggle">🇮🇹 IT ▾</button>
                 <div class="lang-dropdown" id="lang-dropdown">
                     <a href="../pl/index.html" class="lang-option">🇵🇱 Polski</a>
@@ -143,6 +148,12 @@
                 <svg class="icon-moon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.5 10.5a7.5 7.5 0 01-10-10 7.5 7.5 0 1010 10z"/></svg>
                 <svg class="icon-sun" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="3.5"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4"/></svg>
             </button>
+            </div>
+            <div class="topbar__right">
+                <!-- auth-controls injected here by auth-ui.js -->
+            </div>
+        </div>
+        <header class="animated-header">
             <div class="header-decoration">
                 <svg class="animated-barcode" width="200" height="40" viewBox="0 0 200 40" fill="none">
                     <defs>
@@ -197,24 +208,12 @@
             <section class="popular-section" aria-labelledby="popular-title">
                 <h2 id="popular-title" class="popular-section__title" data-i18n="popularTitle">Formati popolari</h2>
                 <div class="popular-gallery">
-                    <button type="button" class="popular-card" data-format="EAN13" aria-pressed="false"><span class="popular-card__preview" data-preview="EAN13" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularEan13">EAN-13</span></button>
-                    <button type="button" class="popular-card" data-format="EAN8" aria-pressed="false"><span class="popular-card__preview" data-preview="EAN8" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularEan8">EAN-8</span></button>
-                    <button type="button" class="popular-card" data-format="UPC" aria-pressed="false"><span class="popular-card__preview" data-preview="UPC" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularUpc">UPC-A</span></button>
-                    <button type="button" class="popular-card" data-format="CODE128" aria-pressed="false"><span class="popular-card__preview" data-preview="CODE128" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularCode128">Code 128</span></button>
-                    <button type="button" class="popular-card" data-format="CODE39" aria-pressed="false"><span class="popular-card__preview" data-preview="CODE39" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularCode39">Code 39</span></button>
-                    <button type="button" class="popular-card" data-format="QR" aria-pressed="false"><span class="popular-card__preview" data-preview="QR" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularQr">QR Code</span></button>
-                </div>
-            </section>
-                        <section class="popular-section seo-links" aria-labelledby="seo-links-title">
-                <h2 id="seo-links-title" class="popular-section__title">Guide ai formati di codici a barre</h2>
-                <p style="max-width: 680px; margin: 0 auto 1rem; opacity: .85;">Scopri pagine dedicate a ciascuno standard di codice a barre. Impara casi d'uso, regole di validazione e consigli di stampa.</p>
-                <div class="popular-gallery">
-                    <a class="popular-card" href="/it/ean-13/" aria-label="Guida EAN-13"><span class="popular-card__preview" data-preview="EAN13" aria-hidden="true"></span><span class="popular-card__label">EAN-13</span></a>
-                    <a class="popular-card" href="/it/code-128/" aria-label="Guida Code 128"><span class="popular-card__preview" data-preview="CODE128" aria-hidden="true"></span><span class="popular-card__label">Code 128</span></a>
-                    <a class="popular-card" href="/it/upc-a/" aria-label="Guida UPC-A"><span class="popular-card__preview" data-preview="UPC" aria-hidden="true"></span><span class="popular-card__label">UPC-A</span></a>
-                    <a class="popular-card" href="/it/code-39/" aria-label="Guida Code 39"><span class="popular-card__preview" data-preview="CODE39" aria-hidden="true"></span><span class="popular-card__label">Code 39</span></a>
-                    <a class="popular-card" href="/it/itf-14/" aria-label="Guida ITF-14"><span class="popular-card__preview" data-preview="ITF14" aria-hidden="true"></span><span class="popular-card__label">ITF-14</span></a>
-                    <a class="popular-card" href="/it/codabar/" aria-label="Guida Codabar"><span class="popular-card__preview" data-preview="CODABAR" aria-hidden="true"></span><span class="popular-card__label">Codabar</span></a>
+                    <div class="popular-card-wrap"><button type="button" class="popular-card" data-format="EAN13" aria-pressed="false"><span class="popular-card__preview" data-preview="EAN13" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularEan13">EAN-13</span></button><a class="popular-card__more" href="/it/ean-13/" aria-label="Scopri di più: EAN-13">Scopri di più</a></div>
+                    <div class="popular-card-wrap"><button type="button" class="popular-card" data-format="EAN8" aria-pressed="false"><span class="popular-card__preview" data-preview="EAN8" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularEan8">EAN-8</span></button></div>
+                    <div class="popular-card-wrap"><button type="button" class="popular-card" data-format="UPC" aria-pressed="false"><span class="popular-card__preview" data-preview="UPC" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularUpc">UPC-A</span></button><a class="popular-card__more" href="/it/upc-a/" aria-label="Scopri di più: UPC-A">Scopri di più</a></div>
+                    <div class="popular-card-wrap"><button type="button" class="popular-card" data-format="CODE128" aria-pressed="false"><span class="popular-card__preview" data-preview="CODE128" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularCode128">Code 128</span></button><a class="popular-card__more" href="/it/code-128/" aria-label="Scopri di più: Code 128">Scopri di più</a></div>
+                    <div class="popular-card-wrap"><button type="button" class="popular-card" data-format="CODE39" aria-pressed="false"><span class="popular-card__preview" data-preview="CODE39" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularCode39">Code 39</span></button><a class="popular-card__more" href="/it/code-39/" aria-label="Scopri di più: Code 39">Scopri di più</a></div>
+                    <div class="popular-card-wrap"><button type="button" class="popular-card" data-format="QR" aria-pressed="false"><span class="popular-card__preview" data-preview="QR" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularQr">QR Code</span></button></div>
                 </div>
             </section>
 <div class="generator-panel">
@@ -832,5 +831,6 @@
     <script src="../label-renderer.js?v=20260613130000"></script>
     <script src="../app.js?v=20260613130000"></script>
     <script src="../analytics.js?v=20260613130000" defer></script>
+    <script type="module" src="../auth-ui.js?v=20260613130000"></script>
 </body>
 </html>

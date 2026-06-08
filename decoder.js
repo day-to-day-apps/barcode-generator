@@ -1239,13 +1239,14 @@
     // ===== THEME TOGGLE (shared with main app) =====
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
-        const savedTheme = localStorage.getItem('theme') || 'light';
+        const savedTheme = localStorage.getItem('barcode-theme') ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         document.documentElement.setAttribute('data-theme', savedTheme);
         themeToggle.addEventListener('click', () => {
             const current = document.documentElement.getAttribute('data-theme') || 'light';
             const next = current === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
+            localStorage.setItem('barcode-theme', next);
         });
     }
 

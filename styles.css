@@ -1716,13 +1716,22 @@ footer {
 [data-theme="dark"] select,
 [data-theme="dark"] input[type="text"],
 [data-theme="dark"] input[type="number"] {
-    background: rgba(15, 23, 42, 0.6);
+    background-color: rgba(15, 23, 42, 0.6);
     border-color: var(--border);
     color: var(--text);
 }
 
 [data-theme="dark"] select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a78bfa' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+/* Native option list must stay readable in dark mode (Chrome/Edge on Windows) */
+[data-theme="dark"] select option,
+[data-theme="dark"] select optgroup {
+    background-color: #0f172a;
+    color: #e2e8f0;
 }
 
 [data-theme="dark"] select:hover {
@@ -3606,6 +3615,45 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
     font-weight: 600;
     color: var(--text);
     line-height: 1.2;
+}
+
+/* Wrapper lets a "learn more" guide link sit under each quick-pick card */
+.popular-card-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+.popular-card-wrap > .popular-card {
+    flex: 1 1 auto;
+}
+.popular-card__more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 5px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background var(--transition), color var(--transition);
+}
+.popular-card__more::after {
+    content: "\2192";
+    transition: transform var(--transition);
+}
+.popular-card__more:hover {
+    background: var(--primary-light);
+    text-decoration: underline;
+}
+.popular-card__more:hover::after {
+    transform: translateX(2px);
+}
+.popular-card__more:focus-visible {
+    outline: 3px solid var(--border-focus);
+    outline-offset: 2px;
 }
 
 @media (max-width: 480px) {
