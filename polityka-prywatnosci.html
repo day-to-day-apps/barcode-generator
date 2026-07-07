@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polityka Prywatności — Generator Kodów Kreskowych</title>
+    <title>Polityka Prywatności - Generator Kodów Kreskowych</title>
     <meta name="robots" content="noindex">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
@@ -24,47 +24,59 @@
 </head>
 <body>
     <div class="app">
-        <div class="legal-page">
+        <main class="legal-page">
             <a href="index.html" class="back-link">&larr; Wróć do generatora</a>
             <h1>Polityka Prywatności</h1>
-            <p class="date">Ostatnia aktualizacja: styczeń 2026</p>
+            <p class="date">Ostatnia aktualizacja: 7 lipca 2026</p>
 
             <h2>1. Informacje ogólne</h2>
-            <p>Generator Kodów Kreskowych to darmowe narzędzie online do tworzenia kodów kreskowych. Szanujemy prywatność naszych użytkowników i dokładamy wszelkich starań, aby ją chronić.</p>
+            <p>Generator Kodów Kreskowych to darmowe narzędzie online do tworzenia, zapisywania i eksportowania kodów kreskowych. Administratorem kontaktowym serwisu jest zespół Day-to-Day Apps, dostępny pod adresem <strong>daytodayappscontact@gmail.com</strong>.</p>
 
-            <h2>2. Przetwarzanie danych w przeglądarce</h2>
-            <p>Wszystkie kody kreskowe są generowane lokalnie w Twojej przeglądarce. Żadne dane wpisane w generatorze (treść kodu, ustawienia, eksportowane pliki) <strong>nie są wysyłane na żaden serwer</strong>.</p>
+            <h2>2. Generowanie kodów w przeglądarce</h2>
+            <p>Podstawowe generowanie kodów kreskowych odbywa się lokalnie w Twojej przeglądarce. Treść wpisana w generatorze, ustawienia wizualne i eksportowane pliki nie są wysyłane na serwer tylko po to, aby wygenerować kod.</p>
 
-            <h2>3. Pliki cookies i localStorage</h2>
-            <p>Strona wykorzystuje localStorage przeglądarki wyłącznie do zapamiętania:</p>
+            <h2>3. Konto użytkownika i Supabase</h2>
+            <p>Jeśli korzystasz z konta, zapisu kodów, szablonów, drukarek, historii wydruków lub resetu hasła, używamy usługi Supabase do obsługi logowania i przechowywania danych konta.</p>
             <ul>
-                <li>Wybranego motywu (jasny/ciemny) — klucz <code>barcode-theme</code></li>
-                <li>Listy zeskanowanych kodów w dekoderze (treść kodu, format, ilość, czas) — klucz <code>decoder.scanMap.v1</code>, do 1000 wpisów. Dane pozostają wyłącznie w Twojej przeglądarce i nie są wysyłane na serwer. Możesz je w każdej chwili usunąć przyciskiem „Wyczyść” w dekoderze lub czyszcząc dane strony w ustawieniach przeglądarki.</li>
-            </ul>
-            <p>Stosujemy też jeden funkcjonalny plik cookie:</p>
-            <ul>
-                <li><code>bc_pending_code</code> — zapisywany tylko wtedy, gdy klikniesz „Zapisz ten kod” bez zalogowania. Przechowuje wygenerowany kod kreskowy (typ, wartość, ustawienia wizualne) na maksymalnie 24 godziny, aby po zalogowaniu lub założeniu konta dało się go automatycznie zapisać. Cookie jest ograniczone do tej domeny (<code>SameSite=Strict</code>), nie zawiera danych osobowych i kasuje się natychmiast po użyciu lub po wygaśnięciu.</li>
-            </ul>
-            <p>Nie używamy plików cookies do śledzenia użytkowników.</p>
-
-            <h2>4. Usługi zewnętrzne</h2>
-            <p>Strona może korzystać z następujących usług zewnętrznych:</p>
-            <ul>
-                <li><strong>Google Fonts</strong> — do ładowania czcionki Inter. Google może zbierać anonimowe dane techniczne (adres IP, typ przeglądarki). <a href="https://policies.google.com/privacy" rel="noopener">Polityka prywatności Google</a>.</li>
-                <li><strong>jsDelivr CDN</strong> — do ładowania biblioteki JsBarcode. <a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net" rel="noopener">Polityka prywatności jsDelivr</a>.</li>
-                <li><strong>Google AdSense</strong> (planowane) — reklamy kontekstowe, które mogą używać plików cookies. <a href="https://policies.google.com/technologies/ads" rel="noopener">Jak Google wykorzystuje dane z reklam</a>.</li>
+                <li>Dane konta mogą obejmować adres e-mail, identyfikator użytkownika, metadane logowania oraz zapisane przez Ciebie kody, szablony i ustawienia.</li>
+                <li>Dane są używane do działania funkcji konta i nie są sprzedawane innym podmiotom.</li>
+                <li>Supabase może przetwarzać dane techniczne wymagane do bezpieczeństwa, uwierzytelniania i działania bazy danych. <a href="https://supabase.com/privacy" rel="noopener">Polityka prywatności Supabase</a>.</li>
             </ul>
 
-            <h2>5. Twoje prawa</h2>
-            <p>Zgodnie z RODO masz prawo do dostępu, sprostowania, usunięcia i przenoszenia swoich danych. Ponieważ nie zbieramy danych osobowych, prawa te dotyczą głównie danych przetwarzanych przez usługi zewnętrzne wymienione powyżej.</p>
+            <h2>4. Cookies, localStorage i zgoda</h2>
+            <p>Strona używa localStorage i cookies do funkcji technicznych, zapamiętywania ustawień oraz, po Twojej zgodzie, do analityki i nieinwazyjnych reklam.</p>
+            <ul>
+                <li><code>barcode-theme</code> - zapamiętuje wybrany motyw jasny lub ciemny.</li>
+                <li><code>decoder.scanMap.v1</code> - przechowuje lokalną historię skanowania w dekoderze, maksymalnie do 1000 wpisów.</li>
+                <li><code>barcode-cookie-consent</code> - zapamiętuje, czy akceptujesz analitykę i reklamy Google.</li>
+                <li><code>bc_pending_code</code> - zapisywany tylko wtedy, gdy klikniesz „Zapisz ten kod” bez zalogowania. Przechowuje wygenerowany kod i ustawienia maksymalnie przez 24 godziny, aby po zalogowaniu można było go zapisać na koncie.</li>
+            </ul>
+            <p>Możesz odrzucić analitykę i reklamy w banerze zgody. Jeśli te funkcje są skonfigurowane, w stopce strony dostępny jest link do ponownego otwarcia wyborów prywatności.</p>
 
-            <h2>6. Kontakt</h2>
-            <p>W razie pytań dotyczących polityki prywatności, skontaktuj się z nami pod adresem: <strong>daytodayappscontact@gmail.com</strong></p>
-        </div>
+            <h2>5. Google Analytics 4</h2>
+            <p>Po skonfigurowaniu GA4 i po Twojej zgodzie możemy używać Google Analytics 4 do pomiaru ruchu, popularności funkcji oraz ogólnej jakości strony. GA4 może używać cookies i podobnych technologii oraz przetwarzać dane techniczne, takie jak adres IP, informacje o urządzeniu, przeglądarce i interakcjach ze stroną. <a href="https://policies.google.com/privacy" rel="noopener">Polityka prywatności Google</a>.</p>
+
+            <h2>6. Google AdSense</h2>
+            <p>Strona może wyświetlać reklamy Google AdSense. Reklamy są projektowane jako nieinwazyjne: bez popupów, bez zasłaniania generatora i bez wymuszania kliknięć. AdSense może używać cookies lub podobnych technologii do emisji, pomiaru i bezpieczeństwa reklam. <a href="https://policies.google.com/technologies/ads" rel="noopener">Jak Google używa danych w reklamach</a>.</p>
+
+            <h2>7. Inne usługi zewnętrzne</h2>
+            <p>Strona może korzystać również z usług technicznych:</p>
+            <ul>
+                <li><strong>Cloudflare Pages</strong> - hosting, bezpieczeństwo i obsługa domeny.</li>
+                <li><strong>Google Fonts</strong> - ładowanie czcionki Inter.</li>
+                <li><strong>jsDelivr CDN</strong> - ładowanie bibliotek używanych przez aplikację. <a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net" rel="noopener">Polityka prywatności jsDelivr</a>.</li>
+            </ul>
+
+            <h2>8. Twoje prawa</h2>
+            <p>Zgodnie z RODO możesz poprosić o dostęp do danych, sprostowanie, usunięcie, ograniczenie przetwarzania lub przeniesienie danych, jeśli dana funkcja faktycznie przetwarza Twoje dane osobowe. Możesz też wycofać zgodę na analitykę i reklamy przez ustawienia prywatności na stronie albo usuwając dane witryny w przeglądarce.</p>
+
+            <h2>9. Kontakt</h2>
+            <p>W sprawach dotyczących prywatności napisz na: <strong>daytodayappscontact@gmail.com</strong>.</p>
+        </main>
     </div>
 
     <script>
-        const saved = localStorage.getItem('barcode-theme') || 
+        const saved = localStorage.getItem('barcode-theme') ||
             (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         document.documentElement.setAttribute('data-theme', saved);
     </script>
