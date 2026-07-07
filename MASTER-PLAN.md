@@ -52,11 +52,9 @@ Goal: logged-in account panel must feel finished before we point the world at it
 
 ## Track B — Go-live (AFTER Track A green)
 
-### B1. Hostname migration (workers.dev → daytodayapps.com)
-Scope: ~150 occurrences across `*.html`, `sitemap.xml`, `robots.txt`, possibly `app.js`.
-- [ ] PowerShell bulk-replace with `-Encoding UTF8NoBOM` guard (NOT default `Set-Content`!)
-  - source: `barcode-generator.daytodayapps-contact.workers.dev`
-  - target: `barcode-generator.daytodayapps.com`
+### B1. Canonical hostname audit
+Scope: verify active URLs across `*.html`, `sitemap.xml`, `robots.txt`, Supabase docs, and operational docs.
+- [ ] Confirm every active production URL uses `barcode-generator.daytodayapps.com`.
 - [ ] BOM/mojibake guard: verify no `EF BB BF` introduced (`[System.IO.File]::ReadAllBytes()` byte check on `<!DOCTYPE`)
 - [ ] verify: `Select-String -Pattern 'workers\.dev' -Path *.html, */*.html, *.xml, *.txt, *.js` returns ZERO
 - [ ] update `sitemap.xml` `<lastmod>`
@@ -71,7 +69,7 @@ Scope: ~150 occurrences across `*.html`, `sitemap.xml`, `robots.txt`, possibly `
 - [!] **USER STEP REQUIRED** (see [Manual Step 1](#manual-step-1-ga4-property))
 - [ ] paste `G-XXXXXXXXXX` into `analytics.js` `GA4_MEASUREMENT_ID`
 
-**B3.2. AdSense slot IDs** — currently `analytics.js:107-114` has placeholders `0000000001-6`.
+**B3.2. AdSense slot IDs** — `analytics.js` keeps ad rendering disabled until real `data-ad-slot` values from AdSense are added.
 - [!] **USER STEP REQUIRED** (see [Manual Step 2](#manual-step-2-adsense-units))
 - [ ] paste 6 real slot IDs into `AD_SLOTS` map
 
@@ -83,16 +81,16 @@ Scope: ~150 occurrences across `*.html`, `sitemap.xml`, `robots.txt`, possibly `
 ### B5. Commit + push pre-launch batch
 - [ ] commit B1+B2+B3+B4
 - [ ] `git push origin main` → triggers CF Pages deploy
-- [ ] verify deploy succeeded on `.workers.dev` (still primary URL at this moment)
+- [ ] verify deploy succeeded on Cloudflare Pages production.
 
 ### B6. Cloudflare Pages custom domain
 - [!] **USER STEP REQUIRED** (see [Manual Step 3](#manual-step-3-cloudflare-custom-domain))
 - [ ] wait for SSL provisioning (1-5 min)
 - [ ] verify `https://barcode-generator.daytodayapps.com` returns 200
 
-### B7. Workers.dev → custom domain 301
-- [ ] add Cloudflare Page Rule OR Worker route: `*.workers.dev/* → 301 → daytodayapps.com/*`
-- [ ] verify `curl -I .workers.dev` returns `301 Location: ...daytodayapps.com`
+### B7. Technical Pages host -> custom domain 301
+- [ ] keep Cloudflare Bulk Redirect enabled for the automatic Pages host.
+- [ ] verify the technical Pages host returns `301 Location: https://barcode-generator.daytodayapps.com/...`
 
 ### B8. Supabase Auth redirect URLs
 - [!] **USER STEP REQUIRED** (see [Manual Step 4](#manual-step-4-supabase-auth-urls))
@@ -154,7 +152,7 @@ Scope: ~150 occurrences across `*.html`, `sitemap.xml`, `robots.txt`, possibly `
 
 ### Manual Step 4: Supabase Auth URLs
 
-**Why**: bez tego linki w mailach potwierdzających i reset hasła wracają na workers.dev, użytkownik dostaje 404 / loopback.
+**Why**: bez tego linki w mailach potwierdzających i reset hasła wracają na niekanoniczny host, użytkownik dostaje 404 / loopback.
 
 1. https://supabase.com/dashboard/project/aoqxznukwbdgrggxloou/auth/url-configuration
 2. **Site URL**: `https://barcode-generator.daytodayapps.com`
@@ -205,8 +203,8 @@ Scope: ~150 occurrences across `*.html`, `sitemap.xml`, `robots.txt`, possibly `
 ## Risk register
 - ⚠️ Encoding: każdy PowerShell pass na HTML MUSI używać `[System.IO.File]::WriteAllText($path, $content, [System.Text.UTF8Encoding]::new($false))` — domyślny `Set-Content -Encoding UTF8` w PS 5.1 dodaje BOM.
 - ⚠️ CSP: zbyt restrykcyjne wyłączy AdSense; testować po deployu.
-- ⚠️ Workers.dev redirect: bez tego Google widzi duplikaty contentu na 2 domenach.
-- ⚠️ Cache-busting: jeśli nie zbiję wersji `?v=`, użytkownicy z cache zobaczą stare canonical → indeks workers.dev.
+- ⚠️ Canonical redirect: bez tego Google może widzieć duplicate content na technicznym hoście Pages.
+- ⚠️ Cache-busting: jeśli nie zbiję wersji `?v=`, użytkownicy z cache mogą zobaczyć stare canonical.
 
 ## Files I expect to NOT touch (per copilot-instructions.md)
 - nie zmieniam stacku na framework

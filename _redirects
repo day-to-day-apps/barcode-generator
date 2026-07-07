@@ -1,9 +1,6 @@
-# Cloudflare Pages — language-based redirects
-# EN is now the default at / — PL moved to /pl/
-# Old /en/* URLs redirect to root to preserve SEO
-
-# Force canonical domain — block direct access via *.pages.dev
-https://barcode-generator-5ee.pages.dev/*  https://barcode-generator.daytodayapps.com/:splat  301!
+# Cloudflare Pages - language-based redirects
+# EN is the default at /; PL lives at /pl/.
+# Canonical host redirects are handled by Cloudflare Bulk Redirects.
 
 /en/          /          301
 /en           /          301

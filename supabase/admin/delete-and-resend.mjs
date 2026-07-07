@@ -14,7 +14,7 @@ config({ path: join(__dirname, '..', '.env') });
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const TEST_EMAIL = process.argv[2] || process.env.TEST_EMAIL;
-const REDIRECT_TO = process.env.REDIRECT_TO || 'https://barcode-generator.daytodayapps-contact.workers.dev/';
+const REDIRECT_TO = process.env.REDIRECT_TO || 'https://barcode-generator.daytodayapps.com/';
 
 function fail(msg) {
   console.error(`❌ ${msg}`);

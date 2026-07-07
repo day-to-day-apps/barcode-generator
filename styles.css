@@ -1968,7 +1968,7 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 }
 
 @media (max-width: 900px) {
-    .ad-sticky-bottom {
+    .ad-sticky-bottom.is-ready {
         position: fixed;
         left: 0;
         right: 0;
@@ -2032,6 +2032,27 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .footer-links a:hover {
     color: var(--primary);
     text-decoration: underline;
+}
+
+.cookie-settings-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--text-muted);
+    font: inherit;
+    cursor: pointer;
+}
+
+.cookie-settings-link:hover,
+.cookie-settings-link:focus-visible {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.cookie-settings-link:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 3px;
+    border-radius: 4px;
 }
 
 /* ===== Cookie Consent Banner ===== */

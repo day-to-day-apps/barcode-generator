@@ -80,8 +80,9 @@ Cel: bezpiecznie połączyć się z istniejącym projektem Supabase i przejrzeć
 - [ ] Ochrona przed enumeracją (długi slug + ewentualny rate-limit po stronie Cloudflare).
 
 ### M5 — Polish / domena / wizerunek
-- [ ] Zakup własnej domeny i przepięcie z `*.workers.dev`.
-- [ ] Aktualizacja `canonical`, `sitemap.xml`, `og:url`.
+- [x] Produkcyjna domena canonical: `https://barcode-generator.daytodayapps.com`.
+- [x] Aktualizacja `canonical`, `sitemap.xml`, `og:url`.
+- [x] Techniczny host Cloudflare Pages przekierowuje 301 do domeny canonical.
 - [ ] Lighthouse CI ≥ 95 dla Performance/SEO/Best/A11y.
 - [ ] PWA manifest + service worker (offline cache statyk).
 
@@ -217,11 +218,11 @@ Wymagane do działania flow email+hasło (Phase 1) oraz przyszłych funkcji. **B
 
 ### Authentication › URL Configuration
 Dodać do listy **Redirect URLs** (Allow list):
-- `https://barcode-generator.daytodayapps-contact.workers.dev/konto.html`
-- `https://barcode-generator.daytodayapps-contact.workers.dev/reset-hasla.html`
+- `https://barcode-generator.daytodayapps.com/konto.html`
+- `https://barcode-generator.daytodayapps.com/reset-hasla.html`
 - Po dodaniu lokalizacji w Phase 6: analogiczne URL-e dla `/pl/`, `/de/`, `/fr/`, `/es/`, `/it/`, `/pt/`, `/nl/`, `/cs/`, `/uk/` (oba pliki w każdej).
 - Lokalny development: `http://localhost:8080/konto.html`, `http://localhost:8080/reset-hasla.html` (lub port używany przez `wrangler pages dev`).
-- **Site URL**: ustawić na `https://barcode-generator.daytodayapps-contact.workers.dev` (bez trailing slash).
+- **Site URL**: ustawić na `https://barcode-generator.daytodayapps.com` (bez trailing slash).
 
 ### Authentication › Email Templates
 Skonfigurować treści (najlepiej EN-first, potem rozszerzyć):

@@ -9,7 +9,7 @@
 
 - **HEAD = `origin/main` = `0b69ec9`** (w sync, nic nieopublikowanego).
 - **Ostatnie commity:**
-  - `0b69ec9` redirect: force canonical domain, 301 from pages.dev → daytodayapps.com
+  - `0b69ec9` redirect: force canonical domain via Cloudflare Bulk Redirects
   - `b75a631` fix(i18n): UTF-8 we flagach i strzałkach (recovery z mojibake)
   - `314f2bd` fix(ui): UTF-8 HTML + naprawa tiling strzałki w `<select>` (dark/focus)
   - `0d8499c` fix(lang): pozycjonowanie dropdownu języków + bump styles.css cache

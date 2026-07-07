@@ -16,10 +16,10 @@
 ## Konfiguracja URL przekierowania
 
 W **Authentication → URL Configuration** ustaw:
-- **Site URL**: `https://barcode-generator.daytodayapps-contact.workers.dev`
+- **Site URL**: `https://barcode-generator.daytodayapps.com`
 - **Redirect URLs** (whitelista):
-  - `https://barcode-generator.daytodayapps-contact.workers.dev/konto.html`
-  - `https://barcode-generator.daytodayapps-contact.workers.dev/en/account.html`
+  - `https://barcode-generator.daytodayapps.com/konto.html`
+  - `https://barcode-generator.daytodayapps.com/en/account.html`
   - `http://127.0.0.1:8765/konto.html` (dev)
   - `http://127.0.0.1:8765/en/account.html` (dev)
 

@@ -36,7 +36,7 @@ W sync z prod. Ostatnie zrealizowane milestones:
   - E2E test (`59c31dd`).
 - **M5** search/filter w `/moje-kody.html` — done + testy (`846b8bf`, `1b0535e`).
 - **Drop subscriptions table** (`cb51c40`) — `is_pro()` zwraca false, monetyzacja tylko AdSense.
-- **Canonical domain enforcement** — 301 z `*.pages.dev` → `daytodayapps.com` (`0b69ec9`).
+- **Canonical domain enforcement** — Cloudflare Bulk Redirect wymusza `daytodayapps.com` dla technicznego hosta Pages (`0b69ec9`).
 - **UTF-8 recovery** — naprawione mojibake we flagach + select arrow po feralnym commicie `0d8499c` (commity `314f2bd`, `b75a631`).
 
 ## Kluczowe pliki do nawigacji
