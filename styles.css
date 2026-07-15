@@ -138,6 +138,12 @@ header {
         order: 3;
     }
 
+    #main-content > :not(.generator-panel),
+    footer {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 600px;
+    }
+
     header,
     .animated-header {
         padding-top: 76px;
