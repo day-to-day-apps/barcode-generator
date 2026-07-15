@@ -2,8 +2,7 @@
 (function() {
     'use strict';
 
-    // Fill these with production IDs from GA4 and AdSense when they are ready.
-    const GA4_MEASUREMENT_ID = ''; // e.g. 'G-XXXXXXXXXX'
+    const GA4_MEASUREMENT_ID = 'G-SVBQKGWE1Y';
     const ADSENSE_PUBLISHER_ID = 'ca-pub-2527047257613855';
 
     const CONSENT_KEY = 'barcode-cookie-consent';
