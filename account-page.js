@@ -205,6 +205,8 @@ async function renderSession(session) {
     clearDashboardStats();
     return;
   }
+  $('resend-confirmation')?.remove();
+  setStatus('');
   $('user-email').textContent = session.user.email || '';
   $('account-title').textContent = T.dashboardTitle || 'Your account';
   ensureDashboardExtras();
