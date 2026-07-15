@@ -147,6 +147,7 @@ function bindDashboardActions() {
     const failed = [codes, templates, printers, jobs].find((result) => result.error);
     if (failed) return setStatus(failed.error.message || 'Could not export data.', true);
     downloadJson({ exportedAt: new Date().toISOString(), user: { id: currentSession.user.id, email: currentSession.user.email }, codes: codes.data, templates: templates.data, printers: printers.data, jobs: jobs.data });
+    window.trackBarcode?.('account_export');
     setStatus('');
   });
   $('delete-account').addEventListener('click', async () => {
@@ -156,6 +157,7 @@ function bindDashboardActions() {
     setStatus(T.sending || 'Deleting account...');
     const { error } = await sb.functions.invoke('delete-account', { body: { confirmation: phrase } });
     if (error) return setStatus(error.message || 'Could not delete the account.', true);
+    window.trackBarcode?.('account_deleted');
     await signOut();
     location.assign('/');
   });
@@ -215,6 +217,7 @@ function bindForms() {
     const { error } = await signIn({ email, password });
     $('login-submit').disabled = false;
     if (error) return setStatus(error.message || T.signInFail || 'Could not sign in.', true);
+    window.trackBarcode?.('login', { method: 'email' });
     const returnTo = new URLSearchParams(location.search).get('returnTo');
     if (returnTo?.startsWith('/') && !returnTo.startsWith('//')) location.assign(returnTo);
   });
@@ -231,6 +234,7 @@ function bindForms() {
     const { error } = await signUp({ email, password, redirectPath: accountPath() });
     $('register-submit').disabled = false;
     if (error) return setStatus(error.message || T.registerFail || 'Could not create the account.', true);
+    window.trackBarcode?.('sign_up', { method: 'email' });
     setStatus(T.registerCheckInbox || 'Account created. Check your inbox to confirm your email.');
     ensureResendButton(email);
   });

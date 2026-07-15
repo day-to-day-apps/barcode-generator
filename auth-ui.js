@@ -296,6 +296,7 @@ async function saveCurrentBarcode(btn) {
       settings: data.settings,
     });
     if (error) throw error;
+    window.trackBarcode?.('save_barcode', { code_type: data.code_type });
     label.textContent = t('saved');
     announce(t('saved'));
   } catch (err) {
