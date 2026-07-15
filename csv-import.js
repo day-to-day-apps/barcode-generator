@@ -10,7 +10,7 @@ const pending = new Map();
 function getWorker() {
   if (workerRef) return workerRef;
   try {
-    workerRef = new Worker('csv-worker.js');
+    workerRef = new Worker(new URL('./csv-worker.js', import.meta.url));
     workerRef.addEventListener('message', (ev) => {
       const { id, ok, result, error } = ev.data || {};
       const handler = pending.get(id);

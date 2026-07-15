@@ -3,7 +3,19 @@
 > **Status:** Aktualna mapa drogowa po decyzji **Supabase + free-with-ads**.
 > Stara wersja (Clerk + Stripe + Pro 19 zł) jest **zarchiwizowana w historii Git**.
 > Pełny kontekst i kompendium → [`PROJEKT.md`](./PROJEKT.md).
-> Ostatnia aktualizacja: **2026-05-07**.
+> Ostatnia aktualizacja: **2026-07-15**.
+
+## Aktualny kierunek: ruch organiczny + narzędzia dla firm
+
+- [x] Kontrolowany build `dist`, czysta sitemap i routing extensionless.
+- [x] Stabilne konto, biblioteka kodów, profile drukarek, historia i usuwanie konta.
+- [x] Poprawne presety Avery A4/Letter, termiczne i strona kalibracyjna.
+- [x] Publiczny generator paczek CSV z walidacją oraz eksportem PDF/PNG/SVG/CSV.
+- [x] Strony zadaniowe PL/EN: CSV, Avery, magazyn i druk termiczny.
+- [x] GitHub Actions, Lighthouse CI i zdarzenia lejka GA4.
+- [ ] Po zebraniu danych: tryb GS1, generowanie Data Matrix/PDF417/Aztec, katalog produktów i PWA.
+
+Nowe funkcje są wdrażane najpierw po polsku i angielsku. Pozostałe lokalizacje otrzymają je po potwierdzeniu popytu w Search Console i GA4.
 
 ---
 

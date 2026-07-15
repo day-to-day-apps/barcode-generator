@@ -5,10 +5,10 @@ const PROD = 'https://barcode-generator.daytodayapps.com';
 const PRIVATE = ['konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', 'historia-wydrukow', 'reset-hasla'];
 const LANGS = ['', 'pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cs', 'uk'];
 
-test('sitemap contains only 80 direct, indexable canonical URLs', async ({ request }) => {
+test('sitemap contains only 88 direct, indexable canonical URLs', async ({ request }) => {
   const xml = await (await request.get('/sitemap.xml')).text();
   const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  expect(urls).toHaveLength(80);
+  expect(urls).toHaveLength(88);
   expect(xml).not.toMatch(/node_modules|playwright|tests\/|supabase\/|konto|wydruk|szablony|drukarki/);
   for (const canonical of urls) {
     const path = new URL(canonical).pathname;

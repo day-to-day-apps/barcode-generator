@@ -348,10 +348,11 @@
             els.btnSave.disabled = true;
             try {
                 const { data, error } = await savePrintJob(payload, items);
-                if (error) { showError('jobSaveFail'); console.error(error); return; }
+                if (error) { showError('jobSaveFail'); window.trackBarcode?.('print_error', { stage: 'save_job', message: error.message }); console.error(error); return; }
                 els.btnSave.textContent = T.jobSaved || 'Saved';
                 setTimeout(() => { els.btnSave.textContent = T.saveJob || 'Save job'; }, 1500);
                 console.info('Saved job', data);
+                window.trackBarcode?.('print_job_saved', { items: items.length });
             } finally {
                 els.btnSave.disabled = false;
             }
