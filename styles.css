@@ -4971,6 +4971,10 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
 }
 
 @media (max-width: 600px) {
+    .animated-header {
+        animation: none;
+    }
+
     header,
     .animated-header {
         padding-top: 16px;
