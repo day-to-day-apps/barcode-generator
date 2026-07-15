@@ -409,6 +409,16 @@
             }
             els.btnSave.disabled = true;
             const wantsDefault = $('p-default').checked;
+            if (!editingId) {
+                const session = await getSession();
+                if (!session?.user) {
+                    els.btnSave.disabled = false;
+                    els.formError.textContent = T.authRequired || 'Sign in to save a printer profile.';
+                    els.formError.hidden = false;
+                    return;
+                }
+                payload.user_id = session.user.id;
+            }
             const op = editingId
                 ? updatePrinter(editingId, payload)
                 : insertPrinter(payload);

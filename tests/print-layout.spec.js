@@ -37,5 +37,6 @@ test('calibration page exposes exact 100 mm and 50 mm references', async ({ page
 test('printer page consumes the shared session contract directly', async () => {
   const source = await readFile('drukarki.html', 'utf8');
   expect(source).toContain('const session = await getSession();');
+  expect(source).toContain('payload.user_id = session.user.id;');
   expect(source).not.toContain('{ data: session } = await getSession()');
 });
