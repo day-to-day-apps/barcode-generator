@@ -520,8 +520,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ===== Render real previews inside popular cards =====
-    renderPopularPreviews();
+    // The gallery sits below the generator on mobile, so its six barcode previews
+    // should not compete with the first meaningful paint.
+    if (window.innerWidth <= 600 && 'requestIdleCallback' in window) {
+        requestIdleCallback(renderPopularPreviews, { timeout: 1500 });
+    } else {
+        renderPopularPreviews();
+    }
 
     syncTypeUI();
 
