@@ -5,11 +5,15 @@ import { getSupabase } from './supabase-client.js';
 export const FREE_PRINTERS_LIMIT = 5;
 
 let presetsCache = null;
+const PRESET_ALIASES = Object.freeze({
+  'avery-5160-a4': 'avery-l7160-a4',
+  'avery-5163-a4': 'avery-l7163-a4',
+});
 
 export async function loadPresets() {
   if (presetsCache) return presetsCache;
   try {
-    const res = await fetch('printer-presets.json', { cache: 'force-cache' });
+    const res = await fetch(new URL('./printer-presets.json', import.meta.url), { cache: 'force-cache' });
     if (!res.ok) throw new Error('preset_fetch_failed');
     const json = await res.json();
     presetsCache = Array.isArray(json?.presets) ? json.presets : [];
@@ -20,7 +24,8 @@ export async function loadPresets() {
 }
 
 export function findPresetById(presets, id) {
-  return presets.find((p) => p.id === id) || null;
+  const resolved = PRESET_ALIASES[id] || id;
+  return presets.find((p) => p.id === resolved) || null;
 }
 
 async function client() {
@@ -34,7 +39,7 @@ export async function listPrinters() {
   if (!sb) return { data: null, error: new Error('supabase_unavailable') };
   return sb
     .from('printer_profiles')
-    .select('id, name, base_preset_id, printer_type, page_w_mm, page_h_mm, cols, rows, label_w_mm, label_h_mm, margin_top_mm, margin_left_mm, gap_x_mm, gap_y_mm, dpi, offset_x_mm, offset_y_mm, bar_width_correction, is_default, created_at, updated_at')
+    .select('id, name, base_preset_id, printer_type, page_w_mm, page_h_mm, cols, rows, label_w_mm, label_h_mm, margin_top_mm, margin_right_mm, margin_bottom_mm, margin_left_mm, gap_x_mm, gap_y_mm, dpi, offset_x_mm, offset_y_mm, bar_width_correction, is_default, created_at, updated_at')
     .order('is_default', { ascending: false })
     .order('created_at', { ascending: false });
 }
@@ -93,7 +98,8 @@ export function normalisePrinterPayload(raw) {
   if (!name || name.length > 80) errors.push('printerNameRequired');
   out.name = name;
 
-  const presetId = raw?.base_preset_id ? String(raw.base_preset_id) : null;
+  const rawPresetId = raw?.base_preset_id ? String(raw.base_preset_id) : null;
+  const presetId = PRESET_ALIASES[rawPresetId] || rawPresetId;
   out.base_preset_id = presetId;
 
   const type = String(raw?.printer_type || 'thermal');
@@ -118,7 +124,7 @@ export function normalisePrinterPayload(raw) {
   out.cols = Number.isFinite(cols) && cols >= 1 && cols <= 50 ? Math.floor(cols) : 1;
   out.rows = Number.isFinite(rows) && rows >= 1 && rows <= 200 ? Math.floor(rows) : 1;
 
-  for (const key of ['margin_top_mm', 'margin_left_mm', 'gap_x_mm', 'gap_y_mm']) {
+  for (const key of ['margin_top_mm', 'margin_right_mm', 'margin_bottom_mm', 'margin_left_mm', 'gap_x_mm', 'gap_y_mm']) {
     const v = Number(raw?.[key]);
     out[key] = Number.isFinite(v) && v >= 0 && v <= 200 ? Math.round(v * 100) / 100 : 0;
   }
@@ -133,6 +139,15 @@ export function normalisePrinterPayload(raw) {
 
   const bwc = Number(raw?.bar_width_correction);
   out.bar_width_correction = Number.isFinite(bwc) && bwc >= 0.5 && bwc <= 1.5 ? Math.round(bwc * 100) / 100 : 1.0;
+
+  if (out.page_w_mm && out.label_w_mm) {
+    const usedW = out.margin_left_mm + out.cols * out.label_w_mm + (out.cols - 1) * out.gap_x_mm + out.margin_right_mm;
+    if (usedW > out.page_w_mm + 0.01) errors.push('printerLayoutOverflowX');
+  }
+  if (out.page_h_mm && out.label_h_mm) {
+    const usedH = out.margin_top_mm + out.rows * out.label_h_mm + (out.rows - 1) * out.gap_y_mm + out.margin_bottom_mm;
+    if (usedH > out.page_h_mm + 0.01) errors.push('printerLayoutOverflowY');
+  }
 
   return { payload: out, errors };
 }

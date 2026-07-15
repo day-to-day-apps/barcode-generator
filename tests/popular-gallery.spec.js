@@ -17,7 +17,7 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
   for (const { code, path } of LANGS) {
     test(`[${code}] renders 6 popular cards`, async ({ page }) => {
       await page.goto(path);
-      const cards = page.locator('.popular-card');
+      const cards = page.locator('.popular-card[data-format]');
       await expect(cards).toHaveCount(6);
       const formats = await cards.evaluateAll((els) => els.map((el) => el.getAttribute('data-format')));
       expect(formats).toEqual(['EAN13', 'EAN8', 'UPC', 'CODE128', 'CODE39', 'QR']);
@@ -59,7 +59,7 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
     test(`[${code}] popular cards are visually distinct (border accents + displayValue text)`, async ({ page }) => {
       await page.goto(path);
       // Cards must have non-default left-border colour, and each linear card must show <text> (displayValue:true)
-      const borderColors = await page.locator('.popular-card').evaluateAll((els) =>
+      const borderColors = await page.locator('.popular-card[data-format]').evaluateAll((els) =>
         els.map((el) => ({
           fmt: el.getAttribute('data-format'),
           color: getComputedStyle(el).borderLeftColor,

@@ -4,7 +4,7 @@
     {
       "id": "zebra-zd220-58",
       "vendor": "Zebra",
-      "model": "ZD220 (58 mm)",
+      "model": "ZD220 — label 58 × 40 mm",
       "printer_type": "thermal",
       "page_w_mm": 58,
       "page_h_mm": 40,
@@ -21,7 +21,7 @@
     {
       "id": "zebra-zd420-102",
       "vendor": "Zebra",
-      "model": "ZD420 (102×152 mm)",
+      "model": "ZD420 — label 102 × 152 mm",
       "printer_type": "thermal",
       "page_w_mm": 102,
       "page_h_mm": 152,
@@ -38,7 +38,7 @@
     {
       "id": "zebra-gk420-100x50",
       "vendor": "Zebra",
-      "model": "GK420 (100×50 mm)",
+      "model": "GK420 — label 100 × 50 mm",
       "printer_type": "thermal",
       "page_w_mm": 100,
       "page_h_mm": 50,
@@ -55,7 +55,7 @@
     {
       "id": "brother-ql700-62",
       "vendor": "Brother",
-      "model": "QL-700 / QL-820 (62 mm continuous)",
+      "model": "QL-700 / QL-820 — 62 × 29 mm",
       "printer_type": "thermal",
       "page_w_mm": 62,
       "page_h_mm": 29,
@@ -63,8 +63,8 @@
       "label_h_mm": 29,
       "cols": 1,
       "rows": 1,
-      "margin_top_mm": 1.5,
-      "margin_left_mm": 1.5,
+      "margin_top_mm": 0,
+      "margin_left_mm": 0,
       "gap_x_mm": 0,
       "gap_y_mm": 3,
       "dpi": 300
@@ -72,7 +72,7 @@
     {
       "id": "dymo-450-89x36",
       "vendor": "Dymo",
-      "model": "LabelWriter 450 (89×36 mm)",
+      "model": "LabelWriter 450 — label 89 × 36 mm",
       "printer_type": "thermal",
       "page_w_mm": 89,
       "page_h_mm": 36,
@@ -121,9 +121,9 @@
       "dpi": 203
     },
     {
-      "id": "avery-5160-a4",
+      "id": "avery-l7160-a4",
       "vendor": "Avery",
-      "model": "5160 / L7160 (A4, 3×7 = 21)",
+      "model": "L7160 (A4, 3 × 7 = 21)",
       "printer_type": "a4-sheet",
       "page_w_mm": 210,
       "page_h_mm": 297,
@@ -138,9 +138,9 @@
       "dpi": 300
     },
     {
-      "id": "avery-5163-a4",
+      "id": "avery-l7163-a4",
       "vendor": "Avery",
-      "model": "5163 / L7163 (A4, 2×7 = 14)",
+      "model": "L7163 (A4, 2 × 7 = 14)",
       "printer_type": "a4-sheet",
       "page_w_mm": 210,
       "page_h_mm": 297,
@@ -151,6 +151,40 @@
       "margin_top_mm": 15.1,
       "margin_left_mm": 4.65,
       "gap_x_mm": 2.5,
+      "gap_y_mm": 0,
+      "dpi": 300
+    },
+    {
+      "id": "avery-5160-letter",
+      "vendor": "Avery",
+      "model": "5160 (Letter, 3 × 10 = 30)",
+      "printer_type": "a4-sheet",
+      "page_w_mm": 215.9,
+      "page_h_mm": 279.4,
+      "label_w_mm": 66.675,
+      "label_h_mm": 25.4,
+      "cols": 3,
+      "rows": 10,
+      "margin_top_mm": 12.7,
+      "margin_left_mm": 4.7625,
+      "gap_x_mm": 3.175,
+      "gap_y_mm": 0,
+      "dpi": 300
+    },
+    {
+      "id": "avery-5163-letter",
+      "vendor": "Avery",
+      "model": "5163 (Letter, 2 × 5 = 10)",
+      "printer_type": "a4-sheet",
+      "page_w_mm": 215.9,
+      "page_h_mm": 279.4,
+      "label_w_mm": 101.6,
+      "label_h_mm": 50.8,
+      "cols": 2,
+      "rows": 5,
+      "margin_top_mm": 12.7,
+      "margin_left_mm": 4.7625,
+      "gap_x_mm": 3.175,
       "gap_y_mm": 0,
       "dpi": 300
     }

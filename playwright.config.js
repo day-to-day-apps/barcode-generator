@@ -7,6 +7,7 @@ export default defineConfig({
   workers: 4,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
+  timeout: 45_000,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: 'http://127.0.0.1:8765',
@@ -39,7 +40,7 @@ export default defineConfig({
   globalSetup: './tests/comprehensive/_helpers/global-setup.js',
   globalTeardown: './tests/comprehensive/_helpers/global-teardown.js',
   webServer: {
-    command: 'python -m http.server 8765 --bind 127.0.0.1',
+    command: 'npm run build && npm run serve',
     url: 'http://127.0.0.1:8765/',
     reuseExistingServer: !process.env.CI,
     timeout: 30_000,

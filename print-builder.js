@@ -21,6 +21,8 @@ const DEFAULT_PRINTER = {
   label_w_mm: 63,
   label_h_mm: 33,
   margin_top_mm: 10,
+  margin_right_mm: 0,
+  margin_bottom_mm: 0,
   margin_left_mm: 10,
   gap_x_mm: 2,
   gap_y_mm: 0,
@@ -61,6 +63,30 @@ export function paginate(labels, perPage) {
   return pages;
 }
 
+export function calculatePrintGeometry(templateInput = {}, printerInput = {}) {
+  const template = { ...DEFAULT_TEMPLATE, ...templateInput };
+  const printer = { ...DEFAULT_PRINTER, ...printerInput };
+  const pageW = Number(printer.page_w_mm) || Number(template.widthMm);
+  const pageH = Number(printer.page_h_mm) || Number(template.heightMm);
+  const cols = Math.max(1, Math.floor(Number(printer.cols) || 1));
+  const rows = Math.max(1, Math.floor(Number(printer.rows) || 1));
+  const labelW = Number(printer.label_w_mm) || 50;
+  const labelH = Number(printer.label_h_mm) || 25;
+  const gapX = Math.max(0, Number(printer.gap_x_mm) || 0);
+  const gapY = Math.max(0, Number(printer.gap_y_mm) || 0);
+  const exactPreset = Boolean(printer.base_preset_id || printer.id);
+  const marginTop = Math.max(0, Number(printer.margin_top_mm) || (!exactPreset ? Number(template.marginTopMm) || 0 : 0));
+  const marginRight = Math.max(0, Number(printer.margin_right_mm) || (!exactPreset ? Number(template.marginRightMm) || 0 : 0));
+  const marginBottom = Math.max(0, Number(printer.margin_bottom_mm) || (!exactPreset ? Number(template.marginBottomMm) || 0 : 0));
+  const marginLeft = Math.max(0, Number(printer.margin_left_mm) || (!exactPreset ? Number(template.marginLeftMm) || 0 : 0));
+  const contentW = cols * labelW + (cols - 1) * gapX;
+  const contentH = rows * labelH + (rows - 1) * gapY;
+  const errors = [];
+  if (marginLeft + contentW + marginRight > pageW + 0.01) errors.push('print_layout_overflow_x');
+  if (marginTop + contentH + marginBottom > pageH + 0.01) errors.push('print_layout_overflow_y');
+  return { pageW, pageH, cols, rows, labelW, labelH, gapX, gapY, marginTop, marginRight, marginBottom, marginLeft, contentW, contentH, errors };
+}
+
 // Buduje pełny HTML arkusza (jeden lub wiele @page). Zwraca { html, pages, labelsTotal }.
 export function buildSheetHTML(opts) {
   const items = Array.isArray(opts?.items) ? opts.items : [];
@@ -77,15 +103,11 @@ export function buildSheetHTML(opts) {
   const perPage = Math.max(1, Number(printer.cols) * Number(printer.rows));
   const pages = paginate(expanded, perPage);
 
-  const pageW = Number(printer.page_w_mm) || template.widthMm;
-  const pageH = Number(printer.page_h_mm) || template.heightMm;
-  const cols = Math.max(1, Number(printer.cols) || 1);
-  const labelW = Number(printer.label_w_mm) || 50;
-  const labelH = Number(printer.label_h_mm) || 25;
-  const gapX = Math.max(0, Number(printer.gap_x_mm) || 0);
-  const gapY = Math.max(0, Number(printer.gap_y_mm) || 0);
-  const marginTop = Math.max(0, (Number(printer.margin_top_mm) || 0) + (Number(printer.offset_y_mm) || 0));
-  const marginLeft = Math.max(0, (Number(printer.margin_left_mm) || 0) + (Number(printer.offset_x_mm) || 0));
+  const geometry = calculatePrintGeometry(template, printer);
+  if (geometry.errors.length) throw new Error(geometry.errors[0]);
+  const { pageW, pageH, cols, rows, labelW, labelH, gapX, gapY, marginTop, marginLeft } = geometry;
+  const offsetX = Math.max(-20, Math.min(20, Number(printer.offset_x_mm) || 0));
+  const offsetY = Math.max(-20, Math.min(20, Number(printer.offset_y_mm) || 0));
   const fontSize = Number(template.fontSizePt) || 10;
   const barWidthCorr = Math.max(0.5, Math.min(1.5, Number(printer.bar_width_correction) || 1.0));
   const barWidth = 1.2 * barWidthCorr;
@@ -114,17 +136,19 @@ export function buildSheetHTML(opts) {
       return '<div class="pb-cell" style="width:' + labelW + 'mm;height:' + labelH + 'mm;">' + html + '</div>';
     }).join('');
 
-    return '<section class="pb-page" style="' +
-      'width:' + pageW + 'mm;height:' + pageH + 'mm;' +
-      'padding:' + marginTop + 'mm 0 0 ' + marginLeft + 'mm;' +
+    return '<section class="pb-page" style="width:' + pageW + 'mm;height:' + pageH + 'mm;">' +
+      '<div class="pb-grid" style="' +
+      'margin:' + marginTop + 'mm 0 0 ' + marginLeft + 'mm;' +
+      'transform:translate(' + offsetX + 'mm,' + offsetY + 'mm);' +
       'grid-template-columns:repeat(' + cols + ', ' + labelW + 'mm);' +
       'column-gap:' + gapX + 'mm;row-gap:' + gapY + 'mm;' +
-      '">' + cells + '</section>';
+      '">' + cells + '</div></section>';
   }).join('');
 
   const styles = '@page{size:' + pageW + 'mm ' + pageH + 'mm;margin:0;}' +
     'html,body{margin:0;padding:0;background:#fff;}' +
-    '.pb-page{box-sizing:border-box;display:grid;align-content:start;page-break-after:always;}' +
+    '.pb-page{box-sizing:border-box;position:relative;overflow:hidden;page-break-after:always;}' +
+    '.pb-grid{display:grid;align-content:start;transform-origin:top left;}' +
     '.pb-page:last-child{page-break-after:auto;}' +
     '.pb-cell{box-sizing:border-box;overflow:hidden;}';
 

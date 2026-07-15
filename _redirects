@@ -14,3 +14,9 @@
 /nl           /nl/       301
 /cs           /cs/       301
 /uk           /uk/       301
+
+# Legacy Polish legal URLs now have language-qualified canonical routes.
+/polityka-prywatnosci       /pl/polityka-prywatnosci  301
+/polityka-prywatnosci.html  /pl/polityka-prywatnosci  301
+/regulamin                  /pl/regulamin             301
+/regulamin.html             /pl/regulamin             301
