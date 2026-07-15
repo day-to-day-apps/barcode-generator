@@ -186,8 +186,9 @@ function bindDashboardActions() {
     deleteDialog.close();
     const sb = await getSupabase();
     setStatus(T.sending || 'Deleting account...');
-    const { error } = await sb.functions.invoke('delete-account', { body: { confirmation: phrase } });
+    const { data: deleted, error } = await sb.rpc('delete_own_account', { confirmation: phrase });
     if (error) return setStatus(friendlyError(error, 'Could not delete the account.'), true);
+    if (!deleted) return setStatus('Could not delete the account.', true);
     window.trackBarcode?.('account_deleted');
     await signOut();
     location.assign('/');
