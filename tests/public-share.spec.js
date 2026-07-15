@@ -42,7 +42,7 @@ test.describe('M4 public sharing (toggle + share_slug + SSR /c/:slug)', () => {
 
         try {
             const projectRef = new URL(SUPABASE_URL).hostname.split('.')[0];
-            const storageKey = `sb-${projectRef}-auth-token`;
+            const storageKey = 'bg.auth';
 
             const userClient = createClient(SUPABASE_URL, ANON_KEY, {
                 auth: { autoRefreshToken: false, persistSession: false },
@@ -60,12 +60,12 @@ test.describe('M4 public sharing (toggle + share_slug + SSR /c/:slug)', () => {
             await page.evaluate(() => document.documentElement.lang = 'en');
 
             await test.step('save a CODE128 barcode', async () => {
-                const typeSelect = page.locator('#barcodeType');
+                const typeSelect = page.locator('#barcode-type');
                 if (await typeSelect.count()) await typeSelect.selectOption('CODE128');
-                await page.locator('#barcodeValue').fill(codeValue);
+                await page.locator('#barcode-text').fill(codeValue);
                 const generate = page.getByRole('button', { name: /generate|generuj/i });
                 if (await generate.count()) await generate.first().click();
-                const saveBtn = page.locator('#save-code-btn');
+                const saveBtn = page.locator('.btn-save-code');
                 await expect(saveBtn).toBeVisible({ timeout: 5000 });
                 await saveBtn.click();
                 await expect(saveBtn).toHaveText(/saved|zapisano/i, { timeout: 5000 });
@@ -89,8 +89,8 @@ test.describe('M4 public sharing (toggle + share_slug + SSR /c/:slug)', () => {
                 await expect(row).toHaveClass(/is-public/);
             });
 
-            const slug = await test.step('fetch slug via admin', async () => {
-                const { data, error } = await admin
+            const slug = await test.step('fetch slug as the signed-in owner', async () => {
+                const { data, error } = await userClient
                     .from('saved_codes')
                     .select('share_slug, is_public')
                     .eq('user_id', userId)
@@ -135,8 +135,7 @@ test.describe('M4 public sharing (toggle + share_slug + SSR /c/:slug)', () => {
                 expect(rec).toBeFalsy();
             });
 
-            await test.step('SSR /c/:slug page (optional, requires SHARED_BASE_URL)', async () => {
-                test.skip(!SHARED_BASE_URL, 'set SHARED_BASE_URL to test live Pages Function');
+            if (SHARED_BASE_URL) await test.step('SSR /c/:slug page', async () => {
                 await toggleBtn.click();
                 await expect(toggleBtn).toHaveAttribute('aria-pressed', 'true', { timeout: 5000 });
                 const api = await pwRequest.newContext();

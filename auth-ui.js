@@ -9,6 +9,7 @@ import { countCodes, FREE_CODES_LIMIT } from './db-codes.js';
 const ROUTES = {
   account: '/konto.html',
   myCodes: '/moje-kody.html',
+  templates: '/szablony.html',
 };
 
 const FALLBACK_TEXT = {
@@ -115,7 +116,7 @@ function buildHeaderControls() {
           <svg class="account-menu__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M3 8h14"/></svg>
           <span>${escapeHtml(t('myCodes'))}</span>
         </a>
-        <a class="account-menu__item" role="menuitem" href="${ROUTES.account}#presets">
+        <a class="account-menu__item" role="menuitem" href="${ROUTES.templates}">
           <svg class="account-menu__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h12M4 10h12M4 14h8"/></svg>
           <span>${escapeHtml(t('accountPresets'))}</span>
         </a>

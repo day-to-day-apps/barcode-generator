@@ -4620,8 +4620,35 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
 [data-theme="dark"] .dashboard-tile-kpi[data-kpi-state="full"] { color: #f87171; }
 .dashboard-actions { margin-top: 4px; text-align: left; }
 .dashboard-actions .btn-action { margin-top: 0; }
+.account-authenticated main.container > .card[aria-labelledby="account-title"] { max-width: 920px; }
+.account-extras { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; text-align: left; }
+.dashboard-panel { padding: 18px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+.dashboard-panel:last-child { grid-column: 1 / -1; }
+.dashboard-panel h3 { margin: 0 0 14px; font-size: 16px; color: var(--text); }
+.dashboard-panel-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.quick-actions, .settings-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.quick-actions .btn-action { margin: 0; text-decoration: none; }
+.recent-codes { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.recent-codes li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.recent-codes li:last-child { border-bottom: 0; padding-bottom: 0; }
+.recent-codes span { color: var(--text-secondary); font-size: 12px; }
+.settings-form { margin: 0 0 14px; }
+.settings-form label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; }
+.settings-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.settings-row input { min-width: 0; height: 42px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); }
+.settings-row .btn-action, .settings-actions .btn-action { margin: 0; }
+.btn-danger { color: #b91c1c; border-color: #fecaca; }
+.password-strength { min-height: 18px; font-size: 12px; color: var(--text-secondary); }
+.password-strength[data-score="1"] { color: #b91c1c; }
+.password-strength[data-score="2"] { color: #b45309; }
+.password-strength[data-score="3"], .password-strength[data-score="4"] { color: #047857; }
+.auth-resend { display: block; margin: 8px auto 0; }
 @media (max-width: 520px) {
     .dashboard-tiles { grid-template-columns: 1fr; }
+    .account-extras { grid-template-columns: 1fr; }
+    .dashboard-panel:last-child { grid-column: auto; }
+    .settings-row { grid-template-columns: 1fr; }
+    .recent-codes li { flex-direction: column; }
 }
 
 /* ===== Password show/hide toggle ===== */

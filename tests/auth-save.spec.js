@@ -43,7 +43,7 @@ test.describe('Auth + saved codes (RLS, trigger-enforced limit)', () => {
 
     try {
       const projectRef = new URL(SUPABASE_URL).hostname.split('.')[0];
-      const storageKey = `sb-${projectRef}-auth-token`;
+      const storageKey = 'bg.auth';
 
       async function injectSession(email) {
         const userClient = createClient(SUPABASE_URL, ANON_KEY, {
@@ -64,12 +64,12 @@ test.describe('Auth + saved codes (RLS, trigger-enforced limit)', () => {
       await page.evaluate(() => document.documentElement.lang = 'en');
 
       await test.step('user A saves a Code128 barcode', async () => {
-        const typeSelect = page.locator('#barcodeType');
+        const typeSelect = page.locator('#barcode-type');
         if (await typeSelect.count()) await typeSelect.selectOption('CODE128');
-        await page.locator('#barcodeValue').fill('E2E-TEST-A');
+        await page.locator('#barcode-text').fill('E2E-TEST-A');
         const generate = page.getByRole('button', { name: /generate|generuj/i });
         if (await generate.count()) await generate.first().click();
-        const saveBtn = page.locator('#save-code-btn');
+        const saveBtn = page.locator('.btn-save-code');
         await expect(saveBtn).toBeVisible({ timeout: 5000 });
         await saveBtn.click();
         await expect(saveBtn).toHaveText(/saved|zapisano|gespeichert|enregistré|guardado|salvato|salvo|opgeslagen|uloženo|збережено/i, { timeout: 5000 });

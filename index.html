@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        // Apply saved theme before first paint to avoid a flash of the wrong theme
+        // Apply the saved theme before first paint to prevent a visible flash.
         (function(){try{var t=localStorage.getItem('barcode-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
     </script>
     <link rel="preload" href="styles.css?v=20260521120000" as="style">
@@ -64,6 +64,11 @@
         "description": "Free online barcode generator. 20 standards + QR Code, PNG/SVG export, label printing.",
         "applicationCategory": "UtilityApplication",
         "operatingSystem": "Any",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Day to Day Apps",
+            "url": "https://daytodayapps.com/"
+        },
         "offers": {
             "@type": "Offer",
             "price": "0",
@@ -208,28 +213,12 @@
             <section class="popular-section" aria-labelledby="popular-title">
                 <h2 id="popular-title" class="popular-section__title" data-i18n="popularTitle">Popular formats</h2>
                 <div class="popular-gallery">
-                    <div class="popular-card-wrap">
-                        <button type="button" class="popular-card" data-format="EAN13" aria-pressed="false"><span class="popular-card__preview" data-preview="EAN13" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularEan13">EAN-13</span></button>
-                        <a class="popular-card__more" href="/ean-13/" aria-label="Learn more about EAN-13">Learn more</a>
-                    </div>
-                    <div class="popular-card-wrap">
-                        <button type="button" class="popular-card" data-format="EAN8" aria-pressed="false"><span class="popular-card__preview" data-preview="EAN8" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularEan8">EAN-8</span></button>
-                    </div>
-                    <div class="popular-card-wrap">
-                        <button type="button" class="popular-card" data-format="UPC" aria-pressed="false"><span class="popular-card__preview" data-preview="UPC" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularUpc">UPC-A</span></button>
-                        <a class="popular-card__more" href="/upc-a/" aria-label="Learn more about UPC-A">Learn more</a>
-                    </div>
-                    <div class="popular-card-wrap">
-                        <button type="button" class="popular-card" data-format="CODE128" aria-pressed="false"><span class="popular-card__preview" data-preview="CODE128" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularCode128">Code 128</span></button>
-                        <a class="popular-card__more" href="/code-128/" aria-label="Learn more about Code 128">Learn more</a>
-                    </div>
-                    <div class="popular-card-wrap">
-                        <button type="button" class="popular-card" data-format="CODE39" aria-pressed="false"><span class="popular-card__preview" data-preview="CODE39" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularCode39">Code 39</span></button>
-                        <a class="popular-card__more" href="/code-39/" aria-label="Learn more about Code 39">Learn more</a>
-                    </div>
-                    <div class="popular-card-wrap">
-                        <button type="button" class="popular-card" data-format="QR" aria-pressed="false"><span class="popular-card__preview" data-preview="QR" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularQr">QR Code</span></button>
-                    </div>
+                    <button type="button" class="popular-card" data-format="EAN13" aria-pressed="false"><span class="popular-card__preview" data-preview="EAN13" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularEan13">EAN-13</span></button>
+                    <button type="button" class="popular-card" data-format="EAN8" aria-pressed="false"><span class="popular-card__preview" data-preview="EAN8" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularEan8">EAN-8</span></button>
+                    <button type="button" class="popular-card" data-format="UPC" aria-pressed="false"><span class="popular-card__preview" data-preview="UPC" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularUpc">UPC-A</span></button>
+                    <button type="button" class="popular-card" data-format="CODE128" aria-pressed="false"><span class="popular-card__preview" data-preview="CODE128" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularCode128">Code 128</span></button>
+                    <button type="button" class="popular-card" data-format="CODE39" aria-pressed="false"><span class="popular-card__preview" data-preview="CODE39" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularCode39">Code 39</span></button>
+                    <button type="button" class="popular-card" data-format="QR" aria-pressed="false"><span class="popular-card__preview" data-preview="QR" aria-hidden="true"></span><span class="popular-card__label" data-i18n="popularQr">QR Code</span></button>
                 </div>
             </section>
             <div class="generator-panel">
@@ -504,6 +493,19 @@
                 </div>
             </div>
 
+            <section class="popular-section seo-links" aria-labelledby="seo-links-title">
+                <h2 id="seo-links-title" class="popular-section__title">Barcode format guides</h2>
+                <p style="max-width: 680px; margin: 0 auto 1rem; opacity: .85;">Explore dedicated pages for each barcode standard. Learn the best use cases, validation rules and printing tips for every format.</p>
+                <div class="popular-gallery">
+                    <a class="popular-card" href="/ean-13/" aria-label="EAN-13 guide"><span class="popular-card__preview" data-preview="EAN13" aria-hidden="true"></span><span class="popular-card__label">EAN-13 guide</span></a>
+                    <a class="popular-card" href="/code-128/" aria-label="Code 128 guide"><span class="popular-card__preview" data-preview="CODE128" aria-hidden="true"></span><span class="popular-card__label">Code 128 guide</span></a>
+                    <a class="popular-card" href="/upc-a/" aria-label="UPC-A guide"><span class="popular-card__preview" data-preview="UPC" aria-hidden="true"></span><span class="popular-card__label">UPC-A guide</span></a>
+                    <a class="popular-card" href="/code-39/" aria-label="Code 39 guide"><span class="popular-card__preview" data-preview="CODE39" aria-hidden="true"></span><span class="popular-card__label">Code 39 guide</span></a>
+                    <a class="popular-card" href="/itf-14/" aria-label="ITF-14 guide"><span class="popular-card__preview" data-preview="ITF14" aria-hidden="true"></span><span class="popular-card__label">ITF-14 guide</span></a>
+                    <a class="popular-card" href="/codabar/" aria-label="Codabar guide"><span class="popular-card__preview" data-preview="CODABAR" aria-hidden="true"></span><span class="popular-card__label">Codabar guide</span></a>
+                </div>
+            </section>
+
             <section class="accent-section">
                 <div class="accent-content">
                     <div class="accent-card">
@@ -629,7 +631,8 @@
             <p>Barcode Generator &copy; 2026 &mdash; Free online tool</p>
             <p class="footer-links">
                 <a href="../polityka-prywatnosci.html">Privacy Policy</a> &middot;
-                <a href="../regulamin.html">Terms of Use</a>
+                <a href="../regulamin.html">Terms of Use</a> &middot;
+                A tool by <a href="https://daytodayapps.com/narzedzia/" rel="author">Day to Day Apps</a>
             </p>
         </footer>
     </div>
