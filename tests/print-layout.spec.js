@@ -1,5 +1,6 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 
 test('print geometry validates A4, Letter and thermal presets', async ({ page }) => {
   await page.goto('/wydruk');
@@ -31,4 +32,10 @@ test('calibration page exposes exact 100 mm and 50 mm references', async ({ page
   expect(line?.width).toBeCloseTo(377.953, 0);
   expect(box?.width).toBeCloseTo(188.976, 0);
   expect(box?.height).toBeCloseTo(188.976, 0);
+});
+
+test('printer page consumes the shared session contract directly', async () => {
+  const source = await readFile('drukarki.html', 'utf8');
+  expect(source).toContain('const session = await getSession();');
+  expect(source).not.toContain('{ data: session } = await getSession()');
 });

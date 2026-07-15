@@ -455,8 +455,8 @@
                 if (e.target.value) fillFormFromPreset(e.target.value);
             });
 
-            const { data: session } = await getSession();
-            if (!session) {
+            const session = await getSession();
+            if (!session?.user) {
                 setStatus('', true);
                 els.signedOut.hidden = false;
                 return;
