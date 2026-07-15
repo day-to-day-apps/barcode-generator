@@ -1,5 +1,6 @@
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 
 const ROOT = process.cwd();
@@ -20,6 +21,12 @@ const ROOT_ASSETS = [
   'drukarki.html', 'wydruk.html', 'historia-wydrukow.html', 'reset-hasla.html',
   'privacy-policy.html', 'terms.html', 'kalibracja-druku.html',
 ];
+const VERSIONED_ASSETS = ROOT_ASSETS.filter((name) => /\.(?:css|js)$/.test(name));
+const ASSET_VERSIONS = new Map(await Promise.all(VERSIONED_ASSETS.map(async (name) => {
+  const digest = createHash('sha256').update(await readFile(path.join(ROOT, name))).digest('hex').slice(0, 12);
+  return [name, digest];
+})));
+const ASSET_REF_RE = new RegExp(`((?:\\.\\.\\/)*)(${VERSIONED_ASSETS.map((name) => name.replaceAll('.', '\\.')).join('|')})(?:\\?v=[^"' ]+)?`, 'g');
 
 function routeFor(lang, page = '') {
   const prefix = lang === 'en' ? '' : `/${lang}`;
@@ -38,7 +45,8 @@ function normaliseHtml(html) {
     .replace(/href=(['"])(?:\.\.\/)?polityka-prywatnosci\1/g, 'href="/privacy-policy"')
     .replace(/href=(['"])(?:\.\.\/)?regulamin\1/g, 'href="/terms"')
     .replace(/\s*<link[^>]+https:\/\/fonts\.(?:googleapis|gstatic)\.com[^>]*>/gi, '')
-    .replace(/<script(?![^>]*\b(?:defer|async)\b)(?![^>]*type=['"]module['"])([^>]*\bsrc=[^>]*)>/gi, '<script defer$1>');
+    .replace(/<script(?![^>]*\b(?:defer|async)\b)(?![^>]*type=['"]module['"])([^>]*\bsrc=[^>]*)>/gi, '<script defer$1>')
+    .replace(ASSET_REF_RE, (_match, prefix, name) => `${prefix}${name}?v=${ASSET_VERSIONS.get(name)}`);
   if ((output.match(/<h1\b/gi) || []).length > 1) {
     output = output.replace(/<h1>([\s\S]*?)<\/h1>/i, '<div class="brand-heading">$1</div>');
   }
