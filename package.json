@@ -21,7 +21,8 @@
     "@axe-core/playwright": "^4.11.3",
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.49.0",
-    "@supabase/supabase-js": "^2.110.5"
+    "@supabase/supabase-js": "^2.110.5",
+    "purgecss": "^8.0.0"
   },
   "dependencies": {
     "jsbarcode": "^3.11.6",

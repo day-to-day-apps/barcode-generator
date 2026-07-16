@@ -2,6 +2,7 @@ import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
+import { PurgeCSS } from 'purgecss';
 
 const ROOT = process.cwd();
 const OUT = path.join(ROOT, 'dist');
@@ -12,6 +13,7 @@ const FORMATS = ['ean-13', 'code-128', 'upc-a', 'code-39', 'itf-14', 'codabar'];
 const PRIVATE_PAGES = ['konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', 'historia-wydrukow'];
 const ROOT_ASSETS = [
   '404.html', '_headers', '_redirects', 'ads.txt', 'robots.txt', 'favicon.svg', 'og-image.svg',
+  'googlec18ae46a3db92f98.html',
   'analytics.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js',
   'bulk.js', 'bulk-export.js', 'bulk.css',
   'csv-import.js', 'csv-worker.js', 'dashboard-stats.js', 'db-codes.js', 'db-jobs.js',
@@ -50,8 +52,14 @@ function normaliseHtml(html) {
     .replace(ASSET_REF_RE, (_match, prefix, name) => `${prefix}${name}?v=${ASSET_VERSIONS.get(name)}`)
     .replace(/<script type="module" src="([^"]*auth-ui\.js\?v=[^"]+)"\s*><\/script>/gi, (_match, source) => {
       const moduleUrl = source.startsWith('.') || source.startsWith('/') ? source : `./${source}`;
-      return `<script type="module">addEventListener("load",()=>setTimeout(()=>import("${moduleUrl}"),0),{once:true});</script>`;
+      return `<script type="module">addEventListener("load",()=>setTimeout(()=>import("${moduleUrl}"),10000),{once:true});</script>`;
     });
+  const analyticsScript = output.match(/\s*<script defer[^>]*src=["'][^"']*analytics\.js[^"']*["'][^>]*><\/script>/i)?.[0];
+  if (analyticsScript) {
+    output = output
+      .replace(analyticsScript, '')
+      .replace(/(<body[^>]*>)/i, `$1\n${analyticsScript.trim()}`);
+  }
   if ((output.match(/<h1\b/gi) || []).length > 1) {
     output = output.replace(/<h1>([\s\S]*?)<\/h1>/i, '<div class="brand-heading">$1</div>');
   }
@@ -292,6 +300,45 @@ const polishLegal = [
 for (const [source, target] of polishLegal) {
   const html = normaliseHtml(await readFile(path.join(ROOT, source), 'utf8'));
   await writeFile(path.join(OUT, 'pl', target), html.replace(/href="index(?:\.html)?"/g, 'href="/pl/"'), 'utf8');
+}
+
+const landingContent = [
+  'index.html',
+  ...LOCALE_DIRS.map((lang) => `${lang}/index.html`),
+  ...['app.js', 'i18n.js', 'label-renderer.js', 'analytics.js', 'auth-ui.js', 'db-codes.js', 'supabase-client.js']
+    .map((name) => name),
+];
+const [{ css: landingCss }] = await new PurgeCSS().purge({
+  content: landingContent,
+  css: ['styles.css'],
+  keyframes: true,
+  fontFace: true,
+  variables: true,
+  safelist: {
+    standard: ['active', 'copied', 'error', 'hidden', 'light', 'loading', 'show', 'success', 'visible'],
+    deep: [/^ad-/, /^cookie-/, /^has-/, /^is-/, /^modal/, /^print/, /^qr-/, /^toast/],
+  },
+});
+const landingCssVersion = createHash('sha256').update(landingCss).digest('hex').slice(0, 12);
+await writeFile(path.join(OUT, 'landing.css'), landingCss, 'utf8');
+const appSource = await readFile(path.join(ROOT, 'app.js'), 'utf8');
+const landingApp = appSource.replace(
+  /    \/\/ The gallery sits below the generator on mobile,[\s\S]*?    }\r?\n\r?\n    syncTypeUI\(\);/,
+  `    // Decorative previews are outside the critical rendering path.\n    addEventListener('load', () => setTimeout(renderPopularPreviews, 10000), { once: true });\n\n    syncTypeUI();`,
+);
+if (landingApp === appSource) throw new Error('Could not create deferred landing app bundle.');
+const landingAppVersion = createHash('sha256').update(landingApp).digest('hex').slice(0, 12);
+await writeFile(path.join(OUT, 'app-landing.js'), landingApp, 'utf8');
+for (const lang of LANGS) {
+  const landingPath = lang === 'en' ? path.join(OUT, 'index.html') : path.join(OUT, lang, 'index.html');
+  const prefix = lang === 'en' ? '' : '../';
+  const html = (await readFile(landingPath, 'utf8'))
+    .replace(new RegExp(`${prefix.replaceAll('.', '\\.') }app\\.js\\?v=[a-f0-9]+`, 'g'), `${prefix}app-landing.js?v=${landingAppVersion}`);
+  await writeFile(
+    landingPath,
+    html.replace(new RegExp(`${prefix.replaceAll('.', '\\.') }styles\\.css\\?v=[a-f0-9]+`, 'g'), `${prefix}landing.css?v=${landingCssVersion}`),
+    'utf8',
+  );
 }
 
 await writeFile(path.join(OUT, 'sitemap.xml'), sitemapXml(), 'utf8');

@@ -1,10 +1,14 @@
 import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
+import { brotliCompress, gzip } from 'node:zlib';
+import { promisify } from 'node:util';
 
 const root = path.resolve('dist');
 const port = Number(process.env.PORT || 8765);
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.xml': 'application/xml', '.svg': 'image/svg+xml', '.txt': 'text/plain; charset=utf-8' };
+const compressBrotli = promisify(brotliCompress);
+const compressGzip = promisify(gzip);
 
 function safePath(urlPath) {
   const decoded = decodeURIComponent(urlPath).replace(/\\/g, '/');
@@ -24,8 +28,22 @@ http.createServer(async (request, response) => {
     if (info?.isDirectory()) target = path.join(target, 'index.html');
     else if (!info && !path.extname(target)) target += '.html';
     const data = await readFile(target);
-    response.writeHead(200, { 'Content-Type': types[path.extname(target)] || 'application/octet-stream' });
-    response.end(request.method === 'HEAD' ? undefined : data);
+    const contentType = types[path.extname(target)] || 'application/octet-stream';
+    const headers = { 'Content-Type': contentType, Vary: 'Accept-Encoding' };
+    let body = data;
+    if (data.length > 1024 && /^(text\/|application\/(javascript|json|xml)|image\/svg\+xml)/.test(contentType)) {
+      const accepted = request.headers['accept-encoding'] || '';
+      if (/\bbr\b/.test(accepted)) {
+        body = await compressBrotli(data);
+        headers['Content-Encoding'] = 'br';
+      } else if (/\bgzip\b/.test(accepted)) {
+        body = await compressGzip(data);
+        headers['Content-Encoding'] = 'gzip';
+      }
+    }
+    headers['Content-Length'] = body.length;
+    response.writeHead(200, headers);
+    response.end(request.method === 'HEAD' ? undefined : body);
   } catch (_error) {
     const body = await readFile(path.join(root, '404.html')).catch(() => Buffer.from('Not found'));
     response.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });

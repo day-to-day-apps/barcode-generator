@@ -3644,12 +3644,54 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
     padding: 4px;
 }
 .popular-card__preview svg,
-.popular-card__preview canvas {
+.popular-card__preview canvas,
+.popular-card__preview img {
     max-width: 100%;
     max-height: 100%;
     height: auto;
     width: auto;
     display: block;
+}
+
+@media (max-width: 600px) {
+    body {
+        background: var(--bg);
+        background-attachment: scroll;
+    }
+
+    body::before {
+        display: none;
+    }
+
+    .animated-header,
+    .header-decoration,
+    .bar,
+    .generator-panel,
+    .controls,
+    .preview {
+        animation: none !important;
+    }
+
+    .animated-barcode {
+        filter: none;
+    }
+
+    .controls,
+    .preview {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        background: var(--surface);
+    }
+
+    .seo-links,
+    .accent-section,
+    .info-section,
+    .howto-section,
+    .faq-section,
+    footer {
+        content-visibility: auto;
+        contain-intrinsic-block-size: auto 600px;
+    }
 }
 .popular-card__label {
     font-size: 13px;
