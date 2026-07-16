@@ -58,6 +58,11 @@ function updateSummary() {
   return { counts, totalLabels };
 }
 
+function bindRow(row) {
+  row.querySelector('.remove-row').addEventListener('click', () => { row.remove(); updateSummary(); });
+  row.querySelectorAll('input,select').forEach((control) => control.addEventListener('change', updateSummary));
+}
+
 function addRow(item = {}) {
   if ($('bulk-rows').children.length >= limits().rows) { status(copy.limit, true); return false; }
   const fragment = $('bulk-row-template').content.cloneNode(true);
@@ -65,8 +70,7 @@ function addRow(item = {}) {
   for (const field of ['value', 'code_type', 'name', 'description', 'price', 'copies']) {
     if (item[field] != null) row.querySelector(`[data-field=${field}]`).value = item[field];
   }
-  row.querySelector('.remove-row').addEventListener('click', () => { row.remove(); updateSummary(); });
-  row.querySelectorAll('input,select').forEach((control) => control.addEventListener('change', updateSummary));
+  bindRow(row);
   $('bulk-rows').appendChild(row); updateSummary(); return true;
 }
 
@@ -186,7 +190,7 @@ $('load-job').addEventListener('click', loadPreviousJob);
 $('cancel-export').addEventListener('click', () => controller?.abort());
 document.querySelectorAll('[data-export]').forEach((button) => button.addEventListener('click', () => runExport(button.dataset.export)));
 
-addRow({ code_type: 'CODE128', copies: 1 }); status(copy.ready);
+[...$('bulk-rows').children].forEach(bindRow); updateSummary(); status(copy.ready);
 $('account-mode').textContent = copy.anonymous;
 $('import-saved').hidden = true; $('save-job').hidden = true; $('job-name-wrap').hidden = true; $('saved-job-wrap').hidden = true; $('load-job').hidden = true;
 addEventListener('load', () => setTimeout(async () => {
