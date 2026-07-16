@@ -332,8 +332,11 @@ await writeFile(path.join(OUT, 'app-landing.js'), landingApp, 'utf8');
 for (const lang of LANGS) {
   const landingPath = lang === 'en' ? path.join(OUT, 'index.html') : path.join(OUT, lang, 'index.html');
   const prefix = lang === 'en' ? '' : '../';
-  const html = (await readFile(landingPath, 'utf8'))
+  let html = (await readFile(landingPath, 'utf8'))
     .replace(new RegExp(`${prefix.replaceAll('.', '\\.') }app\\.js\\?v=[a-f0-9]+`, 'g'), `${prefix}app-landing.js?v=${landingAppVersion}`);
+  if (lang === 'en') {
+    html = html.replace('</head>', '    <meta name="google-site-verification" content="rU82pkm5jXvVq8joqzYzgD_fHJrA1SbdmtGTAjDScLE">\n</head>');
+  }
   await writeFile(
     landingPath,
     html.replace(new RegExp(`${prefix.replaceAll('.', '\\.') }styles\\.css\\?v=[a-f0-9]+`, 'g'), `${prefix}landing.css?v=${landingCssVersion}`),
