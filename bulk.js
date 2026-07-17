@@ -181,6 +181,13 @@ async function loadPreviousJob() {
   updateSummary(); status(copy.loaded); track('bulk_job_duplicated', { items: data.items?.length || 0 });
 }
 
+async function loadRequestedJob() {
+  const requestedId = new URLSearchParams(location.search).get('job');
+  await loadJobOptions(requestedId || '');
+  if (!requestedId || $('saved-job-select').value !== requestedId) return;
+  await loadPreviousJob();
+}
+
 async function loadJobOptions(selectedId = '') {
   const { data, error } = await listJobs(); const select = $('saved-job-select'); select.innerHTML = '';
   if (error) { status(copy.jobsLoadFailed, true); return; }
@@ -208,5 +215,5 @@ addEventListener('load', () => setTimeout(async () => {
   session = await getSession();
   $('account-mode').textContent = session ? copy.signed : copy.anonymous;
   $('import-saved').hidden = !session; $('save-job').hidden = !session; $('job-name-wrap').hidden = !session;
-  if (session) await loadJobOptions();
+  if (session) await loadRequestedJob();
 }, 0), { once: true });

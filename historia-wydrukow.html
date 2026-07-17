@@ -42,6 +42,7 @@
                             <span id="jobs-counter" class="codes-counter"></span>
                         </div>
                         <div class="codes-toolbar-right">
+                            <a id="new-bulk-job" href="bulk-barcode-generator" class="btn-action">New CSV job</a>
                             <a href="wydruk.html" class="btn-primary" data-i18n="newJob">New print job</a>
                         </div>
                     </div>
@@ -62,17 +63,29 @@
     </div>
 
     <template id="job-row-template">
-        <li class="code-row">
+        <li class="code-row job-row">
             <div class="template-summary">
                 <p class="code-name"></p>
                 <p class="template-meta"></p>
             </div>
             <div class="code-actions">
-                <a class="btn-action btn-edit" data-i18n="edit" href="#">Edit</a>
+                <a class="btn-action btn-copy" href="#">Load as copy</a>
+                <a class="btn-action btn-edit" data-i18n="edit" href="#">Advanced print</a>
                 <button type="button" class="btn-action btn-delete" data-i18n="delete">Delete</button>
             </div>
         </li>
     </template>
+
+    <dialog id="delete-job-dialog" class="account-delete-dialog" aria-labelledby="delete-job-title">
+        <form method="dialog">
+            <h3 id="delete-job-title">Delete print job</h3>
+            <p id="delete-job-message"></p>
+            <div class="dialog-actions">
+                <button type="submit" value="cancel" class="btn-action" id="cancel-delete-job">Cancel</button>
+                <button type="button" class="btn-action btn-danger" id="confirm-delete-job">Delete</button>
+            </div>
+        </form>
+    </dialog>
 
     <script type="module">
         import { getSession, onAuthStateChange } from './supabase-client.js';
@@ -81,6 +94,28 @@
         const LANG = document.documentElement.lang || 'en';
         const I = window.BARCODE_I18N || {};
         const T = (I[LANG] && I[LANG].account) || (I.en && I.en.account) || {};
+        const isPolish = LANG === 'pl';
+        const copy = isPolish ? {
+            newBulkJob: 'Nowe zadanie CSV',
+            loadCopy: 'Wczytaj jako kopię',
+            advancedPrint: 'Druk zaawansowany',
+            items: 'pozycji',
+            labels: 'etykiet',
+            deleteTitle: 'Usuń zadanie wydruku',
+            deleteMessage: (name) => `Czy na pewno usunąć zadanie „${name}”? Tej operacji nie można cofnąć.`,
+            cancel: 'Anuluj',
+            delete: 'Usuń',
+        } : {
+            newBulkJob: 'New CSV job',
+            loadCopy: 'Load as copy',
+            advancedPrint: 'Advanced print',
+            items: 'items',
+            labels: 'labels',
+            deleteTitle: 'Delete print job',
+            deleteMessage: (name) => `Delete “${name}”? This action cannot be undone.`,
+            cancel: 'Cancel',
+            delete: 'Delete',
+        };
 
         function translate(root = document) {
             root.querySelectorAll('[data-i18n]').forEach((el) => {
@@ -99,7 +134,17 @@
             counter: $('jobs-counter'),
             signedOut: $('signed-out'),
             rowTpl: $('job-row-template'),
+            deleteDialog: $('delete-job-dialog'),
+            deleteMessage: $('delete-job-message'),
+            confirmDelete: $('confirm-delete-job'),
         };
+        let pendingDeleteJob = null;
+
+        $('new-bulk-job').textContent = copy.newBulkJob;
+        $('new-bulk-job').href = isPolish ? '/pl/generator-kodow-z-csv' : '/bulk-barcode-generator';
+        $('delete-job-title').textContent = copy.deleteTitle;
+        $('cancel-delete-job').textContent = copy.cancel;
+        els.confirmDelete.textContent = copy.delete;
 
         function setStatus(key, hide) {
             if (!els.status) return;
@@ -129,19 +174,46 @@
                 const frag = els.rowTpl.content.cloneNode(true);
                 const li = frag.querySelector('li');
                 li.querySelector('.code-name').textContent = job.name;
-                li.querySelector('.template-meta').textContent = formatDate(job.created_at);
+                li.querySelector('.template-meta').textContent = `${formatDate(job.created_at)} · ${job.item_count || 0} ${copy.items} · ${job.label_count || 0} ${copy.labels}`;
+                const copyLink = li.querySelector('.btn-copy');
+                const bulkPath = isPolish ? '/pl/generator-kodow-z-csv' : '/bulk-barcode-generator';
+                copyLink.textContent = copy.loadCopy;
+                copyLink.setAttribute('href', `${bulkPath}?job=${encodeURIComponent(job.id)}`);
                 const editLink = li.querySelector('.btn-edit');
-                if (editLink) editLink.setAttribute('href', `wydruk.html?id=${encodeURIComponent(job.id)}`);
-                li.querySelector('.btn-delete').addEventListener('click', async () => {
-                    if (!confirm(T.deleteJobConfirm || 'Delete this print job?')) return;
-                    const { error } = await deleteJob(job.id);
-                    if (error) { alert(T.jobDeleteFail || 'Could not delete job.'); return; }
-                    await load();
+                if (editLink) {
+                    editLink.textContent = copy.advancedPrint;
+                    editLink.setAttribute('href', `wydruk.html?id=${encodeURIComponent(job.id)}`);
+                }
+                li.querySelector('.btn-delete').addEventListener('click', () => {
+                    pendingDeleteJob = job;
+                    els.deleteMessage.textContent = copy.deleteMessage(job.name);
+                    els.deleteDialog.showModal();
                 });
                 translate(li);
+                copyLink.textContent = copy.loadCopy;
+                editLink.textContent = copy.advancedPrint;
                 els.list.appendChild(frag);
             }
         }
+
+        els.confirmDelete.addEventListener('click', async () => {
+            if (!pendingDeleteJob) return;
+            els.confirmDelete.disabled = true;
+            const { error } = await deleteJob(pendingDeleteJob.id);
+            els.confirmDelete.disabled = false;
+            if (error) {
+                els.deleteDialog.close();
+                setStatus('jobDeleteFail');
+                console.error(error);
+                return;
+            }
+            els.deleteDialog.close();
+            await load();
+        });
+
+        els.deleteDialog.addEventListener('close', () => {
+            pendingDeleteJob = null;
+        });
 
         async function load() {
             const { data, error } = await listJobs();

@@ -71,6 +71,18 @@ test.describe('Bulk generator account integration', () => {
       expect(jobs.name).toBe(jobName);
       expect(jobs.print_job_items).toHaveLength(2);
 
+      await page.goto('/historia-wydrukow.html');
+      const historyRow = page.locator('#jobs-list .code-row').filter({ hasText: jobName });
+      await expect(historyRow).toBeVisible();
+      await expect(historyRow.locator('.template-meta')).toContainText('2 items');
+      await expect(historyRow.locator('.template-meta')).toContainText('2 labels');
+      await expect(historyRow.locator('.btn-copy')).toHaveAttribute('href', `/bulk-barcode-generator?job=${jobs.id}`);
+
+      await historyRow.locator('.btn-copy').click();
+      await expect(page).toHaveURL(new RegExp(`/bulk-barcode-generator\\?job=${jobs.id}$`));
+      await expect(page.locator('#bulk-rows tr')).toHaveCount(2);
+      await expect(page.locator('#job-name')).toHaveValue(`${jobName} - copy`);
+
       await page.locator('#clear-rows').click();
       await expect(page.locator('#bulk-rows tr')).toHaveCount(0);
       await page.locator('#load-job').click();

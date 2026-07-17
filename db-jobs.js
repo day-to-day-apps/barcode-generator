@@ -14,10 +14,19 @@ async function client() {
 export async function listJobs() {
   const sb = await client();
   if (!sb) return { data: null, error: new Error('supabase_unavailable') };
-  return sb
+  const result = await sb
     .from('print_jobs')
-    .select('id, name, template_id, printer_profile_id, notes, created_at, updated_at')
+    .select('id, name, template_id, printer_profile_id, notes, created_at, updated_at, print_job_items(copies)')
     .order('created_at', { ascending: false });
+  if (result.error) return result;
+  return {
+    ...result,
+    data: (result.data || []).map(({ print_job_items: items = [], ...job }) => ({
+      ...job,
+      item_count: items.length,
+      label_count: items.reduce((sum, item) => sum + Math.max(1, Number(item.copies) || 1), 0),
+    })),
+  };
 }
 
 export async function getJobById(id) {

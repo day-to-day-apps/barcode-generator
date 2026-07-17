@@ -4066,6 +4066,13 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
     font-size: 12px;
     padding: 6px 10px;
 }
+.job-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+.job-row .template-summary {
+    grid-area: auto;
+    min-width: 0;
+}
 @media (max-width: 640px) {
     .code-row {
         grid-template-columns: auto 1fr;
@@ -4078,6 +4085,13 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
     .code-preview { grid-area: preview; justify-content: flex-start; }
     .code-meta { grid-area: meta; }
     .code-actions { grid-area: actions; justify-content: flex-start; }
+    .job-row {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: none;
+    }
+    .job-row .code-actions {
+        grid-area: auto;
+    }
 }
 
 /* === Phase 3: Label templates === */
