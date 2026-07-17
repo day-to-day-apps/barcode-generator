@@ -36,6 +36,16 @@ test('all localized private routes resolve without redirects or 404s', async ({ 
   }
 });
 
+test('localized navigation links directly to canonical language roots', async ({ request }) => {
+  for (const lang of LANGS) {
+    const path = lang ? `/${lang}/` : '/';
+    const html = await (await request.get(path)).text();
+    const indexLinks = [...html.matchAll(/href="((?:[^"]*\/)?index(?:\.html)?(?:[?#][^"]*)?)"/gi)]
+      .map((match) => match[1]);
+    expect(indexLinks, path).toEqual([]);
+  }
+});
+
 test('public and account pages have no broken internal links', async ({ request }) => {
   const seeds = ['/', '/pl/', '/decoder', '/pl/decoder', '/konto', '/pl/konto', '/de/konto', '/drukarki', '/pl/drukarki'];
   const links = new Set();

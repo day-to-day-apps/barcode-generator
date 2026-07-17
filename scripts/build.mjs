@@ -44,6 +44,7 @@ function normaliseHtml(html) {
   let output = html
     .replace(/(href=(['"]))(https:\/\/barcode-generator\.daytodayapps\.com[^'"?#]*)\.html(?=([?#'" ]))/g, '$1$3')
     .replace(/(content=(['"]))(https:\/\/barcode-generator\.daytodayapps\.com[^'"?#]*)\.html(?=([?#'" ]))/g, '$1$3')
+    .replace(/href=(['"])((?:\.\.\/)*(?:[a-z]{2}\/)?)(?:index)(?:\.html)?([?#][^'"]*)?\1/g, (_m, q, prefix, suffix = '') => `href=${q}${prefix || './'}${suffix}${q}`)
     .replace(/href=(['"])([^'":#?]+)\.html([?#][^'"]*)?\1/g, (_m, q, target, suffix = '') => `href=${q}${target}${suffix}${q}`)
     .replace(/href=(['"])(?:\.\.\/)?polityka-prywatnosci\1/g, 'href="/privacy-policy"')
     .replace(/href=(['"])(?:\.\.\/)?regulamin\1/g, 'href="/terms"')
