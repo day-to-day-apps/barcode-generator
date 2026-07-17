@@ -1,0 +1,84 @@
+// @ts-check
+import { test, expect } from '@playwright/test';
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const ANON_KEY = process.env.SUPABASE_ANON_KEY || 'sb_publishable_vnawJTY8NEl7tuUoDKJ83Q_QFcOh_Se';
+const HAS_CREDS = Boolean(SUPABASE_URL && SERVICE_ROLE);
+
+test.describe('Bulk generator account integration', () => {
+  test.skip(!HAS_CREDS, 'requires SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY env vars');
+
+  /** @type {(url: string, key: string, opts?: any) => any} */
+  let createClient;
+  test.beforeAll(async () => {
+    ({ createClient } = await import('@supabase/supabase-js'));
+  });
+
+  test('imports saved codes, saves a job and immediately reloads it as a copy', async ({ page }) => {
+    const admin = createClient(SUPABASE_URL, SERVICE_ROLE, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const stamp = Date.now();
+    const email = `e2e-bulk-${stamp}@test.local`;
+    const password = `Pwd-${stamp}-Bulk!`;
+    const jobName = `Warehouse labels ${stamp}`;
+    const { data: created, error: createError } = await admin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+    });
+    expect(createError).toBeNull();
+    const userId = created?.user?.id;
+    expect(userId).toBeTruthy();
+
+    try {
+      const userClient = createClient(SUPABASE_URL, ANON_KEY, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
+      const { data: signedIn, error: signInError } = await userClient.auth.signInWithPassword({ email, password });
+      expect(signInError).toBeNull();
+      expect(signedIn.session).toBeTruthy();
+
+      const { error: insertError } = await userClient.from('saved_codes').insert([
+        { user_id: userId, code_type: 'CODE128', value: `BIN-${stamp}`, name: 'Bin location', settings: {} },
+        { user_id: userId, code_type: 'EAN13', value: '5901234123457', name: 'Retail item', settings: {} },
+      ]);
+      expect(insertError).toBeNull();
+
+      await page.addInitScript(({ value }) => {
+        window.localStorage.setItem('bg.auth', value);
+      }, { value: JSON.stringify(signedIn.session) });
+      await page.goto('/bulk-barcode-generator');
+      await expect(page.locator('#account-mode')).toContainText('Signed in', { timeout: 10_000 });
+
+      await page.locator('#import-saved').click();
+      await expect(page.locator('#bulk-rows tr')).toHaveCount(2);
+      await expect(page.locator('#bulk-status')).toHaveText('Imported saved barcodes: 2.');
+
+      await page.locator('#job-name').fill(jobName);
+      await page.locator('#save-job').click();
+      await expect(page.locator('#bulk-status')).toHaveText('Print job saved.', { timeout: 10_000 });
+      await expect(page.locator('#saved-job-select')).toHaveValue(/.+/);
+      await expect(page.locator('#saved-job-select option:checked')).toHaveText(jobName);
+
+      const { data: jobs, error: jobsError } = await userClient
+        .from('print_jobs')
+        .select('id, name, print_job_items(value, code_type, position)')
+        .eq('user_id', userId)
+        .single();
+      expect(jobsError).toBeNull();
+      expect(jobs.name).toBe(jobName);
+      expect(jobs.print_job_items).toHaveLength(2);
+
+      await page.locator('#clear-rows').click();
+      await expect(page.locator('#bulk-rows tr')).toHaveCount(0);
+      await page.locator('#load-job').click();
+      await expect(page.locator('#bulk-rows tr')).toHaveCount(2);
+      await expect(page.locator('#job-name')).toHaveValue(`${jobName} - copy`);
+      await expect(page.locator('#bulk-status')).toHaveText('Job loaded as a copy.');
+    } finally {
+      if (userId) await admin.auth.admin.deleteUser(userId);
+    }
+  });
+});

@@ -6,9 +6,9 @@ import { BULK_PRESETS, validateBulkItem, expandBulkItems, createBulkPdf, createB
 
 const pl = document.documentElement.lang === 'pl';
 const copy = pl ? {
-  ready: 'Zaimportuj CSV lub dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', cancelled: 'Generowanie anulowane.', saved: 'Zadanie zostało zapisane.', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.'
+  ready: 'Zaimportuj CSV lub dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', cancelled: 'Generowanie anulowane.', saved: 'Zadanie zostało zapisane.', loaded: 'Zadanie wczytano jako kopię.', importedCodes: 'Zaimportowano zapisane kody:', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', jobsLoadFailed: 'Nie udało się pobrać zapisanych zadań.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.'
 } : {
-  ready: 'Import a CSV file or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', cancelled: 'Generation cancelled.', saved: 'Print job saved.', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.'
+  ready: 'Import a CSV file or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', cancelled: 'Generation cancelled.', saved: 'Print job saved.', loaded: 'Job loaded as a copy.', importedCodes: 'Imported saved barcodes:', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', jobsLoadFailed: 'Saved jobs could not be loaded.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.'
 };
 const $ = (id) => document.getElementById(id);
 let session = null;
@@ -151,8 +151,16 @@ async function importSavedCodes() {
   if (!session) return status(copy.login, true);
   const { data, error } = await listCodes();
   if (error || !data?.length) return status(copy.noCodes, true);
-  for (const code of data) addRow({ value: code.value, code_type: code.code_type, name: code.name, copies: 1 });
-  track('bulk_saved_codes_import', { count: data.length });
+  const existingRows = [...$('bulk-rows').children];
+  if (existingRows.length && existingRows.every((row) => !row.querySelector('[data-field=value]').value.trim())) {
+    $('bulk-rows').innerHTML = '';
+  }
+  let imported = 0;
+  for (const code of data) {
+    if (addRow({ value: code.value, code_type: code.code_type, name: code.name, copies: 1 })) imported += 1;
+  }
+  status(`${copy.importedCodes} ${imported}.`);
+  track('bulk_saved_codes_import', { count: imported });
 }
 
 async function saveJob() {
@@ -162,6 +170,7 @@ async function saveJob() {
   const payload = selected.filter((item) => item.status !== 'error').map(({ status: _status, reason: _reason, index: _index, ...item }, position) => ({ ...item, position, extra: {} }));
   const result = await savePrintJob({ name, notes: 'Created with bulk barcode generator' }, payload);
   if (result.error) return status(result.error.message, true);
+  await loadJobOptions(result.data);
   status(copy.saved); track('bulk_job_saved', { rows: payload.length });
 }
 
@@ -169,13 +178,15 @@ async function loadPreviousJob() {
   const id = $('saved-job-select').value; if (!id) return;
   const { data, error } = await getJobById(id); if (error || !data) return status(error?.message || copy.noCodes, true);
   $('bulk-rows').innerHTML = ''; (data.items || []).forEach(addRow); $('job-name').value = `${data.name} - ${pl ? 'kopia' : 'copy'}`;
-  updateSummary(); track('bulk_job_duplicated', { items: data.items?.length || 0 });
+  updateSummary(); status(copy.loaded); track('bulk_job_duplicated', { items: data.items?.length || 0 });
 }
 
-async function loadJobOptions() {
-  const { data } = await listJobs(); const select = $('saved-job-select'); select.innerHTML = '';
+async function loadJobOptions(selectedId = '') {
+  const { data, error } = await listJobs(); const select = $('saved-job-select'); select.innerHTML = '';
+  if (error) { status(copy.jobsLoadFailed, true); return; }
   select.add(new Option(pl ? 'Wybierz zadanie' : 'Choose a job', ''));
   (data || []).forEach((job) => select.add(new Option(job.name, job.id)));
+  if (selectedId && (data || []).some((job) => job.id === selectedId)) select.value = selectedId;
   $('saved-job-wrap').hidden = !(data || []).length; $('load-job').hidden = !(data || []).length;
 }
 

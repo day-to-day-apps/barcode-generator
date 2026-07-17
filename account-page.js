@@ -31,6 +31,11 @@ const copy = ({
   uk: { recent: 'Нещодавно збережені коди', empty: 'Збережених кодів ще немає.', quick: 'Швидкі дії', createCode: 'Створити код', createTemplate: 'Створити шаблон', createPrint: 'Підготувати друк', settings: 'Налаштування облікового запису', export: 'Експортувати дані (JSON)', remove: 'Видалити обліковий запис', resend: 'Надіслати підтвердження ще раз', changeEmail: 'Змінити e-mail', changePassword: 'Змінити пароль', cancel: 'Скасувати', confirm: 'Видалити назавжди', deleteHelp: 'Введіть фразу підтвердження, щоб назавжди видалити обліковий запис і всі дані.' },
 }[LANG] || dashboardCopy);
 Object.assign(copy, Object.fromEntries(Object.entries(dashboardCopy).filter(([key]) => !copy[key])));
+const bulkCopy = ({
+  pl: 'Generator z CSV', de: 'CSV-Stapelgenerator', fr: 'Générateur CSV', es: 'Generador desde CSV',
+  it: 'Generatore da CSV', pt: 'Gerador a partir de CSV', nl: 'CSV-batchgenerator',
+  cs: 'Generátor z CSV', uk: 'Генератор із CSV',
+}[LANG] || 'Bulk / CSV generator');
 function setStatus(message, isError = false) {
   status.textContent = '';
   status.className = isError ? 'form-error' : 'form-success';
@@ -101,6 +106,7 @@ function ensureDashboardExtras() {
   container.innerHTML = `
     <section class="dashboard-panel"><h3>${copy.quick}</h3><div class="quick-actions">
       <a class="btn-action" href="${localPath('./')}">${copy.createCode}</a>
+      <a class="btn-action" href="${LANG === 'pl' ? '/pl/generator-kodow-z-csv' : '/bulk-barcode-generator'}">${bulkCopy}</a>
       <a class="btn-action" href="${localPath('szablony.html')}">${copy.createTemplate}</a>
       <a class="btn-action" href="${localPath('wydruk.html')}">${copy.createPrint}</a>
     </div></section>
