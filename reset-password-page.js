@@ -41,6 +41,7 @@ async function init() {
     const { error } = await setNewPassword({ password });
     button.disabled = false;
     if (error) return setStatus(error.message || T.passwordUpdateFail || 'Could not update password.', true);
+    window.trackBarcode?.('password_reset_completed');
     setStatus(T.passwordUpdated || 'Password updated. You can sign in now.');
     setTimeout(() => location.assign(accountUrl), 1500);
   });

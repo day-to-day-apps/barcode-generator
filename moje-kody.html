@@ -121,6 +121,7 @@
         </li>
     </template>
 
+    <script src="analytics.js" defer></script>
     <script type="module">
         import { getSession, onAuthStateChange } from './supabase-client.js';
         import {
@@ -283,6 +284,7 @@
                 li._row.name = newName;
                 setNameDisplay(li, li._row);
                 form.hidden = true;
+                window.trackBarcode?.('saved_code_renamed');
                 announce(T.renameSuccess || 'Name updated.');
             });
 
@@ -309,6 +311,7 @@
                 li._row.tags = tags;
                 setTagsDisplay(li, li._row);
                 form.hidden = true;
+                window.trackBarcode?.('saved_code_tags_updated', { tag_count: tags.length });
                 announce(T.tagsSaved || 'Tags saved.');
             });
 
@@ -327,6 +330,7 @@
                 li._row.is_public = !!data?.is_public;
                 if (data?.share_slug) li._row.share_slug = data.share_slug;
                 applyShareState(li);
+                window.trackBarcode?.('saved_code_visibility_changed', { visibility: li._row.is_public ? 'public' : 'private' });
                 announce(li._row.is_public ? (T.codePublic || 'Code is public.') : (T.codePrivate || 'Code is private.'));
             });
             btnCopyLink.addEventListener('click', async () => {
@@ -350,6 +354,7 @@
                     return;
                 }
                 li.remove();
+                window.trackBarcode?.('saved_code_deleted');
                 afterRemoval();
             });
 
@@ -450,6 +455,7 @@
             const target = LANG === 'pl' ? '/pl/generator-kodow-z-csv' : '/bulk-barcode-generator';
             const url = new URL(target, location.origin);
             url.searchParams.set('codes', ids.join(','));
+            window.trackBarcode?.('catalog_print_job_started', { item_count: ids.length });
             location.assign(`${url.pathname}${url.search}`);
         });
 
@@ -471,6 +477,7 @@
                 const li = list.querySelector(`.code-row[data-id="${id}"]`);
                 if (li) li.remove();
             });
+            window.trackBarcode?.('saved_codes_bulk_deleted', { item_count: ids.length });
             afterRemoval();
         });
 

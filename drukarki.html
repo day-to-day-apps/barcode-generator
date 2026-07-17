@@ -189,6 +189,7 @@
         </li>
     </template>
 
+    <script src="analytics.js" defer></script>
     <script type="module">
         import { getSession, onAuthStateChange } from './supabase-client.js';
         import {
@@ -409,6 +410,7 @@
             }
             els.btnSave.disabled = true;
             const wantsDefault = $('p-default').checked;
+            const saveMode = editingId ? 'updated' : 'created';
             if (!editingId) {
                 const session = await getSession();
                 if (!session?.user) {
@@ -432,6 +434,11 @@
             if (wantsDefault && data?.id) {
                 await setDefaultPrinter(data.id);
             }
+            window.trackBarcode?.('printer_profile_saved', {
+                mode: saveMode,
+                printer_type: payload.printer_type,
+                set_default: wantsDefault,
+            });
             hideForm();
             await refresh();
         }
@@ -443,6 +450,7 @@
                 setStatus('printerSaveFail');
                 return;
             }
+            window.trackBarcode?.('printer_profile_deleted');
             await refresh();
         }
 
@@ -452,6 +460,7 @@
                 setStatus('printerSaveFail');
                 return;
             }
+            window.trackBarcode?.('printer_profile_default_set');
             await refresh();
         }
 

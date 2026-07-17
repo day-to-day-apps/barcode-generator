@@ -138,6 +138,7 @@
         </li>
     </template>
 
+    <script src="analytics.js" defer></script>
     <script type="module">
         import { getSession, onAuthStateChange } from './supabase-client.js';
         import {
@@ -250,6 +251,7 @@
                     btnDuplicate.disabled = false;
                     return;
                 }
+                window.trackBarcode?.('template_duplicated');
                 announce(T.templateDuplicated || 'Template duplicated.');
                 await loadTemplates();
             });
@@ -261,6 +263,7 @@
                     btnDefault.disabled = false;
                     return;
                 }
+                window.trackBarcode?.('template_default_set');
                 announce(T.templateSaved || 'Template saved.');
                 await loadTemplates();
             });
@@ -274,6 +277,7 @@
                     return;
                 }
                 li.remove();
+                window.trackBarcode?.('template_deleted');
                 announce(T.templateDeleted || 'Template deleted.');
                 afterRemoval();
             });
@@ -372,6 +376,7 @@
             }
 
             const isDefault = $('t-default').checked;
+            const saveMode = editingId ? 'updated' : 'created';
             const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.disabled = true;
 
@@ -407,6 +412,7 @@
                         if (defErr) throw defErr;
                     }
                 }
+                window.trackBarcode?.('template_saved', { mode: saveMode, set_default: isDefault });
                 announce(T.templateSaved || 'Template saved.');
                 closeForm();
                 await loadTemplates();
