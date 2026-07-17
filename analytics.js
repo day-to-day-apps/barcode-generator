@@ -264,9 +264,10 @@
         banner.id = 'cookie-banner';
         banner.setAttribute('role', 'dialog');
         banner.setAttribute('aria-label', t.choices);
+        banner.setAttribute('aria-describedby', 'cookie-consent-description');
         banner.innerHTML = `
             <div class="cookie-inner">
-                <span class="cookie-text">${t.msg}</span>
+                <p class="cookie-text" id="cookie-consent-description">${t.msg}</p>
                 <div class="cookie-buttons">
                     <button class="cookie-btn cookie-accept" type="button">${t.accept}</button>
                     <button class="cookie-btn cookie-reject" type="button">${t.reject}</button>
@@ -274,6 +275,7 @@
             </div>
         `;
         document.body.appendChild(banner);
+        if (force) banner.querySelector('.cookie-accept').focus();
 
         banner.querySelector('.cookie-accept').addEventListener('click', function() {
             setConsent('accepted');

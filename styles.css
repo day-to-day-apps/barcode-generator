@@ -2078,14 +2078,20 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 /* ===== Cookie Consent Banner ===== */
 #cookie-banner {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: 16px;
+    right: 16px;
     z-index: 9999;
+    width: min(760px, calc(100% - 32px));
+    max-height: calc(100dvh - 24px);
+    margin: 0 auto;
+    overflow-y: auto;
     background: var(--surface);
     border-top: 1.5px solid var(--border);
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.1);
-    padding: 16px 24px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 12px 34px rgba(15, 23, 42, 0.18);
+    padding: 16px;
     animation: slideUp 0.3s ease;
 }
 
@@ -2095,8 +2101,6 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 }
 
 .cookie-inner {
-    max-width: 960px;
-    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2105,7 +2109,9 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 }
 
 .cookie-text {
+    margin: 0;
     font-size: 14px;
+    line-height: 1.5;
     color: var(--text-secondary);
     flex: 1;
     min-width: 200px;
@@ -2118,8 +2124,9 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 }
 
 .cookie-btn {
-    padding: 8px 20px;
-    font-size: 13px;
+    min-height: 42px;
+    padding: 9px 18px;
+    font-size: 14px;
     font-weight: 600;
     font-family: inherit;
     border-radius: 8px;
@@ -2146,6 +2153,41 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 .cookie-reject:hover {
     border-color: var(--primary);
     color: var(--primary);
+}
+
+.cookie-btn:focus-visible {
+    outline: 3px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+    #cookie-banner {
+        left: 10px;
+        right: 10px;
+        bottom: max(10px, env(safe-area-inset-bottom));
+        width: calc(100% - 20px);
+        padding: 14px;
+    }
+
+    .cookie-inner {
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .cookie-text,
+    .cookie-buttons {
+        width: 100%;
+    }
+
+    .cookie-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .cookie-btn {
+        width: 100%;
+        padding-inline: 10px;
+    }
 }
 
 /* ===== DECODER PAGE â€” Premium Redesign ===== */
