@@ -55,6 +55,30 @@ test.describe('Account lifecycle against Supabase', () => {
       await expect(page.locator('#account-extras')).toBeVisible();
       await expect(page.locator('.quick-actions a[href="/bulk-barcode-generator"]')).toBeVisible();
 
+      await page.goto('/szablony');
+      await page.locator('#btn-new').click();
+      await page.locator('#t-name').fill('Warehouse A4');
+      await page.locator('#template-form button[type="submit"]').click();
+      const originalTemplate = page.locator('#templates-list .template-row').filter({ hasText: 'Warehouse A4' });
+      await expect(originalTemplate).toBeVisible();
+      await originalTemplate.locator('.btn-duplicate').click();
+      await expect(page.locator('#templates-list .template-row')).toHaveCount(2);
+      await expect(page.locator('#templates-list')).toContainText('Warehouse A4 (copy)');
+
+      const { data: templates, error: templatesError } = await userClient
+        .from('label_templates')
+        .select('name, config, logo_path, is_default')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: true });
+      expect(templatesError).toBeNull();
+      expect(templates).toHaveLength(2);
+      expect(templates[1].config).toEqual(templates[0].config);
+      expect(templates[1].logo_path).toBe(templates[0].logo_path);
+      expect(templates[1].is_default).toBe(false);
+
+      await page.goto('/konto');
+      await expect(page.locator('#signed-in')).toBeVisible({ timeout: 10_000 });
+
       const downloadPromise = page.waitForEvent('download');
       await page.locator('#export-account').click();
       const download = await downloadPromise;
@@ -63,7 +87,7 @@ test.describe('Account lifecycle against Supabase', () => {
       const exported = JSON.parse(await readFile(downloadPath, 'utf8'));
       expect(exported.user.email).toBe(email);
       expect(exported.codes).toEqual([]);
-      expect(exported.templates).toEqual([]);
+      expect(exported.templates).toHaveLength(2);
       expect(exported.printers).toEqual([]);
       expect(exported.jobs).toEqual([]);
 

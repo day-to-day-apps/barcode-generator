@@ -131,6 +131,7 @@
             </div>
             <div class="code-actions">
                 <button type="button" class="btn-action btn-edit" data-i18n="rename">Edit</button>
+                <button type="button" class="btn-action btn-duplicate" data-i18n="duplicateTemplate">Duplicate</button>
                 <button type="button" class="btn-action btn-default" data-i18n="setAsDefault">Set as default</button>
                 <button type="button" class="btn-action btn-delete" data-i18n="delete">Delete</button>
             </div>
@@ -188,6 +189,10 @@
             usedEl.textContent = fmt('templatesUsed', { n: total, max: FREE_TEMPLATES_LIMIT });
             btnNew.disabled = total >= FREE_TEMPLATES_LIMIT;
             btnNew.title = btnNew.disabled ? (T.freeTemplatesLimitReached || '') : '';
+            list.querySelectorAll('.btn-duplicate').forEach((button) => {
+                button.disabled = total >= FREE_TEMPLATES_LIMIT;
+                button.title = button.disabled ? (T.freeTemplatesLimitReached || '') : '';
+            });
         }
 
         function summariseConfig(cfg) {
@@ -220,6 +225,34 @@
             if (row.is_default) btnDefault.disabled = true;
 
             li.querySelector('.btn-edit').addEventListener('click', () => openForm(li._row));
+            const btnDuplicate = li.querySelector('.btn-duplicate');
+            btnDuplicate.addEventListener('click', async () => {
+                if (list.querySelectorAll('.code-row').length >= FREE_TEMPLATES_LIMIT) return;
+                btnDuplicate.disabled = true;
+                const session = await getSession();
+                if (!session?.user) {
+                    status.textContent = T.signInPrompt || 'Please sign in.';
+                    return;
+                }
+                const suffix = T.templateCopySuffix || 'copy';
+                const baseName = row.name || (T.unnamed || 'Template');
+                const copySuffix = ` (${suffix})`;
+                const name = `${baseName.slice(0, 120 - copySuffix.length)}${copySuffix}`;
+                const { error } = await insertTemplate({
+                    user_id: session.user.id,
+                    name,
+                    config: { ...(row.config || DEFAULT_TEMPLATE_CONFIG) },
+                    logo_path: row.logo_path || null,
+                    is_default: false,
+                });
+                if (error) {
+                    status.textContent = `${T.templateSaveFail || 'Could not save the template.'} ${error.message || ''}`.trim();
+                    btnDuplicate.disabled = false;
+                    return;
+                }
+                announce(T.templateDuplicated || 'Template duplicated.');
+                await loadTemplates();
+            });
             btnDefault.addEventListener('click', async () => {
                 btnDefault.disabled = true;
                 const { error } = await setDefaultTemplate(row.id);
