@@ -16,6 +16,14 @@ test('account workflows do not use blocking browser dialogs', async ({ request }
   }
 });
 
+test('decoder uses the shared accessible confirmation dialog', async ({ request }) => {
+  const response = await request.get('/decoder.js');
+  expect(response.ok()).toBeTruthy();
+  const source = await response.text();
+  expect(source).not.toMatch(/\b(?:window\.)?confirm\s*\(/);
+  expect(source).toContain("import('/account-dialogs.js')");
+});
+
 test('shared confirmation dialog resolves keyboard-accessible actions', async ({ page }) => {
   await page.goto('/konto.html');
   await page.evaluate(async () => {

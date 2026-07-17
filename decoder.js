@@ -543,10 +543,17 @@
             openSummaryDialog();
         });
 
-        clearBtnEl.addEventListener('click', (ev) => {
+        clearBtnEl.addEventListener('click', async (ev) => {
             ev.stopPropagation();
             if (scanMap.size === 0) return;
-            if (!window.confirm(multiStrings.clearConfirm)) return;
+            const { confirmAction } = await import('/account-dialogs.js');
+            const confirmed = await confirmAction({
+                title: multiStrings.clearAll,
+                message: multiStrings.clearConfirm,
+                confirmLabel: multiStrings.clearAll,
+                cancelLabel: multiStrings.summaryClose
+            });
+            if (!confirmed) return;
             scanMap.clear();
             saveScanMap();
             renderScanList();
