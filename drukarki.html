@@ -192,6 +192,7 @@
     <script src="analytics.js" defer></script>
     <script type="module">
         import { getSession, onAuthStateChange } from './supabase-client.js';
+        import { confirmAction } from './account-dialogs.js';
         import {
             loadPresets, findPresetById,
             listPrinters, countPrinters,
@@ -444,7 +445,13 @@
         }
 
         async function onDelete(id) {
-            if (!confirm(T.printerDeleteConfirm || 'Delete?')) return;
+            const accepted = await confirmAction({
+                title: T.delete || 'Delete',
+                message: T.printerDeleteConfirm || 'Delete this printer profile?',
+                confirmLabel: T.delete || 'Delete',
+                cancelLabel: T.cancel || 'Cancel',
+            });
+            if (!accepted) return;
             const { error } = await deletePrinter(id);
             if (error) {
                 setStatus('printerSaveFail');

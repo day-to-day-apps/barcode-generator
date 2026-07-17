@@ -5200,6 +5200,8 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
 .account-delete-dialog p { margin: 0 0 16px; color: var(--text-secondary); line-height: 1.5; }
 .account-delete-dialog input { width: 100%; margin-bottom: 16px; }
 .account-delete-dialog .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
+#status.is-error { color: #b91c1c; }
+[data-theme="dark"] #status.is-error { color: #fca5a5; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 .account-menu__header-email {

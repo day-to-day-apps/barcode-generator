@@ -14,7 +14,7 @@ const PRIVATE_PAGES = ['konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', '
 const ROOT_ASSETS = [
   '404.html', '_headers', '_redirects', 'ads.txt', 'robots.txt', 'favicon.svg', 'og-image.svg',
   'googlec18ae46a3db92f98.html',
-  'analytics.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js',
+  'analytics.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
   'bulk.js', 'bulk-export.js', 'bulk.css',
   'csv-import.js', 'csv-worker.js', 'dashboard-stats.js', 'db-codes.js', 'db-jobs.js',
   'db-printers.js', 'db-templates.js', 'decoder.js', 'i18n.js', 'label-renderer.js',

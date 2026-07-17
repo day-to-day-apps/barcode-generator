@@ -141,6 +141,7 @@
     <script src="analytics.js" defer></script>
     <script type="module">
         import { getSession, onAuthStateChange } from './supabase-client.js';
+        import { confirmAction } from './account-dialogs.js';
         import {
             listTemplates, insertTemplate, updateTemplate, deleteTemplate,
             setDefaultTemplate, countTemplates, normaliseTemplateConfig,
@@ -259,7 +260,7 @@
                 btnDefault.disabled = true;
                 const { error } = await setDefaultTemplate(row.id);
                 if (error) {
-                    alert((T.templateSaveFail || 'Could not save') + ': ' + (error.message || ''));
+                    showError((T.templateSaveFail || 'Could not save') + ': ' + (error.message || ''));
                     btnDefault.disabled = false;
                     return;
                 }
@@ -268,11 +269,17 @@
                 await loadTemplates();
             });
             li.querySelector('.btn-delete').addEventListener('click', async (e) => {
-                if (!confirm(T.templateDeleteConfirm || 'Delete this template?')) return;
+                const accepted = await confirmAction({
+                    title: T.delete || 'Delete',
+                    message: T.templateDeleteConfirm || 'Delete this template?',
+                    confirmLabel: T.delete || 'Delete',
+                    cancelLabel: T.cancel || 'Cancel',
+                });
+                if (!accepted) return;
                 e.currentTarget.disabled = true;
                 const { error } = await deleteTemplate(row.id);
                 if (error) {
-                    alert((T.deleteFail || 'Could not delete') + ': ' + (error.message || ''));
+                    showError((T.deleteFail || 'Could not delete') + ': ' + (error.message || ''));
                     e.currentTarget.disabled = false;
                     return;
                 }
@@ -286,9 +293,17 @@
         }
 
         function announce(msg) {
+            status.classList.remove('is-error');
+            status.setAttribute('role', 'status');
             status.textContent = '';
             setTimeout(() => { status.textContent = msg; }, 30);
             setTimeout(() => { if (status.textContent === msg) status.textContent = ''; }, 3000);
+        }
+
+        function showError(msg) {
+            status.classList.add('is-error');
+            status.setAttribute('role', 'alert');
+            status.textContent = msg;
         }
 
         function afterRemoval() {

@@ -124,6 +124,7 @@
     <script src="analytics.js" defer></script>
     <script type="module">
         import { getSession, onAuthStateChange } from './supabase-client.js';
+        import { confirmAction, showTextValue } from './account-dialogs.js';
         import {
             listCodes, updateCode, deleteCode, bulkDeleteCodes,
             setCodePublic, normaliseTagsInput, FREE_CODES_LIMIT,
@@ -278,7 +279,7 @@
                 const newName = input.value.trim().slice(0, 120) || null;
                 const { error } = await updateCode(row.id, { name: newName });
                 if (error) {
-                    alert(T.updateFail || 'Could not update the code.');
+                    showError(T.updateFail || 'Could not update the code.');
                     return;
                 }
                 li._row.name = newName;
@@ -305,7 +306,7 @@
                 const tags = normaliseTagsInput(input.value);
                 const { error } = await updateCode(row.id, { tags });
                 if (error) {
-                    alert(T.updateFail || 'Could not update the code.');
+                    showError(T.updateFail || 'Could not update the code.');
                     return;
                 }
                 li._row.tags = tags;
@@ -324,7 +325,7 @@
                 const { data, error } = await setCodePublic(row.id, makePublic);
                 btnTogglePublic.disabled = false;
                 if (error) {
-                    alert((T.updateFail || 'Could not update the code.') + ': ' + (error.message || ''));
+                    showError((T.updateFail || 'Could not update the code.') + ': ' + (error.message || ''));
                     return;
                 }
                 li._row.is_public = !!data?.is_public;
@@ -340,16 +341,27 @@
                     await navigator.clipboard.writeText(url);
                     announce(T.linkCopied || 'Link copied.');
                 } catch (_err) {
-                    prompt(T.copyManual || 'Copy this link:', url);
+                    await showTextValue({
+                        title: T.copyLink || 'Copy link',
+                        message: T.copyManual || 'Copy this link:',
+                        value: url,
+                        closeLabel: T.close || 'Close',
+                    });
                 }
             });
 
             li.querySelector('.btn-delete').addEventListener('click', async (e) => {
-                if (!confirm(T.deleteConfirm || 'Delete this code?')) return;
+                const accepted = await confirmAction({
+                    title: T.delete || 'Delete',
+                    message: T.deleteConfirm || 'Delete this code?',
+                    confirmLabel: T.delete || 'Delete',
+                    cancelLabel: T.cancel || 'Cancel',
+                });
+                if (!accepted) return;
                 e.currentTarget.disabled = true;
                 const { error } = await deleteCode(row.id);
                 if (error) {
-                    alert((T.deleteFail || 'Could not delete') + ': ' + (error.message || ''));
+                    showError((T.deleteFail || 'Could not delete') + ': ' + (error.message || ''));
                     e.currentTarget.disabled = false;
                     return;
                 }
@@ -362,9 +374,17 @@
         }
 
         function announce(msg) {
+            status.classList.remove('is-error');
+            status.setAttribute('role', 'status');
             status.textContent = '';
             setTimeout(() => { status.textContent = msg; }, 30);
             setTimeout(() => { if (status.textContent === msg) status.textContent = ''; }, 3000);
+        }
+
+        function showError(msg) {
+            status.classList.add('is-error');
+            status.setAttribute('role', 'alert');
+            status.textContent = msg;
         }
 
         function afterRemoval() {
@@ -465,11 +485,17 @@
             if (ids.length === 0) return;
             const msg = fmt('bulkDeleteConfirm', { n: ids.length })
                 || `Delete ${ids.length} selected codes?`;
-            if (!confirm(msg)) return;
+            const accepted = await confirmAction({
+                title: T.deleteSelected || T.delete || 'Delete selected',
+                message: msg,
+                confirmLabel: T.delete || 'Delete',
+                cancelLabel: T.cancel || 'Cancel',
+            });
+            if (!accepted) return;
             btnBulkDelete.disabled = true;
             const { error } = await bulkDeleteCodes(ids);
             if (error) {
-                alert((T.deleteFail || 'Could not delete') + ': ' + (error.message || ''));
+                showError((T.deleteFail || 'Could not delete') + ': ' + (error.message || ''));
                 btnBulkDelete.disabled = false;
                 return;
             }
