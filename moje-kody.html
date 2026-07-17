@@ -49,6 +49,7 @@
                     </div>
                     <div class="codes-toolbar-right">
                         <span id="codes-used" class="codes-counter"></span>
+                        <button type="button" id="btn-create-job" class="btn-action" disabled>Create print job</button>
                         <button type="button" id="btn-bulk-delete" class="btn-action btn-delete" disabled data-i18n="deleteSelected">Delete selected</button>
                     </div>
                 </div>
@@ -148,6 +149,7 @@
         const selectAllCb = $('select-all');
         const selectedCountEl = $('selected-count');
         const codesUsedEl = $('codes-used');
+        const btnCreateJob = $('btn-create-job');
         const btnBulkDelete = $('btn-bulk-delete');
         const tmpl = $('row-template');
 
@@ -160,6 +162,7 @@
 
         filterSearchInput.placeholder = T.filterSearchPlaceholder || '';
         filterClearBtn.setAttribute('aria-label', T.filterClear || 'Clear filters');
+        btnCreateJob.textContent = LANG === 'pl' ? 'Utwórz zadanie wydruku' : 'Create print job';
 
         const dateFmt = new Intl.DateTimeFormat(LANG, {
             year: 'numeric', month: 'short', day: 'numeric',
@@ -181,6 +184,7 @@
             const selected = list.querySelectorAll('.row-checkbox:checked').length;
             codesUsedEl.textContent = fmt('codesUsed', { n: total, max: FREE_CODES_LIMIT });
             selectedCountEl.textContent = selected ? fmt('selectedCount', { n: selected }) : '';
+            btnCreateJob.disabled = selected === 0;
             btnBulkDelete.disabled = selected === 0;
             selectAllCb.checked = total > 0 && selected === total;
             selectAllCb.indeterminate = selected > 0 && selected < total;
@@ -436,6 +440,17 @@
             const checked = selectAllCb.checked;
             list.querySelectorAll('.code-row:not([hidden]) .row-checkbox').forEach((cb) => { cb.checked = checked; });
             updateCounters();
+        });
+
+        btnCreateJob.addEventListener('click', () => {
+            const ids = [...list.querySelectorAll('.row-checkbox:checked')]
+                .map((cb) => cb.closest('.code-row').dataset.id)
+                .filter(Boolean);
+            if (ids.length === 0) return;
+            const target = LANG === 'pl' ? '/pl/generator-kodow-z-csv' : '/bulk-barcode-generator';
+            const url = new URL(target, location.origin);
+            url.searchParams.set('codes', ids.join(','));
+            location.assign(`${url.pathname}${url.search}`);
         });
 
         btnBulkDelete.addEventListener('click', async () => {

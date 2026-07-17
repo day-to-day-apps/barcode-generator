@@ -17,3 +17,12 @@ test('bulk generator automatically opens a requested saved job', async ({ reques
   expect(source).toContain("new URLSearchParams(location.search).get('job')");
   expect(source).toContain('await loadPreviousJob()');
 });
+
+test('saved-code catalog can open selected products in the bulk generator', async ({ request }) => {
+  const catalog = await (await request.get('/moje-kody.html')).text();
+  const bulk = await (await request.get('/bulk.js')).text();
+  expect(catalog).toContain('id="btn-create-job"');
+  expect(catalog).toContain("url.searchParams.set('codes', ids.join(','))");
+  expect(bulk).toContain("new URLSearchParams(location.search).get('codes')");
+  expect(bulk).toContain("selection: requested ? 'catalog' : 'all'");
+});

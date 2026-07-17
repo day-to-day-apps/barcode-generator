@@ -49,6 +49,19 @@ test.describe('Bulk generator account integration', () => {
       await page.addInitScript(({ value }) => {
         window.localStorage.setItem('bg.auth', value);
       }, { value: JSON.stringify(signedIn.session) });
+
+      await page.goto('/moje-kody.html');
+      const catalogRow = page.locator('#codes-list .code-row').filter({ hasText: `BIN-${stamp}` });
+      await expect(catalogRow).toBeVisible();
+      await catalogRow.locator('.row-checkbox').check();
+      await expect(page.locator('#btn-create-job')).toBeEnabled();
+      await page.locator('#btn-create-job').click();
+      await expect(page).toHaveURL(/\/bulk-barcode-generator\?codes=/);
+      await expect(page.locator('#bulk-rows tr')).toHaveCount(1);
+      await expect(page.locator('#bulk-rows [data-field="value"]')).toHaveValue(`BIN-${stamp}`);
+      await expect(page.locator('#bulk-status')).toHaveText('Imported saved barcodes: 1.');
+
+      await page.locator('#clear-rows').click();
       await page.goto('/bulk-barcode-generator');
       await expect(page.locator('#account-mode')).toContainText('Signed in', { timeout: 10_000 });
 

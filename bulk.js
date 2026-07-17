@@ -147,20 +147,22 @@ async function runExport(kind) {
   } finally { setBusy(false); controller = null; }
 }
 
-async function importSavedCodes() {
+async function importSavedCodes(requestedIds = null) {
   if (!session) return status(copy.login, true);
   const { data, error } = await listCodes();
-  if (error || !data?.length) return status(copy.noCodes, true);
+  const requested = Array.isArray(requestedIds) ? new Set(requestedIds) : null;
+  const codes = requested ? (data || []).filter((code) => requested.has(code.id)) : (data || []);
+  if (error || !codes.length) return status(copy.noCodes, true);
   const existingRows = [...$('bulk-rows').children];
   if (existingRows.length && existingRows.every((row) => !row.querySelector('[data-field=value]').value.trim())) {
     $('bulk-rows').innerHTML = '';
   }
   let imported = 0;
-  for (const code of data) {
+  for (const code of codes) {
     if (addRow({ value: code.value, code_type: code.code_type, name: code.name, copies: 1 })) imported += 1;
   }
   status(`${copy.importedCodes} ${imported}.`);
-  track('bulk_saved_codes_import', { count: imported });
+  track('bulk_saved_codes_import', { count: imported, selection: requested ? 'catalog' : 'all' });
 }
 
 async function saveJob() {
@@ -181,11 +183,20 @@ async function loadPreviousJob() {
   updateSummary(); status(copy.loaded); track('bulk_job_duplicated', { items: data.items?.length || 0 });
 }
 
-async function loadRequestedJob() {
+function requestedCodeIds() {
+  const raw = new URLSearchParams(location.search).get('codes') || '';
+  return [...new Set(raw.split(',').map((id) => id.trim()).filter((id) => /^[0-9a-f-]{36}$/i.test(id)))].slice(0, 500);
+}
+
+async function loadRequestedContent() {
   const requestedId = new URLSearchParams(location.search).get('job');
   await loadJobOptions(requestedId || '');
-  if (!requestedId || $('saved-job-select').value !== requestedId) return;
-  await loadPreviousJob();
+  if (requestedId && $('saved-job-select').value === requestedId) {
+    await loadPreviousJob();
+    return;
+  }
+  const codeIds = requestedCodeIds();
+  if (codeIds.length) await importSavedCodes(codeIds);
 }
 
 async function loadJobOptions(selectedId = '') {
@@ -215,5 +226,5 @@ addEventListener('load', () => setTimeout(async () => {
   session = await getSession();
   $('account-mode').textContent = session ? copy.signed : copy.anonymous;
   $('import-saved').hidden = !session; $('save-job').hidden = !session; $('job-name-wrap').hidden = !session;
-  if (session) await loadRequestedJob();
+  if (session) await loadRequestedContent();
 }, 0), { once: true });
