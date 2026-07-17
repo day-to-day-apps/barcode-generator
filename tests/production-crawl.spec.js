@@ -46,6 +46,14 @@ test('localized navigation links directly to canonical language roots', async ({
   }
 });
 
+test('account controls and save action render without an artificial delay', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.auth-controls')).toBeAttached({ timeout: 3000 });
+  await expect(page.locator('.btn-save-code')).toBeVisible({ timeout: 3000 });
+  const html = await page.content();
+  expect(html).not.toContain('setTimeout(()=>import("./auth-ui.js');
+});
+
 test('public and account pages have no broken internal links', async ({ request }) => {
   const seeds = ['/', '/pl/', '/decoder', '/pl/decoder', '/konto', '/pl/konto', '/de/konto', '/drukarki', '/pl/drukarki'];
   const links = new Set();

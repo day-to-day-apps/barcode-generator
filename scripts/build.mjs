@@ -50,11 +50,7 @@ function normaliseHtml(html) {
     .replace(/href=(['"])(?:\.\.\/)?regulamin\1/g, 'href="/terms"')
     .replace(/\s*<link[^>]+https:\/\/fonts\.(?:googleapis|gstatic)\.com[^>]*>/gi, '')
     .replace(/<script(?![^>]*\b(?:defer|async)\b)(?![^>]*type=['"]module['"])([^>]*\bsrc=[^>]*)>/gi, '<script defer$1>')
-    .replace(ASSET_REF_RE, (_match, prefix, name) => `${prefix}${name}?v=${ASSET_VERSIONS.get(name)}`)
-    .replace(/<script type="module" src="([^"]*auth-ui\.js\?v=[^"]+)"\s*><\/script>/gi, (_match, source) => {
-      const moduleUrl = source.startsWith('.') || source.startsWith('/') ? source : `./${source}`;
-      return `<script type="module">addEventListener("load",()=>setTimeout(()=>import("${moduleUrl}"),10000),{once:true});</script>`;
-    });
+    .replace(ASSET_REF_RE, (_match, prefix, name) => `${prefix}${name}?v=${ASSET_VERSIONS.get(name)}`);
   const analyticsScript = output.match(/\s*<script defer[^>]*src=["'][^"']*analytics\.js[^"']*["'][^>]*><\/script>/i)?.[0];
   if (analyticsScript) {
     output = output

@@ -259,6 +259,10 @@ function collectSettings() {
 async function saveCurrentBarcode(btn) {
   if (state.saving) return;
   const sb = await getSupabase();
+  if (sb && !state.session?.user) {
+    state.session = await getSession();
+    state.user = state.session?.user ?? null;
+  }
   if (!sb || !state.session?.user) {
     const pending = readCurrentBarcode();
     if (pending) {
@@ -327,32 +331,36 @@ function announce(msg) {
 async function init() {
   const headerControls = buildHeaderControls();
   renderHeaderState(headerControls);
-
-  const sb = await getSupabase();
-  if (!sb) {
-    return;
-  }
-
   const saveBtn = buildSaveButton();
-
-  state.session = await getSession();
-  state.user = state.session?.user ?? null;
-  renderHeaderState(headerControls);
   renderSaveButton(saveBtn);
 
-  await onAuthStateChange((event, session) => {
-    const wasAnon = !state.session?.user;
-    state.session = session;
-    state.user = session?.user ?? null;
+  const hydrateSession = async () => {
+    const sb = await getSupabase();
+    if (!sb) return;
+
+    state.session = await getSession();
+    state.user = state.session?.user ?? null;
     renderHeaderState(headerControls);
-    renderSaveButton(saveBtn);
-    if (wasAnon && session?.user) {
+
+    await onAuthStateChange((event, session) => {
+      const wasAnon = !state.session?.user;
+      state.session = session;
+      state.user = session?.user ?? null;
+      renderHeaderState(headerControls);
+      if (wasAnon && session?.user) {
+        consumePendingCode().catch(err => console.warn('[auth-ui] pending consume:', err?.message));
+      }
+    });
+
+    if (state.session?.user) {
       consumePendingCode().catch(err => console.warn('[auth-ui] pending consume:', err?.message));
     }
-  });
+  };
 
-  if (state.session?.user) {
-    consumePendingCode().catch(err => console.warn('[auth-ui] pending consume:', err?.message));
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => hydrateSession(), { timeout: 1500 });
+  } else {
+    window.setTimeout(hydrateSession, 250);
   }
 }
 

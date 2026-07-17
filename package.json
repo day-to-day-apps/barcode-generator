@@ -13,7 +13,7 @@
     "test:review": "node tests/reviewer/eval.mjs",
     "test:full": "npm run test:comprehensive && npm run test:review",
     "report": "playwright show-report",
-    "test:launch": "playwright test tests/domain-ads-config.spec.js tests/seo.spec.js tests/smoke.spec.js tests/a11y.spec.js tests/m25-account.spec.js tests/print-layout.spec.js tests/production-crawl.spec.js tests/bulk.spec.js --project=chromium",
+    "test:launch": "playwright test tests/domain-ads-config.spec.js tests/seo.spec.js tests/smoke.spec.js tests/a11y.spec.js tests/m25-account.spec.js tests/account-lifecycle.spec.js tests/print-layout.spec.js tests/production-crawl.spec.js tests/bulk.spec.js --project=chromium",
     "lighthouse:mobile": "lhci autorun --config=./lighthouserc-mobile.cjs",
     "lighthouse:desktop": "lhci autorun --config=./lighthouserc-desktop.cjs"
   },
