@@ -81,3 +81,24 @@ test.describe('SEO - per language index page', () => {
     });
   }
 });
+
+test.describe('SEO - localized Code 128 descriptions', () => {
+  for (const { code, path } of LANGS.filter(({ code }) => code !== 'en')) {
+    test(`[${code}] metadata is fully localized and consistent`, async ({ page }) => {
+      await page.goto(`${path}code-128/`);
+
+      const description = (await page.locator('meta[name="description"]').getAttribute('content')) ?? '';
+      expect(description).not.toContain('High-density alphanumeric barcode');
+      expect(description.length).toBeGreaterThan(80);
+      expect(description.length).toBeLessThanOrEqual(160);
+      await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', description);
+      await expect(page.locator('meta[name="twitter:description"]')).toHaveAttribute('content', description);
+
+      const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
+      const webPage = structuredData.map(JSON.parse).find((item) => item['@type'] === 'WebPage');
+      expect(webPage?.inLanguage).toBe(code);
+      expect(webPage?.description).not.toContain('High-density alphanumeric barcode');
+      expect(webPage?.description?.length).toBeGreaterThan(80);
+    });
+  }
+});

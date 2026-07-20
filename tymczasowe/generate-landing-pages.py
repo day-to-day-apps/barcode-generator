@@ -97,6 +97,18 @@ formats = {
     }
 }
 
+descriptions_i18n = {
+    'pl': {'code-128': 'Gęsty kod alfanumeryczny do wysyłki, logistyki i GS1-128.'},
+    'de': {'code-128': 'Dichter alphanumerischer Barcode für Versand, Logistik und GS1-128.'},
+    'fr': {'code-128': 'Code-barres alphanumérique dense pour l’expédition, la logistique et GS1-128.'},
+    'es': {'code-128': 'Código de barras alfanumérico denso para envíos, logística y GS1-128.'},
+    'it': {'code-128': 'Codice a barre alfanumerico ad alta densità per spedizioni, logistica e GS1-128.'},
+    'pt': {'code-128': 'Código de barras alfanumérico de alta densidade para envios, logística e GS1-128.'},
+    'nl': {'code-128': 'Compacte alfanumerieke barcode voor verzending, logistiek en GS1-128.'},
+    'cs': {'code-128': 'Hustý alfanumerický kód pro přepravu, logistiku a GS1-128.'},
+    'uk': {'code-128': 'Щільний алфавітно-цифровий штрихкод для доставки, логістики та GS1-128.'},
+}
+
 locale_strings = {
     'en': {
         'lang': 'en',
@@ -1069,7 +1081,8 @@ for fmt, data in formats.items():
         target.parent.mkdir(parents=True, exist_ok=True)
         strings = locale_strings[locale]
         title = strings['title'].format(format=data['label'])
-        description = strings['description'].format(format=data['label'], desc=data['desc'])
+        description_detail = descriptions_i18n.get(locale, {}).get(fmt, data['desc'])
+        description = strings['description'].format(format=data['label'], desc=description_detail)
         hero_head = strings['hero_head'].format(format=data['label'])
         hero_lead = strings['hero_lead'].format(format=data['label'])
         cta_text = strings['cta'].format(format=data['label'])
