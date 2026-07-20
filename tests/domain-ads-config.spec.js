@@ -106,4 +106,17 @@ test.describe('Domain and ads configuration guardrails', () => {
     expect(desktop).toContain('http://127.0.0.1:8767/');
     expect(previewServer).toContain("process.argv.indexOf('--port')");
   });
+
+  test('Playwright global setup owns one deterministic preview process', () => {
+    const config = fs.readFileSync(path.join(ROOT, 'playwright.config.js'), 'utf8');
+    const preview = fs.readFileSync(path.join(ROOT, 'scripts/preview.mjs'), 'utf8');
+    const setup = fs.readFileSync(path.join(ROOT, 'tests/comprehensive/_helpers/global-setup.js'), 'utf8');
+
+    expect(config).not.toContain('webServer:');
+    expect(preview).toContain("import('./build.mjs')");
+    expect(preview).toContain("import('./serve.mjs')");
+    expect(setup).toContain("spawn(process.execPath, ['scripts/preview.mjs', '--port', '8765']");
+    expect(setup).toContain("preview.kill('SIGTERM')");
+    expect(setup).toContain("preview.kill('SIGKILL')");
+  });
 });

@@ -39,10 +39,4 @@ export default defineConfig({
   ],
   globalSetup: './tests/comprehensive/_helpers/global-setup.js',
   globalTeardown: './tests/comprehensive/_helpers/global-teardown.js',
-  webServer: {
-    command: 'npm run build && npm run serve',
-    url: 'http://127.0.0.1:8765/',
-    reuseExistingServer: !process.env.CI,
-    timeout: 30_000,
-  },
 });

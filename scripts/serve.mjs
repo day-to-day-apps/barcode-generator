@@ -21,7 +21,7 @@ function safePath(urlPath) {
   return path.join(root, normalized);
 }
 
-http.createServer(async (request, response) => {
+const server = http.createServer(async (request, response) => {
   try {
     const url = new URL(request.url, `http://${request.headers.host}`);
     if (url.pathname.endsWith('.html') && url.pathname !== '/404.html') {
@@ -54,4 +54,14 @@ http.createServer(async (request, response) => {
     response.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
     response.end(request.method === 'HEAD' ? undefined : body);
   }
-}).listen(port, '127.0.0.1', () => console.log(`Production preview: http://127.0.0.1:${port}`));
+});
+
+server.listen(port, '127.0.0.1', () => console.log(`Production preview: http://127.0.0.1:${port}`));
+
+function shutdown() {
+  server.close(() => process.exit(0));
+  setTimeout(() => process.exit(1), 2000).unref();
+}
+
+process.once('SIGINT', shutdown);
+process.once('SIGTERM', shutdown);
