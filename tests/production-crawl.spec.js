@@ -69,3 +69,11 @@ test('public and account pages have no broken internal links', async ({ request 
     expect(response.status(), path).toBeLessThan(400);
   }
 });
+
+test('transactional email templates use final production URLs', async () => {
+  const template = await import('node:fs/promises').then(({ readFile }) =>
+    readFile('supabase/email-templates/confirm-signup.pl.html', 'utf8'));
+  expect(template).not.toMatch(/barcode-generator\.daytodayapps\.com\/(?:polityka-prywatnosci|regulamin)\.html/);
+  expect(template).toContain('https://barcode-generator.daytodayapps.com/pl/polityka-prywatnosci');
+  expect(template).toContain('https://barcode-generator.daytodayapps.com/pl/regulamin');
+});
