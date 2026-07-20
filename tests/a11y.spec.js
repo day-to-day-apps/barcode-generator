@@ -15,7 +15,7 @@ const LANGS = [
   { code: 'uk', path: '/uk/' },
 ];
 
-const PUBLIC_TOOLS = ['/gs1-barcode-generator', '/pl/generator-kodow-gs1'];
+const PUBLIC_TOOLS = ['/gs1-barcode-generator', '/pl/generator-kodow-gs1', '/2d-barcode-generator', '/pl/generator-kodow-2d'];
 
 test.beforeEach(async ({ page }) => {
   await page.route(/(pagead2\.googlesyndication\.com|googletagmanager\.com|google-analytics\.com)/, (route) =>

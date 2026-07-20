@@ -5,10 +5,10 @@ const PROD = 'https://barcode-generator.daytodayapps.com';
 const PRIVATE = ['konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', 'historia-wydrukow', 'reset-hasla'];
 const LANGS = ['', 'pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cs', 'uk'];
 
-test('sitemap contains only 90 direct, indexable canonical URLs', async ({ request }) => {
+test('sitemap contains only 92 direct, indexable canonical URLs', async ({ request }) => {
   const xml = await (await request.get('/sitemap.xml')).text();
   const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  expect(urls).toHaveLength(90);
+  expect(urls).toHaveLength(92);
   expect(xml).not.toMatch(/node_modules|playwright|tests\/|supabase\/|konto|wydruk|szablony|drukarki/);
   for (const canonical of urls) {
     const path = new URL(canonical).pathname;
@@ -55,7 +55,7 @@ test('account controls and save action render without an artificial delay', asyn
 });
 
 test('public and account pages have no broken internal links', async ({ request }) => {
-  const seeds = ['/', '/pl/', '/decoder', '/pl/decoder', '/gs1-barcode-generator', '/pl/generator-kodow-gs1', '/konto', '/pl/konto', '/de/konto', '/drukarki', '/pl/drukarki'];
+  const seeds = ['/', '/pl/', '/decoder', '/pl/decoder', '/gs1-barcode-generator', '/pl/generator-kodow-gs1', '/2d-barcode-generator', '/pl/generator-kodow-2d', '/konto', '/pl/konto', '/de/konto', '/drukarki', '/pl/drukarki'];
   const links = new Set();
   for (const seed of seeds) {
     const html = await (await request.get(seed)).text();

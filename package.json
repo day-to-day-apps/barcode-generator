@@ -13,7 +13,7 @@
     "test:review": "node tests/reviewer/eval.mjs",
     "test:full": "npm run test:comprehensive && npm run test:review",
     "report": "playwright show-report",
-    "test:launch": "playwright test tests/domain-ads-config.spec.js tests/seo.spec.js tests/smoke.spec.js tests/a11y.spec.js tests/m25-account.spec.js tests/account-lifecycle.spec.js tests/bulk-account.spec.js tests/print-layout.spec.js tests/production-crawl.spec.js tests/bulk.spec.js tests/consent.spec.js tests/job-history.spec.js tests/template-duplicate.spec.js tests/account-analytics.spec.js tests/account-dialogs.spec.js tests/public-share-ui.spec.js --project=chromium",
+    "test:launch": "playwright test tests/domain-ads-config.spec.js tests/seo.spec.js tests/smoke.spec.js tests/a11y.spec.js tests/m25-account.spec.js tests/account-lifecycle.spec.js tests/bulk-account.spec.js tests/print-layout.spec.js tests/production-crawl.spec.js tests/bulk.spec.js tests/gs1.spec.js tests/two-d.spec.js tests/consent.spec.js tests/job-history.spec.js tests/template-duplicate.spec.js tests/account-analytics.spec.js tests/account-dialogs.spec.js tests/public-share-ui.spec.js --project=chromium",
     "lighthouse:mobile": "lhci autorun --config=./lighthouserc-mobile.cjs",
     "lighthouse:desktop": "lhci autorun --config=./lighthouserc-desktop.cjs"
   },
@@ -22,9 +22,11 @@
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.49.0",
     "@supabase/supabase-js": "^2.110.5",
+    "@zxing/library": "^0.21.3",
     "purgecss": "^8.0.0"
   },
   "dependencies": {
+    "bwip-js": "^4.11.2",
     "jsbarcode": "^3.11.6",
     "jszip": "^3.10.1",
     "pdf-lib": "^1.17.1"
