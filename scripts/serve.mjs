@@ -5,7 +5,12 @@ import { brotliCompress, gzip } from 'node:zlib';
 import { promisify } from 'node:util';
 
 const root = path.resolve('dist');
-const port = Number(process.env.PORT || 8765);
+const portFlagIndex = process.argv.indexOf('--port');
+const requestedPort = portFlagIndex >= 0 ? process.argv[portFlagIndex + 1] : process.env.PORT;
+const port = Number(requestedPort || 8765);
+if (!Number.isInteger(port) || port < 1 || port > 65535) {
+  throw new Error(`Invalid preview port: ${requestedPort}`);
+}
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.xml': 'application/xml', '.svg': 'image/svg+xml', '.txt': 'text/plain; charset=utf-8' };
 const compressBrotli = promisify(brotliCompress);
 const compressGzip = promisify(gzip);

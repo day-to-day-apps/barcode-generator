@@ -94,4 +94,16 @@ test.describe('Domain and ads configuration guardrails', () => {
     expect(styles).toContain('.ad-sticky-bottom.is-ready');
     expect(styles).not.toMatch(/@media\s*\(max-width:\s*900px\)\s*{\s*\.ad-sticky-bottom\s*{/);
   });
+
+  test('Lighthouse profiles use isolated preview ports', () => {
+    const mobile = fs.readFileSync(path.join(ROOT, 'lighthouserc-mobile.cjs'), 'utf8');
+    const desktop = fs.readFileSync(path.join(ROOT, 'lighthouserc-desktop.cjs'), 'utf8');
+    const previewServer = fs.readFileSync(path.join(ROOT, 'scripts/serve.mjs'), 'utf8');
+
+    expect(mobile).toContain("scripts/serve.mjs --port 8766");
+    expect(mobile).toContain('http://127.0.0.1:8766/');
+    expect(desktop).toContain("scripts/serve.mjs --port 8767");
+    expect(desktop).toContain('http://127.0.0.1:8767/');
+    expect(previewServer).toContain("process.argv.indexOf('--port')");
+  });
 });
