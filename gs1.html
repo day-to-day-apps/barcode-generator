@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GS1 Barcode Generator | GTIN, SSCC and GS1-128</title>
+  <meta name="description" content="Validate GTIN and SSCC check digits, build GS1-128 element strings with common Application Identifiers, and export SVG or PNG locally.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://barcode-generator.daytodayapps.com/gs1-barcode-generator">
+  <link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/gs1-barcode-generator"><link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/generator-kodow-gs1"><link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/gs1-barcode-generator">
+  <meta property="og:title" content="GS1 Barcode Generator"><meta property="og:description" content="Validate GTIN and SSCC identifiers and create GS1-128 barcodes with correct FNC1 separators."><meta property="og:url" content="https://barcode-generator.daytodayapps.com/gs1-barcode-generator"><meta property="og:type" content="website"><meta property="og:image" content="https://barcode-generator.daytodayapps.com/og-image.svg">
+  <link rel="icon" href="favicon.svg"><link rel="stylesheet" href="bulk.css"><link rel="stylesheet" href="gs1.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"GS1 Barcode Generator","url":"https://barcode-generator.daytodayapps.com/gs1-barcode-generator","description":"Validate GTIN and SSCC check digits and generate GS1-128 barcodes with common Application Identifiers.","applicationCategory":"BusinessApplication","operatingSystem":"Any","isAccessibleForFree":true},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does this generator assign GS1 numbers?","acceptedAnswer":{"@type":"Answer","text":"No. It validates and encodes identifiers supplied by the user. GS1 identifiers for external trade use must come from GS1 or an authorised issuing organisation."}},{"@type":"Question","name":"When is an FNC1 separator added?","acceptedAnswer":{"@type":"Answer","text":"A separator is added after a variable-length field when another element follows it."}}]}]}</script>
+</head>
+<body class="bulk-page">
+  <a class="skip-link" href="#gs1-tool">Skip to tool</a>
+  <header class="bulk-header"><a class="bulk-brand" href="/">Barcode Generator</a><nav aria-label="Primary"><a href="/bulk-barcode-generator">Bulk CSV</a><a href="/decoder">Decoder</a><a href="/konto">Account</a><a href="/pl/generator-kodow-gs1" lang="pl">PL</a></nav></header>
+  <main id="gs1-tool" class="gs1-shell">
+    <div class="gs1-heading"><div><h1>GS1 barcode generator</h1><p>Validate identification keys and create standards-aware GTIN, SSCC and GS1-128 symbols. All values stay in your browser.</p></div><aside class="gs1-warning"><strong>This tool does not issue GS1 numbers.</strong> Use identifiers assigned to your organisation for external trade and verify final labels against your application specification.</aside></div>
+    <div class="gs1-workspace">
+      <form id="gs1-form" class="gs1-form" novalidate>
+        <fieldset class="gs1-modes"><legend>Barcode mode</legend><label><input type="radio" name="mode" value="gtin" checked><span>GTIN</span></label><label><input type="radio" name="mode" value="sscc"><span>SSCC</span></label><label><input type="radio" name="mode" value="gs1-128"><span>GS1-128</span></label></fieldset>
+        <div class="gs1-panel" data-mode-panel="gtin">
+          <label class="gs1-field">GTIN type<select id="gtin-length"><option value="8">GTIN-8 / EAN-8</option><option value="12">GTIN-12 / UPC-A</option><option value="13" selected>GTIN-13 / EAN-13</option><option value="14">GTIN-14 / ITF-14</option></select></label>
+          <label class="gs1-field">Identifier<input id="gtin-value" inputmode="numeric" autocomplete="off" value="590123412345" aria-describedby="gtin-help"><small id="gtin-help">Enter the complete identifier or omit its final check digit.</small></label>
+        </div>
+        <div class="gs1-panel" data-mode-panel="sscc" hidden>
+          <label class="gs1-field">SSCC<input id="sscc-value" inputmode="numeric" autocomplete="off" value="12345678901234567" aria-describedby="sscc-help"><small id="sscc-help">Enter 17 digits to calculate the check digit, or a complete 18-digit SSCC.</small></label>
+        </div>
+        <div class="gs1-panel" data-mode-panel="gs1-128" hidden>
+          <label class="gs1-field">GTIN type<select id="gs1-gtin-length"><option value="8">GTIN-8</option><option value="12">GTIN-12</option><option value="13" selected>GTIN-13</option><option value="14">GTIN-14</option></select></label>
+          <label class="gs1-field">AI (01) GTIN<input id="gs1-gtin" inputmode="numeric" autocomplete="off" value="590123412345"><small>Shorter GTINs are padded to the 14-digit AI (01) field after validation.</small></label>
+          <label class="gs1-field">AI (17) Expiration date <span>(optional)</span><input id="gs1-expiry" type="date" min="2000-01-01" max="2099-12-31"></label>
+          <label class="gs1-field">AI (10) Batch or lot <span>(optional)</span><input id="gs1-batch" maxlength="20" autocomplete="off" value="LOT-2026"></label>
+          <label class="gs1-field">AI (21) Serial number <span>(optional)</span><input id="gs1-serial" maxlength="20" autocomplete="off" value="0001"></label>
+        </div>
+      </form>
+      <section class="gs1-preview-panel" aria-labelledby="preview-heading"><h2 id="preview-heading">Preview</h2><div class="gs1-preview-wrap"><svg id="gs1-preview" role="img" aria-label="Generated GS1 barcode"></svg></div><dl class="gs1-output"><div><dt>Human-readable element string</dt><dd><code id="gs1-hri">—</code></dd></div><div><dt>Encoded data</dt><dd><code id="gs1-encoded">—</code></dd></div></dl><p id="gs1-status" class="gs1-status" role="status" aria-live="polite"></p><div class="gs1-actions"><button id="download-svg" class="btn-primary" type="button" data-gs1-action>Download SVG</button><button id="download-png" class="btn-secondary" type="button" data-gs1-action>Download PNG</button><button id="copy-gs1" class="btn-secondary" type="button" data-gs1-action>Copy element string</button></div></section>
+    </div>
+    <section class="gs1-reference"><h2>GS1 data handled by this tool</h2><div class="gs1-reference-grid"><article><h3>GTIN and SSCC check digits</h3><p>Complete identifiers are verified. When the check digit is omitted, the GS1 modulo-10 digit is calculated locally.</p></article><article><h3>Application Identifiers</h3><p>GS1-128 mode supports GTIN (01), expiration date (17), batch/lot (10) and serial number (21), including FNC1 separation after variable fields.</p></article><article><h3>Authoritative reference</h3><p>Review the complete rules and additional identifiers in the <a href="https://ref.gs1.org/ai/" rel="noopener">GS1 Application Identifier registry</a>.</p></article></div></section>
+  </main>
+  <footer class="footer"><p class="footer-links">© 2026 Barcode Generator · <a href="/privacy-policy">Privacy</a> · <a href="/terms">Terms</a> · <a href="https://daytodayapps.com/narzedzia/">Day to Day Apps</a></p></footer>
+  <noscript>This generator requires JavaScript to validate and render the barcode.</noscript><script src="analytics.js" defer></script><script src="gs1.js" defer></script><script src="vendor/jsbarcode.min.js" defer></script><script src="gs1-generator.js" defer></script>
+</body></html>

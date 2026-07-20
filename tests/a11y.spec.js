@@ -15,10 +15,26 @@ const LANGS = [
   { code: 'uk', path: '/uk/' },
 ];
 
+const PUBLIC_TOOLS = ['/gs1-barcode-generator', '/pl/generator-kodow-gs1'];
+
 test.beforeEach(async ({ page }) => {
   await page.route(/(pagead2\.googlesyndication\.com|googletagmanager\.com|google-analytics\.com)/, (route) =>
     route.fulfill({ status: 200, body: '', contentType: 'application/javascript' }),
   );
+});
+
+test.describe('Accessibility - GS1 tools', () => {
+  for (const path of PUBLIC_TOOLS) {
+    test(`${path} has no critical or serious axe violations`, async ({ page }) => {
+      await page.goto(path);
+      const results = await new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+        .analyze();
+      const blocking = results.violations.filter((violation) =>
+        violation.impact === 'critical' || violation.impact === 'serious');
+      expect(blocking, blocking.map((violation) => `${violation.id}: ${violation.help}`).join('\n')).toEqual([]);
+    });
+  }
 });
 
 test.describe('Accessibility - per language index page', () => {

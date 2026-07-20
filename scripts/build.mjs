@@ -15,7 +15,7 @@ const ROOT_ASSETS = [
   '404.html', '_headers', '_redirects', 'ads.txt', 'robots.txt', 'favicon.svg', 'og-image.svg',
   'googlec18ae46a3db92f98.html',
   'analytics.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
-  'bulk.js', 'bulk-export.js', 'bulk.css',
+  'bulk.js', 'bulk-export.js', 'bulk.css', 'gs1.js', 'gs1-generator.js', 'gs1.css',
   'csv-import.js', 'csv-worker.js', 'dashboard-stats.js', 'db-codes.js', 'db-jobs.js',
   'db-printers.js', 'db-templates.js', 'decoder.js', 'i18n.js', 'label-renderer.js',
   'nav-enhance.js', 'print-builder.js', 'printer-presets.json', 'reset-password-page.js',
@@ -114,8 +114,8 @@ const TASK_PAGES = [
     pl: { route: 'drukowanie-etykiet-avery', title: 'Drukowanie kodów na etykietach Avery', description: 'Twórz precyzyjne etykiety z kodami dla arkuszy Avery L7160, L7163, 5160 i 5163. Pobierz gotowy do druku PDF.', h1: 'Drukowanie kodów kreskowych na etykietach Avery', lead: 'Wybierz właściwy format A4 lub Letter, zaimportuj produkty i wygeneruj PDF dopasowany do fizycznego arkusza.', steps: ['Wybierz dokładny numer produktu Avery', 'Zaimportuj CSV lub dodaj wartości kodów', 'Pobierz PDF i drukuj w skali 100%'], faq: ['Czy Avery 5160 i L7160 to ten sam format?', 'Nie. 5160 to Letter z 30 etykietami, a L7160 to A4 z 21 etykietami.'], links: [['Otwórz generator seryjny', '/pl/generator-kodow-z-csv'], ['Skalibruj drukarkę', '/kalibracja-druku'], ['Poradnik EAN-13', '/pl/ean-13/']] },
   },
   {
-    en: { route: 'warehouse-barcode-labels', title: 'Warehouse Barcode Labels from CSV', description: 'Generate warehouse barcode labels from an inventory CSV. Create Code 128 or ITF-14 labels and export PDF, PNG or SVG packages.', h1: 'Barcode labels for warehouse inventory', lead: 'Turn SKU, location and carton identifiers into consistent labels without sending inventory data to an external server.', steps: ['Export products or locations to CSV', 'Validate Code 128 or ITF-14 values', 'Print sheets or thermal labels'], faq: ['Which barcode works best in a warehouse?', 'Code 128 is a strong general choice for SKU and location labels. ITF-14 is intended for trade item cartons.'], links: [['Generate labels from CSV', '/bulk-barcode-generator'], ['Code 128 guide', '/code-128/'], ['ITF-14 guide', '/itf-14/']] },
-    pl: { route: 'etykiety-kreskowe-dla-magazynu', title: 'Etykiety z kodami kreskowymi do magazynu', description: 'Generuj etykiety magazynowe z CSV. Twórz kody Code 128 lub ITF-14 i pobieraj arkusze PDF oraz paczki PNG lub SVG.', h1: 'Etykiety z kodami kreskowymi do magazynu', lead: 'Zamień SKU, lokalizacje i identyfikatory kartonów w spójne etykiety bez wysyłania danych magazynowych na zewnętrzny serwer.', steps: ['Wyeksportuj produkty lub lokalizacje do CSV', 'Sprawdź wartości Code 128 albo ITF-14', 'Wydrukuj arkusze lub etykiety termiczne'], faq: ['Jaki kod najlepiej sprawdza się w magazynie?', 'Code 128 jest uniwersalny dla SKU i lokalizacji. ITF-14 służy do oznaczania opakowań zbiorczych.'], links: [['Generuj etykiety z CSV', '/pl/generator-kodow-z-csv'], ['Poradnik Code 128', '/pl/code-128/'], ['Poradnik ITF-14', '/pl/itf-14/']] },
+    en: { route: 'warehouse-barcode-labels', title: 'Warehouse Barcode Labels from CSV', description: 'Generate warehouse barcode labels from an inventory CSV. Create Code 128 or ITF-14 labels and export PDF, PNG or SVG packages.', h1: 'Barcode labels for warehouse inventory', lead: 'Turn SKU, location and carton identifiers into consistent labels without sending inventory data to an external server.', steps: ['Export products or locations to CSV', 'Validate Code 128 or ITF-14 values', 'Print sheets or thermal labels'], faq: ['Which barcode works best in a warehouse?', 'Code 128 is a strong general choice for SKU and location labels. ITF-14 is intended for trade item cartons.'], links: [['Generate labels from CSV', '/bulk-barcode-generator'], ['Create a GS1 barcode', '/gs1-barcode-generator'], ['Code 128 guide', '/code-128/'], ['ITF-14 guide', '/itf-14/']] },
+    pl: { route: 'etykiety-kreskowe-dla-magazynu', title: 'Etykiety z kodami kreskowymi do magazynu', description: 'Generuj etykiety magazynowe z CSV. Twórz kody Code 128 lub ITF-14 i pobieraj arkusze PDF oraz paczki PNG lub SVG.', h1: 'Etykiety z kodami kreskowymi do magazynu', lead: 'Zamień SKU, lokalizacje i identyfikatory kartonów w spójne etykiety bez wysyłania danych magazynowych na zewnętrzny serwer.', steps: ['Wyeksportuj produkty lub lokalizacje do CSV', 'Sprawdź wartości Code 128 albo ITF-14', 'Wydrukuj arkusze lub etykiety termiczne'], faq: ['Jaki kod najlepiej sprawdza się w magazynie?', 'Code 128 jest uniwersalny dla SKU i lokalizacji. ITF-14 służy do oznaczania opakowań zbiorczych.'], links: [['Generuj etykiety z CSV', '/pl/generator-kodow-z-csv'], ['Utwórz kod GS1', '/pl/generator-kodow-gs1'], ['Poradnik Code 128', '/pl/code-128/'], ['Poradnik ITF-14', '/pl/itf-14/']] },
   },
   {
     en: { route: 'thermal-barcode-label-printing', title: 'Thermal Barcode Label Printing', description: 'Prepare barcode labels for Zebra, Brother, Dymo and 100×150 mm thermal printers. Export exact-size PDFs and calibrate offsets.', h1: 'Print barcode labels on a thermal printer', lead: 'Use exact media dimensions, a 100% print scale and calibration offsets to produce reliable labels for common thermal printers.', steps: ['Choose the physical label size', 'Generate and preview the barcode batch', 'Print at 100% scale and calibrate offsets'], faq: ['Should I select Fit to page?', 'No. Use actual size or 100% scale; automatic fitting changes barcode and label dimensions.'], links: [['Create a thermal PDF', '/bulk-barcode-generator'], ['Open calibration page', '/kalibracja-druku'], ['Code 39 guide', '/code-39/']] },
@@ -241,6 +241,7 @@ function sitemapXml() {
     ['avery-label-printing', 'drukowanie-etykiet-avery'],
     ['warehouse-barcode-labels', 'etykiety-kreskowe-dla-magazynu'],
     ['thermal-barcode-label-printing', 'druk-kodow-na-drukarce-termicznej'],
+    ['gs1-barcode-generator', 'generator-kodow-gs1'],
   ];
   for (const [english, polish] of taskGroups) {
     const alternatives = { en: `${BASE}/${english}`, pl: `${BASE}/pl/${polish}` };
@@ -268,6 +269,8 @@ await cp(path.join(ROOT, 'node_modules/jsbarcode/dist/JsBarcode.all.min.js'), pa
 await writeFile(path.join(OUT, 'bulk-barcode-generator.html'), normaliseHtml(await readFile(path.join(ROOT, 'bulk.html'), 'utf8')), 'utf8');
 await mkdir(path.join(OUT, 'pl'), { recursive: true });
 await writeFile(path.join(OUT, 'pl', 'generator-kodow-z-csv.html'), normaliseHtml(await readFile(path.join(ROOT, 'bulk-pl.html'), 'utf8')), 'utf8');
+await writeFile(path.join(OUT, 'gs1-barcode-generator.html'), normaliseHtml(await readFile(path.join(ROOT, 'gs1.html'), 'utf8')), 'utf8');
+await writeFile(path.join(OUT, 'pl', 'generator-kodow-gs1.html'), normaliseHtml(await readFile(path.join(ROOT, 'gs1-pl.html'), 'utf8')), 'utf8');
 for (const dir of [...FORMATS, ...LOCALE_DIRS]) await copyPublicDirectory(dir);
 
 for (const group of TASK_PAGES) {
@@ -342,4 +345,4 @@ for (const lang of LANGS) {
 }
 
 await writeFile(path.join(OUT, 'sitemap.xml'), sitemapXml(), 'utf8');
-console.log(`Built production site in ${OUT} (88 sitemap URLs).`);
+console.log(`Built production site in ${OUT} (90 sitemap URLs).`);

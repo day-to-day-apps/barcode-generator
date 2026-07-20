@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Generator kodów GS1 | GTIN, SSCC i GS1-128</title>
+  <meta name="description" content="Sprawdzaj cyfry kontrolne GTIN i SSCC, buduj kody GS1-128 z popularnymi identyfikatorami zastosowań i pobieraj SVG lub PNG.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://barcode-generator.daytodayapps.com/pl/generator-kodow-gs1">
+  <link rel="alternate" hreflang="en" href="https://barcode-generator.daytodayapps.com/gs1-barcode-generator"><link rel="alternate" hreflang="pl" href="https://barcode-generator.daytodayapps.com/pl/generator-kodow-gs1"><link rel="alternate" hreflang="x-default" href="https://barcode-generator.daytodayapps.com/gs1-barcode-generator">
+  <meta property="og:title" content="Generator kodów GS1"><meta property="og:description" content="Waliduj GTIN i SSCC oraz twórz kody GS1-128 z prawidłowymi separatorami FNC1."><meta property="og:url" content="https://barcode-generator.daytodayapps.com/pl/generator-kodow-gs1"><meta property="og:type" content="website"><meta property="og:image" content="https://barcode-generator.daytodayapps.com/og-image.svg">
+  <link rel="icon" href="../favicon.svg"><link rel="stylesheet" href="../bulk.css"><link rel="stylesheet" href="../gs1.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Generator kodów GS1","url":"https://barcode-generator.daytodayapps.com/pl/generator-kodow-gs1","description":"Sprawdzaj cyfry kontrolne GTIN i SSCC oraz generuj kody GS1-128 z popularnymi identyfikatorami zastosowań.","applicationCategory":"BusinessApplication","operatingSystem":"Any","isAccessibleForFree":true,"inLanguage":"pl"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Czy generator przydziela numery GS1?","acceptedAnswer":{"@type":"Answer","text":"Nie. Narzędzie sprawdza i koduje identyfikatory podane przez użytkownika. Numery do handlu zewnętrznego muszą pochodzić od GS1 lub uprawnionej organizacji."}},{"@type":"Question","name":"Kiedy dodawany jest separator FNC1?","acceptedAnswer":{"@type":"Answer","text":"Separator jest dodawany po polu o zmiennej długości, jeżeli występuje po nim kolejny element."}}]}]}</script>
+</head>
+<body class="bulk-page">
+  <a class="skip-link" href="#gs1-tool">Przejdź do narzędzia</a>
+  <header class="bulk-header"><a class="bulk-brand" href="/pl/">Generator kodów kreskowych</a><nav aria-label="Główna"><a href="/pl/generator-kodow-z-csv">CSV</a><a href="/pl/decoder">Dekoder</a><a href="/pl/konto">Konto</a><a href="/gs1-barcode-generator" lang="en">EN</a></nav></header>
+  <main id="gs1-tool" class="gs1-shell">
+    <div class="gs1-heading"><div><h1>Generator kodów GS1</h1><p>Sprawdzaj identyfikatory i twórz zgodne strukturalnie symbole GTIN, SSCC oraz GS1-128. Wszystkie dane pozostają w przeglądarce.</p></div><aside class="gs1-warning"><strong>To narzędzie nie przydziela numerów GS1.</strong> Do handlu zewnętrznego używaj identyfikatorów przypisanych Twojej organizacji i sprawdź gotową etykietę względem wymagań zastosowania.</aside></div>
+    <div class="gs1-workspace">
+      <form id="gs1-form" class="gs1-form" novalidate>
+        <fieldset class="gs1-modes"><legend>Tryb kodu</legend><label><input type="radio" name="mode" value="gtin" checked><span>GTIN</span></label><label><input type="radio" name="mode" value="sscc"><span>SSCC</span></label><label><input type="radio" name="mode" value="gs1-128"><span>GS1-128</span></label></fieldset>
+        <div class="gs1-panel" data-mode-panel="gtin">
+          <label class="gs1-field">Typ GTIN<select id="gtin-length"><option value="8">GTIN-8 / EAN-8</option><option value="12">GTIN-12 / UPC-A</option><option value="13" selected>GTIN-13 / EAN-13</option><option value="14">GTIN-14 / ITF-14</option></select></label>
+          <label class="gs1-field">Identyfikator<input id="gtin-value" inputmode="numeric" autocomplete="off" value="590123412345" aria-describedby="gtin-help"><small id="gtin-help">Wpisz pełny identyfikator albo pomiń ostatnią cyfrę kontrolną.</small></label>
+        </div>
+        <div class="gs1-panel" data-mode-panel="sscc" hidden>
+          <label class="gs1-field">SSCC<input id="sscc-value" inputmode="numeric" autocomplete="off" value="12345678901234567" aria-describedby="sscc-help"><small id="sscc-help">Wpisz 17 cyfr, aby obliczyć cyfrę kontrolną, albo pełny 18-cyfrowy SSCC.</small></label>
+        </div>
+        <div class="gs1-panel" data-mode-panel="gs1-128" hidden>
+          <label class="gs1-field">Typ GTIN<select id="gs1-gtin-length"><option value="8">GTIN-8</option><option value="12">GTIN-12</option><option value="13" selected>GTIN-13</option><option value="14">GTIN-14</option></select></label>
+          <label class="gs1-field">AI (01) GTIN<input id="gs1-gtin" inputmode="numeric" autocomplete="off" value="590123412345"><small>Krótszy GTIN po walidacji zostanie uzupełniony zerami do 14 cyfr pola AI (01).</small></label>
+          <label class="gs1-field">AI (17) Data ważności <span>(opcjonalnie)</span><input id="gs1-expiry" type="date" min="2000-01-01" max="2099-12-31"></label>
+          <label class="gs1-field">AI (10) Partia lub seria <span>(opcjonalnie)</span><input id="gs1-batch" maxlength="20" autocomplete="off" value="PARTIA-2026"></label>
+          <label class="gs1-field">AI (21) Numer seryjny <span>(opcjonalnie)</span><input id="gs1-serial" maxlength="20" autocomplete="off" value="0001"></label>
+        </div>
+      </form>
+      <section class="gs1-preview-panel" aria-labelledby="preview-heading"><h2 id="preview-heading">Podgląd</h2><div class="gs1-preview-wrap"><svg id="gs1-preview" role="img" aria-label="Wygenerowany kod GS1"></svg></div><dl class="gs1-output"><div><dt>Czytelny ciąg elementów</dt><dd><code id="gs1-hri">—</code></dd></div><div><dt>Dane zakodowane</dt><dd><code id="gs1-encoded">—</code></dd></div></dl><p id="gs1-status" class="gs1-status" role="status" aria-live="polite"></p><div class="gs1-actions"><button id="download-svg" class="btn-primary" type="button" data-gs1-action>Pobierz SVG</button><button id="download-png" class="btn-secondary" type="button" data-gs1-action>Pobierz PNG</button><button id="copy-gs1" class="btn-secondary" type="button" data-gs1-action>Kopiuj ciąg elementów</button></div></section>
+    </div>
+    <section class="gs1-reference"><h2>Dane GS1 obsługiwane przez narzędzie</h2><div class="gs1-reference-grid"><article><h3>Cyfry kontrolne GTIN i SSCC</h3><p>Pełne identyfikatory są sprawdzane. Po pominięciu ostatniej cyfry narzędzie oblicza ją lokalnie algorytmem modulo 10 GS1.</p></article><article><h3>Identyfikatory zastosowań</h3><p>Tryb GS1-128 obsługuje GTIN (01), datę ważności (17), partię (10) i numer seryjny (21), wraz z separatorem FNC1 po polach zmiennych.</p></article><article><h3>Oficjalna dokumentacja</h3><p>Pełne zasady i dodatkowe identyfikatory znajdziesz w <a href="https://ref.gs1.org/ai/" rel="noopener">rejestrze identyfikatorów GS1</a>.</p></article></div></section>
+  </main>
+  <footer class="footer"><p class="footer-links">© 2026 Generator kodów kreskowych · <a href="/pl/polityka-prywatnosci">Prywatność</a> · <a href="/pl/regulamin">Regulamin</a> · <a href="https://daytodayapps.com/narzedzia/">Day to Day Apps</a></p></footer>
+  <noscript>Generator wymaga JavaScript do walidacji i renderowania kodu.</noscript><script src="../analytics.js" defer></script><script src="../gs1.js" defer></script><script src="../vendor/jsbarcode.min.js" defer></script><script src="../gs1-generator.js" defer></script>
+</body></html>
