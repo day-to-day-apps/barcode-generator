@@ -116,6 +116,7 @@
                 <button type="button" class="btn-action btn-edit-tags" data-i18n="tags">Tags</button>
                 <button type="button" class="btn-action btn-toggle-public" aria-pressed="false" data-i18n="makePublic">Make public</button>
                 <button type="button" class="btn-action btn-copy-link" hidden data-i18n="copyLink">Copy link</button>
+                <a class="btn-action btn-open-link" href="#" target="_blank" rel="noopener noreferrer" hidden data-i18n="openLink">Open link</a>
                 <button type="button" class="btn-action btn-delete" data-i18n="delete" aria-label="Delete">Delete</button>
             </div>
         </li>
@@ -233,11 +234,15 @@
             const r = li._row || {};
             const btn = li.querySelector('.btn-toggle-public');
             const copy = li.querySelector('.btn-copy-link');
+            const open = li.querySelector('.btn-open-link');
             const isPublic = !!r.is_public;
             btn.textContent = isPublic ? (T.makePrivate || 'Make private') : (T.makePublic || 'Make public');
             btn.setAttribute('aria-pressed', isPublic ? 'true' : 'false');
             const hasSlug = !!r.share_slug;
-            copy.hidden = !(isPublic && hasSlug);
+            const canShare = isPublic && hasSlug;
+            copy.hidden = !canShare;
+            open.hidden = !canShare;
+            open.href = canShare ? shareUrl(r.share_slug) : '#';
             li.classList.toggle('is-public', isPublic);
         }
 
