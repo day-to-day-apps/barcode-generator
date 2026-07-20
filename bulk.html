@@ -24,6 +24,14 @@
     <div class="bulk-progress"><progress id="bulk-progress" hidden></progress><span id="progress-label"></span><button id="cancel-export" type="button" hidden>Cancel</button></div><p id="bulk-status" class="bulk-status" role="status"></p>
     <section class="bulk-guide"><h2>From spreadsheet to printable barcode labels</h2><div><article><h3>1. Import and map</h3><p>Use a spreadsheet exported from your inventory or product system. Headers are detected automatically and every row remains editable.</p></article><article><h3>2. Validate</h3><p>EAN, UPC and ITF check digits are verified. Missing check digits are added and reported before export.</p></article><article><h3>3. Export locally</h3><p>Download exact-size PDF sheets or a ZIP package. Your file and barcode values are never uploaded.</p></article></div></section>
   </main>
+  <dialog id="saved-codes-dialog" class="bulk-saved-dialog" aria-labelledby="saved-codes-title">
+    <div class="bulk-dialog-header"><div><h2 id="saved-codes-title">Add saved codes</h2><p>Choose products and the number of labels to add to this job.</p></div><button id="saved-codes-close" class="bulk-dialog-close" type="button" aria-label="Close">&times;</button></div>
+    <div class="bulk-saved-controls"><label for="saved-codes-search">Search saved codes<input id="saved-codes-search" type="search" autocomplete="off" placeholder="Name, value, type or tag"></label><label class="bulk-check"><input id="saved-codes-select-all" type="checkbox"> Select all visible</label></div>
+    <p id="saved-codes-summary" class="bulk-saved-summary" aria-live="polite"></p>
+    <ul id="saved-codes-list" class="bulk-saved-list"></ul>
+    <p id="saved-codes-empty" class="bulk-saved-empty" hidden>No saved codes match this search.</p>
+    <div class="bulk-dialog-actions"><button id="saved-codes-cancel" class="btn-secondary" type="button">Cancel</button><button id="saved-codes-add" class="btn-primary" type="button" disabled>Add selected</button></div>
+  </dialog>
   <footer class="footer"><p class="footer-links">© 2026 Barcode Generator · <a href="/privacy-policy">Privacy</a> · <a href="/terms">Terms</a> · <a href="https://daytodayapps.com/narzedzia/">Day to Day Apps</a></p></footer>
   <script src="analytics.js" defer></script><script type="module" src="bulk.js"></script>
 </body></html>

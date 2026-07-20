@@ -69,6 +69,66 @@ test('exports a mixed Data Matrix, PDF417 and Aztec batch', async ({ page }) => 
   expect(pdf.getPageCount()).toBe(1);
 });
 
+test('signed-in users can search saved codes and choose label quantities', async ({ page }) => {
+  await page.route(/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\/\+esm/, (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/javascript',
+    headers: { 'access-control-allow-origin': '*' },
+    body: `export function createClient(){return {
+      auth:{getSession:async()=>({data:{session:JSON.parse(localStorage.getItem('bg.auth'))},error:null})},
+      from(table){const chain={select(){return chain},order:async()=>({data:table==='saved_codes'?[
+        {id:'00000000-0000-4000-8000-000000000011',code_type:'CODE128',value:'BIN-A-14',name:'Warehouse bin',tags:['warehouse'],settings:{}},
+        {id:'00000000-0000-4000-8000-000000000012',code_type:'EAN13',value:'5901234123457',name:'Retail tea',tags:['shop'],settings:{}},
+        {id:'00000000-0000-4000-8000-000000000013',code_type:'QR',value:'https://example.com',name:'Legacy QR',tags:[],settings:{}},
+        {id:'00000000-0000-4000-8000-000000000014',code_type:'DATAMATRIX',value:'PART-DM-14',name:'Machine part',tags:['production'],settings:{bcid:'datamatrix'}}
+      ]:[],error:null})};return chain}
+    }}`,
+  }));
+  await page.addInitScript(() => {
+    localStorage.setItem('bg.auth', JSON.stringify({ access_token: 'test-token', user: { id: '00000000-0000-4000-8000-000000000001' } }));
+    localStorage.setItem('barcode_consent_v2', JSON.stringify({ analytics: false, ads: false }));
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/bulk-barcode-generator');
+  await expect(page.locator('#import-saved')).toBeVisible();
+  await page.locator('#import-saved').click();
+  const dialog = page.locator('#saved-codes-dialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator('.bulk-saved-item')).toHaveCount(4);
+  await expect(dialog.locator('input[type=checkbox]:disabled')).toHaveCount(1);
+  const geometry = await dialog.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return { left: rect.left, right: rect.right, viewport: document.documentElement.clientWidth, overflow: element.scrollWidth - element.clientWidth };
+  });
+  expect(geometry.left).toBeGreaterThanOrEqual(0);
+  expect(geometry.right).toBeLessThanOrEqual(geometry.viewport);
+  expect(geometry.overflow).toBe(0);
+  const accessibility = await new AxeBuilder({ page }).include('#saved-codes-dialog').analyze();
+  expect(accessibility.violations.filter((item) => ['critical', 'serious'].includes(item.impact || ''))).toEqual([]);
+
+  await dialog.locator('#saved-codes-select-all').check();
+  await dialog.locator('.bulk-saved-copies input:not(:disabled)').evaluateAll((inputs) => inputs.forEach((input) => {
+    input.value = '1000'; input.dispatchEvent(new Event('input', { bubbles: true }));
+  }));
+  await expect(dialog.locator('#saved-codes-summary')).toContainText('Reduce the selection');
+  await expect(dialog.locator('#saved-codes-add')).toBeDisabled();
+  await dialog.locator('#saved-codes-select-all').uncheck();
+
+  await dialog.locator('#saved-codes-search').fill('warehouse');
+  await expect(dialog.locator('.bulk-saved-item')).toHaveCount(1);
+  await dialog.locator('.bulk-saved-choice input').check();
+  await dialog.locator('.bulk-saved-copies input').fill('3');
+  await expect(dialog.locator('#saved-codes-summary')).toContainText('1 codes · 3 labels');
+  await expect(dialog.locator('#saved-codes-add')).toBeEnabled();
+  await dialog.locator('#saved-codes-add').click();
+
+  await expect(dialog).toBeHidden();
+  await expect(page.locator('#bulk-rows tr')).toHaveCount(1);
+  await expect(page.locator('#bulk-rows [data-field=value]')).toHaveValue('BIN-A-14');
+  await expect(page.locator('#bulk-rows [data-field=copies]')).toHaveValue('3');
+  await expect(page.locator('#bulk-status')).toHaveText('Imported saved barcodes: 1.');
+});
+
 test('PL and EN task pages expose final SEO signals', async ({ page }) => {
   const paths = ['/bulk-barcode-generator', '/pl/generator-kodow-z-csv', '/avery-label-printing', '/pl/drukowanie-etykiet-avery', '/warehouse-barcode-labels', '/pl/etykiety-kreskowe-dla-magazynu', '/thermal-barcode-label-printing', '/pl/druk-kodow-na-drukarce-termicznej'];
   for (const path of paths) {

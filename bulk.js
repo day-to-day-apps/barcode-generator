@@ -6,15 +6,17 @@ import { BULK_PRESETS, TWO_D_TYPES, validateBulkItem, expandBulkItems, createBul
 
 const pl = document.documentElement.lang === 'pl';
 const copy = pl ? {
-  ready: 'Zaimportuj CSV lub dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', cancelled: 'Generowanie anulowane.', saved: 'Zadanie zostało zapisane.', loaded: 'Zadanie wczytano jako kopię.', importedCodes: 'Zaimportowano zapisane kody:', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', jobsLoadFailed: 'Nie udało się pobrać zapisanych zadań.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.'
+  ready: 'Zaimportuj CSV lub dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', cancelled: 'Generowanie anulowane.', saved: 'Zadanie zostało zapisane.', loaded: 'Zadanie wczytano jako kopię.', importedCodes: 'Zaimportowano zapisane kody:', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', codesLoadFailed: 'Nie udało się pobrać zapisanych kodów.', jobsLoadFailed: 'Nie udało się pobrać zapisanych zadań.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.', pickerSummary: 'Wybrano: {codes} kodów · {labels} etykiet. Dostępne: {rows} pozycji i {remainingLabels} etykiet.', pickerLimit: 'Zmniejsz wybór lub liczbę kopii, aby zmieścić się w limicie zadania.', copies: 'Kopie', unsupported: 'Nieobsługiwany w druku seryjnym'
 } : {
-  ready: 'Import a CSV file or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', cancelled: 'Generation cancelled.', saved: 'Print job saved.', loaded: 'Job loaded as a copy.', importedCodes: 'Imported saved barcodes:', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', jobsLoadFailed: 'Saved jobs could not be loaded.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.'
+  ready: 'Import a CSV file or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', cancelled: 'Generation cancelled.', saved: 'Print job saved.', loaded: 'Job loaded as a copy.', importedCodes: 'Imported saved barcodes:', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', codesLoadFailed: 'Saved barcodes could not be loaded.', jobsLoadFailed: 'Saved jobs could not be loaded.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.', pickerSummary: 'Selected: {codes} codes · {labels} labels. Available: {rows} items and {remainingLabels} labels.', pickerLimit: 'Reduce the selection or copy count to fit this job limit.', copies: 'Copies', unsupported: 'Not supported in bulk printing'
 };
 const $ = (id) => document.getElementById(id);
 let session = null;
 let items = [];
 let controller = null;
 let pendingCsvRows = null;
+let savedCodeCatalog = null;
+const savedCodeSelection = new Map();
 
 function loadVendor(globalName, filename) {
   if (window[globalName]) return Promise.resolve();
@@ -31,6 +33,7 @@ function limits() { return session ? { rows: 500, labels: 2000 } : { rows: 50, l
 function track(name, params = {}) { window.trackBarcode?.(name, { tool: 'bulk', ...params }); }
 function status(message, error = false) { $('bulk-status').textContent = message; $('bulk-status').classList.toggle('is-error', error); }
 function setBusy(busy) { document.querySelectorAll('[data-export]').forEach((button) => button.disabled = busy); $('cancel-export').hidden = !busy; $('bulk-progress').hidden = !busy; }
+function formatText(template, values) { return Object.entries(values).reduce((text, [key, value]) => text.replaceAll(`{${key}}`, String(value)), template); }
 
 function readRows() {
   return [...document.querySelectorAll('#bulk-rows tr')].map((row, index) => validateBulkItem({
@@ -152,22 +155,117 @@ async function runExport(kind) {
   } finally { setBusy(false); controller = null; }
 }
 
-async function importSavedCodes(requestedIds = null) {
+async function loadSavedCodeCatalog() {
+  if (savedCodeCatalog) return { data: savedCodeCatalog, error: null };
+  const result = await listCodes();
+  if (!result.error) savedCodeCatalog = result.data || [];
+  return result;
+}
+
+function currentJobUsage() {
+  const rows = [...$('bulk-rows').children];
+  const allBlank = rows.length > 0 && rows.every((row) => !row.querySelector('[data-field=value]').value.trim());
+  return {
+    rows: allBlank ? 0 : rows.length,
+    labels: allBlank ? 0 : rows.reduce((sum, row) => {
+      if (!row.querySelector('[data-field=value]').value.trim()) return sum;
+      return sum + Math.max(1, Math.min(1000, Math.floor(Number(row.querySelector('[data-field=copies]').value) || 1)));
+    }, 0),
+  };
+}
+
+function visibleSavedCodes() {
+  const query = $('saved-codes-search').value.trim().toLocaleLowerCase();
+  if (!query) return savedCodeCatalog || [];
+  return (savedCodeCatalog || []).filter((code) => [code.name, code.value, code.code_type, ...(code.tags || [])]
+    .some((value) => String(value || '').toLocaleLowerCase().includes(query)));
+}
+
+function pickerCapacity() {
+  const usage = currentJobUsage();
+  const selected = (savedCodeCatalog || []).filter((code) => savedCodeSelection.has(code.id));
+  const labels = selected.reduce((sum, code) => sum + savedCodeSelection.get(code.id), 0);
+  const availableRows = Math.max(0, limits().rows - usage.rows);
+  const availableLabels = Math.max(0, limits().labels - usage.labels);
+  return { codes: selected.length, labels, availableRows, availableLabels, valid: selected.length > 0 && selected.length <= availableRows && labels <= availableLabels };
+}
+
+function updatePickerSummary() {
+  const capacity = pickerCapacity();
+  const summary = $('saved-codes-summary');
+  summary.textContent = capacity.codes > capacity.availableRows || capacity.labels > capacity.availableLabels
+    ? copy.pickerLimit
+    : formatText(copy.pickerSummary, { codes: capacity.codes, labels: capacity.labels, rows: capacity.availableRows, remainingLabels: capacity.availableLabels });
+  summary.classList.toggle('is-error', capacity.codes > capacity.availableRows || capacity.labels > capacity.availableLabels);
+  $('saved-codes-add').disabled = !capacity.valid;
+  const visible = visibleSavedCodes().filter((code) => validateBulkItem({ value: code.value, code_type: code.code_type }).reason !== 'unsupported_type');
+  const selectedVisible = visible.filter((code) => savedCodeSelection.has(code.id)).length;
+  $('saved-codes-select-all').checked = visible.length > 0 && selectedVisible === visible.length;
+  $('saved-codes-select-all').indeterminate = selectedVisible > 0 && selectedVisible < visible.length;
+}
+
+function renderSavedCodePicker() {
+  const codes = visibleSavedCodes();
+  const target = $('saved-codes-list');
+  target.replaceChildren();
+  $('saved-codes-empty').hidden = codes.length > 0;
+  for (const code of codes) {
+    const supported = validateBulkItem({ value: code.value, code_type: code.code_type }).reason !== 'unsupported_type';
+    const item = document.createElement('li'); item.className = 'bulk-saved-item';
+    const choice = document.createElement('label'); choice.className = 'bulk-saved-choice';
+    const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.value = code.id; checkbox.disabled = !supported; checkbox.checked = savedCodeSelection.has(code.id);
+    const details = document.createElement('span'); details.className = 'bulk-saved-details';
+    const name = document.createElement('strong'); name.textContent = code.name || code.value;
+    const meta = document.createElement('span'); meta.textContent = `${code.code_type} · ${code.value}${supported ? '' : ` · ${copy.unsupported}`}`;
+    details.append(name, meta); choice.append(checkbox, details);
+    const copiesLabel = document.createElement('label'); copiesLabel.className = 'bulk-saved-copies'; copiesLabel.append(document.createTextNode(copy.copies));
+    const copies = document.createElement('input'); copies.type = 'number'; copies.min = '1'; copies.max = '1000'; copies.value = String(savedCodeSelection.get(code.id) || 1); copies.disabled = !checkbox.checked; copies.setAttribute('aria-label', `${copy.copies}: ${code.name || code.value}`); copiesLabel.appendChild(copies);
+    checkbox.addEventListener('change', () => { if (checkbox.checked) savedCodeSelection.set(code.id, Number(copies.value)); else savedCodeSelection.delete(code.id); copies.disabled = !checkbox.checked; updatePickerSummary(); });
+    copies.addEventListener('input', () => { const value = Math.max(1, Math.min(1000, Math.floor(Number(copies.value) || 1))); savedCodeSelection.set(code.id, value); updatePickerSummary(); });
+    item.append(choice, copiesLabel); target.appendChild(item);
+  }
+  updatePickerSummary();
+}
+
+async function openSavedCodePicker() {
   if (!session) return status(copy.login, true);
-  const { data, error } = await listCodes();
-  const requested = Array.isArray(requestedIds) ? new Set(requestedIds) : null;
-  const codes = requested ? (data || []).filter((code) => requested.has(code.id)) : (data || []);
-  if (error || !codes.length) return status(copy.noCodes, true);
+  const { data, error } = await loadSavedCodeCatalog();
+  if (error) return status(copy.codesLoadFailed, true);
+  if (!data?.length) return status(copy.noCodes, true);
+  savedCodeSelection.clear(); $('saved-codes-search').value = ''; renderSavedCodePicker();
+  $('saved-codes-dialog').showModal(); $('saved-codes-search').focus();
+  track('bulk_saved_codes_picker_opened', { available: data.length });
+}
+
+function addSavedCodes(codes, copiesById = null, selection = 'catalog') {
+  if (!codes.length) return status(copy.noCodes, true);
   const existingRows = [...$('bulk-rows').children];
   if (existingRows.length && existingRows.every((row) => !row.querySelector('[data-field=value]').value.trim())) {
     $('bulk-rows').innerHTML = '';
   }
   let imported = 0;
   for (const code of codes) {
-    if (addRow({ value: code.value, code_type: code.code_type, name: code.name, copies: 1, settings: code.settings || {} })) imported += 1;
+    if (addRow({ value: code.value, code_type: code.code_type, name: code.name, copies: copiesById?.get(code.id) || 1, settings: code.settings || {} })) imported += 1;
   }
   status(`${copy.importedCodes} ${imported}.`);
-  track('bulk_saved_codes_import', { count: imported, selection: requested ? 'catalog' : 'all' });
+  track('bulk_saved_codes_import', { count: imported, selection });
+}
+
+async function importSavedCodes(requestedIds = null) {
+  if (!Array.isArray(requestedIds)) return openSavedCodePicker();
+  if (!session) return status(copy.login, true);
+  const { data, error } = await loadSavedCodeCatalog();
+  if (error) return status(copy.codesLoadFailed, true);
+  const requested = new Set(requestedIds);
+  addSavedCodes((data || []).filter((code) => requested.has(code.id)));
+}
+
+function addPickerSelection() {
+  const capacity = pickerCapacity();
+  if (!capacity.valid) return updatePickerSummary();
+  const selected = (savedCodeCatalog || []).filter((code) => savedCodeSelection.has(code.id));
+  addSavedCodes(selected, savedCodeSelection, 'picker');
+  $('saved-codes-dialog').close();
 }
 
 async function saveJob() {
@@ -218,6 +316,18 @@ $('csv-file').addEventListener('change', (event) => { const file = event.target.
 $('add-row').addEventListener('click', () => addRow());
 $('clear-rows').addEventListener('click', () => { $('bulk-rows').innerHTML = ''; updateSummary(); status(copy.ready); });
 $('import-saved').addEventListener('click', importSavedCodes);
+$('saved-codes-search').addEventListener('input', renderSavedCodePicker);
+$('saved-codes-select-all').addEventListener('change', () => {
+  for (const code of visibleSavedCodes()) {
+    if (validateBulkItem({ value: code.value, code_type: code.code_type }).reason === 'unsupported_type') continue;
+    if ($('saved-codes-select-all').checked) savedCodeSelection.set(code.id, savedCodeSelection.get(code.id) || 1);
+    else savedCodeSelection.delete(code.id);
+  }
+  renderSavedCodePicker();
+});
+$('saved-codes-add').addEventListener('click', addPickerSelection);
+$('saved-codes-cancel').addEventListener('click', () => $('saved-codes-dialog').close());
+$('saved-codes-close').addEventListener('click', () => $('saved-codes-dialog').close());
 $('save-job').addEventListener('click', saveJob);
 $('apply-mapping').addEventListener('click', applyMapping);
 $('load-job').addEventListener('click', loadPreviousJob);

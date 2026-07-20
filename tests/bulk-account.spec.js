@@ -66,6 +66,9 @@ test.describe('Bulk generator account integration', () => {
       await expect(page.locator('#account-mode')).toContainText('Signed in', { timeout: 10_000 });
 
       await page.locator('#import-saved').click();
+      await expect(page.locator('#saved-codes-dialog')).toBeVisible();
+      await page.locator('#saved-codes-select-all').check();
+      await page.locator('#saved-codes-add').click();
       await expect(page.locator('#bulk-rows tr')).toHaveCount(2);
       await expect(page.locator('#bulk-status')).toHaveText('Imported saved barcodes: 2.');
 

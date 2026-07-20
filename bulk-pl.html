@@ -24,6 +24,14 @@
     <div class="bulk-progress"><progress id="bulk-progress" hidden></progress><span id="progress-label"></span><button id="cancel-export" type="button" hidden>Anuluj</button></div><p id="bulk-status" class="bulk-status" role="status"></p>
     <section class="bulk-guide"><h2>Od arkusza do gotowych etykiet</h2><div><article><h3>1. Import i mapowanie</h3><p>Użyj pliku wyeksportowanego z magazynu lub systemu produktów. Nagłówki są rozpoznawane automatycznie, a dane można poprawić.</p></article><article><h3>2. Walidacja</h3><p>Sprawdzamy cyfry kontrolne EAN, UPC i ITF. Brakujące cyfry są dodawane i oznaczane przed eksportem.</p></article><article><h3>3. Eksport lokalny</h3><p>Pobierz PDF w fizycznym rozmiarze lub paczkę ZIP. Plik CSV i wartości kodów nie są wysyłane na serwer.</p></article></div></section>
   </main>
+  <dialog id="saved-codes-dialog" class="bulk-saved-dialog" aria-labelledby="saved-codes-title">
+    <div class="bulk-dialog-header"><div><h2 id="saved-codes-title">Dodaj zapisane kody</h2><p>Wybierz produkty i liczbę etykiet, które chcesz dodać do zadania.</p></div><button id="saved-codes-close" class="bulk-dialog-close" type="button" aria-label="Zamknij">&times;</button></div>
+    <div class="bulk-saved-controls"><label for="saved-codes-search">Szukaj zapisanych kodów<input id="saved-codes-search" type="search" autocomplete="off" placeholder="Nazwa, wartość, typ lub tag"></label><label class="bulk-check"><input id="saved-codes-select-all" type="checkbox"> Zaznacz wszystkie widoczne</label></div>
+    <p id="saved-codes-summary" class="bulk-saved-summary" aria-live="polite"></p>
+    <ul id="saved-codes-list" class="bulk-saved-list"></ul>
+    <p id="saved-codes-empty" class="bulk-saved-empty" hidden>Żaden zapisany kod nie pasuje do wyszukiwania.</p>
+    <div class="bulk-dialog-actions"><button id="saved-codes-cancel" class="btn-secondary" type="button">Anuluj</button><button id="saved-codes-add" class="btn-primary" type="button" disabled>Dodaj zaznaczone</button></div>
+  </dialog>
   <footer class="footer"><p class="footer-links">© 2026 Generator kodów kreskowych · <a href="/pl/polityka-prywatnosci">Prywatność</a> · <a href="/pl/regulamin">Regulamin</a> · <a href="https://daytodayapps.com/narzedzia/">Day to Day Apps</a></p></footer>
   <script src="../analytics.js" defer></script><script type="module" src="../bulk.js"></script>
 </body></html>
