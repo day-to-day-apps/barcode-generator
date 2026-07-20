@@ -8,7 +8,15 @@ export const BULK_PRESETS = {
   'thermal-100x150': { label: 'Shipping 100 x 150 mm', pageW: 100, pageH: 150, cols: 1, rows: 1, labelW: 100, labelH: 150, marginX: 0, marginY: 0, gapX: 0, gapY: 0 },
 };
 
-const TYPE_ALIASES = { CODE128: 'CODE128', 'CODE 128': 'CODE128', EAN13: 'EAN13', 'EAN-13': 'EAN13', EAN8: 'EAN8', 'EAN-8': 'EAN8', UPC: 'UPC', UPCA: 'UPC', 'UPC-A': 'UPC', CODE39: 'CODE39', 'CODE 39': 'CODE39', ITF14: 'ITF14', 'ITF-14': 'ITF14' };
+const TYPE_ALIASES = {
+  CODE128: 'CODE128', 'CODE 128': 'CODE128', 'GS1-128': 'GS1-128', GS1128: 'GS1-128',
+  EAN13: 'EAN13', 'EAN-13': 'EAN13', EAN8: 'EAN8', 'EAN-8': 'EAN8',
+  UPC: 'UPC', UPCA: 'UPC', 'UPC-A': 'UPC', CODE39: 'CODE39', 'CODE 39': 'CODE39',
+  ITF14: 'ITF14', 'ITF-14': 'ITF14', DATAMATRIX: 'DATAMATRIX', 'DATA MATRIX': 'DATAMATRIX',
+  PDF417: 'PDF417', 'PDF 417': 'PDF417', AZTEC: 'AZTEC',
+};
+
+export const TWO_D_TYPES = new Set(['DATAMATRIX', 'PDF417', 'AZTEC']);
 
 function checkDigit(value) {
   const sum = [...value].reverse().reduce((total, digit, index) => total + Number(digit) * (index % 2 === 0 ? 3 : 1), 0);
@@ -22,6 +30,8 @@ export function validateBulkItem(raw, index = 0) {
   if (!value) return { ...base, status: 'error', reason: 'missing_value' };
   if (!codeType) return { ...base, status: 'error', reason: 'unsupported_type' };
   if (codeType === 'CODE128' && !/^[\x20-\x7E]+$/.test(value)) return { ...base, status: 'error', reason: 'invalid_characters' };
+  if (codeType === 'GS1-128' && !/^[\x1D\x20-\x7E]+$/.test(value)) return { ...base, status: 'error', reason: 'invalid_characters' };
+  if (TWO_D_TYPES.has(codeType) && new TextEncoder().encode(value).length > 3000) return { ...base, status: 'error', reason: 'value_too_long' };
   if (codeType === 'CODE39' && !/^[0-9A-Z .\-$/+%]+$/.test(value.toUpperCase())) return { ...base, status: 'error', reason: 'invalid_characters' };
   if (codeType === 'CODE39' && value !== value.toUpperCase()) return { ...base, value: value.toUpperCase(), status: 'corrected', reason: 'uppercase_applied' };
   const specs = { EAN13: [12, 13], EAN8: [7, 8], UPC: [11, 12], ITF14: [13, 14] };
@@ -45,8 +55,42 @@ export function expandBulkItems(items, maxLabels = 2000) {
 }
 
 export function createBarcodeSvg(item, displayValue = true) {
+  if (TWO_D_TYPES.has(item.code_type)) {
+    const saved = item.settings && typeof item.settings === 'object' ? item.settings : {};
+    const defaults = { DATAMATRIX: 'datamatrix', PDF417: 'pdf417', AZTEC: 'azteccode' };
+    const allowedBcids = {
+      DATAMATRIX: new Set(['datamatrix', 'datamatrixrectangular']),
+      PDF417: new Set(['pdf417']),
+      AZTEC: new Set(['azteccode', 'azteccodecompact']),
+    };
+    const requested = String(saved.bcid || defaults[item.code_type]);
+    const bcid = allowedBcids[item.code_type].has(requested) ? requested : defaults[item.code_type];
+    const options = {
+      bcid,
+      text: item.value,
+      scale: Math.max(2, Math.min(6, Number(saved.scale) || 3)),
+      padding: Math.max(2, Math.min(12, Number(saved.padding) || 4)),
+      barcolor: /^#[0-9a-f]{6}$/i.test(saved.barcolor) ? saved.barcolor : '#111111',
+      backgroundcolor: /^#[0-9a-f]{6}$/i.test(saved.backgroundcolor) ? saved.backgroundcolor : '#ffffff',
+    };
+    if (bcid === 'pdf417') {
+      options.columns = Math.max(2, Math.min(8, Number(saved.columns) || 4));
+      options.eclevel = Math.max(2, Math.min(5, Number(saved.eclevel) || 3));
+      options.rowmult = 3;
+    } else if (bcid.startsWith('azteccode')) {
+      options.eclevel = Math.max(23, Math.min(50, Number(saved.eclevel) || 33));
+    }
+    return window.bwipjs.toSVG(options);
+  }
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  window.JsBarcode(svg, item.value, { format: item.code_type, width: 2, height: 80, margin: 12, displayValue, fontSize: 18, background: '#ffffff', lineColor: '#000000' });
+  const gs1 = item.code_type === 'GS1-128';
+  window.JsBarcode(svg, item.value, {
+    format: gs1 ? 'CODE128' : item.code_type,
+    ean128: gs1,
+    text: gs1 && item.settings?.hri ? item.settings.hri : undefined,
+    width: 2, height: 80, margin: 12, displayValue, fontSize: 18,
+    background: '#ffffff', lineColor: '#000000',
+  });
   return new XMLSerializer().serializeToString(svg);
 }
 

@@ -5203,6 +5203,7 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
 #status.is-error { color: #b91c1c; }
 [data-theme="dark"] #status.is-error { color: #fca5a5; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.tool-account-link{align-self:center;color:var(--primary,#185abd);font-weight:700;text-decoration:none}.tool-account-link:hover,.tool-account-link:focus-visible{text-decoration:underline}.tool-account-feedback{min-height:1.4em;margin:10px 0 0;color:var(--text-muted,#536170);font-size:.9rem}.tool-account-feedback.is-error{color:#b42318}
 
 .account-menu__header-email {
     display: block;

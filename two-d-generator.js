@@ -23,6 +23,26 @@
   let currentOptions = null;
   let lastTrackedSignature = '';
 
+  function savePayload() {
+    if (!currentOptions) return null;
+    const labels = { datamatrix: 'Data Matrix', datamatrixrectangular: 'Data Matrix', pdf417: 'PDF417', azteccode: 'Aztec', azteccodecompact: 'Aztec' };
+    const codeType = currentOptions.bcid.startsWith('datamatrix') ? 'DATAMATRIX'
+      : currentOptions.bcid === 'pdf417' ? 'PDF417' : 'AZTEC';
+    return {
+      code_type: codeType,
+      value: payload.value,
+      name: `${labels[currentOptions.bcid]} - ${payload.value.slice(0, 48)}`,
+      tags: ['2d'],
+      settings: { generator: '2d', ...currentOptions },
+    };
+  }
+
+  function publishSaveState() {
+    window.dispatchEvent(new CustomEvent('barcode:save-state', {
+      detail: { valid: Boolean(currentOptions), payload: savePayload() },
+    }));
+  }
+
   if (matchMedia('(max-width: 480px)').matches) advanced.open = false;
 
   function mode() {
@@ -72,7 +92,7 @@
   function render() {
     try {
       currentOptions = optionsFromForm();
-      window.bwipjs.toCanvas(canvas, currentOptions);
+      window.bwipjs.toCanvas(canvas, { ...currentOptions });
       canvas.dataset.format = currentOptions.bcid;
       const byteCount = new TextEncoder().encode(payload.value).length;
       metrics.textContent = `${byteCount} ${copy.bytes} · ${canvas.width} × ${canvas.height} ${copy.pixels}`;
@@ -84,6 +104,7 @@
         lastTrackedSignature = signature;
         window.trackBarcode?.('two_d_generate', { format: currentOptions.bcid, bytes: byteCount });
       }
+      publishSaveState();
     } catch (error) {
       currentOptions = null;
       delete canvas.dataset.format;
@@ -93,11 +114,15 @@
       status.textContent = friendlyError(error);
       status.classList.add('is-error');
       document.querySelectorAll('[data-two-d-action]').forEach((button) => { button.disabled = true; });
+      publishSaveState();
     }
   }
 
   function scheduleRender(delay = 120) {
     clearTimeout(renderTimer);
+    currentOptions = null;
+    document.querySelectorAll('[data-two-d-action]').forEach((button) => { button.disabled = true; });
+    publishSaveState();
     renderTimer = setTimeout(render, delay);
   }
 
@@ -105,7 +130,9 @@
     const anchor = document.createElement('a');
     anchor.href = URL.createObjectURL(blob);
     anchor.download = `${currentOptions.bcid}-${Date.now()}.${extension}`;
+    document.body.appendChild(anchor);
     anchor.click();
+    anchor.remove();
     setTimeout(() => URL.revokeObjectURL(anchor.href), 1000);
     window.trackBarcode?.('two_d_export', { format: currentOptions.bcid, file_type: extension });
   }
@@ -140,10 +167,10 @@
   form.addEventListener('input', () => scheduleRender());
   form.addEventListener('change', (event) => {
     if (event.target.name === 'mode') updatePanels();
-    else scheduleRender(0);
   });
   $('download-two-d-svg').addEventListener('click', exportSvg);
   $('download-two-d-png').addEventListener('click', exportPng);
   $('copy-two-d').addEventListener('click', copyPayload);
+  window.addEventListener('barcode:request-save-state', publishSaveState);
   updatePanels();
 }());

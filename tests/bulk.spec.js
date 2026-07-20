@@ -43,6 +43,32 @@ test('imports semicolon CSV and creates a readable PDF and SVG ZIP', async ({ pa
   expect(Object.keys(zip.files).filter((name) => name.endsWith('.svg'))).toHaveLength(3);
 });
 
+test('exports a mixed Data Matrix, PDF417 and Aztec batch', async ({ page }) => {
+  await page.goto('/bulk-barcode-generator');
+  await page.locator('#bulk-rows tr').first().locator('[data-field=value]').fill('BULK-DM-2026');
+  await page.locator('#bulk-rows tr').first().locator('[data-field=code_type]').selectOption('DATAMATRIX');
+  for (const [type, value] of [['PDF417', 'BULK-PDF-2026'], ['AZTEC', 'BULK-AZ-2026']]) {
+    await page.locator('#add-row').click();
+    const row = page.locator('#bulk-rows tr').last();
+    await row.locator('[data-field=value]').fill(value);
+    await row.locator('[data-field=code_type]').selectOption(type);
+  }
+  await expect(page.locator('#bulk-summary')).toContainText('3 valid');
+
+  const zipEvent = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'SVG ZIP' }).click();
+  const zip = await JSZip.loadAsync(await downloadBuffer(await zipEvent));
+  const svgFiles = Object.values(zip.files).filter((file) => file.name.endsWith('.svg'));
+  expect(svgFiles).toHaveLength(3);
+  const svgs = await Promise.all(svgFiles.map((file) => file.async('string')));
+  expect(svgs.every((svg) => svg.startsWith('<svg') && svg.includes('<path'))).toBe(true);
+
+  const pdfEvent = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'PDF', exact: true }).click();
+  const pdf = await PDFDocument.load(await downloadBuffer(await pdfEvent));
+  expect(pdf.getPageCount()).toBe(1);
+});
+
 test('PL and EN task pages expose final SEO signals', async ({ page }) => {
   const paths = ['/bulk-barcode-generator', '/pl/generator-kodow-z-csv', '/avery-label-printing', '/pl/drukowanie-etykiet-avery', '/warehouse-barcode-labels', '/pl/etykiety-kreskowe-dla-magazynu', '/thermal-barcode-label-printing', '/pl/druk-kodow-na-drukarce-termicznej'];
   for (const path of paths) {

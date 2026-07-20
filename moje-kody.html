@@ -13,9 +13,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="i18n.js?v=20260613130000"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"
-            integrity="sha384-Kk5SjBOKprEnGfyBWfD2zROFd1Cu8kwOXxG2GIhYPcoDL2rBJS9P8Ud1ZMy4412a"
-            crossorigin="anonymous"></script>
+    <script src="/vendor/jsbarcode.min.js"></script>
+    <script src="/vendor/bwip-js-min.js"></script>
 </head>
 <body data-page="moje-kody">
     <div class="app">
@@ -193,11 +192,33 @@
             selectAllCb.indeterminate = selected > 0 && selected < total;
         }
 
-        function renderBarcode(svgEl, type, value) {
+        function renderBarcode(svgEl, type, value, settings = {}) {
             try {
+                const twoD = { DATAMATRIX: 'datamatrix', PDF417: 'pdf417', AZTEC: 'azteccode' };
+                if (twoD[type] && window.bwipjs) {
+                    const allowed = {
+                        DATAMATRIX: new Set(['datamatrix', 'datamatrixrectangular']),
+                        PDF417: new Set(['pdf417']),
+                        AZTEC: new Set(['azteccode', 'azteccodecompact']),
+                    };
+                    const requested = String(settings.bcid || twoD[type]);
+                    const bcid = allowed[type].has(requested) ? requested : twoD[type];
+                    const markup = window.bwipjs.toSVG({
+                        bcid, text: value, scale: 2, padding: 3,
+                        barcolor: '#111111', backgroundcolor: '#ffffff',
+                        ...(bcid === 'pdf417' ? { columns: 4, eclevel: 3, rowmult: 3 } : {}),
+                    });
+                    const rendered = new DOMParser().parseFromString(markup, 'image/svg+xml').documentElement;
+                    rendered.classList.add('code-svg');
+                    rendered.setAttribute('aria-hidden', 'true');
+                    svgEl.replaceWith(document.importNode(rendered, true));
+                    return;
+                }
                 if (typeof JsBarcode !== 'function') return;
                 JsBarcode(svgEl, value, {
-                    format: type, width: 1.6, height: 50, margin: 4,
+                    format: type === 'GS1-128' ? 'CODE128' : type,
+                    ean128: type === 'GS1-128', text: type === 'GS1-128' ? settings.hri : undefined,
+                    width: 1.6, height: 50, margin: 4,
                     displayValue: true, fontSize: 12,
                 });
             } catch (_err) {
@@ -261,7 +282,7 @@
             }
 
             const svgEl = li.querySelector('.code-svg');
-            if (svgEl) renderBarcode(svgEl, row.code_type, row.value);
+            if (svgEl) renderBarcode(svgEl, row.code_type, row.value, row.settings || {});
 
             li.querySelector('.btn-regenerate').setAttribute('href', `./?load=${encodeURIComponent(row.id)}`);
 

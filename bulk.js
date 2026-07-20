@@ -2,7 +2,7 @@ import { parseCsvFile, rowsToJobItems } from './csv-import.js';
 import { getSession } from './supabase-client.js';
 import { listCodes } from './db-codes.js';
 import { savePrintJob, listJobs, getJobById } from './db-jobs.js';
-import { BULK_PRESETS, validateBulkItem, expandBulkItems, createBulkPdf, createBulkZip, createValidationReport, downloadBytes } from './bulk-export.js';
+import { BULK_PRESETS, TWO_D_TYPES, validateBulkItem, expandBulkItems, createBulkPdf, createBulkZip, createValidationReport, downloadBytes } from './bulk-export.js';
 
 const pl = document.documentElement.lang === 'pl';
 const copy = pl ? {
@@ -40,6 +40,7 @@ function readRows() {
     description: row.querySelector('[data-field=description]').value,
     price: row.querySelector('[data-field=price]').value,
     copies: row.querySelector('[data-field=copies]').value,
+    settings: row._settings || {},
   }, index));
 }
 
@@ -67,6 +68,7 @@ function addRow(item = {}) {
   if ($('bulk-rows').children.length >= limits().rows) { status(copy.limit, true); return false; }
   const fragment = $('bulk-row-template').content.cloneNode(true);
   const row = fragment.querySelector('tr');
+  row._settings = item.settings || item.extra?.settings || {};
   for (const field of ['value', 'code_type', 'name', 'description', 'price', 'copies']) {
     if (item[field] != null) row.querySelector(`[data-field=${field}]`).value = item[field];
   }
@@ -124,7 +126,10 @@ async function runExport(kind) {
   controller = new AbortController(); setBusy(true); $('bulk-progress').value = 0;
   const onProgress = (done, total) => { $('bulk-progress').max = total; $('bulk-progress').value = done; $('progress-label').textContent = `${done}/${total}`; };
   try {
-    if (kind !== 'report') await loadVendor('JsBarcode', 'jsbarcode.min.js');
+    if (kind !== 'report') {
+      await loadVendor('JsBarcode', 'jsbarcode.min.js');
+      if (selected.some((item) => TWO_D_TYPES.has(item.code_type))) await loadVendor('bwipjs', 'bwip-js-min.js');
+    }
     if (kind === 'pdf') await loadVendor('PDFLib', 'pdf-lib.min.js');
     if (kind.startsWith('zip-')) await loadVendor('JSZip', 'jszip.min.js');
     if (kind === 'pdf') {
@@ -159,7 +164,7 @@ async function importSavedCodes(requestedIds = null) {
   }
   let imported = 0;
   for (const code of codes) {
-    if (addRow({ value: code.value, code_type: code.code_type, name: code.name, copies: 1 })) imported += 1;
+    if (addRow({ value: code.value, code_type: code.code_type, name: code.name, copies: 1, settings: code.settings || {} })) imported += 1;
   }
   status(`${copy.importedCodes} ${imported}.`);
   track('bulk_saved_codes_import', { count: imported, selection: requested ? 'catalog' : 'all' });
@@ -169,7 +174,7 @@ async function saveJob() {
   if (!session) return status(copy.login, true);
   const selected = exportItems(); if (!selected) return;
   const name = $('job-name').value.trim() || `Bulk ${new Date().toISOString().slice(0, 10)}`;
-  const payload = selected.filter((item) => item.status !== 'error').map(({ status: _status, reason: _reason, index: _index, ...item }, position) => ({ ...item, position, extra: {} }));
+  const payload = selected.filter((item) => item.status !== 'error').map(({ status: _status, reason: _reason, index: _index, settings, ...item }, position) => ({ ...item, position, extra: { settings: settings || {} } }));
   const result = await savePrintJob({ name, notes: 'Created with bulk barcode generator' }, payload);
   if (result.error) return status(result.error.message, true);
   await loadJobOptions(result.data);

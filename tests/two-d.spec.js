@@ -19,6 +19,7 @@ test.describe('2D barcode generator', () => {
   test.beforeEach(async ({ page }) => {
     await page.route(/(googletagmanager\.com|google-analytics\.com)/, (route) =>
       route.fulfill({ status: 200, body: '', contentType: 'application/javascript' }));
+    await page.addInitScript(() => localStorage.setItem('barcode-cookie-consent', 'rejected'));
     await page.goto('/2d-barcode-generator');
     await page.addScriptTag({ url: '/vendor/zxing.min.js' });
   });
@@ -61,12 +62,21 @@ test.describe('2D barcode generator', () => {
 
     await page.locator('#two-d-payload').fill('Export-2026');
     await expect(page.locator('#download-two-d-svg')).toBeEnabled();
-    const svgDownload = page.waitForEvent('download');
+    await page.evaluate(() => {
+      window.__twoDDownloads = [];
+      const nativeClick = HTMLAnchorElement.prototype.click;
+      HTMLAnchorElement.prototype.click = function click() {
+        if (this.download) window.__twoDDownloads.push(this.download);
+        return nativeClick.call(this);
+      };
+    });
     await page.locator('#download-two-d-svg').click();
-    expect((await svgDownload).suggestedFilename()).toMatch(/^datamatrix-\d+\.svg$/);
-    const pngDownload = page.waitForEvent('download');
+    await expect.poll(() => page.evaluate(() => window.__twoDDownloads)).toHaveLength(1);
     await page.locator('#download-two-d-png').click();
-    expect((await pngDownload).suggestedFilename()).toMatch(/^datamatrix-\d+\.png$/);
+    await expect.poll(() => page.evaluate(() => window.__twoDDownloads)).toHaveLength(2);
+    const filenames = await page.evaluate(() => window.__twoDDownloads);
+    expect(filenames[0]).toMatch(/^datamatrix-\d+\.svg$/);
+    expect(filenames[1]).toMatch(/^datamatrix-\d+\.png$/);
   });
 
   test('updates format-specific settings without console errors', async ({ page }) => {
@@ -82,6 +92,73 @@ test.describe('2D barcode generator', () => {
     await page.locator('#aztec-format').selectOption('compact');
     await expect(page.locator('#two-d-status')).toHaveText('The barcode is ready to download.');
     expect(errors).toEqual([]);
+  });
+
+  test('publishes a complete account payload and preserves it through sign-in', async ({ page }) => {
+    const moduleErrors = [];
+    page.on('pageerror', (error) => moduleErrors.push(error.message));
+    const statePromise = page.evaluate(() => new Promise((resolve) => {
+      const handler = (event) => {
+        if (!event.detail?.valid) return;
+        window.removeEventListener('barcode:save-state', handler);
+        resolve(event.detail);
+      };
+      window.addEventListener('barcode:save-state', handler);
+    }));
+    await page.locator('#two-d-payload').fill('ACCOUNT-DATAMATRIX-2026');
+    const state = await statePromise;
+    expect(state).toMatchObject({
+      valid: true,
+      payload: {
+        code_type: 'DATAMATRIX',
+        value: 'ACCOUNT-DATAMATRIX-2026',
+        tags: ['2d'],
+        settings: { generator: '2d', bcid: 'datamatrix' },
+      },
+    });
+    const save = page.locator('[data-account-save]');
+    await expect(save).toBeEnabled();
+    expect(moduleErrors).toEqual([]);
+    await expect(save).toHaveText('Sign in to save');
+    await save.click();
+    await expect(page).toHaveURL(/\/konto\?returnTo=%2F2d-barcode-generator#login$/);
+    expect(moduleErrors).toEqual([]);
+    const pending = await page.evaluate(() => JSON.parse(sessionStorage.getItem('bg.pending.specialized-code')));
+    expect(pending.payload).toMatchObject({ code_type: 'DATAMATRIX', value: 'ACCOUNT-DATAMATRIX-2026' });
+    expect(pending.path).toBe('/2d-barcode-generator');
+  });
+
+  test('saves the generated 2D payload for an authenticated account', async ({ page }) => {
+    await page.route(/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\/\+esm/, (route) => route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      headers: { 'access-control-allow-origin': '*' },
+      body: `export function createClient(){return {
+        auth:{getSession:async()=>({data:{session:JSON.parse(localStorage.getItem('bg.auth'))},error:null})},
+        from(){const chain={
+          select(_columns,options){if(options?.head)return Promise.resolve({count:0,error:null});return chain},
+          insert(payload){window.__savedSpecializedPayload=payload;return chain},
+          single:async()=>({data:{id:'saved-test-id'},error:null})
+        };return chain}
+      }}`,
+    }));
+    await page.addInitScript(() => localStorage.setItem('bg.auth', JSON.stringify({
+      access_token: 'test-token', user: { id: '00000000-0000-4000-8000-000000000001', email: 'test@example.com' },
+    })));
+    await page.goto('/2d-barcode-generator');
+    await page.locator('#two-d-payload').fill('SAVED-ACCOUNT-2D');
+    const save = page.locator('[data-account-save]');
+    await expect(save).toHaveText('Save to account');
+    await expect(save).toBeEnabled();
+    await save.click();
+    await expect.poll(() => page.evaluate(() => window.__savedSpecializedPayload?.value || '')).toBe('SAVED-ACCOUNT-2D');
+    await expect(page.locator('[data-account-save-feedback]')).toHaveText('Barcode saved to your account.');
+    const payload = await page.evaluate(() => window.__savedSpecializedPayload);
+    expect(payload).toMatchObject({
+      user_id: '00000000-0000-4000-8000-000000000001',
+      code_type: 'DATAMATRIX', value: 'SAVED-ACCOUNT-2D', tags: ['2d'],
+      settings: { generator: '2d', bcid: 'datamatrix' },
+    });
   });
 
   test('Polish and English routes expose final SEO signals', async ({ page }) => {
@@ -120,4 +197,32 @@ test.describe('2D barcode generator', () => {
     expect(sources.some((source) => source.endsWith('/vendor/zxing.min.js'))).toBe(true);
     expect(sources.some((source) => source.includes('cdn.jsdelivr.net') && source.includes('@zxing'))).toBe(false);
   });
+});
+
+test('saved-code catalog renders a Data Matrix preview with the local library', async ({ page }) => {
+  await page.route(/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\/\+esm/, (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/javascript',
+    headers: { 'access-control-allow-origin': '*' },
+    body: `export function createClient(){return {
+      auth:{
+        getSession:async()=>({data:{session:JSON.parse(localStorage.getItem('bg.auth'))},error:null}),
+        onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})
+      },
+      from(){const chain={
+        select(){return chain},
+        order:async()=>({data:[{id:'00000000-0000-4000-8000-000000000002',code_type:'DATAMATRIX',value:'CATALOG-DM-2026',name:'Part label',tags:['2d'],settings:{generator:'2d',bcid:'datamatrix'},is_public:false,share_slug:null,created_at:'2026-07-20T10:00:00Z',updated_at:'2026-07-20T10:00:00Z'}],error:null})
+      };return chain}
+    }}`,
+  }));
+  await page.addInitScript(() => localStorage.setItem('bg.auth', JSON.stringify({
+    access_token: 'test-token', user: { id: '00000000-0000-4000-8000-000000000001', email: 'test@example.com' },
+  })));
+  await page.goto('/moje-kody');
+  await expect(page.locator('.code-row')).toHaveCount(1);
+  await expect(page.locator('.code-name')).toHaveText('Part label');
+  await expect(page.locator('.code-preview svg path')).not.toHaveCount(0);
+  const sources = await page.locator('script[src]').evaluateAll((scripts) => scripts.map((script) => script.src));
+  expect(sources.some((source) => source.endsWith('/vendor/bwip-js-min.js'))).toBe(true);
+  expect(sources.some((source) => source.includes('cdn.jsdelivr.net') && source.includes('jsbarcode'))).toBe(false);
 });

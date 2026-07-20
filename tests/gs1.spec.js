@@ -93,6 +93,23 @@ test.describe('GS1 public tool', () => {
     expect(errors).toEqual([]);
   });
 
+  test('publishes GS1 semantics for account saving and batch printing', async ({ page }) => {
+    await page.goto('/gs1-barcode-generator');
+    const statePromise = page.evaluate(() => new Promise((resolve) => {
+      window.addEventListener('barcode:save-state', (event) => resolve(event.detail), { once: true });
+    }));
+    await page.getByRole('radio', { name: 'GS1-128' }).check();
+    const state = await statePromise;
+    expect(state.valid).toBe(true);
+    expect(state.payload).toMatchObject({
+      code_type: 'GS1-128',
+      tags: ['gs1'],
+      settings: { generator: 'gs1', mode: 'gs1-128', format: 'CODE128', ean128: true },
+    });
+    expect(state.payload.settings.hri).toContain('(01)');
+    await expect(page.locator('[data-account-save]')).toBeEnabled();
+  });
+
   test('Polish route is canonical and mobile layout does not overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/pl/generator-kodow-gs1');

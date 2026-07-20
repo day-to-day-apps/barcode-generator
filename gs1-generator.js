@@ -28,6 +28,28 @@
   let current = null;
   let lastTrackedSignature = '';
 
+  function savePayload() {
+    if (!current) return null;
+    const selectedMode = mode();
+    const codeType = current.gs1 ? 'GS1-128' : current.format;
+    return {
+      code_type: codeType,
+      value: current.encoded,
+      name: current.type || codeType,
+      tags: ['gs1'],
+      settings: {
+        generator: 'gs1', mode: selectedMode, format: current.format,
+        ean128: current.gs1, hri: current.hri, elements: current.elements,
+      },
+    };
+  }
+
+  function publishSaveState() {
+    window.dispatchEvent(new CustomEvent('barcode:save-state', {
+      detail: { valid: Boolean(current), payload: savePayload() },
+    }));
+  }
+
   function mode() {
     return form.elements.mode.value;
   }
@@ -90,6 +112,7 @@
         lastTrackedSignature = signature;
         window.trackBarcode?.('gs1_generate', { mode: mode(), elements: current.elements.length, corrected: current.corrected });
       }
+      publishSaveState();
     } catch (error) {
       current = null;
       preview.replaceChildren();
@@ -99,6 +122,7 @@
       status.textContent = errorMessage(error);
       status.classList.add('is-error');
       document.querySelectorAll('[data-gs1-action]').forEach((button) => { button.disabled = true; });
+      publishSaveState();
     }
   }
 
@@ -111,7 +135,9 @@
     const anchor = document.createElement('a');
     anchor.href = URL.createObjectURL(blob);
     anchor.download = `gs1-${mode()}-${Date.now()}.${extension}`;
+    document.body.appendChild(anchor);
     anchor.click();
+    anchor.remove();
     setTimeout(() => URL.revokeObjectURL(anchor.href), 1000);
     window.trackBarcode?.('gs1_export', { mode: mode(), format: extension });
   }
@@ -152,5 +178,6 @@
   $('download-svg').addEventListener('click', () => download(svgBlob(), 'svg'));
   $('download-png').addEventListener('click', exportPng);
   $('copy-gs1').addEventListener('click', copyHri);
+  window.addEventListener('barcode:request-save-state', publishSaveState);
   showMode();
 }());

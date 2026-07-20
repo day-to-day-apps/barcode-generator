@@ -16,7 +16,7 @@ const ROOT_ASSETS = [
   'googlec18ae46a3db92f98.html',
   'analytics.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
   'bulk.js', 'bulk-export.js', 'bulk.css', 'gs1.js', 'gs1-generator.js', 'gs1.css',
-  'two-d-generator.js', 'two-d.css',
+  'two-d-generator.js', 'two-d.css', 'specialized-save.js',
   'csv-import.js', 'csv-worker.js', 'dashboard-stats.js', 'db-codes.js', 'db-jobs.js',
   'db-printers.js', 'db-templates.js', 'decoder.js', 'i18n.js', 'label-renderer.js',
   'nav-enhance.js', 'print-builder.js', 'printer-presets.json', 'reset-password-page.js',
