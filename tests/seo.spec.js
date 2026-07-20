@@ -82,13 +82,21 @@ test.describe('SEO - per language index page', () => {
   }
 });
 
-test.describe('SEO - localized Code 128 descriptions', () => {
+const FORMAT_PATHS = ['code-128', 'upc-a', 'code-39', 'itf-14', 'codabar'];
+const ENGLISH_FORMAT_DESCRIPTIONS = [
+  'High-density alphanumeric barcode',
+  '12-digit retail barcode',
+  'Variable-length alphanumeric barcode',
+  '14-digit packaging barcode',
+  'Simple numeric barcode',
+];
+
+test.describe('SEO - localized format descriptions', () => {
   for (const { code, path } of LANGS.filter(({ code }) => code !== 'en')) {
-    test(`[${code}] metadata is fully localized and consistent`, async ({ page }) => {
-      await page.goto(`${path}code-128/`);
+    for (const format of FORMAT_PATHS) test(`[${code}] ${format} metadata is fully localized`, async ({ page }) => {
+      await page.goto(`${path}${format}/`);
 
       const description = (await page.locator('meta[name="description"]').getAttribute('content')) ?? '';
-      expect(description).not.toContain('High-density alphanumeric barcode');
       expect(description.length).toBeGreaterThan(80);
       expect(description.length).toBeLessThanOrEqual(160);
       await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', description);
@@ -97,8 +105,12 @@ test.describe('SEO - localized Code 128 descriptions', () => {
       const structuredData = await page.locator('script[type="application/ld+json"]').allTextContents();
       const webPage = structuredData.map(JSON.parse).find((item) => item['@type'] === 'WebPage');
       expect(webPage?.inLanguage).toBe(code);
-      expect(webPage?.description).not.toContain('High-density alphanumeric barcode');
       expect(webPage?.description?.length).toBeGreaterThan(80);
+
+      for (const englishFragment of ENGLISH_FORMAT_DESCRIPTIONS) {
+        expect(description).not.toContain(englishFragment);
+        expect(webPage?.description).not.toContain(englishFragment);
+      }
     });
   }
 });

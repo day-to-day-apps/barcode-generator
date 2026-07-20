@@ -98,15 +98,69 @@ formats = {
 }
 
 descriptions_i18n = {
-    'pl': {'code-128': 'Gęsty kod alfanumeryczny do wysyłki, logistyki i GS1-128.'},
-    'de': {'code-128': 'Dichter alphanumerischer Barcode für Versand, Logistik und GS1-128.'},
-    'fr': {'code-128': 'Code-barres alphanumérique dense pour l’expédition, la logistique et GS1-128.'},
-    'es': {'code-128': 'Código de barras alfanumérico denso para envíos, logística y GS1-128.'},
-    'it': {'code-128': 'Codice a barre alfanumerico ad alta densità per spedizioni, logistica e GS1-128.'},
-    'pt': {'code-128': 'Código de barras alfanumérico de alta densidade para envios, logística e GS1-128.'},
-    'nl': {'code-128': 'Compacte alfanumerieke barcode voor verzending, logistiek en GS1-128.'},
-    'cs': {'code-128': 'Hustý alfanumerický kód pro přepravu, logistiku a GS1-128.'},
-    'uk': {'code-128': 'Щільний алфавітно-цифровий штрихкод для доставки, логістики та GS1-128.'},
+    'pl': {
+        'code-128': 'Gęsty kod alfanumeryczny do wysyłki, logistyki i GS1-128.',
+        'upc-a': '12-cyfrowy kod detaliczny używany w supermarketach i handlu międzynarodowym.',
+        'code-39': 'Kod alfanumeryczny o zmiennej długości do zastosowań przemysłowych i ewidencji.',
+        'itf-14': '14-cyfrowy kod opakowań zbiorczych, kartonów i jednostek wysyłkowych.',
+        'codabar': 'Prosty kod numeryczny używany w bibliotekach, bankach krwi i usługach kurierskich.',
+    },
+    'de': {
+        'code-128': 'Dichter alphanumerischer Barcode für Versand, Logistik und GS1-128.',
+        'upc-a': '12-stelliger Einzelhandelsbarcode für Supermärkte und den weltweiten Handel.',
+        'code-39': 'Alphanumerischer Barcode variabler Länge für Industrie und Bestandsführung.',
+        'itf-14': '14-stelliger Verpackungsbarcode für Versandkartons und Umverpackungen.',
+        'codabar': 'Einfacher numerischer Barcode für Bibliotheken, Blutbanken und Paketdienste.',
+    },
+    'fr': {
+        'code-128': 'Code-barres alphanumérique dense pour l’expédition, la logistique et GS1-128.',
+        'upc-a': 'Code-barres de vente à 12 chiffres utilisé en supermarché et dans le commerce mondial.',
+        'code-39': 'Code-barres alphanumérique de longueur variable pour l’industrie et les stocks.',
+        'itf-14': 'Code-barres d’emballage à 14 chiffres pour caisses, cartons et suremballages.',
+        'codabar': 'Code-barres numérique simple utilisé en bibliothèque, banque du sang et messagerie.',
+    },
+    'es': {
+        'code-128': 'Código de barras alfanumérico denso para envíos, logística y GS1-128.',
+        'upc-a': 'Código minorista de 12 dígitos usado en supermercados y comercio internacional.',
+        'code-39': 'Código alfanumérico de longitud variable para industria e inventario.',
+        'itf-14': 'Código de embalaje de 14 dígitos para cajas y paquetes exteriores.',
+        'codabar': 'Código numérico sencillo usado en bibliotecas, bancos de sangre y paquetería.',
+    },
+    'it': {
+        'code-128': 'Codice a barre alfanumerico ad alta densità per spedizioni, logistica e GS1-128.',
+        'upc-a': 'Codice retail a 12 cifre usato nei supermercati e nel commercio globale.',
+        'code-39': 'Codice alfanumerico a lunghezza variabile per industria e inventario.',
+        'itf-14': 'Codice per imballaggi a 14 cifre per casse, cartoni e confezioni esterne.',
+        'codabar': 'Codice numerico semplice usato in biblioteche, banche del sangue e spedizioni.',
+    },
+    'pt': {
+        'code-128': 'Código de barras alfanumérico de alta densidade para envios, logística e GS1-128.',
+        'upc-a': 'Código de varejo de 12 dígitos usado em supermercados e no comércio global.',
+        'code-39': 'Código alfanumérico de comprimento variável para indústria e inventário.',
+        'itf-14': 'Código de embalagem de 14 dígitos para caixas e pacotes externos.',
+        'codabar': 'Código numérico simples usado em bibliotecas, bancos de sangue e encomendas.',
+    },
+    'nl': {
+        'code-128': 'Compacte alfanumerieke barcode voor verzending, logistiek en GS1-128.',
+        'upc-a': '12-cijferige retailbarcode voor supermarkten en internationale handel.',
+        'code-39': 'Alfanumerieke barcode met variabele lengte voor industrie en voorraadbeheer.',
+        'itf-14': '14-cijferige verpakkingsbarcode voor verzenddozen en omverpakkingen.',
+        'codabar': 'Eenvoudige numerieke barcode voor bibliotheken, bloedbanken en pakketdiensten.',
+    },
+    'cs': {
+        'code-128': 'Hustý alfanumerický kód pro přepravu, logistiku a GS1-128.',
+        'upc-a': '12místný maloobchodní kód používaný v supermarketech a světovém obchodu.',
+        'code-39': 'Alfanumerický kód s proměnnou délkou pro průmysl a evidenci zásob.',
+        'itf-14': '14místný obalový kód pro přepravní bedny, kartony a vnější obaly.',
+        'codabar': 'Jednoduchý číselný kód používaný v knihovnách, krevních bankách a balíkových službách.',
+    },
+    'uk': {
+        'code-128': 'Щільний алфавітно-цифровий штрихкод для доставки, логістики та GS1-128.',
+        'upc-a': '12-значний роздрібний штрихкод для супермаркетів і міжнародної торгівлі.',
+        'code-39': 'Алфавітно-цифровий штрихкод змінної довжини для промисловості й обліку запасів.',
+        'itf-14': '14-значний код пакування для транспортних коробів, картонів і зовнішніх упаковок.',
+        'codabar': 'Простий цифровий штрихкод для бібліотек, банків крові та служб доставки.',
+    },
 }
 
 locale_strings = {
