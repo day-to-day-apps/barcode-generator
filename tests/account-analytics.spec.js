@@ -29,6 +29,7 @@ test('account events contain no barcode values or user identifiers', async ({ re
   const source = (await Promise.all(responses.map((response) => response.text()))).join('\n');
   for (const event of [
     'catalog_print_job_started',
+    'saved_code_product_updated',
     'template_duplicated',
     'printer_profile_saved',
     'print_job_reopened',

@@ -77,7 +77,7 @@ test('signed-in users can search saved codes and choose label quantities', async
     body: `export function createClient(){return {
       auth:{getSession:async()=>({data:{session:JSON.parse(localStorage.getItem('bg.auth'))},error:null})},
       from(table){const chain={select(){return chain},order:async()=>({data:table==='saved_codes'?[
-        {id:'00000000-0000-4000-8000-000000000011',code_type:'CODE128',value:'BIN-A-14',name:'Warehouse bin',tags:['warehouse'],settings:{}},
+        {id:'00000000-0000-4000-8000-000000000011',code_type:'CODE128',value:'BIN-A-14',name:'Warehouse bin',tags:['warehouse'],settings:{product:{description:'Zone A rack',price:'12.50 PLN',copies:4}}},
         {id:'00000000-0000-4000-8000-000000000012',code_type:'EAN13',value:'5901234123457',name:'Retail tea',tags:['shop'],settings:{}},
         {id:'00000000-0000-4000-8000-000000000013',code_type:'QR',value:'https://example.com',name:'Legacy QR',tags:[],settings:{}},
         {id:'00000000-0000-4000-8000-000000000014',code_type:'DATAMATRIX',value:'PART-DM-14',name:'Machine part',tags:['production'],settings:{bcid:'datamatrix'}}
@@ -117,6 +117,7 @@ test('signed-in users can search saved codes and choose label quantities', async
   await dialog.locator('#saved-codes-search').fill('warehouse');
   await expect(dialog.locator('.bulk-saved-item')).toHaveCount(1);
   await dialog.locator('.bulk-saved-choice input').check();
+  await expect(dialog.locator('.bulk-saved-copies input')).toHaveValue('4');
   await dialog.locator('.bulk-saved-copies input').fill('3');
   await expect(dialog.locator('#saved-codes-summary')).toContainText('1 codes · 3 labels');
   await expect(dialog.locator('#saved-codes-add')).toBeEnabled();
@@ -126,6 +127,8 @@ test('signed-in users can search saved codes and choose label quantities', async
   await expect(page.locator('#bulk-rows tr')).toHaveCount(1);
   await expect(page.locator('#bulk-rows [data-field=value]')).toHaveValue('BIN-A-14');
   await expect(page.locator('#bulk-rows [data-field=copies]')).toHaveValue('3');
+  await expect(page.locator('#bulk-rows [data-field=description]')).toHaveValue('Zone A rack');
+  await expect(page.locator('#bulk-rows [data-field=price]')).toHaveValue('12.50 PLN');
   await expect(page.locator('#bulk-status')).toHaveText('Imported saved barcodes: 1.');
 });
 

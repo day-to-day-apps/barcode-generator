@@ -239,7 +239,8 @@ function readCurrentBarcode() {
   const value = valueInp?.value?.trim();
   if (!code_type || !value) return null;
   const settings = collectSettings();
-  return { code_type, value, settings };
+  const name = document.getElementById('label-product-name')?.value?.trim().slice(0, 120) || null;
+  return { code_type, value, name, settings };
 }
 
 function collectSettings() {
@@ -253,6 +254,12 @@ function collectSettings() {
     if (!el) continue;
     out[id] = el.type === 'checkbox' ? el.checked : el.value;
   }
+  const product = {
+    description: document.getElementById('label-description')?.value?.trim().slice(0, 500) || '',
+    price: document.getElementById('label-price')?.value?.trim().slice(0, 64) || '',
+    copies: Math.max(1, Math.min(1000, Math.floor(Number(document.getElementById('label-copies')?.value) || 1))),
+  };
+  if (product.description || product.price || product.copies !== 1) out.product = product;
   return out;
 }
 
@@ -297,6 +304,7 @@ async function saveCurrentBarcode(btn) {
       user_id: state.session.user.id,
       code_type: data.code_type,
       value: data.value,
+      name: data.name,
       settings: data.settings,
     });
     if (error) throw error;
@@ -381,6 +389,7 @@ async function consumePendingCode() {
       user_id: state.session.user.id,
       code_type: pending.code_type,
       value: pending.value,
+      name: pending.name || null,
       settings: pending.settings || {},
     });
     if (error) throw error;

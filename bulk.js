@@ -1,6 +1,6 @@
 import { parseCsvFile, rowsToJobItems } from './csv-import.js';
 import { getSession } from './supabase-client.js';
-import { listCodes } from './db-codes.js';
+import { listCodes, normaliseProductMetadata } from './db-codes.js';
 import { savePrintJob, listJobs, getJobById } from './db-jobs.js';
 import { BULK_PRESETS, TWO_D_TYPES, validateBulkItem, expandBulkItems, createBulkPdf, createBulkZip, createValidationReport, downloadBytes } from './bulk-export.js';
 
@@ -219,7 +219,8 @@ function renderSavedCodePicker() {
     const meta = document.createElement('span'); meta.textContent = `${code.code_type} · ${code.value}${supported ? '' : ` · ${copy.unsupported}`}`;
     details.append(name, meta); choice.append(checkbox, details);
     const copiesLabel = document.createElement('label'); copiesLabel.className = 'bulk-saved-copies'; copiesLabel.append(document.createTextNode(copy.copies));
-    const copies = document.createElement('input'); copies.type = 'number'; copies.min = '1'; copies.max = '1000'; copies.value = String(savedCodeSelection.get(code.id) || 1); copies.disabled = !checkbox.checked; copies.setAttribute('aria-label', `${copy.copies}: ${code.name || code.value}`); copiesLabel.appendChild(copies);
+    const defaultCopies = normaliseProductMetadata(code.settings?.product).copies;
+    const copies = document.createElement('input'); copies.type = 'number'; copies.min = '1'; copies.max = '1000'; copies.value = String(savedCodeSelection.get(code.id) || defaultCopies); copies.disabled = !checkbox.checked; copies.setAttribute('aria-label', `${copy.copies}: ${code.name || code.value}`); copiesLabel.appendChild(copies);
     checkbox.addEventListener('change', () => { if (checkbox.checked) savedCodeSelection.set(code.id, Number(copies.value)); else savedCodeSelection.delete(code.id); copies.disabled = !checkbox.checked; updatePickerSummary(); });
     copies.addEventListener('input', () => { const value = Math.max(1, Math.min(1000, Math.floor(Number(copies.value) || 1))); savedCodeSelection.set(code.id, value); updatePickerSummary(); });
     item.append(choice, copiesLabel); target.appendChild(item);
@@ -245,7 +246,8 @@ function addSavedCodes(codes, copiesById = null, selection = 'catalog') {
   }
   let imported = 0;
   for (const code of codes) {
-    if (addRow({ value: code.value, code_type: code.code_type, name: code.name, copies: copiesById?.get(code.id) || 1, settings: code.settings || {} })) imported += 1;
+    const product = normaliseProductMetadata(code.settings?.product);
+    if (addRow({ value: code.value, code_type: code.code_type, name: code.name, description: product.description, price: product.price, copies: copiesById?.get(code.id) || product.copies, settings: code.settings || {} })) imported += 1;
   }
   status(`${copy.importedCodes} ${imported}.`);
   track('bulk_saved_codes_import', { count: imported, selection });
@@ -320,7 +322,7 @@ $('saved-codes-search').addEventListener('input', renderSavedCodePicker);
 $('saved-codes-select-all').addEventListener('change', () => {
   for (const code of visibleSavedCodes()) {
     if (validateBulkItem({ value: code.value, code_type: code.code_type }).reason === 'unsupported_type') continue;
-    if ($('saved-codes-select-all').checked) savedCodeSelection.set(code.id, savedCodeSelection.get(code.id) || 1);
+    if ($('saved-codes-select-all').checked) savedCodeSelection.set(code.id, savedCodeSelection.get(code.id) || normaliseProductMetadata(code.settings?.product).copies);
     else savedCodeSelection.delete(code.id);
   }
   renderSavedCodePicker();

@@ -5,6 +5,23 @@ import { getSupabase } from './supabase-client.js';
 
 export const FREE_CODES_LIMIT = 10;
 
+export function normaliseProductMetadata(raw = {}) {
+  const copies = Math.max(1, Math.min(1000, Math.floor(Number(raw?.copies) || 1)));
+  return {
+    description: String(raw?.description || '').trim().slice(0, 500),
+    price: String(raw?.price || '').trim().slice(0, 64),
+    copies,
+  };
+}
+
+export function withProductMetadata(settings = {}, raw = {}) {
+  const next = settings && typeof settings === 'object' ? { ...settings } : {};
+  const product = normaliseProductMetadata(raw);
+  if (!product.description && !product.price && product.copies === 1) delete next.product;
+  else next.product = product;
+  return next;
+}
+
 async function client() {
   const sb = await getSupabase();
   if (!sb) return null;

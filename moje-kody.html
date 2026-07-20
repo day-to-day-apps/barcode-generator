@@ -96,6 +96,7 @@
                 <p class="code-type"></p>
                 <p class="code-value"></p>
                 <p class="code-tags" hidden></p>
+                <p class="code-product" hidden></p>
                 <p class="code-date"></p>
                 <div class="code-rename-form" hidden>
                     <input type="text" class="rename-input" maxlength="120">
@@ -108,11 +109,18 @@
                     <button type="button" class="btn-action btn-tags-save" data-i18n="save">Save</button>
                     <button type="button" class="btn-action btn-tags-cancel" data-i18n="cancel">Cancel</button>
                 </div>
+                <div class="code-product-form" hidden>
+                    <label><span data-i18n="productDescription">Description</span><input type="text" class="product-description-input" maxlength="500"></label>
+                    <label><span data-i18n="productPrice">Price</span><input type="text" class="product-price-input" maxlength="64"></label>
+                    <label><span data-i18n="productCopies">Default label quantity</span><input type="number" class="product-copies-input" min="1" max="1000" value="1"></label>
+                    <div class="code-product-form-actions"><button type="button" class="btn-action btn-product-save" data-i18n="save">Save</button><button type="button" class="btn-action btn-product-cancel" data-i18n="cancel">Cancel</button></div>
+                </div>
             </div>
             <div class="code-actions">
                 <a class="btn-action btn-regenerate" href="#" data-i18n="regenerate">Open in generator</a>
                 <button type="button" class="btn-action btn-rename" data-i18n="rename">Rename</button>
                 <button type="button" class="btn-action btn-edit-tags" data-i18n="tags">Tags</button>
+                <button type="button" class="btn-action btn-edit-product" data-i18n="productDetails">Product details</button>
                 <button type="button" class="btn-action btn-toggle-public" aria-pressed="false" data-i18n="makePublic">Make public</button>
                 <button type="button" class="btn-action btn-copy-link" hidden data-i18n="copyLink">Copy link</button>
                 <a class="btn-action btn-open-link" href="#" target="_blank" rel="noopener noreferrer" hidden data-i18n="openLink">Open link</a>
@@ -127,7 +135,7 @@
         import { confirmAction, showTextValue } from './account-dialogs.js';
         import {
             listCodes, updateCode, deleteCode, bulkDeleteCodes,
-            setCodePublic, normaliseTagsInput, FREE_CODES_LIMIT,
+            setCodePublic, normaliseTagsInput, normaliseProductMetadata, withProductMetadata, FREE_CODES_LIMIT,
         } from './db-codes.js';
 
         const LANG = document.documentElement.lang || 'en';
@@ -164,7 +172,7 @@
 
         filterSearchInput.placeholder = T.filterSearchPlaceholder || '';
         filterClearBtn.setAttribute('aria-label', T.filterClear || 'Clear filters');
-        btnCreateJob.textContent = LANG === 'pl' ? 'Utwórz zadanie wydruku' : 'Create print job';
+        btnCreateJob.textContent = T.createPrintJob || 'Create print job';
 
         const dateFmt = new Intl.DateTimeFormat(LANG, {
             year: 'numeric', month: 'short', day: 'numeric',
@@ -247,6 +255,14 @@
             }
         }
 
+        function setProductDisplay(li, row) {
+            const productEl = li.querySelector('.code-product');
+            const product = normaliseProductMetadata(row.settings?.product);
+            const parts = [product.price, product.description, product.copies > 1 ? `×${product.copies}` : ''].filter(Boolean);
+            productEl.hidden = parts.length === 0;
+            productEl.textContent = parts.join(' · ');
+        }
+
         function shareUrl(slug) {
             return slug ? `${location.origin}/c/${slug}` : '';
         }
@@ -272,11 +288,16 @@
             const li = node.querySelector('.code-row');
             li.dataset.id = row.id;
             li._row = { ...row };
+            li.querySelectorAll('[data-i18n]').forEach((element) => {
+                const key = element.getAttribute('data-i18n');
+                if (T[key]) element.textContent = T[key];
+            });
 
             setNameDisplay(li, row);
             li.querySelector('.code-type').textContent = row.code_type;
             li.querySelector('.code-value').textContent = row.value;
             setTagsDisplay(li, row);
+            setProductDisplay(li, row);
             if (row.created_at) {
                 li.querySelector('.code-date').textContent = dateFmt.format(new Date(row.created_at));
             }
@@ -340,6 +361,40 @@
                 form.hidden = true;
                 window.trackBarcode?.('saved_code_tags_updated', { tag_count: tags.length });
                 announce(T.tagsSaved || 'Tags saved.');
+            });
+
+            li.querySelector('.btn-edit-product').addEventListener('click', () => {
+                const form = li.querySelector('.code-product-form');
+                const product = normaliseProductMetadata(li._row.settings?.product);
+                form.querySelector('.product-description-input').value = product.description;
+                form.querySelector('.product-price-input').value = product.price;
+                form.querySelector('.product-copies-input').value = String(product.copies);
+                form.hidden = false;
+                form.querySelector('.product-description-input').focus();
+            });
+            li.querySelector('.btn-product-cancel').addEventListener('click', () => {
+                li.querySelector('.code-product-form').hidden = true;
+            });
+            li.querySelector('.btn-product-save').addEventListener('click', async () => {
+                const form = li.querySelector('.code-product-form');
+                const settings = withProductMetadata(li._row.settings, {
+                    description: form.querySelector('.product-description-input').value,
+                    price: form.querySelector('.product-price-input').value,
+                    copies: form.querySelector('.product-copies-input').value,
+                });
+                const button = form.querySelector('.btn-product-save');
+                button.disabled = true;
+                const { error } = await updateCode(row.id, { settings });
+                button.disabled = false;
+                if (error) {
+                    showError(T.updateFail || 'Could not update the code.');
+                    return;
+                }
+                li._row.settings = settings;
+                setProductDisplay(li, li._row);
+                form.hidden = true;
+                window.trackBarcode?.('saved_code_product_updated');
+                announce(T.productSaved || 'Product details saved.');
             });
 
             const btnTogglePublic = li.querySelector('.btn-toggle-public');
@@ -457,10 +512,13 @@
             let visible = 0;
             rows.forEach((li) => {
                 const r = li._row || {};
+                const product = normaliseProductMetadata(r.settings?.product);
                 const haystack = [
                     r.name || '',
                     r.value || '',
                     Array.isArray(r.tags) ? r.tags.join(' ') : '',
+                    product.description,
+                    product.price,
                 ].join(' ').toLowerCase();
                 const matchQ = !q || haystack.includes(q);
                 const matchT = !type || r.code_type === type;
