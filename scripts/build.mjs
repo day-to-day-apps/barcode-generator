@@ -166,6 +166,131 @@ const TASK_PAGES = [
   },
 ];
 
+const GUIDE_PAGES = [
+  {
+    en: {
+      route: 'guides/gtin-ean-upc',
+      title: 'GTIN vs EAN vs UPC: Practical Barcode Guide',
+      description: 'Understand GTIN, EAN and UPC, choose the right retail barcode, validate check digits and open the correct free barcode generator.',
+      h1: 'GTIN, EAN and UPC: what is the difference?',
+      lead: 'GTIN is the product identifier; EAN-13, UPC-A and EAN-8 are barcode symbols that carry specific GTIN lengths. Use this guide to choose the correct format before creating a label.',
+      cta: ['Validate a GTIN or create a GS1 barcode', '/gs1-barcode-generator'],
+      labels: {
+        kicker: 'Retail barcode guide',
+        comparison: 'Quick comparison',
+        choose: 'Choose the right barcode',
+        examples: 'Examples and check digits',
+        mistakes: 'Common mistakes to avoid',
+        faq: 'Frequently asked questions',
+        sources: 'Official references',
+        related: 'Related tools and guides',
+      },
+      table: [
+        ['Name', 'Meaning', 'Typical use', 'Digits', 'Barcode symbol'],
+        ['GTIN-13', 'Global Trade Item Number', 'Retail products in Europe and many other markets', '13', 'EAN-13'],
+        ['GTIN-12', 'Global Trade Item Number', 'Retail products commonly sold in North America', '12', 'UPC-A'],
+        ['GTIN-8', 'Global Trade Item Number', 'Very small retail items when GTIN-13 will not fit', '8', 'EAN-8'],
+        ['GTIN-14', 'Global Trade Item Number', 'Cases and higher packaging levels, not retail POS items', '14', 'ITF-14 or GS1-128'],
+      ],
+      choices: [
+        ['A product scanned at a retail checkout', 'Use EAN-13 for a GTIN-13, UPC-A for a GTIN-12 or EAN-8 for an assigned GTIN-8. Confirm the identifier and symbol with your trading partner.'],
+        ['A carton or case moving through distribution', 'Use GTIN-14 in ITF-14 or GS1-128 where the receiving and logistics specification supports it. GTIN-14 is not intended for retail checkout.'],
+        ['A label that also needs batch, expiry or serial data', 'A plain EAN/UPC symbol carries only the GTIN. Use GS1-128, GS1 DataMatrix or another approved GS1 carrier for Application Identifier data.'],
+        ['An internal SKU or location that never leaves your company', 'A non-GS1 format such as Code 128 can be suitable when your own systems control allocation and scanning.'],
+      ],
+      examples: [
+        ['EAN-13 / GTIN-13', '5901234123457', 'The final digit 7 is the check digit. The generator validates it before rendering.'],
+        ['UPC-A / GTIN-12', '036000291452', 'A 12-digit identifier normally rendered as a UPC-A symbol.'],
+        ['ITF-14 / GTIN-14', '10012345678902', 'The first digit may represent a packaging level; the last digit is still a check digit.'],
+      ],
+      mistakes: [
+        'Inventing a retail GTIN in a barcode generator. A generator encodes a number; it does not assign a globally unique product identifier.',
+        'Treating the final check digit as part of the item reference. It is calculated from the preceding digits and detects common data-entry errors.',
+        'Using GTIN-14 for a consumer unit scanned at retail checkout.',
+        'Putting batch, expiry or serial data into EAN-13. Use a GS1 carrier designed for Application Identifiers instead.',
+      ],
+      faq: [
+        ['Is an EAN number the same as a GTIN?', 'EAN commonly refers to GTIN-13 and to the EAN-13 barcode symbol. GTIN is the identifier itself; EAN-13 is one way of representing it in a barcode.'],
+        ['Can a UPC be used outside North America?', 'GTIN-12 identifiers are globally valid, although GTIN-13 and EAN-13 are more common in many markets outside North America. Confirm acceptance with the retailer or marketplace.'],
+        ['Can this site give me a new retail barcode number?', 'No. It validates and renders identifiers you provide. For a globally unique retail GTIN, obtain the identifier from GS1 or your local GS1 Member Organisation.'],
+        ['Why does a valid-looking number fail validation?', 'Fixed-length numeric GS1 identifiers include a calculated final check digit. A wrong digit, omitted leading zero or incorrect total length will fail validation.'],
+      ],
+      links: [
+        ['EAN-13 generator', '/ean-13/'],
+        ['UPC-A generator', '/upc-a/'],
+        ['ITF-14 generator', '/itf-14/'],
+        ['GS1 generator', '/gs1-barcode-generator'],
+        ['Bulk CSV generator', '/bulk-barcode-generator'],
+      ],
+      sources: [
+        ['GS1: GTIN, barcode, EAN and UPC explained', 'https://support.gs1.org/support/solutions/articles/43000734124-what-is-the-difference-between-a-gs1-gtin-a-barcode-an-ean-and-a-upc-'],
+        ['GS1: get a barcode and GTIN', 'https://www.gs1.org/standards/get-barcodes'],
+        ['GS1: check digit calculator', 'https://www.gs1.org/services/check-digit-calculator'],
+      ],
+    },
+    pl: {
+      route: 'poradniki/gtin-ean-upc',
+      title: 'GTIN, EAN i UPC - czym się różnią?',
+      description: 'Poznaj różnice między GTIN, EAN i UPC, wybierz właściwy kod dla produktu, sprawdź cyfrę kontrolną i otwórz odpowiedni generator.',
+      h1: 'GTIN, EAN i UPC: czym się różnią?',
+      lead: 'GTIN jest identyfikatorem produktu, natomiast EAN-13, UPC-A i EAN-8 to symbole kodów kreskowych zapisujące określone długości GTIN. Ten poradnik pomaga dobrać format przed przygotowaniem etykiety.',
+      cta: ['Sprawdź GTIN lub utwórz kod GS1', '/pl/generator-kodow-gs1'],
+      labels: {
+        kicker: 'Poradnik kodów detalicznych',
+        comparison: 'Szybkie porównanie',
+        choose: 'Wybierz właściwy kod',
+        examples: 'Przykłady i cyfry kontrolne',
+        mistakes: 'Częste błędy',
+        faq: 'Najczęstsze pytania',
+        sources: 'Oficjalne źródła',
+        related: 'Powiązane narzędzia i poradniki',
+      },
+      table: [
+        ['Nazwa', 'Znaczenie', 'Typowe zastosowanie', 'Cyfry', 'Symbol kodu'],
+        ['GTIN-13', 'Globalny Numer Jednostki Handlowej', 'Produkty detaliczne w Europie i wielu innych krajach', '13', 'EAN-13'],
+        ['GTIN-12', 'Globalny Numer Jednostki Handlowej', 'Produkty detaliczne, najczęściej w Ameryce Północnej', '12', 'UPC-A'],
+        ['GTIN-8', 'Globalny Numer Jednostki Handlowej', 'Bardzo małe produkty, gdy GTIN-13 się nie mieści', '8', 'EAN-8'],
+        ['GTIN-14', 'Globalny Numer Jednostki Handlowej', 'Kartony i wyższe poziomy opakowania, nie kasa detaliczna', '14', 'ITF-14 lub GS1-128'],
+      ],
+      choices: [
+        ['Produkt skanowany przy kasie', 'Użyj EAN-13 dla GTIN-13, UPC-A dla GTIN-12 albo EAN-8 dla przydzielonego GTIN-8. Potwierdź identyfikator i symbol z odbiorcą handlowym.'],
+        ['Karton lub opakowanie zbiorcze w dystrybucji', 'Użyj GTIN-14 w symbolu ITF-14 lub GS1-128, jeśli obsługuje go specyfikacja odbiorcy. GTIN-14 nie służy do skanowania jednostki konsumenckiej przy kasie.'],
+        ['Etykieta z partią, datą ważności lub numerem seryjnym', 'Zwykły EAN/UPC przenosi tylko GTIN. Dla danych z Identyfikatorami Zastosowania użyj GS1-128, GS1 DataMatrix lub innego zatwierdzonego nośnika GS1.'],
+        ['Wewnętrzny SKU lub lokalizacja magazynowa', 'Code 128 może być odpowiedni, jeśli numeracja i skanowanie pozostają wyłącznie w systemach Twojej firmy.'],
+      ],
+      examples: [
+        ['EAN-13 / GTIN-13', '5901234123457', 'Ostatnia cyfra 7 jest cyfrą kontrolną. Generator sprawdza ją przed utworzeniem symbolu.'],
+        ['UPC-A / GTIN-12', '036000291452', 'Dwunastocyfrowy identyfikator zapisywany zazwyczaj jako symbol UPC-A.'],
+        ['ITF-14 / GTIN-14', '10012345678902', 'Pierwsza cyfra może oznaczać poziom opakowania, a ostatnia nadal jest cyfrą kontrolną.'],
+      ],
+      mistakes: [
+        'Wymyślanie numeru GTIN dla sprzedaży w generatorze. Generator koduje numer, ale nie przydziela globalnie unikalnego identyfikatora produktu.',
+        'Traktowanie ostatniej cyfry jako części numeru produktu. Cyfra kontrolna jest obliczana z wcześniejszych cyfr i wykrywa częste pomyłki.',
+        'Używanie GTIN-14 dla produktu konsumenckiego skanowanego przy kasie.',
+        'Umieszczanie partii, daty ważności lub numeru seryjnego w EAN-13 zamiast użycia właściwego nośnika GS1.',
+      ],
+      faq: [
+        ['Czy numer EAN jest tym samym co GTIN?', 'EAN często oznacza GTIN-13 oraz symbol EAN-13. GTIN jest samym identyfikatorem, a EAN-13 jednym ze sposobów zapisania go w kodzie kreskowym.'],
+        ['Czy kod UPC może być używany poza Ameryką Północną?', 'Identyfikatory GTIN-12 są globalnie ważne, chociaż w wielu krajach częściej spotyka się GTIN-13 i EAN-13. Akceptację należy potwierdzić ze sprzedawcą lub platformą.'],
+        ['Czy ta strona przydzieli mi nowy numer detaliczny?', 'Nie. Strona sprawdza i renderuje podane identyfikatory. Globalnie unikalny GTIN do handlu otrzymasz od GS1 lub lokalnej organizacji członkowskiej GS1.'],
+        ['Dlaczego poprawnie wyglądający numer nie przechodzi walidacji?', 'Numeryczne klucze GS1 o stałej długości mają obliczaną ostatnią cyfrę kontrolną. Błędna cyfra, pominięte zero wiodące albo zła długość powodują błąd.'],
+      ],
+      links: [
+        ['Generator EAN-13', '/pl/ean-13/'],
+        ['Generator UPC-A', '/pl/upc-a/'],
+        ['Generator ITF-14', '/pl/itf-14/'],
+        ['Generator GS1', '/pl/generator-kodow-gs1'],
+        ['Generator paczek CSV', '/pl/generator-kodow-z-csv'],
+      ],
+      sources: [
+        ['GS1: różnice między GTIN, kodem kreskowym, EAN i UPC', 'https://support.gs1.org/support/solutions/articles/43000734124-what-is-the-difference-between-a-gs1-gtin-a-barcode-an-ean-and-a-upc-'],
+        ['GS1: uzyskanie kodu i numeru GTIN', 'https://www.gs1.org/standards/get-barcodes'],
+        ['GS1: kalkulator cyfry kontrolnej', 'https://www.gs1.org/services/check-digit-calculator'],
+      ],
+    },
+  },
+];
+
 function taskPageHtml(page, lang, alternate) {
   const canonical = `${BASE}/${lang === 'pl' ? `pl/${page.route}` : page.route}`;
   const altUrl = `${BASE}/${lang === 'pl' ? alternate.route : `pl/${alternate.route}`}`;
@@ -182,6 +307,67 @@ function taskPageHtml(page, lang, alternate) {
     ],
   };
   return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${page.title}</title><meta name="description" content="${page.description}"><link rel="canonical" href="${canonical}"><link rel="alternate" hreflang="${lang}" href="${canonical}"><link rel="alternate" hreflang="${lang === 'pl' ? 'en' : 'pl'}" href="${altUrl}"><link rel="alternate" hreflang="x-default" href="${lang === 'en' ? canonical : altUrl}"><meta property="og:title" content="${page.title}"><meta property="og:description" content="${page.description}"><meta property="og:url" content="${canonical}"><meta property="og:type" content="article"><meta property="og:image" content="${BASE}/og-image.svg"><link rel="icon" href="${lang === 'pl' ? '../' : ''}favicon.svg"><link rel="stylesheet" href="${lang === 'pl' ? '../' : ''}styles.css"><script type="application/ld+json">${JSON.stringify(json)}</script></head><body class="bulk-page task-page"><header class="bulk-header"><a class="bulk-brand" href="/${lang === 'pl' ? 'pl/' : ''}">Barcode Generator</a><nav aria-label="${lang === 'pl' ? 'Główna' : 'Primary'}"><a href="${page.links[0][1]}">${toolLabel}</a><a href="/${lang === 'pl' ? 'pl/' : ''}decoder">Decoder</a><a href="${altUrl}">${languageName === 'Polski' ? 'EN' : 'PL'}</a></nav></header><main class="task-shell"><p class="task-kicker">${lang === 'pl' ? 'Poradnik i narzędzie' : 'Guide and tool'}</p><h1>${page.h1}</h1><p class="task-lead">${page.lead}</p><a class="btn-primary task-cta" href="${page.links[0][1]}">${page.links[0][0]}</a><section><h2>${howLabel}</h2><ol class="task-steps">${page.steps.map((step) => `<li><strong>${step}</strong></li>`).join('')}</ol></section><section><h2>${faqLabel}</h2><details open><summary>${page.faq[0]}</summary><p>${page.faq[1]}</p></details></section><nav class="task-links" aria-label="Related">${page.links.slice(1).map(([label, href]) => `<a href="${href}">${label}</a>`).join('')}</nav></main><footer class="footer"><p class="footer-links">© 2026 Barcode Generator · <a href="/${lang === 'pl' ? 'pl/polityka-prywatnosci' : 'privacy-policy'}">Privacy</a> · <a href="https://daytodayapps.com/narzedzia/">Day to Day Apps</a></p></footer><script src="${lang === 'pl' ? '../' : ''}analytics.js" defer></script></body></html>`;
+}
+
+function guidePageHtml(page, lang, alternate) {
+  const isPolish = lang === 'pl';
+  const canonical = `${BASE}/${isPolish ? `pl/${page.route}` : page.route}`;
+  const altUrl = `${BASE}/${isPolish ? alternate.route : `pl/${alternate.route}`}`;
+  const graph = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': ['Article', 'TechArticle'],
+        headline: page.h1,
+        description: page.description,
+        url: canonical,
+        inLanguage: lang,
+        datePublished: '2026-07-21',
+        dateModified: new Date().toISOString().slice(0, 10),
+        author: { '@type': 'Organization', name: 'Day to Day Apps', url: 'https://daytodayapps.com/' },
+        publisher: { '@type': 'Organization', name: 'Day to Day Apps', url: 'https://daytodayapps.com/' },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Barcode Generator', item: `${BASE}/${isPolish ? 'pl/' : ''}` },
+          { '@type': 'ListItem', position: 2, name: page.labels.kicker, item: canonical },
+        ],
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: page.faq.map(([name, text]) => ({ '@type': 'Question', name, acceptedAnswer: { '@type': 'Answer', text } })),
+      },
+    ],
+  };
+  const table = page.table;
+  return `<!doctype html>
+<html lang="${lang}">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>${page.title}</title>
+  <meta name="description" content="${page.description}"><meta name="robots" content="index, follow">
+  <link rel="canonical" href="${canonical}">
+  <link rel="alternate" hreflang="en" href="${isPolish ? altUrl : canonical}"><link rel="alternate" hreflang="pl" href="${isPolish ? canonical : altUrl}"><link rel="alternate" hreflang="x-default" href="${isPolish ? altUrl : canonical}">
+  <meta property="og:title" content="${page.title}"><meta property="og:description" content="${page.description}"><meta property="og:url" content="${canonical}"><meta property="og:type" content="article"><meta property="og:image" content="${BASE}/og-image.svg">
+  <link rel="icon" href="/${isPolish ? '' : ''}favicon.svg"><link rel="stylesheet" href="/bulk.css">
+  <script type="application/ld+json">${JSON.stringify(graph)}</script>
+</head>
+<body class="bulk-page guide-page">
+  <a class="skip-link" href="#guide-content">${isPolish ? 'Przejdź do treści' : 'Skip to content'}</a>
+  <header class="bulk-header"><a class="bulk-brand" href="/${isPolish ? 'pl/' : ''}">Barcode Generator</a><nav aria-label="${isPolish ? 'Główna' : 'Primary'}"><a href="${page.cta[1]}">${isPolish ? 'GS1' : 'GS1 tool'}</a><a href="/${isPolish ? 'pl/' : ''}decoder">Decoder</a><a href="${altUrl}">${isPolish ? 'EN' : 'PL'}</a></nav></header>
+  <main id="guide-content" class="task-shell guide-shell">
+    <p class="task-kicker">${page.labels.kicker}</p><h1>${page.h1}</h1><p class="task-lead">${page.lead}</p><a class="btn-primary task-cta" href="${page.cta[1]}">${page.cta[0]}</a>
+    <section aria-labelledby="comparison-heading"><h2 id="comparison-heading">${page.labels.comparison}</h2><div class="guide-table-wrap"><table class="guide-table"><thead><tr>${table[0].map((cell) => `<th scope="col">${cell}</th>`).join('')}</tr></thead><tbody>${table.slice(1).map((row) => `<tr>${row.map((cell, index) => index === 0 ? `<th scope="row">${cell}</th>` : `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>
+    <section aria-labelledby="choose-heading"><h2 id="choose-heading">${page.labels.choose}</h2><div class="guide-choice-grid">${page.choices.map(([title, text]) => `<article><h3>${title}</h3><p>${text}</p></article>`).join('')}</div></section>
+    <section aria-labelledby="examples-heading"><h2 id="examples-heading">${page.labels.examples}</h2><div class="guide-examples">${page.examples.map(([title, value, text]) => `<article><h3>${title}</h3><code>${value}</code><p>${text}</p></article>`).join('')}</div></section>
+    <section aria-labelledby="mistakes-heading"><h2 id="mistakes-heading">${page.labels.mistakes}</h2><ul class="guide-checklist">${page.mistakes.map((text) => `<li>${text}</li>`).join('')}</ul></section>
+    <section aria-labelledby="faq-heading"><h2 id="faq-heading">${page.labels.faq}</h2><div class="guide-faq">${page.faq.map(([question, answer]) => `<details><summary>${question}</summary><p>${answer}</p></details>`).join('')}</div></section>
+    <section aria-labelledby="sources-heading"><h2 id="sources-heading">${page.labels.sources}</h2><ul class="guide-sources">${page.sources.map(([label, href]) => `<li><a href="${href}" rel="noopener noreferrer">${label}</a></li>`).join('')}</ul></section>
+    <nav class="task-links" aria-label="${page.labels.related}">${page.links.map(([label, href]) => `<a href="${href}">${label}</a>`).join('')}</nav>
+  </main>
+  <footer class="footer"><p class="footer-links">© 2026 Barcode Generator · <a href="/${isPolish ? 'pl/polityka-prywatnosci' : 'privacy-policy'}">${isPolish ? 'Prywatność' : 'Privacy'}</a> · <a href="https://daytodayapps.com/narzedzia/">Day to Day Apps</a></p></footer><script src="/analytics.js" defer></script>
+</body></html>`;
 }
 
 function localisePrivateHtml(source, lang, page) {
@@ -286,6 +472,7 @@ function sitemapXml() {
     ['thermal-barcode-label-printing', 'druk-kodow-na-drukarce-termicznej'],
     ['gs1-barcode-generator', 'generator-kodow-gs1'],
     ['2d-barcode-generator', 'generator-kodow-2d'],
+    ['guides/gtin-ean-upc', 'poradniki/gtin-ean-upc'],
   ];
   for (const [english, polish] of taskGroups) {
     const alternatives = { en: `${BASE}/${english}`, pl: `${BASE}/pl/${polish}` };
@@ -338,6 +525,14 @@ for (const lang of LANGS) {
 for (const group of TASK_PAGES) {
   await writeFile(path.join(OUT, `${group.en.route}.html`), normaliseHtml(taskPageHtml(group.en, 'en', group.pl).replace('styles.css', 'bulk.css')), 'utf8');
   await writeFile(path.join(OUT, 'pl', `${group.pl.route}.html`), normaliseHtml(taskPageHtml(group.pl, 'pl', group.en).replace('styles.css', 'bulk.css')), 'utf8');
+}
+
+for (const group of GUIDE_PAGES) {
+  for (const [lang, page, alternate] of [['en', group.en, group.pl], ['pl', group.pl, group.en]]) {
+    const target = path.join(OUT, lang === 'pl' ? 'pl' : '', `${page.route}.html`);
+    await mkdir(path.dirname(target), { recursive: true });
+    await writeFile(target, normaliseHtml(guidePageHtml(page, lang, alternate)), 'utf8');
+  }
 }
 
 for (const lang of LANGS) {
@@ -435,6 +630,7 @@ const precache = [
   '/bulk-barcode-generator', '/pl/generator-kodow-z-csv',
   '/gs1-barcode-generator', '/pl/generator-kodow-gs1',
   '/2d-barcode-generator', '/pl/generator-kodow-2d',
+  '/guides/gtin-ean-upc', '/pl/poradniki/gtin-ean-upc',
   '/manifest.webmanifest', '/pwa-icon-192.png', '/pwa-icon-512.png', '/favicon.svg',
   '/landing.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
   '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/i18n.js', '/label-renderer.js', '/analytics.js',
@@ -452,4 +648,4 @@ const serviceWorker = (await readFile(path.join(ROOT, 'service-worker.template.j
   .replace('__PWA_VERSION__', pwaVersion)
   .replace('__PRECACHE__', JSON.stringify(precache, null, 4));
 await writeFile(path.join(OUT, 'service-worker.js'), serviceWorker, 'utf8');
-console.log(`Built production site in ${OUT} (92 sitemap URLs).`);
+console.log(`Built production site in ${OUT} (94 sitemap URLs).`);

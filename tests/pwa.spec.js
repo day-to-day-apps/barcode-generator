@@ -55,6 +55,9 @@ test.describe('PWA and offline tools', () => {
 
     await page.goto('/bulk-barcode-generator');
     await expect(page.locator('#csv-file')).toBeAttached();
+
+    await page.goto('/guides/gtin-ean-upc');
+    await expect(page.getByRole('heading', { name: 'GTIN, EAN and UPC: what is the difference?' })).toBeVisible();
     expect(pageErrors).toEqual([]);
   });
 

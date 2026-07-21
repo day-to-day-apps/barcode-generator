@@ -7,7 +7,9 @@ const PUBLIC_NAVIGATION = [
     /^\/(?:(?:pl|de|fr|es|it|pt|nl|cs|uk)\/)?decoder\/?$/,
     /^\/(?:(?:pl|de|fr|es|it|pt|nl|cs|uk)\/)?(?:ean-13|code-128|upc-a|code-39|itf-14|codabar)\/?$/,
     /^\/(?:bulk-barcode-generator|gs1-barcode-generator|2d-barcode-generator|avery-label-printing|warehouse-barcode-labels|thermal-barcode-label-printing)\/?$/,
-    /^\/pl\/(?:generator-kodow-z-csv|generator-kodow-gs1|generator-kodow-2d|drukowanie-etykiet-avery|etykiety-kreskowe-dla-magazynu|druk-kodow-na-drukarce-termicznej)\/?$/
+    /^\/pl\/(?:generator-kodow-z-csv|generator-kodow-gs1|generator-kodow-2d|drukowanie-etykiet-avery|etykiety-kreskowe-dla-magazynu|druk-kodow-na-drukarce-termicznej)\/?$/,
+    /^\/guides\/gtin-ean-upc\/?$/,
+    /^\/pl\/poradniki\/gtin-ean-upc\/?$/
 ];
 
 function isPublicNavigation(pathname) {

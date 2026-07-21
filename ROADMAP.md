@@ -98,8 +98,8 @@ Cel: bezpiecznie połączyć się z istniejącym projektem Supabase i przejrzeć
 - [x] Produkcyjna domena canonical: `https://barcode-generator.daytodayapps.com`.
 - [x] Aktualizacja `canonical`, `sitemap.xml`, `og:url`.
 - [x] Techniczny host Cloudflare Pages przekierowuje 301 do domeny canonical.
-- [ ] Lighthouse CI ≥ 95 dla Performance/SEO/Best/A11y.
-- [ ] PWA manifest + service worker (offline cache statyk).
+- [x] Lighthouse CI ≥ 95 dla Performance/SEO/Best/A11y.
+- [x] PWA manifest + service worker (offline cache statyk).
 
 ---
 
@@ -118,7 +118,7 @@ Sugerowana ścieżka: `/<lang>/ean-13/`, `/<lang>/upc/`, `/<lang>/code-128/`, `/
 
 ### Blog (opcjonalnie, M5+)
 - [ ] „Jak wygenerować kod EAN-13 do produktu spożywczego" (PL, EN).
-- [ ] „Różnica między EAN, UPC i GTIN" (PL, EN).
+- [x] „Różnica między EAN, UPC i GTIN" (PL, EN).
 - [ ] „Czy mogę używać darmowego generatora w sklepie?" (PL, EN).
 
 ---
