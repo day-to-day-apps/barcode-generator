@@ -47,6 +47,12 @@ test.describe('PWA and offline tools', () => {
 
     await page.goto('/decoder');
     await expect(page.locator('#drop-area')).toBeVisible();
+    expect(await page.evaluate(() => Boolean(window.ZXing))).toBe(false);
+    await page.locator('#file-input').setInputFiles({
+      name: 'offline-sample.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64'),
+    });
     await expect.poll(() => page.evaluate(() => ({
       zxing: Boolean(window.ZXing),
       jsBarcode: Boolean(window.JsBarcode),

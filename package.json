@@ -13,7 +13,11 @@
     "test:review": "node tests/reviewer/eval.mjs",
     "test:full": "npm run test:comprehensive && npm run test:review",
     "report": "playwright show-report",
-    "test:launch": "playwright test tests/domain-ads-config.spec.js tests/seo.spec.js tests/guide-seo.spec.js tests/decoder-seo.spec.js tests/ean13-inline.spec.js tests/format-inline.spec.js tests/smoke.spec.js tests/a11y.spec.js tests/m25-account.spec.js tests/account-lifecycle.spec.js tests/bulk-account.spec.js tests/print-layout.spec.js tests/production-crawl.spec.js tests/bulk.spec.js tests/gs1.spec.js tests/two-d.spec.js tests/consent.spec.js tests/job-history.spec.js tests/product-catalog.spec.js tests/template-duplicate.spec.js tests/account-analytics.spec.js tests/account-dialogs.spec.js tests/public-share-ui.spec.js tests/decoder-generator-flow.spec.js tests/pwa.spec.js --project=chromium",
+    "test:launch": "npm run test:launch:seo && npm run test:launch:public && npm run test:launch:tools && npm run test:launch:account",
+    "test:launch:seo": "playwright test tests/domain-ads-config.spec.js tests/seo.spec.js tests/guide-seo.spec.js tests/decoder-seo.spec.js tests/a11y.spec.js tests/production-crawl.spec.js --project=chromium --workers=1",
+    "test:launch:public": "playwright test tests/ean13-inline.spec.js tests/format-inline.spec.js tests/smoke.spec.js tests/decoder-generator-flow.spec.js tests/pwa.spec.js --project=chromium --workers=1",
+    "test:launch:tools": "playwright test tests/print-layout.spec.js tests/bulk.spec.js tests/gs1.spec.js tests/two-d.spec.js tests/consent.spec.js --project=chromium --workers=1",
+    "test:launch:account": "playwright test tests/m25-account.spec.js tests/account-lifecycle.spec.js tests/bulk-account.spec.js tests/job-history.spec.js tests/product-catalog.spec.js tests/template-duplicate.spec.js tests/account-analytics.spec.js tests/account-dialogs.spec.js tests/public-share-ui.spec.js --project=chromium --workers=1",
     "lighthouse:mobile": "node scripts/run-lighthouse.mjs mobile",
     "lighthouse:desktop": "node scripts/run-lighthouse.mjs desktop"
   },

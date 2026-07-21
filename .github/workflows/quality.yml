@@ -16,7 +16,7 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run build
-      - run: npm run test:launch -- --workers=1
+      - run: npm run test:launch
       - run: npm run lighthouse:mobile
       - run: npm run lighthouse:desktop
       - uses: actions/upload-artifact@v6
