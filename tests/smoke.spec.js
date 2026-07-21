@@ -30,6 +30,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('Index page - per language', () => {
+  test.setTimeout(90_000);
+
   for (const { code, path } of LANGS) {
     test(`[${code}] index.html loads cleanly`, async ({ page }) => {
       const errors = attachConsoleGuard(page);

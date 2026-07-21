@@ -190,8 +190,15 @@ test.describe('2D barcode generator', () => {
     await expect(page.locator('#two-d-preview')).toBeVisible();
   });
 
-  test('decoder loads ZXing from the first-party production bundle', async ({ page }) => {
+  test('decoder loads ZXing from the first-party bundle only when needed', async ({ page }) => {
     await page.goto('/decoder');
+
+    expect(await page.evaluate(() => typeof window.ZXing)).toBe('undefined');
+    await page.locator('#file-input').setInputFiles({
+      name: 'sample.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64'),
+    });
     await expect.poll(() => page.evaluate(() => typeof window.ZXing)).toBe('object');
     const sources = await page.locator('script[src]').evaluateAll((scripts) => scripts.map((script) => script.src));
     expect(sources.some((source) => source.endsWith('/vendor/zxing.min.js'))).toBe(true);

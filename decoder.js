@@ -119,6 +119,25 @@
     const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
 
     let codeReader = null;
+    let zxingPromise = null;
+
+    function ensureZXing() {
+        const existing = window.ZXing || window.ZXingBrowser;
+        if (existing && typeof existing.BrowserMultiFormatReader === 'function') {
+            return Promise.resolve(existing);
+        }
+        if (zxingPromise) return zxingPromise;
+
+        zxingPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = '/vendor/zxing.min.js';
+            script.async = true;
+            script.onload = () => resolve(window.ZXing || window.ZXingBrowser);
+            script.onerror = () => reject(new Error('Decoder library failed to load.'));
+            document.head.appendChild(script);
+        });
+        return zxingPromise;
+    }
 
     function getReader() {
         if (codeReader) return codeReader;
@@ -193,6 +212,13 @@
         resetResult();
         showSpinner(true);
 
+        try {
+            await ensureZXing();
+        } catch (_) {
+            showError('Decoder library failed to load. Check your internet connection.');
+            showSpinner(false);
+            return;
+        }
         const reader = getReader();
         if (!reader) {
             showError('Decoder library failed to load. Check your internet connection.');
@@ -890,6 +916,7 @@
 
     async function startZXingDetector() {
         usingNativeDetector = false;
+        await ensureZXing();
         const reader = getReader();
         if (!reader) throw new Error('Decoder library failed to load.');
 

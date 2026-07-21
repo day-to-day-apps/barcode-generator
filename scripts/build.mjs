@@ -18,7 +18,7 @@ const ROOT_ASSETS = [
   'manifest.webmanifest', 'pwa-register.js',
   'googlec18ae46a3db92f98.html',
   'analytics.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
-  'ean13-inline.js', 'ean13-inline.css',
+  'ean13-inline.js', 'ean13-inline.css', 'format-inline.js', 'format-inline.css',
   'bulk.js', 'bulk-export.js', 'bulk.css', 'gs1.js', 'gs1-generator.js', 'gs1.css',
   'two-d-generator.js', 'two-d.css', 'specialized-save.js',
   'csv-import.js', 'csv-worker.js', 'dashboard-stats.js', 'db-codes.js', 'db-jobs.js',
@@ -199,6 +199,92 @@ function addEan13Tool(html, lang) {
     .replace(/<a href="[^"]*\?type=ean13" class="landing__cta" data-cta="hero">/i, '<a href="#ean13-tool" class="landing__cta" data-cta="hero">')
     .replace(/(<section class="landing__hero">[\s\S]*?<\/section>)/i, `$1\n${tool}`)
     .replace('</body>', `    <script defer src="/vendor/jsbarcode.min.js"></script>\n    <script defer src="/ean13-inline.js?v=${ASSET_VERSIONS.get('ean13-inline.js')}"></script>\n</body>`);
+}
+
+const FORMAT_TOOL_CONFIG = {
+  'code-128': { name: 'Code 128', jsFormat: 'CODE128', appType: 'code128', example: 'ORDER-2026-001', inputMode: 'text', maxLength: 80 },
+  'upc-a': { name: 'UPC-A', jsFormat: 'UPC', appType: 'upc', example: '03600029145', inputMode: 'numeric', maxLength: 12 },
+  'code-39': { name: 'Code 39', jsFormat: 'CODE39', appType: 'code39', example: 'PRODUCT-2026', inputMode: 'text', maxLength: 48 },
+  'itf-14': { name: 'ITF-14', jsFormat: 'ITF14', appType: 'itf14', example: '1001234500001', inputMode: 'numeric', maxLength: 14 },
+  codabar: { name: 'Codabar', jsFormat: 'codabar', appType: 'codabar', example: 'A123456B', inputMode: 'text', maxLength: 48 },
+};
+
+const FORMAT_TOOL_CONTENT = {
+  en: { title: 'Create a {format} barcode now', label: 'Barcode value', hint: 'Enter a value compatible with {format}. It is validated locally before export.', generate: 'Generate', svg: 'Download SVG', png: 'Download PNG', full: 'Open advanced generator', invalid: 'Enter a valid value for {format}.', checksum: 'The check digit is incorrect. Expected: {digit}.', ready: 'Valid {format}: {value}' },
+  pl: { title: 'Utwórz kod {format} teraz', label: 'Wartość kodu', hint: 'Wpisz wartość zgodną z {format}. Dane są sprawdzane lokalnie przed eksportem.', generate: 'Generuj', svg: 'Pobierz SVG', png: 'Pobierz PNG', full: 'Otwórz generator zaawansowany', invalid: 'Wpisz wartość poprawną dla {format}.', checksum: 'Cyfra kontrolna jest nieprawidłowa. Oczekiwana: {digit}.', ready: 'Poprawny {format}: {value}' },
+  de: { title: '{format}-Barcode jetzt erstellen', label: 'Barcode-Wert', hint: 'Geben Sie einen mit {format} kompatiblen Wert ein. Er wird vor dem Export lokal geprüft.', generate: 'Erstellen', svg: 'SVG herunterladen', png: 'PNG herunterladen', full: 'Erweiterten Generator öffnen', invalid: 'Geben Sie einen gültigen Wert für {format} ein.', checksum: 'Die Prüfziffer ist falsch. Erwartet: {digit}.', ready: 'Gültiger {format}: {value}' },
+  fr: { title: 'Créer un code {format} maintenant', label: 'Valeur du code', hint: 'Saisissez une valeur compatible avec {format}. Elle est validée localement avant l’export.', generate: 'Générer', svg: 'Télécharger SVG', png: 'Télécharger PNG', full: 'Ouvrir le générateur avancé', invalid: 'Saisissez une valeur valide pour {format}.', checksum: 'La clé de contrôle est incorrecte. Valeur attendue : {digit}.', ready: '{format} valide : {value}' },
+  es: { title: 'Crea un código {format} ahora', label: 'Valor del código', hint: 'Introduce un valor compatible con {format}. Se valida localmente antes de exportarlo.', generate: 'Generar', svg: 'Descargar SVG', png: 'Descargar PNG', full: 'Abrir el generador avanzado', invalid: 'Introduce un valor válido para {format}.', checksum: 'El dígito de control es incorrecto. Se esperaba: {digit}.', ready: '{format} válido: {value}' },
+  it: { title: 'Crea subito un codice {format}', label: 'Valore del codice', hint: 'Inserisci un valore compatibile con {format}. Viene verificato localmente prima dell’esportazione.', generate: 'Genera', svg: 'Scarica SVG', png: 'Scarica PNG', full: 'Apri il generatore avanzato', invalid: 'Inserisci un valore valido per {format}.', checksum: 'La cifra di controllo non è corretta. Valore atteso: {digit}.', ready: '{format} valido: {value}' },
+  pt: { title: 'Crie um código {format} agora', label: 'Valor do código', hint: 'Digite um valor compatível com {format}. Ele é validado localmente antes da exportação.', generate: 'Gerar', svg: 'Baixar SVG', png: 'Baixar PNG', full: 'Abrir gerador avançado', invalid: 'Digite um valor válido para {format}.', checksum: 'O dígito de verificação está incorreto. Esperado: {digit}.', ready: '{format} válido: {value}' },
+  nl: { title: 'Maak nu een {format}-barcode', label: 'Barcodewaarde', hint: 'Voer een waarde in die geschikt is voor {format}. Deze wordt lokaal gecontroleerd voor export.', generate: 'Genereren', svg: 'SVG downloaden', png: 'PNG downloaden', full: 'Geavanceerde generator openen', invalid: 'Voer een geldige waarde voor {format} in.', checksum: 'Het controlecijfer is onjuist. Verwacht: {digit}.', ready: 'Geldige {format}: {value}' },
+  cs: { title: 'Vytvořte kód {format} hned', label: 'Hodnota kódu', hint: 'Zadejte hodnotu kompatibilní s {format}. Před exportem se ověří přímo v prohlížeči.', generate: 'Vygenerovat', svg: 'Stáhnout SVG', png: 'Stáhnout PNG', full: 'Otevřít pokročilý generátor', invalid: 'Zadejte platnou hodnotu pro {format}.', checksum: 'Kontrolní číslice není správná. Očekáváno: {digit}.', ready: 'Platný {format}: {value}' },
+  uk: { title: 'Створіть штрихкод {format} зараз', label: 'Значення коду', hint: 'Введіть значення, сумісне з {format}. Воно перевіряється локально перед експортом.', generate: 'Створити', svg: 'Завантажити SVG', png: 'Завантажити PNG', full: 'Відкрити розширений генератор', invalid: 'Введіть дійсне значення для {format}.', checksum: 'Контрольна цифра неправильна. Очікується: {digit}.', ready: 'Дійсний {format}: {value}' },
+};
+
+const FORMAT_NAV_CONTENT = {
+  en: ['Generator', 'Scanner', 'CSV batch'], pl: ['Generator', 'Skaner', 'Kody z CSV'],
+  de: ['Generator', 'Scanner', 'CSV-Stapel'], fr: ['Générateur', 'Scanner', 'Lot CSV'],
+  es: ['Generador', 'Escáner', 'Lote CSV'], it: ['Generatore', 'Scanner', 'Lotto CSV'],
+  pt: ['Gerador', 'Scanner', 'Lote CSV'], nl: ['Generator', 'Scanner', 'CSV-batch'],
+  cs: ['Generátor', 'Skener', 'Dávka CSV'], uk: ['Генератор', 'Сканер', 'Пакет CSV'],
+};
+
+function addFormatTool(html, lang, format) {
+  const config = FORMAT_TOOL_CONFIG[format];
+  const content = FORMAT_TOOL_CONTENT[lang] || FORMAT_TOOL_CONTENT.en;
+  const formatName = config.name;
+  const t = Object.fromEntries(Object.entries(content).map(([key, value]) => [key, value.replaceAll('{format}', formatName)]));
+  const advancedRoute = routeFor(lang);
+  const [generatorLabel, scannerLabel, bulkLabel] = FORMAT_NAV_CONTENT[lang] || FORMAT_NAV_CONTENT.en;
+  const bulkRoute = lang === 'pl' ? '/pl/generator-kodow-z-csv' : '/bulk-barcode-generator';
+  const header = `
+    <header class="format-page-header">
+        <div class="format-page-header__identity">
+            <a class="format-page-header__brand" href="${advancedRoute}" aria-label="Barcode Generator">
+                <span class="format-page-header__mark" aria-hidden="true">▥</span>
+                <span>Barcode Generator</span>
+            </a>
+            <a class="format-page-header__publisher" href="https://daytodayapps.com/">by Day to Day Apps</a>
+        </div>
+        <nav class="format-page-header__nav" aria-label="${generatorLabel}">
+            <a href="${advancedRoute}">${generatorLabel}</a>
+            <a href="${routeFor(lang, 'decoder')}">${scannerLabel}</a>
+            <a href="${bulkRoute}">${bulkLabel}</a>
+        </nav>
+    </header>`;
+  const tool = `
+        <section class="format-tool" id="format-tool" aria-labelledby="format-tool-title"
+            data-format="${config.jsFormat}" data-type="${config.appType}" data-name="${formatName}"
+            data-invalid="${t.invalid}" data-checksum="${t.checksum}" data-ready="${t.ready}">
+            <div class="format-tool__intro">
+                <h2 id="format-tool-title">${t.title}</h2>
+                <p>${t.hint}</p>
+            </div>
+            <form class="format-tool__form" novalidate>
+                <label for="format-inline-value">${t.label}</label>
+                <div class="format-tool__input-row">
+                    <input id="format-inline-value" name="barcode-value" value="${config.example}" inputmode="${config.inputMode}" autocomplete="off" maxlength="${config.maxLength}" aria-describedby="format-inline-hint format-inline-status">
+                    <button type="submit">${t.generate}</button>
+                </div>
+                <span id="format-inline-hint" class="format-tool__hint">${t.hint}</span>
+            </form>
+            <div class="format-tool__result">
+                <div class="format-tool__preview"><svg id="format-inline-barcode" role="img" aria-label="${formatName}"></svg></div>
+                <p id="format-inline-status" class="format-tool__status" role="status" aria-live="polite"></p>
+                <div class="format-tool__actions">
+                    <button type="button" data-download="svg">${t.svg}</button>
+                    <button type="button" data-download="png">${t.png}</button>
+                    <a href="${advancedRoute}?type=${config.appType}" data-advanced-link>${t.full}</a>
+                </div>
+            </div>
+        </section>`;
+  return html
+    .replace(/(<link rel="stylesheet" href="[^"]*styles\.css[^>]*>)/i, `$1\n    <link rel="stylesheet" href="/format-inline.css?v=${ASSET_VERSIONS.get('format-inline.css')}">`)
+    .replace(/(<body[^>]*>)/i, `$1\n${header}`)
+    .replace(/<a class="landing__cta" href="[^"]*">/i, '<a class="landing__cta" href="#format-tool">')
+    .replace(/(\s*<section class="landing__section)/i, `\n${tool}\n$1`)
+    .replace('</body>', `    <script defer src="/vendor/jsbarcode.min.js"></script>\n    <script defer src="/format-inline.js?v=${ASSET_VERSIONS.get('format-inline.js')}"></script>\n</body>`);
 }
 
 const DECODER_CONTENT = {
@@ -545,6 +631,7 @@ async function copyPublicDirectory(name) {
     }
     if (isLanding) html = improveLandingSeo(html, lang);
     if (rel.at(-2) === 'ean-13') html = addEan13Tool(html, lang);
+    if (FORMAT_TOOL_CONFIG[rel.at(-2)]) html = addFormatTool(html, lang, rel.at(-2));
     await writeFile(file, html, 'utf8');
   }
 }
@@ -618,12 +705,12 @@ for (const dir of [...FORMATS, ...LOCALE_DIRS]) await copyPublicDirectory(dir);
 
 for (const lang of LANGS) {
   const decoderPath = lang === 'en' ? path.join(OUT, 'decoder.html') : path.join(OUT, lang, 'decoder.html');
-  const prefix = lang === 'en' ? '' : '../';
   const decoderHtml = await readFile(decoderPath, 'utf8');
   await writeFile(
     decoderPath,
     enhanceDecoderHtml(decoderHtml, lang)
-      .replaceAll('https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js', `${prefix}vendor/zxing.min.js`),
+      .replace(/\s*<link[^>]+href=["'][^"']*zxing[^"']*["'][^>]*>/i, '')
+      .replace(/\s*<script[^>]+src=["'][^"']*zxing[^"']*["'][^>]*><\/script>/i, ''),
     'utf8',
   );
 }
@@ -776,8 +863,8 @@ const precache = [
   '/2d-barcode-generator', '/pl/generator-kodow-2d',
   '/guides/gtin-ean-upc', '/pl/poradniki/gtin-ean-upc',
   '/manifest.webmanifest', '/pwa-icon-192.png', '/pwa-icon-512.png', '/favicon.svg',
-  '/landing.css', '/decoder.css', '/ean13-inline.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
-  '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/decoder-i18n.js', '/ean13-inline.js', '/i18n.js', '/label-renderer.js', '/analytics.js',
+  '/landing.css', '/decoder.css', '/ean13-inline.css', '/format-inline.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
+  '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/decoder-i18n.js', '/ean13-inline.js', '/format-inline.js', '/i18n.js', '/label-renderer.js', '/analytics.js',
   '/pwa-register.js', '/auth-ui.js', '/supabase-client.js', '/supabase-config.js', '/db-codes.js',
   '/account-dialogs.js', '/bulk.js', '/bulk-export.js', '/csv-import.js', '/csv-worker.js',
   '/db-jobs.js', '/gs1.js', '/gs1-generator.js', '/two-d-generator.js', '/specialized-save.js',

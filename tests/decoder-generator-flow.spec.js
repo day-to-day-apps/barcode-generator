@@ -27,7 +27,7 @@ test.describe('decoder to generator flow', () => {
 
   test('decoded image links to a prefilled localized generator', async ({ page }) => {
     await page.goto('/pl/decoder');
-    await page.waitForFunction(() => window.JsBarcode && window.ZXing);
+    await page.waitForFunction(() => window.JsBarcode);
     const dataUrl = await page.evaluate(() => {
       const canvas = document.createElement('canvas');
       window.JsBarcode(canvas, '5901234123457', { format: 'EAN13', width: 3, height: 120, margin: 24 });
