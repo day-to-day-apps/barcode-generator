@@ -813,7 +813,7 @@ const appSource = await readFile(path.join(ROOT, 'app.js'), 'utf8');
 const prefillSource = await readFile(path.join(ROOT, 'generator-prefill.js'), 'utf8');
 const landingAppBase = appSource.replace(
   /    \/\/ The gallery sits below the generator on mobile,[\s\S]*?    }\r?\n\r?\n    syncTypeUI\(\);/,
-  `    // Decorative previews are outside the critical rendering path.\n    addEventListener('load', () => setTimeout(renderPopularPreviews, 10000), { once: true });\n\n    syncTypeUI();`,
+  `    // Render previews as soon as the browser is idle, without delaying them long enough to leave visible empty cards.\n    addEventListener('load', () => {\n        if ('requestIdleCallback' in window) requestIdleCallback(renderPopularPreviews, { timeout: 800 });\n        else setTimeout(renderPopularPreviews, 200);\n    }, { once: true });\n\n    syncTypeUI();`,
 );
 if (landingAppBase === appSource) throw new Error('Could not create deferred landing app bundle.');
 const immediateLandingApp = landingAppBase

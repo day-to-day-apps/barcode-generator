@@ -44,6 +44,3 @@ _fix.js
 # Local dev screenshots (auth UX iteration)
 _devshots/
 .lighthouse-*.json
-
-# Phase 4 E2E agent — contains credential fallback, do not commit
-tests/phase4-agent.spec.js

@@ -58,6 +58,7 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
 
     test(`[${code}] popular cards are visually distinct (border accents + displayValue text)`, async ({ page }) => {
       await page.goto(path);
+      await expect(page.locator('.popular-card[data-format="EAN13"] svg')).toBeVisible();
       // Cards must have non-default left-border colour, and each linear card must show <text> (displayValue:true)
       const borderColors = await page.locator('.popular-card[data-format]').evaluateAll((els) =>
         els.map((el) => ({

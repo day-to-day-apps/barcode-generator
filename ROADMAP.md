@@ -89,10 +89,10 @@ Cel: bezpiecznie połączyć się z istniejącym projektem Supabase i przejrzeć
 - [ ] ~~Magic link jako trzecia metoda.~~
 
 ### M4 — Publiczne udostępnianie kodów (opcjonalne)
-- [ ] Kolumna `is_public` + losowy `share_slug` (≥12 znaków base62).
-- [ ] Polityka RLS: SELECT po `share_slug` gdy `is_public = true`.
-- [ ] Strona `/c/<slug>.html` renderowana po stronie klienta.
-- [ ] Ochrona przed enumeracją (długi slug + ewentualny rate-limit po stronie Cloudflare).
+- [x] Kolumna `is_public` + losowy `share_slug` (12 znaków base62).
+- [x] Publiczny odczyt wyłącznie przez funkcję `get_shared_code`, zwracającą bezpieczną listę kolumn.
+- [x] Strona `/c/<slug>` renderowana przez Cloudflare Pages Function i oznaczona `noindex`.
+- [x] Ochrona przed enumeracją przez losowy slug i brak publicznego listowania rekordów.
 
 ### M5 — Polish / domena / wizerunek
 - [x] Produkcyjna domena canonical: `https://barcode-generator.daytodayapps.com`.
@@ -110,11 +110,11 @@ Cel: bezpiecznie połączyć się z istniejącym projektem Supabase i przejrzeć
 ### Strony per typ kodu (po jednej na język)
 Sugerowana ścieżka: `/<lang>/ean-13/`, `/<lang>/upc/`, `/<lang>/code-128/`, `/<lang>/qr/`.
 
-- [ ] EAN-13 (struktura, suma kontrolna, gdzie kupić prefiks GS1).
-- [ ] UPC-A vs UPC-E (różnice, kompatybilność z EAN).
-- [ ] Code 128 (zestawy A/B/C, kiedy stosować).
+- [x] EAN-13 (struktura, suma kontrolna, gdzie kupić prefiks GS1).
+- [x] UPC-A (walidacja, suma kontrolna i zastosowania).
+- [x] Code 128 (zestawy A/B/C, kiedy stosować).
 - [ ] QR Code (poziomy korekcji, rozmiar a pojemność).
-- [ ] ITF / ITF-14 (kody na opakowaniach zbiorczych).
+- [x] ITF / ITF-14 (kody na opakowaniach zbiorczych).
 
 ### Blog (opcjonalnie, M5+)
 - [ ] „Jak wygenerować kod EAN-13 do produktu spożywczego" (PL, EN).
@@ -126,8 +126,8 @@ Sugerowana ścieżka: `/<lang>/ean-13/`, `/<lang>/upc/`, `/<lang>/code-128/`, `/
 ## Nice-to-have (bez przypisanego milestone'a)
 
 - [ ] Dekoder z dłuższych obrazów / batch (kilka kodów na jednym zdjęciu).
-- [ ] Eksport listy kodów do PDF (wydruk arkusza etykiet).
-- [ ] Bulk import z CSV → generowanie wielu kodów naraz (z poziomu konta).
+- [x] Eksport listy kodów do PDF (wydruk arkusza etykiet).
+- [x] Bulk import z CSV → generowanie wielu kodów naraz, także z zapisanych kodów konta.
 - [ ] Skrót klawiaturowy „Ctrl+S" w generatorze → szybki zapis do konta.
 - [ ] Tryb wysokiego kontrastu (a11y AAA) jako opcja w ustawieniach.
 
