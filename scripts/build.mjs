@@ -1,6 +1,7 @@
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { runInNewContext } from 'node:vm';
 import path from 'node:path';
 import { PurgeCSS } from 'purgecss';
 import { PNG } from 'pngjs';
@@ -149,6 +150,60 @@ function improveLandingSeo(html, lang) {
     `$1\n${JSON.stringify(howTo, null, 2)}\n    $2`,
   );
   return output;
+}
+
+const DECODER_CONTENT = {
+  en: {
+    title: 'Barcode Scanner Online - Scan Images & Camera Free',
+    description: 'Scan barcodes online from a photo, image or camera. Read EAN, UPC, Code 128, QR, Data Matrix and PDF417 privately in your browser.',
+    kicker: 'Free online barcode reader', heading: 'Scan a barcode from an image or camera',
+    lead: 'Use the scanner above to read a barcode without installing an app. Choose a photo, paste an image from the clipboard or open the camera. Decoding happens locally on your device.',
+    how: 'How to scan a barcode online',
+    steps: ['Choose Scan with camera, upload a JPG, PNG or WebP image, or paste an image with Ctrl+V.', 'Keep the complete barcode sharp, well lit and inside the frame. Avoid glare across the bars or code modules.', 'Copy the decoded value or open it in the generator when you need to recreate and print the barcode.'],
+    formats: 'Supported barcode formats', formatText: 'The reader detects common retail, logistics and 2D symbols automatically. You do not need to select the format before scanning.',
+    groups: [['Retail', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Logistics and inventory', 'Code 128, Code 39, ITF, Codabar, RSS'], ['2D codes', 'QR Code, Data Matrix, PDF417, Aztec'], ['Other formats', 'Code 93, MaxiCode and supported ZXing variants']],
+    troubleshoot: 'If the barcode cannot be read', tips: ['Crop the image so the barcode occupies more of the frame.', 'Use the original photo instead of a compressed screenshot.', 'Photograph the label straight on and remove reflections or motion blur.', 'Keep the blank quiet zone on both sides of a linear barcode visible.'],
+    privacy: 'Private barcode scanning', privacyText: 'Images are processed in your browser and are not uploaded to our server. After the scanner has loaded once, its core image-reading functions can also work offline.',
+    related: 'Create or validate a barcode', links: [['Open the barcode generator', '/'], ['Generate barcodes from CSV', '/bulk-barcode-generator'], ['Validate GTIN and GS1 data', '/gs1-barcode-generator'], ['Read the GTIN, EAN and UPC guide', '/guides/gtin-ean-upc']],
+  },
+  pl: {
+    title: 'Skaner kodów kreskowych online - obraz i kamera',
+    description: 'Skanuj kody kreskowe online ze zdjęcia, obrazu lub kamery. Odczytuj EAN, UPC, Code 128, QR, Data Matrix i PDF417 prywatnie w przeglądarce.',
+    kicker: 'Darmowy czytnik kodów online', heading: 'Skanuj kod kreskowy z obrazu lub kamery',
+    lead: 'Użyj skanera powyżej bez instalowania aplikacji. Wybierz zdjęcie, wklej obraz ze schowka albo uruchom kamerę. Odczyt odbywa się lokalnie na Twoim urządzeniu.',
+    how: 'Jak zeskanować kod kreskowy online',
+    steps: ['Wybierz Skanuj kamerą, prześlij obraz JPG, PNG lub WebP albo wklej go skrótem Ctrl+V.', 'Umieść cały, ostry i dobrze oświetlony kod w kadrze. Unikaj odblasków na kreskach lub modułach.', 'Skopiuj odczytaną wartość albo otwórz ją w generatorze, aby ponownie utworzyć i wydrukować kod.'],
+    formats: 'Obsługiwane formaty kodów', formatText: 'Czytnik automatycznie rozpoznaje popularne symbole detaliczne, logistyczne i 2D. Nie musisz wybierać formatu przed skanowaniem.',
+    groups: [['Sprzedaż detaliczna', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Logistyka i magazyn', 'Code 128, Code 39, ITF, Codabar, RSS'], ['Kody 2D', 'QR Code, Data Matrix, PDF417, Aztec'], ['Pozostałe formaty', 'Code 93, MaxiCode i obsługiwane warianty ZXing']],
+    troubleshoot: 'Gdy kod nie może zostać odczytany', tips: ['Przytnij obraz tak, aby kod zajmował większą część kadru.', 'Użyj oryginalnego zdjęcia zamiast skompresowanego zrzutu ekranu.', 'Fotografuj etykietę na wprost i usuń odblaski oraz rozmycie ruchu.', 'Pozostaw widoczne jasne pole ochronne po obu stronach kodu liniowego.'],
+    privacy: 'Prywatne skanowanie kodów', privacyText: 'Obrazy są przetwarzane w przeglądarce i nie trafiają na nasz serwer. Po pierwszym załadowaniu skanera podstawowe odczytywanie obrazów może działać także offline.',
+    related: 'Utwórz lub sprawdź kod', links: [['Otwórz generator kodów', '/pl/'], ['Generuj kody z CSV', '/pl/generator-kodow-z-csv'], ['Sprawdź dane GTIN i GS1', '/pl/generator-kodow-gs1'], ['Przeczytaj poradnik GTIN, EAN i UPC', '/pl/poradniki/gtin-ean-upc']],
+  },
+  de: { title: 'Barcode Scanner Online - Bild oder Kamera kostenlos', description: 'Barcodes online aus Foto, Bild oder Kamera scannen. EAN, UPC, Code 128, QR, Data Matrix und PDF417 privat im Browser lesen.', kicker: 'Kostenloser Online-Barcode-Leser', heading: 'Barcode aus Bild oder Kamera scannen', lead: 'Lesen Sie Barcodes ohne App-Installation. Laden Sie ein Bild hoch, fügen Sie es aus der Zwischenablage ein oder öffnen Sie die Kamera. Die Verarbeitung erfolgt lokal.', how: 'Barcode online scannen', steps: ['Kamera öffnen, JPG-, PNG- oder WebP-Bild hochladen oder mit Strg+V einfügen.', 'Den vollständigen Barcode scharf, gut beleuchtet und ohne Reflexionen im Bild zeigen.', 'Den gelesenen Wert kopieren oder im Generator neu erstellen.'], formats: 'Unterstützte Barcode-Formate', formatText: 'Der Leser erkennt gängige Handels-, Logistik- und 2D-Symbole automatisch.', groups: [['Handel', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Logistik', 'Code 128, Code 39, ITF, Codabar, RSS'], ['2D-Codes', 'QR Code, Data Matrix, PDF417, Aztec'], ['Weitere', 'Code 93, MaxiCode und ZXing-Varianten']], troubleshoot: 'Wenn der Barcode nicht erkannt wird', tips: ['Bild eng um den Barcode zuschneiden.', 'Originalfoto statt komprimiertem Screenshot verwenden.', 'Etikett gerade und ohne Bewegungsunschärfe fotografieren.', 'Helle Ruhezonen neben linearen Barcodes sichtbar lassen.'], privacy: 'Privates Scannen', privacyText: 'Bilder werden lokal im Browser verarbeitet und nicht auf unseren Server hochgeladen. Kernfunktionen arbeiten nach dem ersten Laden auch offline.', related: 'Barcode erstellen oder prüfen', links: [['Barcode-Generator öffnen', '/de/'], ['Barcodes aus CSV erstellen', '/bulk-barcode-generator'], ['GTIN und GS1 prüfen', '/gs1-barcode-generator']] },
+  fr: { title: 'Scanner de code-barres en ligne - image et caméra', description: 'Scannez un code-barres depuis une photo, une image ou la caméra. Lisez EAN, UPC, Code 128, QR, Data Matrix et PDF417 dans votre navigateur.', kicker: 'Lecteur de codes-barres gratuit', heading: 'Scanner un code-barres depuis une image ou la caméra', lead: "Lisez un code sans installer d'application. Importez une image, collez-la depuis le presse-papiers ou ouvrez la caméra. Le traitement reste sur votre appareil.", how: 'Comment scanner un code-barres en ligne', steps: ['Ouvrez la caméra, importez une image JPG, PNG ou WebP, ou collez-la avec Ctrl+V.', 'Cadrez le code entier, net, bien éclairé et sans reflet.', 'Copiez la valeur lue ou recréez le code dans le générateur.'], formats: 'Formats pris en charge', formatText: 'Le lecteur reconnaît automatiquement les principaux symboles de vente, logistique et 2D.', groups: [['Commerce', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Logistique', 'Code 128, Code 39, ITF, Codabar, RSS'], ['Codes 2D', 'QR Code, Data Matrix, PDF417, Aztec'], ['Autres', 'Code 93, MaxiCode et variantes ZXing']], troubleshoot: "Si le code n'est pas détecté", tips: ["Recadrez l'image autour du code.", "Utilisez la photo originale plutôt qu'une capture compressée.", "Photographiez l'étiquette de face, sans reflet ni flou.", 'Conservez les zones claires de chaque côté du code linéaire.'], privacy: 'Lecture privée', privacyText: "Les images sont traitées dans le navigateur et ne sont pas envoyées à notre serveur. Les fonctions principales peuvent fonctionner hors connexion après le premier chargement.", related: 'Créer ou vérifier un code', links: [['Ouvrir le générateur', '/fr/'], ['Créer depuis un CSV', '/bulk-barcode-generator'], ['Vérifier GTIN et GS1', '/gs1-barcode-generator']] },
+  es: { title: 'Lector de códigos de barras online - imagen y cámara', description: 'Escanea códigos de barras desde una foto, imagen o cámara. Lee EAN, UPC, Code 128, QR, Data Matrix y PDF417 de forma privada.', kicker: 'Lector de códigos gratuito', heading: 'Escanear un código desde una imagen o cámara', lead: 'Lee códigos sin instalar una aplicación. Sube una imagen, pégala desde el portapapeles o abre la cámara. El procesamiento se realiza en tu dispositivo.', how: 'Cómo escanear un código online', steps: ['Abre la cámara, sube un JPG, PNG o WebP, o pega la imagen con Ctrl+V.', 'Muestra el código completo, enfocado, bien iluminado y sin reflejos.', 'Copia el valor leído o vuelve a crear el código en el generador.'], formats: 'Formatos compatibles', formatText: 'El lector detecta automáticamente símbolos comerciales, logísticos y 2D habituales.', groups: [['Comercio', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Logística', 'Code 128, Code 39, ITF, Codabar, RSS'], ['Códigos 2D', 'QR Code, Data Matrix, PDF417, Aztec'], ['Otros', 'Code 93, MaxiCode y variantes ZXing']], troubleshoot: 'Si no se puede leer el código', tips: ['Recorta la imagen alrededor del código.', 'Usa la foto original en vez de una captura comprimida.', 'Fotografía la etiqueta de frente y sin desenfoque.', 'Mantén visibles las zonas claras laterales del código lineal.'], privacy: 'Escaneo privado', privacyText: 'Las imágenes se procesan en el navegador y no se suben a nuestro servidor. Las funciones principales pueden trabajar sin conexión tras la primera carga.', related: 'Crear o validar un código', links: [['Abrir el generador', '/es/'], ['Generar desde CSV', '/bulk-barcode-generator'], ['Validar GTIN y GS1', '/gs1-barcode-generator']] },
+  it: { title: 'Lettore codici a barre online - immagine e fotocamera', description: 'Scansiona codici a barre da foto, immagine o fotocamera. Leggi EAN, UPC, Code 128, QR, Data Matrix e PDF417 privatamente nel browser.', kicker: 'Lettore di codici gratuito', heading: 'Scansiona un codice da immagine o fotocamera', lead: "Leggi un codice senza installare un'app. Carica un'immagine, incollala dagli appunti o apri la fotocamera. L'elaborazione avviene sul dispositivo.", how: 'Come scansionare un codice online', steps: ['Apri la fotocamera, carica un JPG, PNG o WebP oppure incolla con Ctrl+V.', 'Inquadra il codice intero, nitido, ben illuminato e senza riflessi.', 'Copia il valore letto o ricrea il codice nel generatore.'], formats: 'Formati supportati', formatText: 'Il lettore rileva automaticamente i comuni simboli retail, logistici e 2D.', groups: [['Vendita', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Logistica', 'Code 128, Code 39, ITF, Codabar, RSS'], ['Codici 2D', 'QR Code, Data Matrix, PDF417, Aztec'], ['Altri', 'Code 93, MaxiCode e varianti ZXing']], troubleshoot: 'Se il codice non viene letto', tips: ["Ritaglia l'immagine attorno al codice.", 'Usa la foto originale invece di uno screenshot compresso.', "Fotografa l'etichetta frontalmente e senza sfocature.", 'Mantieni visibili le zone chiare ai lati del codice lineare.'], privacy: 'Scansione privata', privacyText: 'Le immagini sono elaborate nel browser e non vengono caricate sul server. Le funzioni principali possono lavorare offline dopo il primo caricamento.', related: 'Crea o verifica un codice', links: [['Apri il generatore', '/it/'], ['Genera da CSV', '/bulk-barcode-generator'], ['Verifica GTIN e GS1', '/gs1-barcode-generator']] },
+  pt: { title: 'Leitor de código de barras online - imagem e câmera', description: 'Leia códigos de barras de foto, imagem ou câmera. Reconheça EAN, UPC, Code 128, QR, Data Matrix e PDF417 com privacidade no navegador.', kicker: 'Leitor de códigos gratuito', heading: 'Leia um código de uma imagem ou câmera', lead: 'Leia códigos sem instalar um aplicativo. Envie uma imagem, cole da área de transferência ou abra a câmera. O processamento ocorre no seu dispositivo.', how: 'Como ler um código online', steps: ['Abra a câmera, envie JPG, PNG ou WebP ou cole com Ctrl+V.', 'Mantenha o código inteiro, nítido, bem iluminado e sem reflexos.', 'Copie o valor lido ou recrie o código no gerador.'], formats: 'Formatos compatíveis', formatText: 'O leitor detecta automaticamente símbolos comuns de varejo, logística e 2D.', groups: [['Varejo', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Logística', 'Code 128, Code 39, ITF, Codabar, RSS'], ['Códigos 2D', 'QR Code, Data Matrix, PDF417, Aztec'], ['Outros', 'Code 93, MaxiCode e variantes ZXing']], troubleshoot: 'Se o código não for lido', tips: ['Recorte a imagem ao redor do código.', 'Use a foto original em vez de uma captura comprimida.', 'Fotografe a etiqueta de frente e sem desfoque.', 'Mantenha visíveis as zonas claras laterais do código linear.'], privacy: 'Leitura privada', privacyText: 'As imagens são processadas no navegador e não são enviadas ao servidor. As funções principais podem operar offline após o primeiro carregamento.', related: 'Crie ou valide um código', links: [['Abrir o gerador', '/pt/'], ['Gerar a partir de CSV', '/bulk-barcode-generator'], ['Validar GTIN e GS1', '/gs1-barcode-generator']] },
+  nl: { title: 'Barcode scanner online - afbeelding en camera gratis', description: 'Scan barcodes uit een foto, afbeelding of camera. Lees EAN, UPC, Code 128, QR, Data Matrix en PDF417 privé in je browser.', kicker: 'Gratis online barcodelezer', heading: 'Scan een barcode uit een afbeelding of camera', lead: 'Lees een barcode zonder app te installeren. Upload of plak een afbeelding of open de camera. De verwerking gebeurt lokaal op je apparaat.', how: 'Een barcode online scannen', steps: ['Open de camera, upload JPG, PNG of WebP of plak met Ctrl+V.', 'Houd de volledige barcode scherp, goed verlicht en zonder reflectie in beeld.', 'Kopieer de gelezen waarde of maak de barcode opnieuw in de generator.'], formats: 'Ondersteunde formaten', formatText: 'De lezer herkent gangbare retail-, logistieke en 2D-symbolen automatisch.', groups: [['Retail', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Logistiek', 'Code 128, Code 39, ITF, Codabar, RSS'], ['2D-codes', 'QR Code, Data Matrix, PDF417, Aztec'], ['Overig', 'Code 93, MaxiCode en ZXing-varianten']], troubleshoot: 'Als de barcode niet wordt gelezen', tips: ['Snijd de afbeelding dicht rond de barcode bij.', 'Gebruik de originele foto in plaats van een gecomprimeerde screenshot.', 'Fotografeer het etiket recht en zonder bewegingsonscherpte.', 'Laat de lichte zones naast een lineaire barcode zichtbaar.'], privacy: 'Privé scannen', privacyText: 'Afbeeldingen worden in de browser verwerkt en niet naar onze server geüpload. De kernfuncties werken na de eerste keer laden ook offline.', related: 'Maak of controleer een barcode', links: [['Open de generator', '/nl/'], ['Genereer vanuit CSV', '/bulk-barcode-generator'], ['Controleer GTIN en GS1', '/gs1-barcode-generator']] },
+  cs: { title: 'Čtečka čárových kódů online - obrázek a kamera', description: 'Skenujte čárové kódy z fotografie, obrázku nebo kamery. Čtěte EAN, UPC, Code 128, QR, Data Matrix a PDF417 soukromě v prohlížeči.', kicker: 'Bezplatná online čtečka kódů', heading: 'Naskenujte kód z obrázku nebo kamery', lead: 'Přečtěte kód bez instalace aplikace. Nahrajte či vložte obrázek nebo otevřete kameru. Zpracování probíhá místně ve vašem zařízení.', how: 'Jak naskenovat kód online', steps: ['Otevřete kameru, nahrajte JPG, PNG či WebP nebo vložte obrázek pomocí Ctrl+V.', 'Zobrazte celý kód ostře, dobře osvětlený a bez odlesků.', 'Zkopírujte přečtenou hodnotu nebo vytvořte kód znovu v generátoru.'], formats: 'Podporované formáty', formatText: 'Čtečka automaticky rozpozná běžné maloobchodní, logistické a 2D symboly.', groups: [['Maloobchod', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Logistika', 'Code 128, Code 39, ITF, Codabar, RSS'], ['2D kódy', 'QR Code, Data Matrix, PDF417, Aztec'], ['Další', 'Code 93, MaxiCode a varianty ZXing']], troubleshoot: 'Když kód nelze přečíst', tips: ['Ořízněte obrázek těsně kolem kódu.', 'Použijte původní fotografii místo komprimovaného snímku.', 'Foťte štítek zpříma, bez odlesků a rozmazání.', 'Ponechte viditelné světlé zóny po stranách lineárního kódu.'], privacy: 'Soukromé skenování', privacyText: 'Obrázky se zpracovávají v prohlížeči a neodesílají na server. Základní funkce mohou po prvním načtení fungovat offline.', related: 'Vytvořte nebo ověřte kód', links: [['Otevřít generátor', '/cs/'], ['Generovat z CSV', '/bulk-barcode-generator'], ['Ověřit GTIN a GS1', '/gs1-barcode-generator']] },
+  uk: { title: 'Сканер штрихкодів онлайн - зображення та камера', description: 'Скануйте штрихкоди з фото, зображення або камери. Розпізнавайте EAN, UPC, Code 128, QR, Data Matrix і PDF417 приватно у браузері.', kicker: 'Безкоштовний онлайн-сканер', heading: 'Скануйте штрихкод із зображення або камери', lead: 'Зчитуйте код без встановлення застосунку. Завантажте чи вставте зображення або відкрийте камеру. Обробка відбувається локально на пристрої.', how: 'Як сканувати штрихкод онлайн', steps: ['Відкрийте камеру, завантажте JPG, PNG чи WebP або вставте зображення через Ctrl+V.', 'Покажіть увесь код чітко, з добрим освітленням і без відблисків.', 'Скопіюйте значення або відтворіть код у генераторі.'], formats: 'Підтримувані формати', formatText: 'Сканер автоматично розпізнає поширені роздрібні, логістичні та 2D-символи.', groups: [['Роздріб', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Логістика', 'Code 128, Code 39, ITF, Codabar, RSS'], ['2D-коди', 'QR Code, Data Matrix, PDF417, Aztec'], ['Інші', 'Code 93, MaxiCode та варіанти ZXing']], troubleshoot: 'Якщо код не зчитується', tips: ['Обріжте зображення навколо коду.', 'Використайте оригінальне фото замість стисненого знімка.', 'Фотографуйте етикетку прямо, без відблисків і розмиття.', 'Залиште видимими світлі зони з боків лінійного коду.'], privacy: 'Приватне сканування', privacyText: 'Зображення обробляються у браузері й не надсилаються на сервер. Основні функції можуть працювати офлайн після першого завантаження.', related: 'Створіть або перевірте код', links: [['Відкрити генератор', '/uk/'], ['Генерувати з CSV', '/bulk-barcode-generator'], ['Перевірити GTIN і GS1', '/gs1-barcode-generator']] },
+};
+
+function enhanceDecoderHtml(html, lang) {
+  const page = DECODER_CONTENT[lang];
+  const guide = `<section class="decoder-guide" aria-labelledby="decoder-guide-title">
+    <p class="decoder-guide__kicker">${page.kicker}</p><h2 id="decoder-guide-title">${page.heading}</h2><p class="decoder-guide__lead">${page.lead}</p>
+    <div class="decoder-guide__columns"><section><h3>${page.how}</h3><ol>${page.steps.map((step) => `<li>${step}</li>`).join('')}</ol></section><section><h3>${page.formats}</h3><p>${page.formatText}</p><dl class="decoder-format-list">${page.groups.map(([name, formats]) => `<div><dt>${name}</dt><dd>${formats}</dd></div>`).join('')}</dl></section></div>
+    <div class="decoder-guide__columns decoder-guide__columns--secondary"><section><h3>${page.troubleshoot}</h3><ul>${page.tips.map((tip) => `<li>${tip}</li>`).join('')}</ul></section><section><h3>${page.privacy}</h3><p>${page.privacyText}</p><h3>${page.related}</h3><nav class="decoder-related" aria-label="${page.related}">${page.links.map(([label, href]) => `<a href="${href}">${label}</a>`).join('')}</nav></section></div>
+  </section>`;
+  return html
+    .replace(/<title>[^<]*<\/title>/i, `<title>${page.title}</title>`)
+    .replace(/(<meta name="description" content=")[^"]*(">)/i, `$1${page.description}$2`)
+    .replace(/(<meta property="og:title" content=")[^"]*(">)/i, `$1${page.title}$2`)
+    .replace(/(<meta property="og:description" content=")[^"]*(">)/i, `$1${page.description}$2`)
+    .replace(/(<meta name="twitter:title" content=")[^"]*(">)/i, `$1${page.title}$2`)
+    .replace(/(<meta name="twitter:description" content=")[^"]*(">)/i, `$1${page.description}$2`)
+    .replace(/\s*<footer class="decoder-footer">/i, `\n${guide}\n        <footer class="decoder-footer">`);
 }
 
 const TASK_PAGES = [
@@ -517,9 +572,48 @@ for (const lang of LANGS) {
   const decoderHtml = await readFile(decoderPath, 'utf8');
   await writeFile(
     decoderPath,
-    decoderHtml.replaceAll('https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js', `${prefix}vendor/zxing.min.js`),
+    enhanceDecoderHtml(decoderHtml, lang)
+      .replaceAll('https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js', `${prefix}vendor/zxing.min.js`),
     'utf8',
   );
+}
+
+const decoderI18nContext = { window: {} };
+runInNewContext(await readFile(path.join(ROOT, 'i18n.js'), 'utf8'), decoderI18nContext);
+const decoderTranslations = Object.fromEntries(LANGS.map((lang) => [
+  lang,
+  Object.fromEntries(Object.entries(decoderI18nContext.window.BARCODE_I18N[lang] || {})
+    .filter(([key]) => key.startsWith('decoder_'))),
+]));
+const decoderI18n = `window.BARCODE_I18N=${JSON.stringify(decoderTranslations)};`;
+const decoderI18nVersion = createHash('sha256').update(decoderI18n).digest('hex').slice(0, 12);
+await writeFile(path.join(OUT, 'decoder-i18n.js'), decoderI18n, 'utf8');
+
+const decoderContent = [
+  path.join(OUT, 'decoder.html'),
+  ...LOCALE_DIRS.map((lang) => path.join(OUT, lang, 'decoder.html')),
+  'decoder.js', 'analytics.js',
+];
+const [{ css: decoderCss }] = await new PurgeCSS().purge({
+  content: decoderContent,
+  css: ['styles.css'],
+  keyframes: true,
+  fontFace: true,
+  variables: true,
+  safelist: {
+    standard: ['active', 'copied', 'drag-over', 'loading', 'open', 'scanning', 'visible'],
+    deep: [/^camera-/, /^cookie-/, /^decoder-/, /^drop-/, /^error-/, /^flag-/, /^lang-/, /^preview-/, /^result-/, /^scan-/, /^spinner/, /^theme-/],
+  },
+});
+const decoderCssVersion = createHash('sha256').update(decoderCss).digest('hex').slice(0, 12);
+await writeFile(path.join(OUT, 'decoder.css'), decoderCss, 'utf8');
+for (const lang of LANGS) {
+  const decoderPath = lang === 'en' ? path.join(OUT, 'decoder.html') : path.join(OUT, lang, 'decoder.html');
+  const prefix = lang === 'en' ? '' : '../';
+  const html = (await readFile(decoderPath, 'utf8'))
+    .replace(new RegExp(`${prefix.replaceAll('.', '\\.') }styles\\.css\\?v=[a-f0-9]+`, 'g'), `${prefix}decoder.css?v=${decoderCssVersion}`)
+    .replace(new RegExp(`${prefix.replaceAll('.', '\\.') }i18n\\.js\\?v=[a-f0-9]+`, 'g'), `${prefix}decoder-i18n.js?v=${decoderI18nVersion}`);
+  await writeFile(decoderPath, html, 'utf8');
 }
 
 for (const group of TASK_PAGES) {
@@ -632,8 +726,8 @@ const precache = [
   '/2d-barcode-generator', '/pl/generator-kodow-2d',
   '/guides/gtin-ean-upc', '/pl/poradniki/gtin-ean-upc',
   '/manifest.webmanifest', '/pwa-icon-192.png', '/pwa-icon-512.png', '/favicon.svg',
-  '/landing.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
-  '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/i18n.js', '/label-renderer.js', '/analytics.js',
+  '/landing.css', '/decoder.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
+  '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/decoder-i18n.js', '/i18n.js', '/label-renderer.js', '/analytics.js',
   '/pwa-register.js', '/auth-ui.js', '/supabase-client.js', '/supabase-config.js', '/db-codes.js',
   '/account-dialogs.js', '/bulk.js', '/bulk-export.js', '/csv-import.js', '/csv-worker.js',
   '/db-jobs.js', '/gs1.js', '/gs1-generator.js', '/two-d-generator.js', '/specialized-save.js',

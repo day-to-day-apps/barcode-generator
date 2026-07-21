@@ -2709,6 +2709,43 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 [data-theme="dark"] .decoder-footer { color: #94a3b8; }
 [data-theme="dark"] .decoder-footer a { color: #a5b4fc; }
 
+/* Search and help content follows the scanner, keeping the tool first. */
+.decoder-guide {
+    width: min(100% - 40px, 1040px);
+    margin: 8px auto 32px;
+    padding: 44px 0 12px;
+    border-top: 1px solid rgba(100, 116, 139, 0.22);
+    color: var(--text-primary, #0f172a);
+}
+.decoder-guide__kicker { margin: 0 0 8px; color: #4f46e5; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.decoder-guide h2 { margin: 0; font-size: 30px; line-height: 1.2; letter-spacing: 0; }
+.decoder-guide__lead { max-width: 760px; margin: 14px 0 32px; color: var(--text-secondary, #64748b); font-size: 17px; line-height: 1.7; }
+.decoder-guide__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; padding: 32px 0; border-top: 1px solid rgba(100, 116, 139, 0.16); }
+.decoder-guide__columns--secondary { padding-bottom: 16px; }
+.decoder-guide h3 { margin: 0 0 14px; font-size: 19px; line-height: 1.35; letter-spacing: 0; }
+.decoder-guide p,
+.decoder-guide li,
+.decoder-format-list dd { color: var(--text-secondary, #64748b); font-size: 15px; line-height: 1.7; }
+.decoder-guide ol,
+.decoder-guide ul { margin: 0; padding-left: 22px; }
+.decoder-guide li + li { margin-top: 9px; }
+.decoder-format-list { margin: 18px 0 0; }
+.decoder-format-list > div { margin-top: 12px; }
+.decoder-format-list dt { font-size: 14px; font-weight: 700; }
+.decoder-format-list dd { margin: 2px 0 0; }
+.decoder-related { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.decoder-related a { color: #4338ca; font-size: 14px; font-weight: 650; text-underline-offset: 3px; }
+[data-theme="dark"] .decoder-guide { border-color: rgba(148, 163, 184, 0.22); color: #f1f5f9; }
+[data-theme="dark"] .decoder-guide__kicker,
+[data-theme="dark"] .decoder-related a { color: #a5b4fc; }
+
+@media (max-width: 720px) {
+    .decoder-guide { width: min(100% - 32px, 1040px); padding-top: 32px; }
+    .decoder-guide h2 { font-size: 25px; }
+    .decoder-guide__lead { font-size: 16px; margin-bottom: 24px; }
+    .decoder-guide__columns { grid-template-columns: 1fr; gap: 28px; padding: 26px 0; }
+}
+
 /* Camera scan â€” equal-weight CTA sitting next to drop-area */
 .camera-row {
     display: flex;
@@ -5102,6 +5139,9 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
     header,
     .animated-header {
         padding-top: 16px;
+    }
+    .animated-header:has(> .lang-switch) {
+        padding-top: 68px;
     }
     .topbar {
         flex-wrap: wrap;

@@ -26,7 +26,7 @@ if (process.platform !== 'win32') {
 }
 
 const port = mode === 'mobile' ? 8766 : 8767;
-const urls = ['/', '/bulk-barcode-generator'];
+const urls = ['/', '/decoder', '/bulk-barcode-generator'];
 const thresholds = { performance: mode === 'mobile' ? 0.85 : 0.90, accessibility: 0.95, 'best-practices': 0.95, seo: 0.95 };
 const outputDir = path.join(ROOT, '.lighthouseci', mode);
 await rm(outputDir, { recursive: true, force: true });
