@@ -3695,6 +3695,8 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
     display: block;
 }
 
+.decoder-btn[hidden] { display: none; }
+
 @media (max-width: 600px) {
     body {
         background: var(--bg);

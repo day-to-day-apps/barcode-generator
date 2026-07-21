@@ -3,7 +3,7 @@
 > **Status:** Aktualna mapa drogowa po decyzji **Supabase + free-with-ads**.
 > Stara wersja (Clerk + Stripe + Pro 19 zł) jest **zarchiwizowana w historii Git**.
 > Pełny kontekst i kompendium → [`PROJEKT.md`](./PROJEKT.md).
-> Ostatnia aktualizacja: **2026-07-15**.
+> Ostatnia aktualizacja: **2026-07-21**.
 
 ## Aktualny kierunek: ruch organiczny + narzędzia dla firm
 
@@ -13,7 +13,9 @@
 - [x] Publiczny generator paczek CSV z walidacją oraz eksportem PDF/PNG/SVG/CSV.
 - [x] Strony zadaniowe PL/EN: CSV, Avery, magazyn i druk termiczny.
 - [x] GitHub Actions, Lighthouse CI i zdarzenia lejka GA4.
-- [ ] Po zebraniu danych: tryb GS1, generowanie Data Matrix/PDF417/Aztec, katalog produktów i PWA.
+- [x] Tryb GS1, generowanie Data Matrix/PDF417/Aztec i katalog produktów.
+- [x] Dekoder z kamerą, trybem wielokrotnym, lokalną historią oraz eksportem CSV/XLSX/JSON/PDF/TXT.
+- [ ] Po zebraniu danych: PWA, tryb offline i kolejne usprawnienia wynikające z Search Console oraz GA4.
 
 Nowe funkcje są wdrażane najpierw po polsku i angielsku. Pozostałe lokalizacje otrzymają je po potwierdzeniu popytu w Search Console i GA4.
 
@@ -184,27 +186,14 @@ Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdel
 - `Referrer-Policy: strict-origin-when-cross-origin`
 - `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()`
 
-## i18n — brakujące klucze dekodera
+## Dekoder — stan wdrożenia
 
-`i18n.js` **nie zawiera** kluczy dekodera (`decoder_decoding`, `decoder_not_found`, `decoder_invalid_file`, `decoder_too_large`, `decoder_copied`, `decoder_copy_failed`, `decoder_format_label`, `decoder_value_label`). Dekoder używa fallbacków w `decoder.js`, więc we wszystkich językach innych niż angielski komunikaty są po angielsku.
-
-Do zrobienia: dodać tłumaczenia dla 10 języków (pl, de, fr, es, it, pt, nl, cs, uk) dla w/w 8 kluczy.
-
-## FAQ + HowTo (dekoder)
-
-Sekcje FAQ/HowTo (Schema.org FAQPage, HowTo) są obecnie dostępne tylko w `index.html` / `pl/index.html`. Decoder nie ma własnej strukturyzacji Schema.org poza WebApplication JSON-LD.
-
-Do zrobienia:
-- Dodać `FAQPage` JSON-LD na `decoder.html` (pytania typu „Jakie formaty obsługuje?”, „Czy moje zdjęcia są wysyłane na serwer?”, „Dlaczego nie wykrywa kodu?”).
-- Rozważyć `HowTo` („Jak odczytać kod kreskowy ze zdjęcia: 3 kroki”).
-- Tłumaczenia dla 10 języków.
-
-## Dekoder — nowe funkcje (opcjonalne)
-
-- **Dropdown 10-języków** na stronach dekodera — obecnie w większości wersji są tylko 2-3 opcje. Skopiować pełny dropdown z `index.html`.
-- **Deep-link do generatora** — przycisk „Otwórz w generatorze" po dekodowaniu, przekazujący wartość przez query param (`?value=...&type=...`).
-- **Kamera na żywo** — `getUserMedia()` + `ZXing.decodeFromVideoDevice()`. Duża funkcja, ale zwiększyłaby atrakcyjność.
-- **Historia ostatnich skanowań** — localStorage, max 10 pozycji, z przyciskiem „Wyczyść historię".
+- [x] Pełne komunikaty i przełącznik 10 języków.
+- [x] `FAQPage` i `HowTo` w danych strukturalnych wszystkich wersji językowych.
+- [x] Kamera na żywo z natywnym `BarcodeDetector` i fallbackiem ZXing.
+- [x] Tryb wielokrotnego skanowania z ilościami, lokalną historią i eksportami.
+- [x] Deep-link „Otwórz w generatorze” zachowujący język, format i wartość.
+- [ ] Zweryfikować kamerę i schowek na rzeczywistym iOS Safari oraz słabszym urządzeniu z Androidem.
 
 ## Audyt w przeglądarce
 

@@ -339,11 +339,13 @@ const [{ css: landingCss }] = await new PurgeCSS().purge({
 const landingCssVersion = createHash('sha256').update(landingCss).digest('hex').slice(0, 12);
 await writeFile(path.join(OUT, 'landing.css'), landingCss, 'utf8');
 const appSource = await readFile(path.join(ROOT, 'app.js'), 'utf8');
-const landingApp = appSource.replace(
+const prefillSource = await readFile(path.join(ROOT, 'generator-prefill.js'), 'utf8');
+const landingAppBase = appSource.replace(
   /    \/\/ The gallery sits below the generator on mobile,[\s\S]*?    }\r?\n\r?\n    syncTypeUI\(\);/,
   `    // Decorative previews are outside the critical rendering path.\n    addEventListener('load', () => setTimeout(renderPopularPreviews, 10000), { once: true });\n\n    syncTypeUI();`,
 );
-if (landingApp === appSource) throw new Error('Could not create deferred landing app bundle.');
+if (landingAppBase === appSource) throw new Error('Could not create deferred landing app bundle.');
+const landingApp = `${landingAppBase}\n${prefillSource}`;
 const landingAppVersion = createHash('sha256').update(landingApp).digest('hex').slice(0, 12);
 await writeFile(path.join(OUT, 'app-landing.js'), landingApp, 'utf8');
 for (const lang of LANGS) {

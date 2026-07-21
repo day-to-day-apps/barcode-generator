@@ -72,8 +72,48 @@
         valueLabel: T.decoder_value_label,
         cameraUnavailable: T.decoder_camera_unavailable,
         cameraDenied: T.decoder_camera_denied,
-        cameraNotFound: T.decoder_camera_not_found
+        cameraNotFound: T.decoder_camera_not_found,
+        openGenerator: T.decoder_open_generator || 'Open in generator'
     };
+
+    const generatorBtn = document.createElement('a');
+    generatorBtn.id = 'open-generator-btn';
+    generatorBtn.className = 'decoder-btn decoder-btn-ghost';
+    generatorBtn.hidden = true;
+    generatorBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16L16 4"/><path d="M8 4h8v8"/></svg><span></span>';
+    generatorBtn.querySelector('span').textContent = strings.openGenerator;
+    clearBtn.insertAdjacentElement('beforebegin', generatorBtn);
+
+    const GENERATOR_FORMATS = {
+        EAN13: 'ean13', EAN8: 'ean8',
+        UPCA: 'upc-a', UPC: 'upc-a',
+        CODE128: 'code128', CODE39: 'code39',
+        ITF: 'itf', ITF14: 'itf14',
+        CODABAR: 'codabar', QR: 'qr', QRCODE: 'qr'
+    };
+
+    function generatorHref(format, value) {
+        const key = String(format || '').toUpperCase().replace(/[\s_-]+/g, '');
+        const type = GENERATOR_FORMATS[key];
+        if (!type || !value) return '';
+        const home = LANG === 'en' ? '/' : '/' + LANG + '/';
+        const params = new URLSearchParams({ type, value: String(value) });
+        return home + '?' + params.toString();
+    }
+
+    function updateGeneratorAction(format, value) {
+        const href = generatorHref(format, value);
+        generatorBtn.hidden = !href;
+        if (href) generatorBtn.href = href;
+        else generatorBtn.removeAttribute('href');
+    }
+
+    function showSingleResult(format, value) {
+        resultType.textContent = format || '';
+        resultValue.textContent = value || '';
+        updateGeneratorAction(format, value);
+        resultBox.hidden = false;
+    }
 
     const MAX_SIZE = 10 * 1024 * 1024;
     const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
@@ -129,6 +169,7 @@
         resultBox.hidden = true;
         resultType.textContent = '';
         resultValue.textContent = '';
+        updateGeneratorAction('', '');
     }
 
     function validateFile(file) {
@@ -177,9 +218,7 @@
 
             const result = await reader.decodeFromImageElement(previewImg);
 
-            resultType.textContent = formatName(result.getBarcodeFormat());
-            resultValue.textContent = result.getText();
-            resultBox.hidden = false;
+            showSingleResult(formatName(result.getBarcodeFormat()), result.getText());
         } catch (e) {
             if (e && e.name === 'NotFoundException') {
                 showError(strings.notFound);
@@ -667,6 +706,7 @@
     }
 
     function renderMultiResultsInMainBox() {
+        updateGeneratorAction('', '');
         const entries = Array.from(scanMap.entries());
         if (entries.length === 0) {
             resultBox.hidden = true;
@@ -794,9 +834,7 @@
             if (navigator.vibrate) { try { navigator.vibrate(60); } catch (_) {} }
             return;
         }
-        resultType.textContent = format || '';
-        resultValue.textContent = text;
-        resultBox.hidden = false;
+        showSingleResult(format, text);
         if (navigator.vibrate) { try { navigator.vibrate(120); } catch (_) {} }
         stopCamera();
     }
