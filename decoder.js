@@ -457,6 +457,32 @@
         }
     }
 
+    function qrPngDataUrl(value, sizePx) {
+        if (typeof window.qrcode !== 'function') return null;
+        const qr = window.qrcode(0, 'M');
+        qr.addData(String(value));
+        qr.make();
+        const modules = qr.getModuleCount();
+        const quietModules = 4;
+        const cell = Math.max(1, Math.floor((Number(sizePx) || 256) / (modules + quietModules * 2)));
+        const canvasSize = (modules + quietModules * 2) * cell;
+        const canvas = document.createElement('canvas');
+        canvas.width = canvasSize;
+        canvas.height = canvasSize;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvasSize, canvasSize);
+        ctx.fillStyle = '#000000';
+        for (let row = 0; row < modules; row++) {
+            for (let col = 0; col < modules; col++) {
+                if (qr.isDark(row, col)) {
+                    ctx.fillRect((col + quietModules) * cell, (row + quietModules) * cell, cell, cell);
+                }
+            }
+        }
+        return canvas.toDataURL('image/png');
+    }
+
     function renderInlineQr(svgEl, value, format, sizePx) {
         const size = Math.max(48, Number(sizePx) || 64);
         const fallbackToText = () => {
@@ -466,22 +492,8 @@
             span.textContent = String(format || 'QR');
             if (svgEl.parentNode) svgEl.parentNode.replaceChild(span, svgEl);
         };
-        if (typeof window.QRious !== 'function') {
-            fallbackToText();
-            return;
-        }
-        let url;
-        try {
-            url = new window.QRious({
-                value: String(value),
-                size: size,
-                level: 'M',
-                padding: 2
-            }).toDataURL();
-        } catch (_) {
-            fallbackToText();
-            return;
-        }
+        let url = null;
+        try { url = qrPngDataUrl(value, size); } catch (_) { /* invalid payload */ }
         if (!url) { fallbackToText(); return; }
         const img = document.createElement('img');
         img.src = url;
@@ -1235,15 +1247,9 @@
             try {
                 const upper = String(format || '').toUpperCase().replace(/\s/g, '_');
                 if (JSBARCODE_2D_FORMATS.has(upper)) {
-                    if (typeof window.QRious !== 'function') { resolve(null); return; }
                     const size = Math.max(128, Math.min(w || 256, h || 256));
                     try {
-                        const url = new window.QRious({
-                            value: String(value),
-                            size: size,
-                            level: 'M',
-                            padding: 4
-                        }).toDataURL();
+                        const url = qrPngDataUrl(value, size);
                         resolve(url || null);
                     } catch (_) {
                         resolve(null);

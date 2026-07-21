@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { PurgeCSS } from 'purgecss';
+import { PNG } from 'pngjs';
 
 const ROOT = process.cwd();
 const OUT = path.join(ROOT, 'dist');
@@ -13,6 +14,7 @@ const FORMATS = ['ean-13', 'code-128', 'upc-a', 'code-39', 'itf-14', 'codabar'];
 const PRIVATE_PAGES = ['konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', 'historia-wydrukow'];
 const ROOT_ASSETS = [
   '404.html', '_headers', '_redirects', 'ads.txt', 'robots.txt', 'favicon.svg', 'og-image.svg',
+  'manifest.webmanifest', 'pwa-register.js',
   'googlec18ae46a3db92f98.html',
   'analytics.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
   'bulk.js', 'bulk-export.js', 'bulk.css', 'gs1.js', 'gs1-generator.js', 'gs1.css',
@@ -43,6 +45,10 @@ function canonicalFor(lang, page) {
 
 function normaliseHtml(html) {
   let output = html
+    .replace(/https:\/\/cdn\.jsdelivr\.net\/npm\/jsbarcode@[^/'"]+\/dist\/JsBarcode\.all\.min\.js/g, '/vendor/jsbarcode.min.js')
+    .replace(/https:\/\/cdn\.jsdelivr\.net\/npm\/qrcode-generator@[^/'"]+\/qrcode\.min\.js/g, '/vendor/qrcode-generator.js')
+    .replace(/https:\/\/cdn\.jsdelivr\.net\/npm\/qrious@[^/'"]+\/dist\/qrious\.min\.js/g, '/vendor/qrcode-generator.js')
+    .replace(/\s+integrity="sha384-(?:Kk5SjBOKprEnGfyBWfD2zROFd1Cu8kwOXxG2GIhYPcoDL2rBJS9P8Ud1ZMy4412a|lQXOAyZwHXE55JFyrOMB7nY2Wv\+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz|Dr98ddmUw2QkdCarNQ\+OL7xLty7cSxgR0T7v1tq4UErS\/qLV0132sBYTolRAFuOV)"\s+crossorigin="anonymous"/g, '')
     .replace(/(href=(['"]))(https:\/\/barcode-generator\.daytodayapps\.com[^'"?#]*)\.html(?=([?#'" ]))/g, '$1$3')
     .replace(/(content=(['"]))(https:\/\/barcode-generator\.daytodayapps\.com[^'"?#]*)\.html(?=([?#'" ]))/g, '$1$3')
     .replace(/href=(['"])((?:\.\.\/)*(?:[a-z]{2}\/)?)(?:index)(?:\.html)?([?#][^'"]*)?\1/g, (_m, q, prefix, suffix = '') => `href=${q}${prefix || './'}${suffix}${q}`)
@@ -61,7 +67,43 @@ function normaliseHtml(html) {
   if ((output.match(/<h1\b/gi) || []).length > 1) {
     output = output.replace(/<h1>([\s\S]*?)<\/h1>/i, '<div class="brand-heading">$1</div>');
   }
+  if (!/rel=["']manifest["']/i.test(output)) {
+    output = output.replace(
+      '</head>',
+      `    <link rel="manifest" href="/manifest.webmanifest">\n    <meta name="theme-color" content="#4f46e5">\n    <meta name="apple-mobile-web-app-capable" content="yes">\n    <meta name="apple-mobile-web-app-status-bar-style" content="default">\n</head>`,
+    );
+  }
+  if (!/pwa-register\.js/i.test(output)) {
+    output = output.replace('</body>', `    <script defer src="/pwa-register.js?v=${ASSET_VERSIONS.get('pwa-register.js')}"></script>\n</body>`);
+  }
   return output;
+}
+
+function pwaIcon(size) {
+  const png = new PNG({ width: size, height: size });
+  const setPixel = (x, y, [r, g, b, a = 255]) => {
+    const offset = (y * size + x) * 4;
+    png.data[offset] = r;
+    png.data[offset + 1] = g;
+    png.data[offset + 2] = b;
+    png.data[offset + 3] = a;
+  };
+  const fillRect = (x, y, width, height, color) => {
+    for (let row = y; row < y + height; row++) {
+      for (let col = x; col < x + width; col++) setPixel(col, row, color);
+    }
+  };
+  fillRect(0, 0, size, size, [79, 70, 229]);
+  const panelX = Math.round(size * 0.2);
+  const panelY = Math.round(size * 0.25);
+  const panelW = Math.round(size * 0.6);
+  const panelH = Math.round(size * 0.5);
+  fillRect(panelX, panelY, panelW, panelH, [255, 255, 255]);
+  const bars = [[0.28, 0.032], [0.35, 0.016], [0.405, 0.04], [0.485, 0.016], [0.54, 0.024], [0.605, 0.04], [0.69, 0.016]];
+  for (const [x, width] of bars) {
+    fillRect(Math.round(size * x), Math.round(size * 0.345), Math.max(2, Math.round(size * width)), Math.round(size * 0.31), [17, 24, 39]);
+  }
+  return PNG.sync.write(png);
 }
 
 function textContent(html) {
@@ -264,10 +306,13 @@ function sitemapXml() {
 await rm(OUT, { recursive: true, force: true });
 await mkdir(OUT, { recursive: true });
 for (const asset of ROOT_ASSETS) await copyFile(asset);
+await writeFile(path.join(OUT, 'pwa-icon-192.png'), pwaIcon(192));
+await writeFile(path.join(OUT, 'pwa-icon-512.png'), pwaIcon(512));
 await mkdir(path.join(OUT, 'vendor'), { recursive: true });
 await cp(path.join(ROOT, 'node_modules/pdf-lib/dist/pdf-lib.min.js'), path.join(OUT, 'vendor/pdf-lib.min.js'));
 await cp(path.join(ROOT, 'node_modules/jszip/dist/jszip.min.js'), path.join(OUT, 'vendor/jszip.min.js'));
 await cp(path.join(ROOT, 'node_modules/jsbarcode/dist/JsBarcode.all.min.js'), path.join(OUT, 'vendor/jsbarcode.min.js'));
+await cp(path.join(ROOT, 'node_modules/qrcode-generator/qrcode.js'), path.join(OUT, 'vendor/qrcode-generator.js'));
 await cp(path.join(ROOT, 'node_modules/bwip-js/dist/bwip-js-min.js'), path.join(OUT, 'vendor/bwip-js-min.js'));
 await cp(path.join(ROOT, 'node_modules/@zxing/library/umd/index.min.js'), path.join(OUT, 'vendor/zxing.min.js'));
 await writeFile(path.join(OUT, 'bulk-barcode-generator.html'), normaliseHtml(await readFile(path.join(ROOT, 'bulk.html'), 'utf8')), 'utf8');
@@ -345,14 +390,35 @@ const landingAppBase = appSource.replace(
   `    // Decorative previews are outside the critical rendering path.\n    addEventListener('load', () => setTimeout(renderPopularPreviews, 10000), { once: true });\n\n    syncTypeUI();`,
 );
 if (landingAppBase === appSource) throw new Error('Could not create deferred landing app bundle.');
-const landingApp = `${landingAppBase}\n${prefillSource}`;
+const immediateLandingApp = landingAppBase
+  .replace(/^document\.addEventListener\('DOMContentLoaded', \(\) => \{/, '(() => {')
+  .replace(/\}\);\s*$/, '})();');
+if (immediateLandingApp === landingAppBase) throw new Error('Could not create immediate landing app initializer.');
+const landingApp = [
+  await readFile(path.join(ROOT, 'node_modules/jsbarcode/dist/JsBarcode.all.min.js'), 'utf8'),
+  await readFile(path.join(ROOT, 'node_modules/qrcode-generator/qrcode.js'), 'utf8'),
+  await readFile(path.join(ROOT, 'i18n.js'), 'utf8'),
+  await readFile(path.join(ROOT, 'label-renderer.js'), 'utf8'),
+  immediateLandingApp,
+  prefillSource,
+].join('\n');
 const landingAppVersion = createHash('sha256').update(landingApp).digest('hex').slice(0, 12);
 await writeFile(path.join(OUT, 'app-landing.js'), landingApp, 'utf8');
+const landingLoader = `(function(){function load(){var s=document.createElement('script');s.src='/app-landing.js?v=${landingAppVersion}';document.body.appendChild(s)}function ready(){requestAnimationFrame(load)}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',ready,{once:true})}else{ready()}})();`;
+const landingLoaderVersion = createHash('sha256').update(landingLoader).digest('hex').slice(0, 12);
+await writeFile(path.join(OUT, 'landing-loader.js'), landingLoader, 'utf8');
+const criticalThemeControl = `<script>(function(){var b=document.getElementById('theme-toggle');if(!b)return;b.addEventListener('click',function(e){e.stopImmediatePropagation();var d=document.documentElement,c=d.getAttribute('data-theme'),n=c==='dark'?'light':'dark';d.setAttribute('data-theme',n);try{localStorage.setItem('barcode-theme',n)}catch(_){}})})();</script>`;
 for (const lang of LANGS) {
   const landingPath = lang === 'en' ? path.join(OUT, 'index.html') : path.join(OUT, lang, 'index.html');
   const prefix = lang === 'en' ? '' : '../';
   let html = (await readFile(landingPath, 'utf8'))
-    .replace(new RegExp(`${prefix.replaceAll('.', '\\.') }app\\.js\\?v=[a-f0-9]+`, 'g'), `${prefix}app-landing.js?v=${landingAppVersion}`);
+    .replace(/\s*<script defer src="\/vendor\/(?:jsbarcode\.min|qrcode-generator)\.js"><\/script>/g, '')
+    .replace(new RegExp(`\\s*<script defer src="${prefix.replaceAll('.', '\\.')}(?:i18n|label-renderer)\\.js\\?v=[a-f0-9]+"><\\/script>`, 'g'), '')
+    .replace(new RegExp(`${prefix.replaceAll('.', '\\.') }app\\.js\\?v=[a-f0-9]+`, 'g'), `${prefix}landing-loader.js?v=${landingLoaderVersion}`);
+  html = html.replace(
+    `<script defer src="${prefix}landing-loader.js?v=${landingLoaderVersion}"></script>`,
+    `${criticalThemeControl}<script defer src="${prefix}landing-loader.js?v=${landingLoaderVersion}"></script>`,
+  );
   if (lang === 'en') {
     html = html.replace('</head>', '    <meta name="google-site-verification" content="rU82pkm5jXvVq8joqzYzgD_fHJrA1SbdmtGTAjDScLE">\n</head>');
   }
@@ -364,4 +430,26 @@ for (const lang of LANGS) {
 }
 
 await writeFile(path.join(OUT, 'sitemap.xml'), sitemapXml(), 'utf8');
+const precache = [
+  '/', '/pl/', '/decoder', '/pl/decoder',
+  '/bulk-barcode-generator', '/pl/generator-kodow-z-csv',
+  '/gs1-barcode-generator', '/pl/generator-kodow-gs1',
+  '/2d-barcode-generator', '/pl/generator-kodow-2d',
+  '/manifest.webmanifest', '/pwa-icon-192.png', '/pwa-icon-512.png', '/favicon.svg',
+  '/landing.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
+  '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/i18n.js', '/label-renderer.js', '/analytics.js',
+  '/pwa-register.js', '/auth-ui.js', '/supabase-client.js', '/supabase-config.js', '/db-codes.js',
+  '/account-dialogs.js', '/bulk.js', '/bulk-export.js', '/csv-import.js', '/csv-worker.js',
+  '/db-jobs.js', '/gs1.js', '/gs1-generator.js', '/two-d-generator.js', '/specialized-save.js',
+  '/vendor/jsbarcode.min.js', '/vendor/qrcode-generator.js', '/vendor/zxing.min.js',
+  '/vendor/pdf-lib.min.js', '/vendor/jszip.min.js', '/vendor/bwip-js-min.js',
+];
+const pwaVersion = createHash('sha256')
+  .update(JSON.stringify([...ASSET_VERSIONS, landingCssVersion, landingAppVersion, landingLoaderVersion, precache]))
+  .digest('hex')
+  .slice(0, 12);
+const serviceWorker = (await readFile(path.join(ROOT, 'service-worker.template.js'), 'utf8'))
+  .replace('__PWA_VERSION__', pwaVersion)
+  .replace('__PRECACHE__', JSON.stringify(precache, null, 4));
+await writeFile(path.join(OUT, 'service-worker.js'), serviceWorker, 'utf8');
 console.log(`Built production site in ${OUT} (92 sitemap URLs).`);

@@ -14,7 +14,7 @@
         input.dispatchEvent(new Event('input', { bubbles: true }));
     }
 
-    if (document.readyState !== 'complete') {
+    if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', applyPrefill, { once: true });
     } else {
         applyPrefill();

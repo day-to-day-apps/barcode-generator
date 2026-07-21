@@ -15,7 +15,8 @@
 - [x] GitHub Actions, Lighthouse CI i zdarzenia lejka GA4.
 - [x] Tryb GS1, generowanie Data Matrix/PDF417/Aztec i katalog produktów.
 - [x] Dekoder z kamerą, trybem wielokrotnym, lokalną historią oraz eksportem CSV/XLSX/JSON/PDF/TXT.
-- [ ] Po zebraniu danych: PWA, tryb offline i kolejne usprawnienia wynikające z Search Console oraz GA4.
+- [x] Instalowalna PWA i tryb offline dla publicznych generatorów oraz dekodera.
+- [ ] Kolejne usprawnienia wynikające z Search Console, GA4 i testów na rzeczywistych urządzeniach.
 
 Nowe funkcje są wdrażane najpierw po polsku i angielsku. Pozostałe lokalizacje otrzymają je po potwierdzeniu popytu w Search Console i GA4.
 

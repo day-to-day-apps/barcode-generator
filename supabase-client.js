@@ -25,15 +25,20 @@ export async function getSupabase() {
     const cfg = await loadConfig();
     if (!cfg) return null;
 
-    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-    return createClient(cfg.url, cfg.anonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        storageKey: 'bg.auth',
-      },
-    });
+    try {
+      const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+      return createClient(cfg.url, cfg.anonKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          storageKey: 'bg.auth',
+        },
+      });
+    } catch (err) {
+      console.warn('[supabase] SDK unavailable — account features are temporarily offline.', err?.message);
+      return null;
+    }
   })();
 
   return clientPromise;

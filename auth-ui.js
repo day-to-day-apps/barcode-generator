@@ -346,9 +346,10 @@ async function init() {
     const sb = await getSupabase();
     if (!sb) return;
 
+    const previousUserId = state.user?.id || null;
     state.session = await getSession();
     state.user = state.session?.user ?? null;
-    renderHeaderState(headerControls);
+    if ((state.user?.id || null) !== previousUserId) renderHeaderState(headerControls);
 
     await onAuthStateChange((event, session) => {
       const wasAnon = !state.session?.user;
@@ -364,6 +365,12 @@ async function init() {
       consumePendingCode().catch(err => console.warn('[auth-ui] pending consume:', err?.message));
     }
   };
+
+  // Anonymous visitors do not need the Supabase SDK. Avoid downloading and
+  // evaluating it on the critical path unless a persisted session exists.
+  let hasPersistedSession = true;
+  try { hasPersistedSession = Boolean(localStorage.getItem('bg.auth')); } catch (_) { /* keep compatibility */ }
+  if (!hasPersistedSession) return;
 
   if ('requestIdleCallback' in window) {
     window.requestIdleCallback(() => hydrateSession(), { timeout: 1500 });

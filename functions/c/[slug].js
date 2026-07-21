@@ -101,7 +101,7 @@ h1 { margin: 0 0 .5rem; font-size: 1.5rem; word-break: break-word; }
         });
     }
     function renderQR() {
-        return loadScript('https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js').then(function () {
+        return loadScript('/vendor/qrcode-generator.js').then(function () {
             if (window.qrcode && window.qrcode.stringToBytes) {
                 window.qrcode.stringToBytes = function (s) { return Array.from(new TextEncoder().encode(s)); };
             }
@@ -112,7 +112,7 @@ h1 { margin: 0 0 .5rem; font-size: 1.5rem; word-break: break-word; }
         });
     }
     function renderBarcode() {
-        return loadScript('https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js').then(function () {
+        return loadScript('/vendor/jsbarcode.min.js').then(function () {
             var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             host.innerHTML = '';
             host.appendChild(svg);
