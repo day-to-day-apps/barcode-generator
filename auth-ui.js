@@ -7,9 +7,9 @@ import { getSupabase, getSession, onAuthStateChange } from './supabase-client.js
 import { countCodes, FREE_CODES_LIMIT } from './db-codes.js';
 
 const ROUTES = {
-  account: '/konto.html',
-  myCodes: '/moje-kody.html',
-  templates: '/szablony.html',
+  account: '/konto',
+  myCodes: '/moje-kody',
+  templates: '/szablony',
 };
 
 const FALLBACK_TEXT = {

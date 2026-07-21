@@ -42,7 +42,7 @@ function setStatus(message, isError = false) {
   requestAnimationFrame(() => { status.textContent = message || ''; });
 }
 
-const accountPath = () => LANG === 'en' ? '/konto.html' : `/${LANG}/konto.html`;
+const accountPath = () => LANG === 'en' ? '/konto' : `/${LANG}/konto`;
 const localPath = (file) => new URL(file, location.href).pathname.replace(/\.html$/, '');
 
 function friendlyError(error, fallback) {
@@ -284,7 +284,7 @@ function bindForms() {
     if (!validateEmail(email)) return setStatus(T.invalidEmail || 'Please enter a valid email address.', true);
     $('reset-submit').disabled = true;
     setStatus(T.sending || 'Sending...');
-    const { error } = await requestPasswordReset({ email, redirectPath: `/reset-hasla.html?lang=${encodeURIComponent(LANG)}` });
+    const { error } = await requestPasswordReset({ email, redirectPath: `/reset-hasla?lang=${encodeURIComponent(LANG)}` });
     $('reset-submit').disabled = false;
     setStatus(error ? (error.message || T.resetFail) : (T.resetSent || 'Check your inbox for the reset link.'), !!error);
   });

@@ -18,10 +18,10 @@
 W **Authentication → URL Configuration** ustaw:
 - **Site URL**: `https://barcode-generator.daytodayapps.com`
 - **Redirect URLs** (whitelista):
-  - `https://barcode-generator.daytodayapps.com/konto.html`
-  - `https://barcode-generator.daytodayapps.com/en/account.html`
-  - `http://127.0.0.1:8765/konto.html` (dev)
-  - `http://127.0.0.1:8765/en/account.html` (dev)
+  - `https://barcode-generator.daytodayapps.com/**`
+  - `http://127.0.0.1:8765/**` (dev)
+
+Adresy generowane przez aplikację wskazują finalne trasy bez rozszerzenia, np. `/konto` i `/reset-hasla`.
 
 ## Charakterystyka szablonów
 

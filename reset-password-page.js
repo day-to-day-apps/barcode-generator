@@ -9,7 +9,7 @@ const I = window.BARCODE_I18N || {};
 const T = (I[LANG] && I[LANG].account) || (I.en && I.en.account) || {};
 const $ = (id) => document.getElementById(id);
 const form = $('reset-password-form');
-const accountUrl = LANG === 'en' ? '/konto.html' : `/${LANG}/konto.html`;
+const accountUrl = LANG === 'en' ? '/konto' : `/${LANG}/konto`;
 let hasRecoverySession = false;
 
 document.querySelectorAll('[data-i18n]').forEach((element) => { const key = element.getAttribute('data-i18n'); if (T[key]) element.textContent = T[key]; });

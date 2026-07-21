@@ -95,6 +95,22 @@ test.describe('Domain and ads configuration guardrails', () => {
     expect(styles).not.toMatch(/@media\s*\(max-width:\s*900px\)\s*{\s*\.ad-sticky-bottom\s*{/);
   });
 
+  test('authentication emails use final extensionless routes', () => {
+    const authFiles = [
+      'auth-email-password.js',
+      'account-page.js',
+      'reset-password-page.js',
+      'auth-ui.js',
+    ];
+    const activeAuth = authFiles
+      .map((file) => fs.readFileSync(path.join(ROOT, file), 'utf8'))
+      .join('\n');
+
+    expect(activeAuth).not.toMatch(/\/(?:konto|reset-hasla)\.html/);
+    expect(activeAuth).toContain("redirectPath = '/konto'");
+    expect(activeAuth).toContain("redirectPath = '/reset-hasla'");
+  });
+
   test('Lighthouse profiles use isolated preview ports', () => {
     const mobile = fs.readFileSync(path.join(ROOT, 'lighthouserc-mobile.cjs'), 'utf8');
     const desktop = fs.readFileSync(path.join(ROOT, 'lighthouserc-desktop.cjs'), 'utf8');

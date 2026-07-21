@@ -14,7 +14,7 @@ function originPath(path) {
     return window.location.origin + path;
 }
 
-export async function signUp({ email, password, redirectPath = '/konto.html' }) {
+export async function signUp({ email, password, redirectPath = '/konto' }) {
     const sb = await getSupabase();
     if (!sb) return { error: { message: 'Auth not configured' } };
     return sb.auth.signUp({
@@ -33,7 +33,7 @@ export async function signIn({ email, password }) {
     });
 }
 
-export async function requestPasswordReset({ email, redirectPath = '/reset-hasla.html' }) {
+export async function requestPasswordReset({ email, redirectPath = '/reset-hasla' }) {
     const sb = await getSupabase();
     if (!sb) return { error: { message: 'Auth not configured' } };
     return sb.auth.resetPasswordForEmail(email.trim(), {
