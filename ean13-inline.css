@@ -1,0 +1,178 @@
+.ean13-tool {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(300px, 1.1fr);
+  gap: 1.5rem;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color, #d9dde7);
+  border-radius: 8px;
+  background: var(--card-bg, #fff);
+  box-shadow: 0 8px 24px rgba(17, 24, 39, 0.08);
+}
+
+.ean13-tool__intro,
+.ean13-tool__form {
+  grid-column: 1;
+}
+
+.ean13-tool__intro h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  color: var(--text-primary, #111827);
+}
+
+.ean13-tool__intro p,
+.ean13-tool__hint,
+.ean13-tool__status {
+  line-height: 1.5;
+  color: var(--text-secondary, #4b5563);
+}
+
+.ean13-tool__intro p,
+.ean13-tool__status {
+  margin: 0;
+}
+
+.ean13-tool__form label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-weight: 700;
+}
+
+.ean13-tool__input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+}
+
+.ean13-tool input {
+  min-width: 0;
+  padding: 0.72rem 0.8rem;
+  border: 1px solid var(--border-color, #aeb5c2);
+  border-radius: 6px;
+  background: var(--input-bg, #fff);
+  color: var(--text-primary, #111827);
+  font: inherit;
+  letter-spacing: 0;
+}
+
+.ean13-tool input[aria-invalid="true"] {
+  border-color: #b42318;
+}
+
+.ean13-tool button,
+.ean13-tool__actions a {
+  min-height: 44px;
+  padding: 0.68rem 0.9rem;
+  border: 1px solid #4f46e5;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ean13-tool button {
+  background: #4f46e5;
+  color: #fff;
+}
+
+.ean13-tool__hint {
+  display: block;
+  margin-top: 0.45rem;
+  font-size: 0.84rem;
+}
+
+.ean13-tool__result {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.ean13-tool__preview {
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.ean13-tool__preview svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.ean13-tool__status {
+  min-height: 1.5rem;
+  margin-top: 0.55rem;
+  font-size: 0.9rem;
+}
+
+.ean13-tool__status--error { color: #b42318; }
+.ean13-tool__status--success { color: #067647; }
+
+.ean13-tool__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.ean13-tool__actions button {
+  background: transparent;
+  color: #4338ca;
+}
+
+.ean13-tool__actions a {
+  display: inline-flex;
+  align-items: center;
+  color: #4338ca;
+  border-color: transparent;
+}
+
+.ean13-tool button:hover,
+.ean13-tool button:focus-visible {
+  background: #3730a3;
+  color: #fff;
+}
+
+.ean13-tool a:hover,
+.ean13-tool a:focus-visible {
+  text-decoration: underline;
+}
+
+.ean13-tool :focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .ean13-tool {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .ean13-tool__intro,
+  .ean13-tool__form,
+  .ean13-tool__result {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .ean13-tool__input-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ean13-tool__actions {
+    display: grid;
+  }
+}

@@ -18,6 +18,7 @@ const ROOT_ASSETS = [
   'manifest.webmanifest', 'pwa-register.js',
   'googlec18ae46a3db92f98.html',
   'analytics.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
+  'ean13-inline.js', 'ean13-inline.css',
   'bulk.js', 'bulk-export.js', 'bulk.css', 'gs1.js', 'gs1-generator.js', 'gs1.css',
   'two-d-generator.js', 'two-d.css', 'specialized-save.js',
   'csv-import.js', 'csv-worker.js', 'dashboard-stats.js', 'db-codes.js', 'db-jobs.js',
@@ -150,6 +151,54 @@ function improveLandingSeo(html, lang) {
     `$1\n${JSON.stringify(howTo, null, 2)}\n    $2`,
   );
   return output;
+}
+
+const EAN13_TOOL_CONTENT = {
+  en: { title: 'Create an EAN-13 barcode now', label: '12 or 13 digits', hint: 'Enter 12 digits to calculate the check digit automatically, or enter a complete 13-digit EAN.', generate: 'Generate', svg: 'Download SVG', png: 'Download PNG', full: 'Open advanced generator', invalid: 'Enter exactly 12 or 13 digits.', checksum: 'The check digit is incorrect. Expected: {digit}.', ready: 'Valid EAN-13: {value}' },
+  pl: { title: 'Utwórz kod EAN-13 teraz', label: '12 lub 13 cyfr', hint: 'Wpisz 12 cyfr, aby automatycznie obliczyć cyfrę kontrolną, albo pełny 13-cyfrowy kod EAN.', generate: 'Generuj', svg: 'Pobierz SVG', png: 'Pobierz PNG', full: 'Otwórz generator zaawansowany', invalid: 'Wpisz dokładnie 12 lub 13 cyfr.', checksum: 'Cyfra kontrolna jest nieprawidłowa. Oczekiwana: {digit}.', ready: 'Poprawny EAN-13: {value}' },
+  de: { title: 'EAN-13-Barcode jetzt erstellen', label: '12 oder 13 Ziffern', hint: 'Geben Sie 12 Ziffern ein, um die Prüfziffer automatisch zu berechnen, oder einen vollständigen 13-stelligen EAN.', generate: 'Erstellen', svg: 'SVG herunterladen', png: 'PNG herunterladen', full: 'Erweiterten Generator öffnen', invalid: 'Geben Sie genau 12 oder 13 Ziffern ein.', checksum: 'Die Prüfziffer ist falsch. Erwartet: {digit}.', ready: 'Gültige EAN-13: {value}' },
+  fr: { title: 'Créer un code EAN-13 maintenant', label: '12 ou 13 chiffres', hint: 'Saisissez 12 chiffres pour calculer automatiquement la clé de contrôle, ou un EAN complet à 13 chiffres.', generate: 'Générer', svg: 'Télécharger SVG', png: 'Télécharger PNG', full: 'Ouvrir le générateur avancé', invalid: 'Saisissez exactement 12 ou 13 chiffres.', checksum: 'La clé de contrôle est incorrecte. Valeur attendue : {digit}.', ready: 'EAN-13 valide : {value}' },
+  es: { title: 'Crea un código EAN-13 ahora', label: '12 o 13 dígitos', hint: 'Introduce 12 dígitos para calcular automáticamente el dígito de control, o un EAN completo de 13 dígitos.', generate: 'Generar', svg: 'Descargar SVG', png: 'Descargar PNG', full: 'Abrir el generador avanzado', invalid: 'Introduce exactamente 12 o 13 dígitos.', checksum: 'El dígito de control es incorrecto. Se esperaba: {digit}.', ready: 'EAN-13 válido: {value}' },
+  it: { title: 'Crea subito un codice EAN-13', label: '12 o 13 cifre', hint: 'Inserisci 12 cifre per calcolare automaticamente la cifra di controllo, oppure un EAN completo di 13 cifre.', generate: 'Genera', svg: 'Scarica SVG', png: 'Scarica PNG', full: 'Apri il generatore avanzato', invalid: 'Inserisci esattamente 12 o 13 cifre.', checksum: 'La cifra di controllo non è corretta. Valore atteso: {digit}.', ready: 'EAN-13 valido: {value}' },
+  pt: { title: 'Crie um código EAN-13 agora', label: '12 ou 13 dígitos', hint: 'Digite 12 dígitos para calcular automaticamente o dígito de verificação, ou um EAN completo de 13 dígitos.', generate: 'Gerar', svg: 'Baixar SVG', png: 'Baixar PNG', full: 'Abrir gerador avançado', invalid: 'Digite exatamente 12 ou 13 dígitos.', checksum: 'O dígito de verificação está incorreto. Esperado: {digit}.', ready: 'EAN-13 válido: {value}' },
+  nl: { title: 'Maak nu een EAN-13-barcode', label: '12 of 13 cijfers', hint: 'Voer 12 cijfers in om het controlecijfer automatisch te berekenen, of een volledige EAN van 13 cijfers.', generate: 'Genereren', svg: 'SVG downloaden', png: 'PNG downloaden', full: 'Geavanceerde generator openen', invalid: 'Voer precies 12 of 13 cijfers in.', checksum: 'Het controlecijfer is onjuist. Verwacht: {digit}.', ready: 'Geldige EAN-13: {value}' },
+  cs: { title: 'Vytvořte kód EAN-13 hned', label: '12 nebo 13 číslic', hint: 'Zadejte 12 číslic pro automatický výpočet kontrolní číslice nebo celý 13místný kód EAN.', generate: 'Vygenerovat', svg: 'Stáhnout SVG', png: 'Stáhnout PNG', full: 'Otevřít pokročilý generátor', invalid: 'Zadejte přesně 12 nebo 13 číslic.', checksum: 'Kontrolní číslice není správná. Očekáváno: {digit}.', ready: 'Platný EAN-13: {value}' },
+  uk: { title: 'Створіть штрихкод EAN-13 зараз', label: '12 або 13 цифр', hint: 'Введіть 12 цифр для автоматичного обчислення контрольної цифри або повний 13-значний EAN.', generate: 'Створити', svg: 'Завантажити SVG', png: 'Завантажити PNG', full: 'Відкрити розширений генератор', invalid: 'Введіть рівно 12 або 13 цифр.', checksum: 'Контрольна цифра неправильна. Очікується: {digit}.', ready: 'Дійсний EAN-13: {value}' },
+};
+
+function addEan13Tool(html, lang) {
+  const t = EAN13_TOOL_CONTENT[lang] || EAN13_TOOL_CONTENT.en;
+  const advancedRoute = routeFor(lang);
+  const tool = `
+            <section class="ean13-tool" id="ean13-tool" aria-labelledby="ean13-tool-title"
+                data-invalid="${t.invalid}" data-checksum="${t.checksum}" data-ready="${t.ready}">
+                <div class="ean13-tool__intro">
+                    <h2 id="ean13-tool-title">${t.title}</h2>
+                    <p>${t.hint}</p>
+                </div>
+                <form class="ean13-tool__form" novalidate>
+                    <label for="ean13-inline-value">${t.label}</label>
+                    <div class="ean13-tool__input-row">
+                        <input id="ean13-inline-value" name="ean13" value="590123412345" inputmode="numeric" autocomplete="off" pattern="[0-9]{12,13}" maxlength="13" aria-describedby="ean13-inline-hint ean13-inline-status">
+                        <button type="submit">${t.generate}</button>
+                    </div>
+                    <span id="ean13-inline-hint" class="ean13-tool__hint">${t.hint}</span>
+                </form>
+                <div class="ean13-tool__result">
+                    <div class="ean13-tool__preview"><svg id="ean13-inline-barcode" role="img" aria-label="EAN-13"></svg></div>
+                    <p id="ean13-inline-status" class="ean13-tool__status" role="status" aria-live="polite"></p>
+                    <div class="ean13-tool__actions">
+                        <button type="button" data-download="svg">${t.svg}</button>
+                        <button type="button" data-download="png">${t.png}</button>
+                        <a href="${advancedRoute}?type=ean13" data-advanced-link>${t.full}</a>
+                    </div>
+                </div>
+            </section>`;
+  return html
+    .replace(/(<link rel="stylesheet" href="[^"]*styles\.css[^>]*>)/i, `$1\n    <link rel="stylesheet" href="/ean13-inline.css?v=${ASSET_VERSIONS.get('ean13-inline.css')}">`)
+    .replace(/<a href="[^"]*\?type=ean13" class="landing__cta" data-cta="hero">/i, '<a href="#ean13-tool" class="landing__cta" data-cta="hero">')
+    .replace(/(<section class="landing__hero">[\s\S]*?<\/section>)/i, `$1\n${tool}`)
+    .replace('</body>', `    <script defer src="/vendor/jsbarcode.min.js"></script>\n    <script defer src="/ean13-inline.js?v=${ASSET_VERSIONS.get('ean13-inline.js')}"></script>\n</body>`);
 }
 
 const DECODER_CONTENT = {
@@ -495,6 +544,7 @@ async function copyPublicDirectory(name) {
         .replaceAll('href="/terms"', 'href="/pl/regulamin"');
     }
     if (isLanding) html = improveLandingSeo(html, lang);
+    if (rel.at(-2) === 'ean-13') html = addEan13Tool(html, lang);
     await writeFile(file, html, 'utf8');
   }
 }
@@ -726,8 +776,8 @@ const precache = [
   '/2d-barcode-generator', '/pl/generator-kodow-2d',
   '/guides/gtin-ean-upc', '/pl/poradniki/gtin-ean-upc',
   '/manifest.webmanifest', '/pwa-icon-192.png', '/pwa-icon-512.png', '/favicon.svg',
-  '/landing.css', '/decoder.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
-  '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/decoder-i18n.js', '/i18n.js', '/label-renderer.js', '/analytics.js',
+  '/landing.css', '/decoder.css', '/ean13-inline.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
+  '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/decoder-i18n.js', '/ean13-inline.js', '/i18n.js', '/label-renderer.js', '/analytics.js',
   '/pwa-register.js', '/auth-ui.js', '/supabase-client.js', '/supabase-config.js', '/db-codes.js',
   '/account-dialogs.js', '/bulk.js', '/bulk-export.js', '/csv-import.js', '/csv-worker.js',
   '/db-jobs.js', '/gs1.js', '/gs1-generator.js', '/two-d-generator.js', '/specialized-save.js',

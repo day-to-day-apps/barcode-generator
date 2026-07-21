@@ -2,6 +2,8 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+test.setTimeout(90_000);
+
 const LANGS = [
   { code: 'en', path: '/' },
   { code: 'pl', path: '/pl/' },
@@ -15,7 +17,7 @@ const LANGS = [
   { code: 'uk', path: '/uk/' },
 ];
 
-const PUBLIC_TOOLS = ['/decoder', '/pl/decoder', '/gs1-barcode-generator', '/pl/generator-kodow-gs1', '/2d-barcode-generator', '/pl/generator-kodow-2d'];
+const PUBLIC_TOOLS = ['/decoder', '/pl/decoder', '/ean-13/', '/es/ean-13/', '/cs/ean-13/', '/gs1-barcode-generator', '/pl/generator-kodow-gs1', '/2d-barcode-generator', '/pl/generator-kodow-2d'];
 
 test.beforeEach(async ({ page }) => {
   await page.route(/(pagead2\.googlesyndication\.com|googletagmanager\.com|google-analytics\.com)/, (route) =>
