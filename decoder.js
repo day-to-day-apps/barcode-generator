@@ -60,6 +60,7 @@
     const cameraModal = document.getElementById('camera-modal');
     const cameraVideo = document.getElementById('camera-video');
     const cameraClose = document.getElementById('camera-close');
+    const batchImageMode = document.getElementById('batch-image-mode');
 
     const strings = {
         decoding: T.decoder_decoding,
@@ -120,6 +121,8 @@
 
     let codeReader = null;
     let zxingPromise = null;
+    let batchDetector = null;
+    let batchDetectorPromise = null;
 
     function ensureZXing() {
         const existing = window.ZXing || window.ZXingBrowser;
@@ -137,6 +140,72 @@
             document.head.appendChild(script);
         });
         return zxingPromise;
+    }
+
+    function loadDecoderScript(src, ready) {
+        if (ready()) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+            const existing = document.querySelector('script[src="' + src + '"]');
+            if (existing) {
+                existing.addEventListener('load', resolve, { once: true });
+                existing.addEventListener('error', reject, { once: true });
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('Multi-barcode reader failed to load.'));
+            document.head.appendChild(script);
+        });
+    }
+
+    function getBatchDetector() {
+        if (batchDetector) return Promise.resolve(batchDetector);
+        if (batchDetectorPromise) return batchDetectorPromise;
+
+        batchDetectorPromise = loadDecoderScript('/vendor/zbar-wasm.js', () => Boolean(window.zbarWasm))
+            .then(() => loadDecoderScript('/vendor/barcode-detector-polyfill.js', () => Boolean(window.barcodeDetectorPolyfill)))
+            .then(() => {
+                const api = window.barcodeDetectorPolyfill;
+                const Detector = api && api.BarcodeDetectorPolyfill;
+                if (typeof Detector !== 'function') throw new Error('Multi-barcode reader is unavailable.');
+                batchDetector = new Detector();
+                return batchDetector;
+            })
+            .catch((error) => {
+                batchDetectorPromise = null;
+                throw error;
+            });
+        return batchDetectorPromise;
+    }
+
+    function batchFormatName(format) {
+        const key = String(format || '').toUpperCase();
+        const names = {
+            EAN_13: 'EAN-13', EAN_8: 'EAN-8', UPC_A: 'UPC-A', UPC_E: 'UPC-E',
+            CODE_128: 'CODE-128', CODE_39: 'CODE-39', CODE_93: 'CODE-93',
+            QR_CODE: 'QR', DATABAR: 'DATABAR', DATABAR_EXP: 'DATABAR-EXP'
+        };
+        return names[key] || key.replace(/_/g, '-');
+    }
+
+    function showBatchImageResults(detections) {
+        scanMap.clear();
+        const now = Date.now();
+        for (const detection of detections) {
+            const value = String(detection && detection.rawValue || '').trim();
+            if (!value) continue;
+            const existing = scanMap.get(value);
+            if (existing) {
+                existing.count += 1;
+                existing.lastAt = now;
+            } else {
+                scanMap.set(value, { format: batchFormatName(detection.format), count: 1, lastAt: now });
+            }
+        }
+        saveScanMap();
+        renderMultiResultsInMainBox();
     }
 
     function getReader() {
@@ -212,20 +281,6 @@
         resetResult();
         showSpinner(true);
 
-        try {
-            await ensureZXing();
-        } catch (_) {
-            showError('Decoder library failed to load. Check your internet connection.');
-            showSpinner(false);
-            return;
-        }
-        const reader = getReader();
-        if (!reader) {
-            showError('Decoder library failed to load. Check your internet connection.');
-            showSpinner(false);
-            return;
-        }
-
         const objectUrl = URL.createObjectURL(file);
         previewImg.src = objectUrl;
         previewImg.hidden = false;
@@ -242,6 +297,22 @@
                 }
             });
 
+            if (batchImageMode && batchImageMode.checked) {
+                try {
+                    const detector = await getBatchDetector();
+                    const detections = await detector.detect(previewImg);
+                    if (detections.length > 0) {
+                        showBatchImageResults(detections);
+                        return;
+                    }
+                } catch (batchError) {
+                    console.warn('[decoder] multi-barcode detection failed, using single-code fallback:', batchError);
+                }
+            }
+
+            await ensureZXing();
+            const reader = getReader();
+            if (!reader) throw new Error('Decoder library failed to load. Check your internet connection.');
             const result = await reader.decodeFromImageElement(previewImg);
 
             showSingleResult(formatName(result.getBarcodeFormat()), result.getText());

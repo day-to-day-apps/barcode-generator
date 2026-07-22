@@ -367,8 +367,26 @@ const DECODER_CONTENT = {
   uk: { title: 'Сканер штрихкодів онлайн - зображення та камера', description: 'Скануйте штрихкоди з фото, зображення або камери. Розпізнавайте EAN, UPC, Code 128, QR, Data Matrix і PDF417 приватно у браузері.', kicker: 'Безкоштовний онлайн-сканер', heading: 'Скануйте штрихкод із зображення або камери', lead: 'Зчитуйте код без встановлення застосунку. Завантажте чи вставте зображення або відкрийте камеру. Обробка відбувається локально на пристрої.', how: 'Як сканувати штрихкод онлайн', steps: ['Відкрийте камеру, завантажте JPG, PNG чи WebP або вставте зображення через Ctrl+V.', 'Покажіть увесь код чітко, з добрим освітленням і без відблисків.', 'Скопіюйте значення або відтворіть код у генераторі.'], formats: 'Підтримувані формати', formatText: 'Сканер автоматично розпізнає поширені роздрібні, логістичні та 2D-символи.', groups: [['Роздріб', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Логістика', 'Code 128, Code 39, ITF, Codabar, RSS'], ['2D-коди', 'QR Code, Data Matrix, PDF417, Aztec'], ['Інші', 'Code 93, MaxiCode та варіанти ZXing']], troubleshoot: 'Якщо код не зчитується', tips: ['Обріжте зображення навколо коду.', 'Використайте оригінальне фото замість стисненого знімка.', 'Фотографуйте етикетку прямо, без відблисків і розмиття.', 'Залиште видимими світлі зони з боків лінійного коду.'], privacy: 'Приватне сканування', privacyText: 'Зображення обробляються у браузері й не надсилаються на сервер. Основні функції можуть працювати офлайн після першого завантаження.', related: 'Створіть або перевірте код', links: [['Відкрити генератор', '/uk/'], ['Генерувати з CSV', '/bulk-barcode-generator'], ['Перевірити GTIN і GS1', '/gs1-barcode-generator']] },
 };
 
+const DECODER_BATCH_CONTENT = {
+  en: ['Find every barcode in this image', 'Use for sheets, cartons or photos with several codes. Processing stays on this device.'],
+  pl: ['Znajdź wszystkie kody na tym obrazie', 'Użyj dla arkuszy, kartonów lub zdjęć z kilkoma kodami. Przetwarzanie odbywa się na tym urządzeniu.'],
+  de: ['Alle Barcodes in diesem Bild finden', 'Für Bögen, Kartons oder Fotos mit mehreren Codes. Die Verarbeitung erfolgt auf diesem Gerät.'],
+  fr: ['Trouver tous les codes-barres de cette image', 'Pour les feuilles, cartons ou photos contenant plusieurs codes. Le traitement reste sur cet appareil.'],
+  es: ['Encontrar todos los códigos de esta imagen', 'Para hojas, cajas o fotos con varios códigos. El procesamiento se realiza en este dispositivo.'],
+  it: ['Trova tutti i codici a barre nell’immagine', 'Per fogli, scatole o foto con più codici. L’elaborazione avviene su questo dispositivo.'],
+  pt: ['Encontrar todos os códigos nesta imagem', 'Use em folhas, caixas ou fotos com vários códigos. O processamento fica neste dispositivo.'],
+  nl: ['Alle barcodes in deze afbeelding vinden', 'Voor vellen, dozen of foto’s met meerdere codes. De verwerking blijft op dit apparaat.'],
+  cs: ['Najít všechny čárové kódy na obrázku', 'Pro archy, krabice nebo fotografie s více kódy. Zpracování probíhá v tomto zařízení.'],
+  uk: ['Знайти всі штрихкоди на цьому зображенні', 'Для аркушів, коробок або фотографій із кількома кодами. Обробка виконується на цьому пристрої.'],
+};
+
 function enhanceDecoderHtml(html, lang) {
   const page = DECODER_CONTENT[lang];
+  const [batchLabel, batchHint] = DECODER_BATCH_CONTENT[lang];
+  const batchOption = `<div class="decoder-batch-option">
+                <input type="checkbox" id="batch-image-mode" aria-describedby="batch-image-hint">
+                <div><label for="batch-image-mode">${batchLabel}</label><p id="batch-image-hint">${batchHint}</p></div>
+            </div>`;
   const guide = `<section class="decoder-guide" aria-labelledby="decoder-guide-title">
     <p class="decoder-guide__kicker">${page.kicker}</p><h2 id="decoder-guide-title">${page.heading}</h2><p class="decoder-guide__lead">${page.lead}</p>
     <div class="decoder-guide__columns"><section><h3>${page.how}</h3><ol>${page.steps.map((step) => `<li>${step}</li>`).join('')}</ol></section><section><h3>${page.formats}</h3><p>${page.formatText}</p><dl class="decoder-format-list">${page.groups.map(([name, formats]) => `<div><dt>${name}</dt><dd>${formats}</dd></div>`).join('')}</dl></section></div>
@@ -381,6 +399,7 @@ function enhanceDecoderHtml(html, lang) {
     .replace(/(<meta property="og:description" content=")[^"]*(">)/i, `$1${page.description}$2`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(">)/i, `$1${page.title}$2`)
     .replace(/(<meta name="twitter:description" content=")[^"]*(">)/i, `$1${page.description}$2`)
+    .replace(/(<label for="file-input" id="drop-area"[\s\S]*?<\/label>)/i, `$1\n            ${batchOption}`)
     .replace(/\s*<footer class="decoder-footer">/i, `\n${guide}\n        <footer class="decoder-footer">`);
 }
 
@@ -737,6 +756,13 @@ await cp(path.join(ROOT, 'node_modules/jsbarcode/dist/JsBarcode.all.min.js'), pa
 await cp(path.join(ROOT, 'node_modules/qrcode-generator/qrcode.js'), path.join(OUT, 'vendor/qrcode-generator.js'));
 await cp(path.join(ROOT, 'node_modules/bwip-js/dist/bwip-js-min.js'), path.join(OUT, 'vendor/bwip-js-min.js'));
 await cp(path.join(ROOT, 'node_modules/@zxing/library/umd/index.min.js'), path.join(OUT, 'vendor/zxing.min.js'));
+await cp(path.join(ROOT, 'node_modules/@undecaf/zbar-wasm/dist/index.js'), path.join(OUT, 'vendor/zbar-wasm.js'));
+await cp(path.join(ROOT, 'node_modules/@undecaf/zbar-wasm/dist/zbar.wasm'), path.join(OUT, 'vendor/zbar.wasm'));
+const barcodeDetectorPolyfill = await readFile(path.join(ROOT, 'node_modules/@undecaf/barcode-detector-polyfill/dist/index.js'), 'utf8');
+await writeFile(path.join(OUT, 'vendor/barcode-detector-polyfill.js'), `${barcodeDetectorPolyfill}\nwindow.barcodeDetectorPolyfill = barcodeDetectorPolyfill;\n`, 'utf8');
+await mkdir(path.join(OUT, 'licenses'), { recursive: true });
+await cp(path.join(ROOT, 'node_modules/@undecaf/zbar-wasm/LICENSE'), path.join(OUT, 'licenses/zbar-wasm-LICENSE.txt'));
+await cp(path.join(ROOT, 'node_modules/@undecaf/barcode-detector-polyfill/LICENSE'), path.join(OUT, 'licenses/barcode-detector-polyfill-LICENSE.txt'));
 await writeFile(path.join(OUT, 'bulk-barcode-generator.html'), normaliseHtml(await readFile(path.join(ROOT, 'bulk.html'), 'utf8')), 'utf8');
 await mkdir(path.join(OUT, 'pl'), { recursive: true });
 await writeFile(path.join(OUT, 'pl', 'generator-kodow-z-csv.html'), normaliseHtml(await readFile(path.join(ROOT, 'bulk-pl.html'), 'utf8')), 'utf8');
@@ -932,6 +958,7 @@ const precache = [
   '/account-dialogs.js', '/bulk.js', '/bulk-export.js', '/csv-import.js', '/csv-worker.js',
   '/db-jobs.js', '/gs1.js', '/gs1-generator.js', '/two-d-generator.js', '/specialized-save.js',
   '/vendor/jsbarcode.min.js', '/vendor/qrcode-generator.js', '/vendor/zxing.min.js',
+  '/vendor/zbar-wasm.js', '/vendor/zbar.wasm', '/vendor/barcode-detector-polyfill.js',
   '/vendor/pdf-lib.min.js', '/vendor/jszip.min.js', '/vendor/bwip-js-min.js',
 ];
 const pwaVersion = createHash('sha256')
