@@ -135,8 +135,22 @@ function clipDescription(value) {
   return `${value.slice(0, 152).replace(/\s+\S*$/, '')}...`;
 }
 
-function improveLandingSeo(html, lang) {
-  let output = html.replaceAll('{{', '{').replaceAll('}}', '}');
+function formatHreflangCluster(page) {
+  return [
+    ...LANGS.map((alternate) => `    <link rel="alternate" hreflang="${alternate}" href="${canonicalFor(alternate, `${page}/`)}">`),
+    `    <link rel="alternate" hreflang="x-default" href="${canonicalFor('en', `${page}/`)}">`,
+  ].join('\n');
+}
+
+function improveLandingSeo(html, lang, page) {
+  const withoutAlternates = html.replace(
+    /\s*<link\b(?=[^>]*\brel=["']alternate["'])(?=[^>]*\bhreflang=["'][^"']+["'])[^>]*>/gi,
+    '',
+  );
+  let output = withoutAlternates
+    .replace(/(<link\s+rel=["']canonical["'][^>]*>)/i, `$1\n${formatHreflangCluster(page)}`)
+    .replaceAll('{{', '{')
+    .replaceAll('}}', '}');
   if (lang === 'en') return output;
   const pick = (regex) => textContent((output.match(regex) || [])[1] || '');
   const title = pick(/<h1>([\s\S]*?)<\/h1>/i);
@@ -726,7 +740,7 @@ async function copyPublicDirectory(name) {
         .replaceAll('href="/privacy-policy"', 'href="/pl/polityka-prywatnosci"')
         .replaceAll('href="/terms"', 'href="/pl/regulamin"');
     }
-    if (isLanding) html = improveLandingSeo(html, lang);
+    if (isLanding) html = improveLandingSeo(html, lang, rel.at(-2));
     if (rel.at(-2) === 'ean-13') html = addEan13Tool(html, lang);
     if (FORMAT_TOOL_CONFIG[rel.at(-2)]) html = addFormatTool(html, lang, rel.at(-2));
     await writeFile(file, html, 'utf8');

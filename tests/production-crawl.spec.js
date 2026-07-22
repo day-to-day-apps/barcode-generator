@@ -4,6 +4,8 @@ import { test, expect } from '@playwright/test';
 const PROD = 'https://barcode-generator.daytodayapps.com';
 const PRIVATE = ['konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', 'historia-wydrukow', 'reset-hasla'];
 const LANGS = ['', 'pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cs', 'uk'];
+const LOCALES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cs', 'uk'];
+const FORMATS = ['ean-13', 'code-128', 'upc-a', 'code-39', 'itf-14', 'codabar', 'qr-code'];
 
 test('sitemap contains only 108 direct, indexable canonical URLs', async ({ request }) => {
   const xml = await (await request.get('/sitemap.xml')).text();
@@ -19,6 +21,18 @@ test('sitemap contains only 108 direct, indexable canonical URLs', async ({ requ
     expect((html.match(/<h1\b/gi) || []).length, path).toBe(1);
     const found = html.match(/<link[^>]+rel="canonical"[^>]+href="([^"]+)"/i)?.[1];
     expect(found, path).toBe(canonical);
+    const formatMatch = path.match(new RegExp(`^/(?:(${LOCALES.filter((lang) => lang !== 'en').join('|')})/)?(${FORMATS.join('|')})/$`));
+    if (formatMatch) {
+      const format = formatMatch[2];
+      const alternates = [...html.matchAll(/<link[^>]+rel="alternate"[^>]+hreflang="([^"]+)"[^>]+href="([^"]+)"/gi)]
+        .map((match) => [match[1], match[2]]);
+      expect(alternates, `${path} must expose one complete hreflang cluster`).toHaveLength(LOCALES.length + 1);
+      for (const locale of LOCALES) {
+        const expected = `${PROD}${locale === 'en' ? '' : `/${locale}`}/${format}/`;
+        expect(alternates.filter(([lang, href]) => lang === locale && href === expected), `${path} hreflang=${locale}`).toHaveLength(1);
+      }
+      expect(alternates.filter(([lang, href]) => lang === 'x-default' && href === `${PROD}/${format}/`), `${path} x-default`).toHaveLength(1);
+    }
     for (const block of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
       expect(() => JSON.parse(block[1]), `${path} has invalid JSON-LD`).not.toThrow();
     }
