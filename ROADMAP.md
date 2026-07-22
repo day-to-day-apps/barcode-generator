@@ -128,7 +128,7 @@ Sugerowana ścieżka: `/<lang>/ean-13/`, `/<lang>/upc/`, `/<lang>/code-128/`, `/
 - [x] Dekoder z dłuższych obrazów / batch (kilka kodów na jednym zdjęciu).
 - [x] Eksport listy kodów do PDF (wydruk arkusza etykiet).
 - [x] Bulk import z CSV → generowanie wielu kodów naraz, także z zapisanych kodów konta.
-- [ ] Skrót klawiaturowy „Ctrl+S" w generatorze → szybki zapis do konta.
+- [x] Skrót klawiaturowy „Ctrl+S" / „Cmd+S" w generatorze → szybki zapis do konta.
 - [ ] Tryb wysokiego kontrastu (a11y AAA) jako opcja w ustawieniach.
 
 ---

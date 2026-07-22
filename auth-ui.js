@@ -232,6 +232,20 @@ function renderSaveButton(btn) {
   btn.hidden = false;
 }
 
+function bindSaveShortcut(btn) {
+  if (!btn) return;
+  btn.setAttribute('aria-keyshortcuts', 'Control+S Meta+S');
+  document.addEventListener('keydown', (event) => {
+    const isSaveShortcut = event.key.toLowerCase() === 's'
+      && (event.ctrlKey || event.metaKey)
+      && !event.altKey
+      && !event.shiftKey;
+    if (!isSaveShortcut || event.defaultPrevented || event.repeat) return;
+    event.preventDefault();
+    if (!btn.disabled) btn.click();
+  });
+}
+
 function readCurrentBarcode() {
   const typeSel = document.getElementById('barcode-type');
   const valueInp = document.getElementById('barcode-value') || document.getElementById('barcode-text');
@@ -341,6 +355,7 @@ async function init() {
   renderHeaderState(headerControls);
   const saveBtn = buildSaveButton();
   renderSaveButton(saveBtn);
+  bindSaveShortcut(saveBtn);
 
   const hydrateSession = async () => {
     const sb = await getSupabase();
