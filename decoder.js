@@ -20,8 +20,8 @@
                 if (flags[i]) {
                     const code = flagToCode[flags[i]];
                     const img = document.createElement('img');
-                    img.src = `https://flagcdn.com/20x15/${code}.png`;
-                    img.srcset = `https://flagcdn.com/40x30/${code}.png 2x`;
+                    img.src = `/flags/${code}.png`;
+                    img.srcset = `/flags/${code}@2x.png 2x`;
                     img.width = 20;
                     img.height = 15;
                     img.alt = '';

@@ -65,6 +65,15 @@ function t(key) {
   return (dict.account && dict.account[key]) || FALLBACK_TEXT[key] || key;
 }
 
+async function waitForTranslations() {
+  const lang = document.documentElement.lang || 'en';
+  if ((window.BARCODE_I18N || {})[lang]?.account) return;
+  await Promise.race([
+    new Promise((resolve) => window.addEventListener('barcode:i18n-ready', resolve, { once: true })),
+    new Promise((resolve) => window.setTimeout(resolve, 2000)),
+  ]);
+}
+
 const state = {
   session: null,
   user: null,
@@ -95,7 +104,7 @@ function buildHeaderControls() {
   const wrap = document.createElement('div');
   wrap.className = 'auth-controls';
   wrap.setAttribute('role', 'group');
-  wrap.setAttribute('aria-label', 'Account');
+  wrap.setAttribute('aria-label', t('accountMenuLabel'));
   wrap.innerHTML = `
     <span class="auth-anon" hidden>
       <a class="btn-auth-primary auth-signin-cta" href="${ROUTES.account}#register">${escapeHtml(t('headerCtaCreate'))}</a>
@@ -351,6 +360,7 @@ function announce(msg) {
 }
 
 async function init() {
+  await waitForTranslations();
   const headerControls = buildHeaderControls();
   renderHeaderState(headerControls);
   const saveBtn = buildSaveButton();

@@ -23,6 +23,14 @@ test.describe('PWA and offline tools', () => {
     expect((await cssResponse.body()).length).toBeLessThanOrEqual(65_000);
   });
 
+  test('account actions wait for the active language dictionary', async ({ page }) => {
+    await page.goto('/pl/');
+    await expect(page.locator('.auth-signin-cta')).toHaveText('Załóż konto');
+    await expect(page.locator('.auth-signin-link')).toHaveText('Mam już konto');
+    await expect(page.locator('.btn-save-code')).toContainText('Zapisz ten kod');
+    await expect(page.locator('.auth-controls')).toHaveAttribute('aria-label', 'Menu konta');
+  });
+
   test('manifest exposes an installable standalone application', async ({ page, request }) => {
     await page.goto('/');
     await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/manifest.webmanifest');
@@ -53,6 +61,7 @@ test.describe('PWA and offline tools', () => {
     await expect(page.locator('#barcode-type')).toHaveValue('CODE128');
     await expect(page.locator('#barcode-text')).toHaveValue('OFFLINE-2026');
     await expect(page.locator('#barcode-svg')).not.toBeEmpty();
+    await expect(page.locator('.lang-current .flag-img')).toHaveJSProperty('complete', true);
 
     await page.goto('/decoder');
     await expect(page.locator('#drop-area')).toBeVisible();
@@ -107,11 +116,15 @@ test.describe('PWA and offline tools', () => {
     await expect.poll(() => page.evaluate(async () => !(await caches.keys()).includes('barcode-tools-stale'))).toBe(true);
   });
 
-  test('barcode engines are served from the first-party origin', async ({ page }) => {
+  test('barcode engines and language flags are served from the first-party origin', async ({ page }) => {
     const engineRequests = [];
+    const flagRequests = [];
+    const thirdPartyFlagRequests = [];
     const supabaseSdkRequests = [];
     page.on('request', (request) => {
       if (/jsbarcode|qrcode-generator|qrious/i.test(request.url())) engineRequests.push(request.url());
+      if (/\/flags\/[a-z]{2}(?:@2x)?\.png/i.test(request.url())) flagRequests.push(request.url());
+      if (/flagcdn\.com/i.test(request.url())) thirdPartyFlagRequests.push(request.url());
       if (/cdn\.jsdelivr\.net\/npm\/@supabase/i.test(request.url())) supabaseSdkRequests.push(request.url());
     });
     await page.goto('/');
@@ -120,6 +133,9 @@ test.describe('PWA and offline tools', () => {
 
     expect(engineRequests.length).toBeGreaterThan(0);
     expect(engineRequests.every((url) => new URL(url).origin === 'http://127.0.0.1:8765')).toBe(true);
+    expect(flagRequests.length).toBeGreaterThan(0);
+    expect(flagRequests.every((url) => new URL(url).origin === 'http://127.0.0.1:8765')).toBe(true);
+    expect(thirdPartyFlagRequests).toEqual([]);
     expect(supabaseSdkRequests).toEqual([]);
   });
 });

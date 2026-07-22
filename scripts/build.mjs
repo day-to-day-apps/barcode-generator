@@ -14,6 +14,7 @@ const ROOT = process.cwd();
 const OUT = path.join(ROOT, 'dist');
 const BASE = 'https://barcode-generator.daytodayapps.com';
 const LANGS = ['en', 'pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cs', 'uk'];
+const FLAG_CODES = ['gb', 'pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cz', 'ua'];
 const LOCALE_DIRS = LANGS.filter((lang) => lang !== 'en');
 const SOURCE_FORMATS = ['ean-13', 'code-128', 'upc-a', 'code-39', 'itf-14', 'codabar'];
 const FORMATS = [...SOURCE_FORMATS, 'qr-code'];
@@ -90,6 +91,12 @@ function normaliseHtml(html) {
     output = output.replace('</body>', `    <script defer src="/pwa-register.js?v=${ASSET_VERSIONS.get('pwa-register.js')}"></script>\n</body>`);
   }
   return output;
+}
+
+function normaliseJavaScript(source) {
+  return source
+    .replaceAll('https://flagcdn.com/20x15/', '/flags/')
+    .replace(/https:\/\/flagcdn\.com\/40x30\/\$\{code\}\.png/g, '/flags/${code}@2x.png');
 }
 
 function pwaIcon(size) {
@@ -666,6 +673,8 @@ async function copyFile(name) {
   await mkdir(path.dirname(to), { recursive: true });
   if (name.endsWith('.html')) {
     await writeFile(to, normaliseHtml(await readFile(from, 'utf8')), 'utf8');
+  } else if (name.endsWith('.js')) {
+    await writeFile(to, normaliseJavaScript(await readFile(from, 'utf8')), 'utf8');
   } else {
     await cp(from, to);
   }
@@ -757,6 +766,7 @@ function sitemapXml() {
 await rm(OUT, { recursive: true, force: true });
 await mkdir(OUT, { recursive: true });
 for (const asset of ROOT_ASSETS) await copyFile(asset);
+await cp(path.join(ROOT, 'flags'), path.join(OUT, 'flags'), { recursive: true });
 await writeFile(path.join(OUT, 'pwa-icon-192.png'), pwaIcon(192));
 await writeFile(path.join(OUT, 'pwa-icon-512.png'), pwaIcon(512));
 await mkdir(path.join(OUT, 'vendor'), { recursive: true });
@@ -898,7 +908,7 @@ if (cssResult.errors.length) throw new Error(`Could not minify landing CSS: ${cs
 const landingCss = cssResult.styles;
 const landingCssVersion = createHash('sha256').update(landingCss).digest('hex').slice(0, 12);
 await writeFile(path.join(OUT, 'landing.css'), landingCss, 'utf8');
-const appSource = await readFile(path.join(ROOT, 'app.js'), 'utf8');
+const appSource = normaliseJavaScript(await readFile(path.join(ROOT, 'app.js'), 'utf8'));
 const prefillSource = await readFile(path.join(ROOT, 'generator-prefill.js'), 'utf8');
 const landingAppBase = appSource.replace(
   /    \/\/ The gallery sits below the generator on mobile,[\s\S]*?    }\r?\n\r?\n    syncTypeUI\(\);/,
@@ -913,6 +923,7 @@ const landingAppSource = [
   await readFile(path.join(ROOT, 'node_modules/jsbarcode/dist/JsBarcode.all.min.js'), 'utf8'),
   await readFile(path.join(ROOT, 'node_modules/qrcode-generator/qrcode.js'), 'utf8'),
   await readFile(path.join(ROOT, 'i18n.js'), 'utf8'),
+  "window.dispatchEvent(new Event('barcode:i18n-ready'));",
   await readFile(path.join(ROOT, 'label-renderer.js'), 'utf8'),
   immediateLandingApp,
   prefillSource,
@@ -980,6 +991,7 @@ const precache = [
   '/vendor/jsbarcode.min.js', '/vendor/qrcode-generator.js', '/vendor/zxing.min.js',
   '/vendor/zbar-wasm.js', '/vendor/zbar.wasm', '/vendor/barcode-detector-polyfill.js',
   '/vendor/pdf-lib.min.js', '/vendor/jszip.min.js', '/vendor/bwip-js-min.js',
+  ...FLAG_CODES.flatMap((code) => [`/flags/${code}.png`, `/flags/${code}@2x.png`]),
 ];
 const pwaVersion = createHash('sha256')
   .update(JSON.stringify([...ASSET_VERSIONS, landingCssVersion, landingAppVersion, landingLoaderVersion, precache]))
