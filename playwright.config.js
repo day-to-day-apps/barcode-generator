@@ -13,6 +13,7 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:8765',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
+    launchOptions: process.env.CI ? { args: ['--disable-gpu'] } : undefined,
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
