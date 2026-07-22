@@ -6,6 +6,7 @@ import path from 'node:path';
 import { PurgeCSS } from 'purgecss';
 import { PNG } from 'pngjs';
 import { qrPageHtml } from './qr-pages.mjs';
+import { ADDITIONAL_GUIDE_PAGES } from './additional-guides.mjs';
 
 const ROOT = process.cwd();
 const OUT = path.join(ROOT, 'dist');
@@ -541,6 +542,7 @@ const GUIDE_PAGES = [
       ],
     },
   },
+  ...ADDITIONAL_GUIDE_PAGES,
 ];
 
 function taskPageHtml(page, lang, alternate) {
@@ -574,7 +576,7 @@ function guidePageHtml(page, lang, alternate) {
         description: page.description,
         url: canonical,
         inLanguage: lang,
-        datePublished: '2026-07-21',
+        datePublished: page.datePublished || '2026-07-21',
         dateModified: new Date().toISOString().slice(0, 10),
         author: { '@type': 'Organization', name: 'Day to Day Apps', url: 'https://daytodayapps.com/' },
         publisher: { '@type': 'Organization', name: 'Day to Day Apps', url: 'https://daytodayapps.com/' },
@@ -726,7 +728,7 @@ function sitemapXml() {
     ['thermal-barcode-label-printing', 'druk-kodow-na-drukarce-termicznej'],
     ['gs1-barcode-generator', 'generator-kodow-gs1'],
     ['2d-barcode-generator', 'generator-kodow-2d'],
-    ['guides/gtin-ean-upc', 'poradniki/gtin-ean-upc'],
+    ...GUIDE_PAGES.map((group) => [group.en.route, group.pl.route]),
   ];
   for (const [english, polish] of taskGroups) {
     const alternatives = { en: `${BASE}/${english}`, pl: `${BASE}/pl/${polish}` };
@@ -949,7 +951,7 @@ const precache = [
   '/bulk-barcode-generator', '/pl/generator-kodow-z-csv',
   '/gs1-barcode-generator', '/pl/generator-kodow-gs1',
   '/2d-barcode-generator', '/pl/generator-kodow-2d',
-  '/guides/gtin-ean-upc', '/pl/poradniki/gtin-ean-upc',
+  ...GUIDE_PAGES.flatMap((group) => [`/${group.en.route}`, `/pl/${group.pl.route}`]),
   '/qr-code/', '/pl/qr-code/',
   '/manifest.webmanifest', '/pwa-icon-192.png', '/pwa-icon-512.png', '/favicon.svg',
   '/landing.css', '/decoder.css', '/ean13-inline.css', '/format-inline.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',

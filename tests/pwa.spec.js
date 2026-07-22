@@ -64,6 +64,10 @@ test.describe('PWA and offline tools', () => {
 
     await page.goto('/guides/gtin-ean-upc');
     await expect(page.getByRole('heading', { name: 'GTIN, EAN and UPC: what is the difference?' })).toBeVisible();
+    await page.goto('/guides/ean-13-food-products');
+    await expect(page.getByRole('heading', { name: 'How to prepare an EAN-13 barcode for a food product' })).toBeVisible();
+    await page.goto('/pl/poradniki/darmowy-generator-kodow-dla-firmy');
+    await expect(page.getByRole('heading', { name: 'Czy można używać darmowego generatora kodów w firmie?' })).toBeVisible();
     expect(pageErrors).toEqual([]);
   });
 

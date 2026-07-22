@@ -117,15 +117,15 @@ Sugerowana ścieżka: `/<lang>/ean-13/`, `/<lang>/upc/`, `/<lang>/code-128/`, `/
 - [x] ITF / ITF-14 (kody na opakowaniach zbiorczych).
 
 ### Blog (opcjonalnie, M5+)
-- [ ] „Jak wygenerować kod EAN-13 do produktu spożywczego" (PL, EN).
+- [x] „Jak wygenerować kod EAN-13 do produktu spożywczego" (PL, EN).
 - [x] „Różnica między EAN, UPC i GTIN" (PL, EN).
-- [ ] „Czy mogę używać darmowego generatora w sklepie?" (PL, EN).
+- [x] „Czy mogę używać darmowego generatora w sklepie?" (PL, EN).
 
 ---
 
 ## Nice-to-have (bez przypisanego milestone'a)
 
-- [ ] Dekoder z dłuższych obrazów / batch (kilka kodów na jednym zdjęciu).
+- [x] Dekoder z dłuższych obrazów / batch (kilka kodów na jednym zdjęciu).
 - [x] Eksport listy kodów do PDF (wydruk arkusza etykiet).
 - [x] Bulk import z CSV → generowanie wielu kodów naraz, także z zapisanych kodów konta.
 - [ ] Skrót klawiaturowy „Ctrl+S" w generatorze → szybki zapis do konta.
