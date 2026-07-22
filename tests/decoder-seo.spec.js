@@ -23,6 +23,9 @@ for (const lang of LANGS) {
     await expect(page.locator('.decoder-guide h3')).toHaveCount(5);
     await expect(page.locator('.decoder-format-list dt')).toHaveCount(4);
     await expect(page.locator('.decoder-related a')).toHaveCount(lang === 'en' || lang === 'pl' ? 4 : 3);
+    const cameraButton = page.locator('#camera-btn');
+    await expect(cameraButton).not.toHaveAttribute('aria-label', /.+/);
+    expect((await cameraButton.innerText()).trim().length).toBeGreaterThan(0);
 
     const title = await page.title();
     const description = await page.locator('meta[name="description"]').getAttribute('content') ?? '';

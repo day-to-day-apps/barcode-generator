@@ -61,3 +61,22 @@ test.describe('Accessibility - per language index page', () => {
     });
   }
 });
+
+test.describe('Accessibility - dark theme', () => {
+  for (const path of ['/', '/decoder']) {
+    test(`${path} has no axe violations in dark theme`, async ({ page }) => {
+      await page.addInitScript(() => localStorage.setItem('barcode-theme', 'dark'));
+      await page.goto(path);
+      await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+      const results = await new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+        .analyze();
+      expect(results.violations, results.violations.map((violation) => `${violation.id}: ${violation.help}`).join('\n')).toEqual([]);
+    });
+  }
+});
+
+test('format page footer does not reduce accessible text contrast with opacity', async ({ page }) => {
+  await page.goto('/es/ean-13/');
+  await expect(page.locator('footer')).toHaveCSS('opacity', '1');
+});
