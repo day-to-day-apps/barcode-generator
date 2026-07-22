@@ -113,7 +113,7 @@ Sugerowana ścieżka: `/<lang>/ean-13/`, `/<lang>/upc/`, `/<lang>/code-128/`, `/
 - [x] EAN-13 (struktura, suma kontrolna, gdzie kupić prefiks GS1).
 - [x] UPC-A (walidacja, suma kontrolna i zastosowania).
 - [x] Code 128 (zestawy A/B/C, kiedy stosować).
-- [ ] QR Code (poziomy korekcji, rozmiar a pojemność).
+- [x] QR Code (poziomy korekcji, rozmiar a pojemność, lokalny eksport PNG/SVG w 10 językach).
 - [x] ITF / ITF-14 (kody na opakowaniach zbiorczych).
 
 ### Blog (opcjonalnie, M5+)

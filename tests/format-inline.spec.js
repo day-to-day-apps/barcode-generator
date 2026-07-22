@@ -8,6 +8,7 @@ const FORMATS = [
   { slug: 'code-39', type: 'code39' },
   { slug: 'itf-14', type: 'itf14' },
   { slug: 'codabar', type: 'codabar' },
+  { slug: 'qr-code', type: 'qr' },
 ];
 
 for (const { slug, type } of FORMATS) {
@@ -38,6 +39,7 @@ test.describe('Format-specific validation', () => {
     { route: '/code-39/', input: 'part-2026', output: 'PART-2026' },
     { route: '/itf-14/', input: '1001234500001', output: '10012345000017' },
     { route: '/codabar/', input: '123456', output: 'A123456A' },
+    { route: '/qr-code/', input: 'Zażółć gęślą jaźń https://daytodayapps.com/', output: 'Zażółć gęślą jaźń' },
   ];
 
   for (const { route, input, output } of cases) {
@@ -64,9 +66,21 @@ test.describe('Format-specific validation', () => {
     await expect(tool.locator('#format-inline-barcode rect, #format-inline-barcode path')).toHaveCount(0);
   });
 
+  test('QR error correction regenerates a square code with a quiet zone', async ({ page }) => {
+    await page.goto('/pl/qr-code/');
+    const tool = page.locator('#format-tool');
+    const barcode = tool.locator('#format-inline-barcode');
+    await expect(tool.locator('#format-inline-ecc')).toHaveValue('M');
+    await expect(barcode).toHaveAttribute('viewBox', /^-4 -4 \d+ \d+$/);
+    const initialPath = await barcode.locator('path').getAttribute('d');
+    await tool.locator('#format-inline-ecc').selectOption('H');
+    await expect(barcode.locator('path')).not.toHaveAttribute('d', initialPath || '');
+    await expect(tool.locator('[data-advanced-link]')).toHaveAttribute('href', /type=qr.*value=/);
+  });
+
   test('narrow mobile layout does not overflow', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
-    await page.goto('/de/code-128/');
+    await page.goto('/de/qr-code/');
     await expect(page.locator('#format-tool')).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)).toBe(false);
   });

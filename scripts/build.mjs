@@ -5,13 +5,15 @@ import { runInNewContext } from 'node:vm';
 import path from 'node:path';
 import { PurgeCSS } from 'purgecss';
 import { PNG } from 'pngjs';
+import { qrPageHtml } from './qr-pages.mjs';
 
 const ROOT = process.cwd();
 const OUT = path.join(ROOT, 'dist');
 const BASE = 'https://barcode-generator.daytodayapps.com';
 const LANGS = ['en', 'pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cs', 'uk'];
 const LOCALE_DIRS = LANGS.filter((lang) => lang !== 'en');
-const FORMATS = ['ean-13', 'code-128', 'upc-a', 'code-39', 'itf-14', 'codabar'];
+const SOURCE_FORMATS = ['ean-13', 'code-128', 'upc-a', 'code-39', 'itf-14', 'codabar'];
+const FORMATS = [...SOURCE_FORMATS, 'qr-code'];
 const PRIVATE_PAGES = ['konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', 'historia-wydrukow'];
 const ROOT_ASSETS = [
   '404.html', '_headers', '_redirects', 'ads.txt', 'robots.txt', 'favicon.svg', 'og-image.svg',
@@ -207,6 +209,27 @@ const FORMAT_TOOL_CONFIG = {
   'code-39': { name: 'Code 39', jsFormat: 'CODE39', appType: 'code39', example: 'PRODUCT-2026', inputMode: 'text', maxLength: 48 },
   'itf-14': { name: 'ITF-14', jsFormat: 'ITF14', appType: 'itf14', example: '1001234500001', inputMode: 'numeric', maxLength: 14 },
   codabar: { name: 'Codabar', jsFormat: 'codabar', appType: 'codabar', example: 'A123456B', inputMode: 'text', maxLength: 48 },
+  'qr-code': {
+    name: 'QR Code',
+    jsFormat: 'QR',
+    appType: 'qr',
+    example: 'https://daytodayapps.com/',
+    inputMode: 'text',
+    maxLength: 1000,
+    multiline: true,
+    titles: {
+      en: 'Create a QR code now',
+      pl: 'Utwórz kod QR teraz',
+      de: 'QR-Code jetzt erstellen',
+      fr: 'Créer un QR code maintenant',
+      es: 'Crea un código QR ahora',
+      it: 'Crea subito un codice QR',
+      pt: 'Crie um código QR agora',
+      nl: 'Maak nu een QR-code',
+      cs: 'Vytvořte QR kód hned',
+      uk: 'Створіть QR-код зараз',
+    },
+  },
 };
 
 const FORMAT_TOOL_CONTENT = {
@@ -230,14 +253,33 @@ const FORMAT_NAV_CONTENT = {
   cs: ['Generátor', 'Skener', 'Dávka CSV'], uk: ['Генератор', 'Сканер', 'Пакет CSV'],
 };
 
+const QR_OPTION_CONTENT = {
+  en: ['Error correction', 'L - 7%', 'M - 15% (recommended)', 'Q - 25%', 'H - 30%'],
+  pl: ['Korekcja błędów', 'L - 7%', 'M - 15% (zalecane)', 'Q - 25%', 'H - 30%'],
+  de: ['Fehlerkorrektur', 'L - 7%', 'M - 15% (empfohlen)', 'Q - 25%', 'H - 30%'],
+  fr: ['Correction des erreurs', 'L - 7 %', 'M - 15 % (recommandé)', 'Q - 25 %', 'H - 30 %'],
+  es: ['Corrección de errores', 'L - 7%', 'M - 15% (recomendado)', 'Q - 25%', 'H - 30%'],
+  it: ['Correzione degli errori', 'L - 7%', 'M - 15% (consigliato)', 'Q - 25%', 'H - 30%'],
+  pt: ['Correção de erros', 'L - 7%', 'M - 15% (recomendado)', 'Q - 25%', 'H - 30%'],
+  nl: ['Foutcorrectie', 'L - 7%', 'M - 15% (aanbevolen)', 'Q - 25%', 'H - 30%'],
+  cs: ['Oprava chyb', 'L - 7%', 'M - 15% (doporučeno)', 'Q - 25%', 'H - 30%'],
+  uk: ['Корекція помилок', 'L - 7%', 'M - 15% (рекомендовано)', 'Q - 25%', 'H - 30%'],
+};
+
 function addFormatTool(html, lang, format) {
   const config = FORMAT_TOOL_CONFIG[format];
   const content = FORMAT_TOOL_CONTENT[lang] || FORMAT_TOOL_CONTENT.en;
   const formatName = config.name;
   const t = Object.fromEntries(Object.entries(content).map(([key, value]) => [key, value.replaceAll('{format}', formatName)]));
+  if (config.titles?.[lang]) t.title = config.titles[lang];
   const advancedRoute = routeFor(lang);
   const [generatorLabel, scannerLabel, bulkLabel] = FORMAT_NAV_CONTENT[lang] || FORMAT_NAV_CONTENT.en;
   const bulkRoute = lang === 'pl' ? '/pl/generator-kodow-z-csv' : '/bulk-barcode-generator';
+  const valueControl = config.multiline
+    ? `<textarea id="format-inline-value" name="barcode-value" rows="4" inputmode="${config.inputMode}" autocomplete="off" maxlength="${config.maxLength}" aria-describedby="format-inline-hint format-inline-status">${config.example}</textarea>`
+    : `<input id="format-inline-value" name="barcode-value" value="${config.example}" inputmode="${config.inputMode}" autocomplete="off" maxlength="${config.maxLength}" aria-describedby="format-inline-hint format-inline-status">`;
+  const qrOptions = config.jsFormat === 'QR' ? QR_OPTION_CONTENT[lang] || QR_OPTION_CONTENT.en : null;
+  const optionControl = qrOptions ? `<div class="format-tool__option"><label for="format-inline-ecc">${qrOptions[0]}</label><select id="format-inline-ecc" name="error-correction"><option value="L">${qrOptions[1]}</option><option value="M" selected>${qrOptions[2]}</option><option value="Q">${qrOptions[3]}</option><option value="H">${qrOptions[4]}</option></select></div>` : '';
   const header = `
     <header class="format-page-header">
         <div class="format-page-header__identity">
@@ -264,10 +306,11 @@ function addFormatTool(html, lang, format) {
             <form class="format-tool__form" novalidate>
                 <label for="format-inline-value">${t.label}</label>
                 <div class="format-tool__input-row">
-                    <input id="format-inline-value" name="barcode-value" value="${config.example}" inputmode="${config.inputMode}" autocomplete="off" maxlength="${config.maxLength}" aria-describedby="format-inline-hint format-inline-status">
+                    ${valueControl}
                     <button type="submit">${t.generate}</button>
                 </div>
                 <span id="format-inline-hint" class="format-tool__hint">${t.hint}</span>
+                ${optionControl}
             </form>
             <div class="format-tool__result">
                 <div class="format-tool__preview"><svg id="format-inline-barcode" role="img" aria-label="${formatName}"></svg></div>
@@ -284,7 +327,7 @@ function addFormatTool(html, lang, format) {
     .replace(/(<body[^>]*>)/i, `$1\n${header}`)
     .replace(/<a class="landing__cta" href="[^"]*">/i, '<a class="landing__cta" href="#format-tool">')
     .replace(/(\s*<section class="landing__section)/i, `\n${tool}\n$1`)
-    .replace('</body>', `    <script defer src="/vendor/jsbarcode.min.js"></script>\n    <script defer src="/format-inline.js?v=${ASSET_VERSIONS.get('format-inline.js')}"></script>\n</body>`);
+    .replace('</body>', `    <script defer src="/vendor/${config.jsFormat === 'QR' ? 'qrcode-generator.js' : 'jsbarcode.min.js'}"></script>\n    <script defer src="/format-inline.js?v=${ASSET_VERSIONS.get('format-inline.js')}"></script>\n</body>`);
 }
 
 const DECODER_CONTENT = {
@@ -701,7 +744,14 @@ await writeFile(path.join(OUT, 'gs1-barcode-generator.html'), normaliseHtml(awai
 await writeFile(path.join(OUT, 'pl', 'generator-kodow-gs1.html'), normaliseHtml(await readFile(path.join(ROOT, 'gs1-pl.html'), 'utf8')), 'utf8');
 await writeFile(path.join(OUT, '2d-barcode-generator.html'), normaliseHtml(await readFile(path.join(ROOT, 'two-d.html'), 'utf8')), 'utf8');
 await writeFile(path.join(OUT, 'pl', 'generator-kodow-2d.html'), normaliseHtml(await readFile(path.join(ROOT, 'two-d-pl.html'), 'utf8')), 'utf8');
-for (const dir of [...FORMATS, ...LOCALE_DIRS]) await copyPublicDirectory(dir);
+for (const dir of [...SOURCE_FORMATS, ...LOCALE_DIRS]) await copyPublicDirectory(dir);
+for (const lang of LANGS) {
+  const target = path.join(OUT, ...(lang === 'en' ? [] : [lang]), 'qr-code', 'index.html');
+  await mkdir(path.dirname(target), { recursive: true });
+  let html = normaliseHtml(qrPageHtml({ lang, langs: LANGS, base: BASE, routeFor, canonicalFor }));
+  html = addFormatTool(html, lang, 'qr-code');
+  await writeFile(target, html, 'utf8');
+}
 
 for (const lang of LANGS) {
   const decoderPath = lang === 'en' ? path.join(OUT, 'decoder.html') : path.join(OUT, lang, 'decoder.html');
@@ -862,6 +912,7 @@ const precache = [
   '/gs1-barcode-generator', '/pl/generator-kodow-gs1',
   '/2d-barcode-generator', '/pl/generator-kodow-2d',
   '/guides/gtin-ean-upc', '/pl/poradniki/gtin-ean-upc',
+  '/qr-code/', '/pl/qr-code/',
   '/manifest.webmanifest', '/pwa-icon-192.png', '/pwa-icon-512.png', '/favicon.svg',
   '/landing.css', '/decoder.css', '/ean13-inline.css', '/format-inline.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
   '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/decoder-i18n.js', '/ean13-inline.js', '/format-inline.js', '/i18n.js', '/label-renderer.js', '/analytics.js',
@@ -879,4 +930,4 @@ const serviceWorker = (await readFile(path.join(ROOT, 'service-worker.template.j
   .replace('__PWA_VERSION__', pwaVersion)
   .replace('__PRECACHE__', JSON.stringify(precache, null, 4));
 await writeFile(path.join(OUT, 'service-worker.js'), serviceWorker, 'utf8');
-console.log(`Built production site in ${OUT} (94 sitemap URLs).`);
+console.log(`Built production site in ${OUT} (${(sitemapXml().match(/<loc>/g) || []).length} sitemap URLs).`);

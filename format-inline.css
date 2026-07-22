@@ -1,3 +1,62 @@
+.landing {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.landing__hero {
+  padding: 2rem 0 1.5rem;
+  text-align: center;
+}
+
+.landing__hero h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1.2;
+}
+
+.landing__lead {
+  max-width: 680px;
+  margin: 0 auto 1.5rem;
+  font-size: 1.08rem;
+  line-height: 1.6;
+}
+
+.landing__lang {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem 0.7rem;
+  min-width: 0;
+  margin-top: 1rem;
+}
+
+.landing__lang a {
+  color: inherit;
+  overflow-wrap: anywhere;
+}
+
+.landing__lang a.active { font-weight: 800; }
+
+.landing__section {
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border-color, #d9dde7);
+}
+
+.landing__section li { margin-bottom: 0.45rem; }
+
+.landing__section ul,
+.landing__section ol {
+  padding-inline-start: 1.35rem;
+}
+
+.landing__faq details {
+  margin: 0.5rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color, #d9dde7);
+  border-radius: 6px;
+}
+
 .format-page-header {
   display: flex;
   align-items: center;
@@ -104,7 +163,9 @@
   gap: 0.5rem;
 }
 
-.format-tool input {
+.format-tool input,
+.format-tool textarea,
+.format-tool select {
   min-width: 0;
   padding: 0.72rem 0.8rem;
   border: 1px solid var(--border-color, #aeb5c2);
@@ -114,6 +175,21 @@
   font: inherit;
   letter-spacing: 0;
 }
+
+.format-tool textarea {
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.format-tool__option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, auto);
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+}
+
+.format-tool__option label { margin: 0; }
 
 .format-tool input[aria-invalid="true"] { border-color: #b42318; }
 
@@ -165,6 +241,11 @@
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+.format-tool[data-format="QR"] .format-tool__preview svg {
+  width: min(100%, 320px);
+  aspect-ratio: 1;
 }
 
 .format-tool__status {
@@ -238,5 +319,6 @@
   }
 
   .format-tool__input-row { grid-template-columns: minmax(0, 1fr); }
+  .format-tool__option { grid-template-columns: minmax(0, 1fr); }
   .format-tool__actions { display: grid; }
 }

@@ -82,7 +82,7 @@ test.describe('SEO - per language index page', () => {
   }
 });
 
-const FORMAT_PATHS = ['code-128', 'upc-a', 'code-39', 'itf-14', 'codabar'];
+const FORMAT_PATHS = ['code-128', 'upc-a', 'code-39', 'itf-14', 'codabar', 'qr-code'];
 const ENGLISH_FORMAT_DESCRIPTIONS = [
   'High-density alphanumeric barcode',
   '12-digit retail barcode',
@@ -113,4 +113,37 @@ test.describe('SEO - localized format descriptions', () => {
       }
     });
   }
+});
+
+test.describe('SEO - QR generator pages', () => {
+  for (const { code, path } of LANGS) test(`[${code}] QR page is complete and indexable`, async ({ page }) => {
+    const route = `${path}qr-code/`;
+    const canonical = `${BASE}${route}`;
+    await page.goto(route);
+
+    await expect(page.locator('html')).toHaveAttribute('lang', code);
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
+    await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg');
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index, follow');
+    await expect(page.locator('.landing__faq details')).toHaveCount(3);
+
+    const title = (await page.title()).trim();
+    const description = (await page.locator('meta[name="description"]').getAttribute('content'))?.trim() || '';
+    expect(title.length).toBeGreaterThan(25);
+    expect(title.length).toBeLessThanOrEqual(60);
+    expect(description.length).toBeGreaterThanOrEqual(120);
+    expect(description.length).toBeLessThanOrEqual(160);
+
+    for (const alternate of [...LANGS.map(({ code: lang }) => lang), 'x-default']) {
+      await expect(page.locator(`link[rel="alternate"][hreflang="${alternate}"]`)).toHaveCount(1);
+    }
+
+    const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const structuredData = blocks.map(JSON.parse);
+    const serialized = JSON.stringify(structuredData);
+    for (const type of ['WebApplication', 'WebPage', 'HowTo', 'FAQPage', 'BreadcrumbList']) {
+      expect(serialized).toContain(`"@type":"${type}"`);
+    }
+  });
 });

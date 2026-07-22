@@ -10,6 +10,7 @@
   const status = tool.querySelector('#format-inline-status');
   const actions = tool.querySelector('.format-tool__actions');
   const advancedLink = tool.querySelector('[data-advanced-link]');
+  const errorCorrection = tool.querySelector('#format-inline-ecc');
   const format = tool.dataset.format;
   const appType = tool.dataset.type;
   const formatName = tool.dataset.name;
@@ -40,6 +41,9 @@
   }
 
   function validate(raw) {
+    if (format === 'QR') {
+      return raw && raw.length <= 1000 ? { value: raw } : { error: tool.dataset.invalid };
+    }
     if (format === 'UPC') return numericGtin(raw, 11);
     if (format === 'ITF14') return numericGtin(raw, 13);
     if (format === 'CODE128') {
@@ -55,6 +59,40 @@
       return /^[ABCD][0-9\-$:/.+]+[ABCD]$/.test(value) ? { value } : { error: tool.dataset.invalid };
     }
     return { error: tool.dataset.invalid };
+  }
+
+  function renderQr(value) {
+    if (typeof window.qrcode !== 'function') throw new Error('QR library unavailable');
+    if (window.qrcode.stringToBytes && !window.qrcode.__utf8Patched) {
+      window.qrcode.stringToBytes = (text) => Array.from(new TextEncoder().encode(text));
+      window.qrcode.__utf8Patched = true;
+    }
+    const qr = window.qrcode(0, errorCorrection?.value || 'M');
+    qr.addData(value, 'Byte');
+    qr.make();
+    const count = qr.getModuleCount();
+    const quietZone = 4;
+    const namespace = 'http://www.w3.org/2000/svg';
+    const background = document.createElementNS(namespace, 'rect');
+    background.setAttribute('x', String(-quietZone));
+    background.setAttribute('y', String(-quietZone));
+    background.setAttribute('width', String(count + quietZone * 2));
+    background.setAttribute('height', String(count + quietZone * 2));
+    background.setAttribute('fill', '#ffffff');
+    const modules = document.createElementNS(namespace, 'path');
+    let path = '';
+    for (let row = 0; row < count; row += 1) {
+      for (let column = 0; column < count; column += 1) {
+        if (qr.isDark(row, column)) path += `M${column} ${row}h1v1h-1z`;
+      }
+    }
+    modules.setAttribute('d', path);
+    modules.setAttribute('fill', '#111111');
+    barcode.replaceChildren(background, modules);
+    barcode.setAttribute('viewBox', `${-quietZone} ${-quietZone} ${count + quietZone * 2} ${count + quietZone * 2}`);
+    barcode.setAttribute('width', '320');
+    barcode.setAttribute('height', '320');
+    barcode.setAttribute('shape-rendering', 'crispEdges');
   }
 
   function setError(text) {
@@ -78,16 +116,19 @@
     input.value = currentValue;
     input.removeAttribute('aria-invalid');
     try {
-      window.JsBarcode(barcode, currentValue, {
-        format,
-        width: 2,
-        height: 88,
-        margin: 16,
-        displayValue: true,
-        background: '#ffffff',
-        lineColor: '#111111',
-        fontSize: 18,
-      });
+      if (format === 'QR') renderQr(currentValue);
+      else {
+        window.JsBarcode(barcode, currentValue, {
+          format,
+          width: 2,
+          height: 88,
+          margin: 16,
+          displayValue: true,
+          background: '#ffffff',
+          lineColor: '#111111',
+          fontSize: 18,
+        });
+      }
     } catch (_error) {
       setError(tool.dataset.invalid);
       return;
@@ -109,7 +150,8 @@
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = `${appType}-${currentValue}.${extension}`;
+    const safeValue = currentValue.slice(0, 40).replace(/[^a-z0-9._-]+/gi, '-').replace(/^-+|-+$/g, '') || 'code';
+    anchor.download = `${appType}-${safeValue}.${extension}`;
     anchor.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
@@ -142,6 +184,7 @@
   input.addEventListener('input', () => {
     if (format === 'UPC' || format === 'ITF14') input.value = input.value.replace(/\D/g, '');
   });
+  errorCorrection?.addEventListener('change', generate);
   tool.addEventListener('click', (event) => {
     const button = event.target.closest('[data-download]');
     if (!button || !currentValue) return;
@@ -149,6 +192,6 @@
     else downloadPng();
   });
 
-  if (typeof window.JsBarcode === 'function') generate();
+  if ((format === 'QR' && typeof window.qrcode === 'function') || (format !== 'QR' && typeof window.JsBarcode === 'function')) generate();
   else window.addEventListener('load', generate, { once: true });
 })();
