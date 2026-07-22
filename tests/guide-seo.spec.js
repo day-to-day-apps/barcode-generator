@@ -3,6 +3,14 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const BASE = 'https://barcode-generator.daytodayapps.com';
+const TASK_GUIDES = [
+  ['/avery-label-printing', 'en', '/pl/drukowanie-etykiet-avery'],
+  ['/pl/drukowanie-etykiet-avery', 'pl', '/avery-label-printing'],
+  ['/warehouse-barcode-labels', 'en', '/pl/etykiety-kreskowe-dla-magazynu'],
+  ['/pl/etykiety-kreskowe-dla-magazynu', 'pl', '/warehouse-barcode-labels'],
+  ['/thermal-barcode-label-printing', 'en', '/pl/druk-kodow-na-drukarce-termicznej'],
+  ['/pl/druk-kodow-na-drukarce-termicznej', 'pl', '/thermal-barcode-label-printing'],
+];
 const GUIDES = [
   {
     path: '/guides/gtin-ean-upc',
@@ -47,6 +55,36 @@ const GUIDES = [
     h1: 'Czy można używać darmowego generatora kodów w firmie?',
   },
 ];
+
+for (const [path, lang, alternate] of TASK_GUIDES) {
+  test(`${path} provides a substantial, accessible task guide`, async ({ page, request }) => {
+    const response = await request.get(path, { maxRedirects: 0 });
+    expect(response.status()).toBe(200);
+    await page.goto(path);
+
+    await expect(page.locator('html')).toHaveAttribute('lang', lang);
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index, follow');
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `${BASE}${path}`);
+    const alternateLang = lang === 'pl' ? 'en' : 'pl';
+    await expect(page.locator(`link[rel="alternate"][hreflang="${alternateLang}"][href="${BASE}${alternate}"]`)).toHaveCount(1);
+    await expect(page.locator('.task-copy')).toHaveCount(3);
+    await expect(page.locator('.task-table tbody tr')).toHaveCount(4);
+    await expect(page.locator('.task-faq details')).toHaveCount(3);
+
+    const visibleText = await page.locator('#task-content').innerText();
+    expect(visibleText.split(/\s+/).length).toBeGreaterThanOrEqual(350);
+    const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const graph = blocks.map(JSON.parse).flatMap((item) => item['@graph'] || [item]);
+    expect(graph.find((item) => item['@type'] === 'HowTo')?.step).toHaveLength(3);
+    expect(graph.find((item) => item['@type'] === 'FAQPage')?.mainEntity).toHaveLength(3);
+
+    const results = await new AxeBuilder({ page }).exclude('#cookie-banner').analyze();
+    expect(results.violations).toEqual([]);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  });
+}
 
 for (const guide of GUIDES) {
   test(`${guide.path} is indexable, useful and accessible`, async ({ page, request }) => {
