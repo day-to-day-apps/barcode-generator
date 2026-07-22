@@ -640,10 +640,26 @@ function guidePageHtml(page, lang, alternate) {
 }
 
 function localisePrivateHtml(source, lang, page) {
+  const privateUi = {
+    en: { privacy: 'Privacy', terms: 'Terms', primary: 'Primary', accountActions: 'Account actions' },
+    pl: { privacy: 'Prywatność', terms: 'Regulamin', primary: 'Główna', accountActions: 'Akcje konta' },
+    de: { privacy: 'Datenschutz', terms: 'Nutzungsbedingungen', primary: 'Hauptnavigation', accountActions: 'Kontoaktionen' },
+    fr: { privacy: 'Confidentialité', terms: 'Conditions', primary: 'Navigation principale', accountActions: 'Actions du compte' },
+    es: { privacy: 'Privacidad', terms: 'Términos', primary: 'Navegación principal', accountActions: 'Acciones de cuenta' },
+    it: { privacy: 'Privacy', terms: 'Termini', primary: 'Navigazione principale', accountActions: 'Azioni account' },
+    pt: { privacy: 'Privacidade', terms: 'Termos', primary: 'Navegação principal', accountActions: 'Ações da conta' },
+    nl: { privacy: 'Privacy', terms: 'Voorwaarden', primary: 'Hoofdnavigatie', accountActions: 'Accountacties' },
+    cs: { privacy: 'Soukromí', terms: 'Podmínky', primary: 'Hlavní navigace', accountActions: 'Akce účtu' },
+    uk: { privacy: 'Конфіденційність', terms: 'Умови', primary: 'Основна навігація', accountActions: 'Дії облікового запису' },
+  }[lang];
   const prefix = lang === 'en' ? '' : '../';
   let html = source
     .replace(/<html lang=(['"])[^'"]+\1/, `<html lang="${lang}"`)
-    .replace(/<link rel="canonical" href="[^"]+">/, `<link rel="canonical" href="${canonicalFor(lang, page)}">`);
+    .replace(/<link rel="canonical" href="[^"]+">/, `<link rel="canonical" href="${canonicalFor(lang, page)}">`)
+    .replaceAll('aria-label="Primary"', `aria-label="${privateUi.primary}"`)
+    .replaceAll('aria-label="Account actions"', `aria-label="${privateUi.accountActions}"`)
+    .replaceAll('>Privacy</a>', `>${privateUi.privacy}</a>`)
+    .replaceAll('>Terms</a>', `>${privateUi.terms}</a>`);
 
   if (lang !== 'en') {
     const assets = [

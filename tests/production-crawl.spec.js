@@ -46,6 +46,18 @@ test('localized navigation links directly to canonical language roots', async ({
   }
 });
 
+test('Polish account page localizes legal and navigation labels', async ({ request }) => {
+  const response = await request.get('/pl/konto', { maxRedirects: 0 });
+  expect(response.status()).toBe(200);
+  const html = await response.text();
+  expect(html).toContain('aria-label="Główna"');
+  expect(html).toContain('aria-label="Akcje konta"');
+  expect(html).toContain('>Prywatność</a>');
+  expect(html).toContain('>Regulamin</a>');
+  expect(html).not.toMatch(/>(?:Privacy|Terms)<\/a>/);
+  expect(html).not.toMatch(/href="[^"]+\.html(?:[?#"])/);
+});
+
 test('account controls and save action render without an artificial delay', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('.auth-controls')).toBeAttached({ timeout: 3000 });
