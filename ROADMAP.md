@@ -129,7 +129,7 @@ Sugerowana ścieżka: `/<lang>/ean-13/`, `/<lang>/upc/`, `/<lang>/code-128/`, `/
 - [x] Eksport listy kodów do PDF (wydruk arkusza etykiet).
 - [x] Bulk import z CSV → generowanie wielu kodów naraz, także z zapisanych kodów konta.
 - [x] Skrót klawiaturowy „Ctrl+S" / „Cmd+S" w generatorze → szybki zapis do konta.
-- [ ] Tryb wysokiego kontrastu (a11y AAA) jako opcja w ustawieniach.
+- [x] Tryb wysokiego kontrastu jako opcja w ustawieniach, z obsługą systemowego `prefers-contrast`.
 
 ---
 

@@ -20,7 +20,7 @@ const ROOT_ASSETS = [
   '404.html', '_headers', '_redirects', 'ads.txt', 'robots.txt', 'favicon.svg', 'og-image.svg',
   'manifest.webmanifest', 'pwa-register.js',
   'googlec18ae46a3db92f98.html',
-  'analytics.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
+  'analytics.js', 'appearance.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
   'ean13-inline.js', 'ean13-inline.css', 'format-inline.js', 'format-inline.css',
   'bulk.js', 'bulk-export.js', 'bulk.css', 'gs1.js', 'gs1-generator.js', 'gs1.css',
   'two-d-generator.js', 'two-d.css', 'specialized-save.js',
@@ -76,6 +76,12 @@ function normaliseHtml(html) {
     output = output.replace(
       '</head>',
       `    <link rel="manifest" href="/manifest.webmanifest">\n    <meta name="theme-color" content="#4f46e5">\n    <meta name="apple-mobile-web-app-capable" content="yes">\n    <meta name="apple-mobile-web-app-status-bar-style" content="default">\n</head>`,
+    );
+  }
+  if (!/appearance\.js/i.test(output)) {
+    output = output.replace(
+      '</head>',
+      `    <script src="/appearance.js?v=${ASSET_VERSIONS.get('appearance.js')}"></script>\n</head>`,
     );
   }
   if (!/pwa-register\.js/i.test(output)) {
@@ -871,7 +877,7 @@ for (const [source, target] of polishLegal) {
 const landingContent = [
   'index.html',
   ...LOCALE_DIRS.map((lang) => `${lang}/index.html`),
-  ...['app.js', 'i18n.js', 'label-renderer.js', 'analytics.js', 'auth-ui.js', 'db-codes.js', 'supabase-client.js']
+  ...['app.js', 'i18n.js', 'label-renderer.js', 'analytics.js', 'appearance.js', 'auth-ui.js', 'db-codes.js', 'supabase-client.js']
     .map((name) => name),
 ];
 const [{ css: landingCss }] = await new PurgeCSS().purge({
@@ -955,7 +961,7 @@ const precache = [
   '/qr-code/', '/pl/qr-code/',
   '/manifest.webmanifest', '/pwa-icon-192.png', '/pwa-icon-512.png', '/favicon.svg',
   '/landing.css', '/decoder.css', '/ean13-inline.css', '/format-inline.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
-  '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/decoder-i18n.js', '/ean13-inline.js', '/format-inline.js', '/i18n.js', '/label-renderer.js', '/analytics.js',
+  '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/decoder-i18n.js', '/ean13-inline.js', '/format-inline.js', '/i18n.js', '/label-renderer.js', '/analytics.js', '/appearance.js',
   '/pwa-register.js', '/auth-ui.js', '/supabase-client.js', '/supabase-config.js', '/db-codes.js',
   '/account-dialogs.js', '/bulk.js', '/bulk-export.js', '/csv-import.js', '/csv-worker.js',
   '/db-jobs.js', '/gs1.js', '/gs1-generator.js', '/two-d-generator.js', '/specialized-save.js',

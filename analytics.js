@@ -275,16 +275,19 @@
             </div>
         `;
         document.body.appendChild(banner);
+        document.body.classList.add('has-cookie-banner');
         if (force) banner.querySelector('.cookie-accept').focus();
 
         banner.querySelector('.cookie-accept').addEventListener('click', function() {
             setConsent('accepted');
             banner.remove();
+            document.body.classList.remove('has-cookie-banner');
             startGoogleFeatures();
         });
         banner.querySelector('.cookie-reject').addEventListener('click', function() {
             setConsent('rejected');
             banner.remove();
+            document.body.classList.remove('has-cookie-banner');
         });
     }
 
