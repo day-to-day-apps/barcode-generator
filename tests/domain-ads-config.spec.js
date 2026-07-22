@@ -95,6 +95,13 @@ test.describe('Domain and ads configuration guardrails', () => {
     expect(styles).not.toMatch(/@media\s*\(max-width:\s*900px\)\s*{\s*\.ad-sticky-bottom\s*{/);
   });
 
+  test('content security policy permits first-party WebAssembly without unsafe eval', () => {
+    const headers = fs.readFileSync(path.join(ROOT, '_headers'), 'utf8');
+
+    expect(headers).toContain("script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'");
+    expect(headers).not.toMatch(/script-src[^\n]*'unsafe-eval'/);
+  });
+
   test('authentication emails use final extensionless routes', () => {
     const authFiles = [
       'auth-email-password.js',
