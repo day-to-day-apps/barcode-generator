@@ -884,6 +884,11 @@ const landingLoader = `(function(){function load(){var s=document.createElement(
 const landingLoaderVersion = createHash('sha256').update(landingLoader).digest('hex').slice(0, 12);
 await writeFile(path.join(OUT, 'landing-loader.js'), landingLoader, 'utf8');
 const criticalThemeControl = `<script>(function(){var b=document.getElementById('theme-toggle');if(!b)return;b.addEventListener('click',function(e){e.stopImmediatePropagation();var d=document.documentElement,c=d.getAttribute('data-theme'),n=c==='dark'?'light':'dark';d.setAttribute('data-theme',n);try{localStorage.setItem('barcode-theme',n)}catch(_){}})})();</script>`;
+const qrDiscoveryLabels = {
+  en: 'Learn more about QR codes', pl: 'Więcej o kodach QR', de: 'Mehr über QR-Codes',
+  fr: 'En savoir plus sur les QR codes', es: 'Más sobre códigos QR', it: 'Scopri di più sui codici QR',
+  pt: 'Saiba mais sobre códigos QR', nl: 'Meer over QR-codes', cs: 'Více o QR kódech', uk: 'Докладніше про QR-коди',
+};
 for (const lang of LANGS) {
   const landingPath = lang === 'en' ? path.join(OUT, 'index.html') : path.join(OUT, lang, 'index.html');
   const prefix = lang === 'en' ? '' : '../';
@@ -898,6 +903,13 @@ for (const lang of LANGS) {
   if (lang === 'en') {
     html = html.replace('</head>', '    <meta name="google-site-verification" content="rU82pkm5jXvVq8joqzYzgD_fHJrA1SbdmtGTAjDScLE">\n</head>');
   }
+  const qrRoute = routeFor(lang, 'qr-code/');
+  const qrLink = `<a class="popular-card__more" href="${qrRoute}">${qrDiscoveryLabels[lang]}</a>`;
+  const wrappedQr = /(<div class="popular-card-wrap"><button type="button" class="popular-card" data-format="QR"[\s\S]*?<\/button>)(<\/div>)/;
+  const bareQr = /(<button type="button" class="popular-card" data-format="QR"[\s\S]*?<\/button>)/;
+  html = wrappedQr.test(html)
+    ? html.replace(wrappedQr, `$1${qrLink}$2`)
+    : html.replace(bareQr, `<div class="popular-card-wrap">$1${qrLink}</div>`);
   await writeFile(
     landingPath,
     html.replace(new RegExp(`${prefix.replaceAll('.', '\\.') }styles\\.css\\?v=[a-f0-9]+`, 'g'), `${prefix}landing.css?v=${landingCssVersion}`),

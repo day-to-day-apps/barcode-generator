@@ -26,6 +26,10 @@ test.describe('SEO - per language index page', () => {
     test(`[${code}] canonical, og:url, hreflang and JSON-LD types`, async ({ page }) => {
       await page.goto(path);
 
+      await test.step('homepage links to the localized QR generator', async () => {
+        await expect(page.locator(`a[href="${path}qr-code/"]`)).toHaveCount(1);
+      });
+
       await test.step('canonical href matches expected URL', async () => {
         const href = await page.locator('link[rel="canonical"]').getAttribute('href');
         expect(href).toBe(canonical);
