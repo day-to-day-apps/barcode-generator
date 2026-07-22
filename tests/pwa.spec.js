@@ -14,6 +14,15 @@ async function installServiceWorker(page) {
 }
 
 test.describe('PWA and offline tools', () => {
+  test('production landing assets stay within the startup size budget', async ({ request }) => {
+    const appResponse = await request.get('/app-landing.js');
+    const cssResponse = await request.get('/landing.css');
+    expect(appResponse.ok()).toBeTruthy();
+    expect(cssResponse.ok()).toBeTruthy();
+    expect((await appResponse.body()).length).toBeLessThanOrEqual(300_000);
+    expect((await cssResponse.body()).length).toBeLessThanOrEqual(65_000);
+  });
+
   test('manifest exposes an installable standalone application', async ({ page, request }) => {
     await page.goto('/');
     await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/manifest.webmanifest');

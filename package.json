@@ -27,8 +27,10 @@
     "@playwright/test": "^1.49.0",
     "@supabase/supabase-js": "^2.110.5",
     "@zxing/library": "^0.21.3",
+    "clean-css": "^5.3.3",
     "pngjs": "^7.0.0",
-    "purgecss": "^8.0.0"
+    "purgecss": "^8.0.0",
+    "terser": "^5.49.0"
   },
   "dependencies": {
     "@undecaf/barcode-detector-polyfill": "^0.9.23",

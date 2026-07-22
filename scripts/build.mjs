@@ -4,6 +4,8 @@ import { createHash } from 'node:crypto';
 import { runInNewContext } from 'node:vm';
 import path from 'node:path';
 import { PurgeCSS } from 'purgecss';
+import CleanCSS from 'clean-css';
+import { minify } from 'terser';
 import { PNG } from 'pngjs';
 import { qrPageHtml } from './qr-pages.mjs';
 import { ADDITIONAL_GUIDE_PAGES } from './additional-guides.mjs';
@@ -880,7 +882,7 @@ const landingContent = [
   ...['app.js', 'i18n.js', 'label-renderer.js', 'analytics.js', 'appearance.js', 'auth-ui.js', 'db-codes.js', 'supabase-client.js']
     .map((name) => name),
 ];
-const [{ css: landingCss }] = await new PurgeCSS().purge({
+const [{ css: purgedLandingCss }] = await new PurgeCSS().purge({
   content: landingContent,
   css: ['styles.css'],
   keyframes: true,
@@ -891,6 +893,9 @@ const [{ css: landingCss }] = await new PurgeCSS().purge({
     deep: [/^ad-/, /^cookie-/, /^has-/, /^is-/, /^modal/, /^print/, /^qr-/, /^toast/],
   },
 });
+const cssResult = new CleanCSS({ level: 1, rebase: false }).minify(purgedLandingCss);
+if (cssResult.errors.length) throw new Error(`Could not minify landing CSS: ${cssResult.errors.join('; ')}`);
+const landingCss = cssResult.styles;
 const landingCssVersion = createHash('sha256').update(landingCss).digest('hex').slice(0, 12);
 await writeFile(path.join(OUT, 'landing.css'), landingCss, 'utf8');
 const appSource = await readFile(path.join(ROOT, 'app.js'), 'utf8');
@@ -904,7 +909,7 @@ const immediateLandingApp = landingAppBase
   .replace(/^document\.addEventListener\('DOMContentLoaded', \(\) => \{/, '(() => {')
   .replace(/\}\);\s*$/, '})();');
 if (immediateLandingApp === landingAppBase) throw new Error('Could not create immediate landing app initializer.');
-const landingApp = [
+const landingAppSource = [
   await readFile(path.join(ROOT, 'node_modules/jsbarcode/dist/JsBarcode.all.min.js'), 'utf8'),
   await readFile(path.join(ROOT, 'node_modules/qrcode-generator/qrcode.js'), 'utf8'),
   await readFile(path.join(ROOT, 'i18n.js'), 'utf8'),
@@ -912,6 +917,13 @@ const landingApp = [
   immediateLandingApp,
   prefillSource,
 ].join('\n');
+const minifiedLandingApp = await minify(landingAppSource, {
+  compress: { passes: 2 },
+  mangle: true,
+  format: { comments: false },
+});
+if (!minifiedLandingApp.code) throw new Error('Could not minify landing app bundle.');
+const landingApp = minifiedLandingApp.code;
 const landingAppVersion = createHash('sha256').update(landingApp).digest('hex').slice(0, 12);
 await writeFile(path.join(OUT, 'app-landing.js'), landingApp, 'utf8');
 const landingLoader = `(function(){function load(){var s=document.createElement('script');s.src='/app-landing.js?v=${landingAppVersion}';document.body.appendChild(s)}function ready(){requestAnimationFrame(load)}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',ready,{once:true})}else{ready()}})();`;
