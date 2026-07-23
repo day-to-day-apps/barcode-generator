@@ -19,7 +19,7 @@ function setTileKpi(key, text, ratio) {
     }
 }
 
-export async function loadDashboardStats({ helpers, limits, i18n }) {
+export async function loadDashboardStats({ helpers, limits, i18n, isCurrent = () => true }) {
     if (!helpers || !limits) return;
     const tasks = [
         { key: 'codes', fn: helpers.countCodes, max: limits.FREE_CODES_LIMIT, i18nKey: 'codesUsed' },
@@ -32,6 +32,7 @@ export async function loadDashboardStats({ helpers, limits, i18n }) {
         if (typeof fn !== 'function') return;
         try {
             const result = await fn();
+            if (!isCurrent()) return;
             const n = Number.isFinite(result?.count) ? result.count : 0;
             const template = (i18n && i18n[i18nKey]) || '{n}/{max}';
             setTileKpi(key, formatKpi(template, n, max), max > 0 ? n / max : 0);

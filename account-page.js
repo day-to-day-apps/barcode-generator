@@ -12,6 +12,7 @@ const T = (I[LANG] && I[LANG].account) || (I.en && I.en.account) || {};
 const $ = (id) => document.getElementById(id);
 const status = $('email-status');
 let currentSession = null;
+let sessionRenderRevision = 0;
 
 const dashboardCopy = {
   recent: 'Recently saved codes', empty: 'You have no saved codes yet.', quick: 'Quick actions',
@@ -126,9 +127,23 @@ function ensureDashboardExtras() {
   bindDashboardActions();
 }
 
-async function loadRecentCodes() {
+function resetRecentCodes() {
   const list = $('recent-codes');
+  if (!list) return;
+  const item = document.createElement('li');
+  item.textContent = copy.empty;
+  list.replaceChildren(item);
+}
+
+function isCurrentSessionRender(revision, userId) {
+  return revision === sessionRenderRevision && currentSession?.user?.id === userId;
+}
+
+async function loadRecentCodes(revision, userId) {
+  const list = $('recent-codes');
+  resetRecentCodes();
   const { data, error } = await listCodes();
+  if (!isCurrentSessionRender(revision, userId)) return;
   if (error || !data?.length) return;
   list.replaceChildren(...data.slice(0, 5).map((code) => {
     const item = document.createElement('li');
@@ -202,6 +217,7 @@ function bindDashboardActions() {
 }
 
 async function renderSession(session) {
+  const revision = ++sessionRenderRevision;
   currentSession = session;
   const signedIn = Boolean(session?.user);
   $('signed-in').hidden = !signedIn;
@@ -210,17 +226,25 @@ async function renderSession(session) {
   if (!signedIn) {
     $('account-title').textContent = T.signIn || 'Sign in';
     clearDashboardStats();
+    resetRecentCodes();
     return;
   }
+  const userId = session.user.id;
   $('resend-confirmation')?.remove();
   setStatus('');
   $('user-email').textContent = session.user.email || '';
   $('account-title').textContent = T.dashboardTitle || 'Your account';
   ensureDashboardExtras();
   await Promise.all([
-    loadDashboardStats({ helpers: { countCodes, countTemplates, countPrinters, countJobs }, limits: { FREE_CODES_LIMIT, FREE_TEMPLATES_LIMIT, FREE_PRINTERS_LIMIT, FREE_JOBS_LIMIT }, i18n: T }),
-    loadRecentCodes(),
+    loadDashboardStats({
+      helpers: { countCodes, countTemplates, countPrinters, countJobs },
+      limits: { FREE_CODES_LIMIT, FREE_TEMPLATES_LIMIT, FREE_PRINTERS_LIMIT, FREE_JOBS_LIMIT },
+      i18n: T,
+      isCurrent: () => isCurrentSessionRender(revision, userId),
+    }),
+    loadRecentCodes(revision, userId),
   ]);
+  if (!isCurrentSessionRender(revision, userId)) return;
   if (location.hash === '#settings') $('settings').scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -305,8 +329,13 @@ async function init() {
   const sb = await getSupabase();
   if (!sb) { setStatus(T.notConfigured || 'Account features are not configured.', true); $('signed-out').hidden = false; return; }
   bindForms();
-  await renderSession(await getSession());
-  await onAuthStateChange((_event, session) => renderSession(session));
+  const initialSession = await getSession();
+  let authEventSeen = false;
+  await onAuthStateChange((_event, session) => {
+    authEventSeen = true;
+    void renderSession(session);
+  });
+  if (!authEventSeen) await renderSession(initialSession);
 }
 
 init();
