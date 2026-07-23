@@ -68,6 +68,7 @@ function normaliseNav(nav, basePath, currentPage) {
         if (!link) {
             link = buildLink(item, basePath);
         } else {
+            link.setAttribute('href', basePath + item.href.replace(/^\.\//, ''));
             link.setAttribute('data-page', item.page);
             if (item.auth) link.setAttribute('data-auth', item.auth);
             if (item.role === 'back') link.classList.add('app-nav__back');
@@ -124,6 +125,7 @@ function setSignedIn(nav, signedIn) {
 function annotateExistingLinks(nav, currentPage) {
     nav.querySelectorAll('a').forEach((a) => {
         const href = (a.getAttribute('href') || '').replace(/[?#].*$/, '');
+        a.setAttribute('href', (a.getAttribute('href') || '').replace(/\.html(?=([?#]|$))/, ''));
         const isBack = href === './' || href === '../' || href === '';
         const name = routeName(href);
         const isAccount = name === 'konto' || name.endsWith('/konto');

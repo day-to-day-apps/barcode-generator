@@ -91,6 +91,11 @@ test('Polish account page localizes legal and navigation labels', async ({ reque
 test('account navigation stays on direct extensionless routes after JavaScript enhancement', async ({ page }) => {
   for (const path of ['/konto', '/pl/konto']) {
     await page.goto(path);
+    await page.locator('.app-nav a').evaluateAll((links) => {
+      const account = links.find((link) => /konto$/.test(link.getAttribute('href') || ''));
+      if (account) account.setAttribute('href', `${account.getAttribute('href')}.html`);
+    });
+    await page.evaluate((cacheKey) => import(`/nav-enhance.js?test=${cacheKey}`), Date.now());
     const hrefs = await page.locator('.app-nav a').evaluateAll((links) =>
       links.map((link) => link.getAttribute('href') || ''));
     expect(hrefs, path).not.toEqual([]);
