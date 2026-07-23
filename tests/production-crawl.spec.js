@@ -7,10 +7,13 @@ const LANGS = ['', 'pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cs', 'uk'];
 const LOCALES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cs', 'uk'];
 const FORMATS = ['ean-13', 'code-128', 'upc-a', 'code-39', 'itf-14', 'codabar', 'qr-code'];
 
-test('sitemap contains only 108 direct, indexable canonical URLs', async ({ request }) => {
+test('sitemap contains only 112 direct, indexable canonical URLs', async ({ request }) => {
   const xml = await (await request.get('/sitemap.xml')).text();
   const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  expect(urls).toHaveLength(108);
+  expect(urls).toHaveLength(112);
+  for (const legal of ['/privacy-policy', '/terms', '/pl/polityka-prywatnosci', '/pl/regulamin']) {
+    expect(urls).toContain(`${PROD}${legal}`);
+  }
   expect(xml).not.toMatch(/node_modules|playwright|tests\/|supabase\/|konto|wydruk|szablony|drukarki/);
   for (const canonical of urls) {
     const path = new URL(canonical).pathname;
@@ -81,7 +84,7 @@ test('account controls and save action render without an artificial delay', asyn
 });
 
 test('public and account pages have no broken internal links', async ({ request }) => {
-  const seeds = ['/', '/pl/', '/decoder', '/pl/decoder', '/gs1-barcode-generator', '/pl/generator-kodow-gs1', '/2d-barcode-generator', '/pl/generator-kodow-2d', '/konto', '/pl/konto', '/de/konto', '/drukarki', '/pl/drukarki'];
+  const seeds = ['/', '/pl/', '/decoder', '/pl/decoder', '/privacy-policy', '/terms', '/pl/polityka-prywatnosci', '/pl/regulamin', '/gs1-barcode-generator', '/pl/generator-kodow-gs1', '/2d-barcode-generator', '/pl/generator-kodow-2d', '/konto', '/pl/konto', '/de/konto', '/drukarki', '/pl/drukarki'];
   const links = new Set();
   for (const seed of seeds) {
     const html = await (await request.get(seed)).text();

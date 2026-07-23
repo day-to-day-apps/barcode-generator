@@ -857,6 +857,23 @@ function sitemapXml() {
       rows.push('  </url>');
     }
   }
+  const legalGroups = [
+    ['privacy-policy', 'polityka-prywatnosci'],
+    ['terms', 'regulamin'],
+  ];
+  for (const [english, polish] of legalGroups) {
+    const alternatives = { en: `${BASE}/${english}`, pl: `${BASE}/pl/${polish}` };
+    for (const lang of ['en', 'pl']) {
+      rows.push('  <url>');
+      rows.push(`    <loc>${alternatives[lang]}</loc>`);
+      rows.push(`    <xhtml:link rel="alternate" hreflang="en" href="${alternatives.en}"/>`);
+      rows.push(`    <xhtml:link rel="alternate" hreflang="pl" href="${alternatives.pl}"/>`);
+      rows.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${alternatives.en}"/>`);
+      rows.push(`    <lastmod>${today}</lastmod>`);
+      rows.push('    <priority>0.3</priority>');
+      rows.push('  </url>');
+    }
+  }
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${rows.join('\n')}\n</urlset>\n`;
 }
 
