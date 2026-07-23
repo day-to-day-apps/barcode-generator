@@ -194,6 +194,27 @@ test.describe('PWA and offline tools', () => {
     await expect.poll(() => page.evaluate(async () => !(await caches.keys()).includes('barcode-tools-stale'))).toBe(true);
   });
 
+  test('versioned asset refresh replaces the canonical precache entry', async ({ page }) => {
+    await installServiceWorker(page);
+    await page.evaluate(async () => {
+      const cacheName = (await caches.keys()).find((name) => name.startsWith('barcode-tools-'));
+      const cache = await caches.open(cacheName);
+      await cache.put('/pwa-register.js', new Response('window.__stalePwaRegister = true;', {
+        headers: { 'content-type': 'application/javascript' },
+      }));
+    });
+
+    await page.reload();
+    await expect.poll(() => page.evaluate(async () => {
+      const cacheName = (await caches.keys()).find((name) => name.startsWith('barcode-tools-'));
+      const response = await (await caches.open(cacheName)).match('/pwa-register.js');
+      return (await response.text()).includes('__showBarcodePwaUpdate');
+    })).toBe(true);
+
+    await page.reload();
+    await expect.poll(() => page.evaluate(() => typeof window.__showBarcodePwaUpdate)).toBe('function');
+  });
+
   test('barcode engines and language flags are served from the first-party origin', async ({ page }) => {
     const engineRequests = [];
     const flagRequests = [];

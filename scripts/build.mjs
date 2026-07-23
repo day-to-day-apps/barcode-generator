@@ -1090,11 +1090,13 @@ const precache = [
   '/vendor/pdf-lib.min.js', '/vendor/jszip.min.js', '/vendor/bwip-js-min.js',
   ...FLAG_CODES.flatMap((code) => [`/flags/${code}.png`, `/flags/${code}@2x.png`]),
 ];
+const serviceWorkerTemplate = await readFile(path.join(ROOT, 'service-worker.template.js'), 'utf8');
+const serviceWorkerTemplateVersion = createHash('sha256').update(serviceWorkerTemplate).digest('hex').slice(0, 12);
 const pwaVersion = createHash('sha256')
-  .update(JSON.stringify([...ASSET_VERSIONS, landingCssVersion, landingAppVersion, landingLoaderVersion, precache]))
+  .update(JSON.stringify([...ASSET_VERSIONS, landingCssVersion, landingAppVersion, landingLoaderVersion, serviceWorkerTemplateVersion, precache]))
   .digest('hex')
   .slice(0, 12);
-const serviceWorker = (await readFile(path.join(ROOT, 'service-worker.template.js'), 'utf8'))
+const serviceWorker = serviceWorkerTemplate
   .replace('__PWA_VERSION__', pwaVersion)
   .replace('__PRECACHE__', JSON.stringify(precache, null, 4));
 await writeFile(path.join(OUT, 'service-worker.js'), serviceWorker, 'utf8');
