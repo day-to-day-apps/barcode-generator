@@ -10,6 +10,7 @@ const FORMATS = ['ean-13', 'code-128', 'upc-a', 'code-39', 'itf-14', 'codabar', 
 test('sitemap contains only 112 direct, indexable canonical URLs', async ({ request }) => {
   const xml = await (await request.get('/sitemap.xml')).text();
   const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  const internalLinks = new Set();
   expect(urls).toHaveLength(112);
   for (const legal of ['/privacy-policy', '/terms', '/pl/polityka-prywatnosci', '/pl/regulamin']) {
     expect(urls).toContain(`${PROD}${legal}`);
@@ -20,6 +21,14 @@ test('sitemap contains only 112 direct, indexable canonical URLs', async ({ requ
     const response = await request.get(path, { maxRedirects: 0 });
     expect(response.status(), path).toBe(200);
     const html = await response.text();
+    for (const match of html.matchAll(/href="([^"]+)"/gi)) {
+      const href = match[1];
+      if (/^(?:#|mailto:|tel:|javascript:)/i.test(href)) continue;
+      const linked = new URL(href, canonical);
+      if (linked.origin === PROD && !linked.pathname.startsWith('/cdn-cgi/')) {
+        internalLinks.add(linked.pathname);
+      }
+    }
     expect(html.match(/<meta[^>]+name="robots"[^>]+noindex/i), path).toBeNull();
     expect((html.match(/<h1\b/gi) || []).length, path).toBe(1);
     const found = html.match(/<link[^>]+rel="canonical"[^>]+href="([^"]+)"/i)?.[1];
@@ -39,6 +48,10 @@ test('sitemap contains only 112 direct, indexable canonical URLs', async ({ requ
     for (const block of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
       expect(() => JSON.parse(block[1]), `${path} has invalid JSON-LD`).not.toThrow();
     }
+  }
+  for (const path of internalLinks) {
+    const response = await request.get(path, { maxRedirects: 0 });
+    expect(response.status(), `${path} must be a direct internal destination`).toBe(200);
   }
 });
 

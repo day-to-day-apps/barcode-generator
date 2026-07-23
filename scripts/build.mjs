@@ -61,8 +61,8 @@ function normaliseHtml(html) {
     .replace(/(content=(['"]))(https:\/\/barcode-generator\.daytodayapps\.com[^'"?#]*)\.html(?=([?#'" ]))/g, '$1$3')
     .replace(/href=(['"])((?:\.\.\/)*(?:[a-z]{2}\/)?)(?:index)(?:\.html)?([?#][^'"]*)?\1/g, (_m, q, prefix, suffix = '') => `href=${q}${prefix || './'}${suffix}${q}`)
     .replace(/href=(['"])([^'":#?]+)\.html([?#][^'"]*)?\1/g, (_m, q, target, suffix = '') => `href=${q}${target}${suffix}${q}`)
-    .replace(/href=(['"])(?:\.\.\/)?polityka-prywatnosci\1/g, 'href="/privacy-policy"')
-    .replace(/href=(['"])(?:\.\.\/)?regulamin\1/g, 'href="/terms"')
+    .replace(/href=(['"])(?:(?:\.\.\/)+|\/)?polityka-prywatnosci(?:\.html)?\1/g, 'href="/privacy-policy"')
+    .replace(/href=(['"])(?:(?:\.\.\/)+|\/)?regulamin(?:\.html)?\1/g, 'href="/terms"')
     .replace(/\s*<link[^>]+https:\/\/fonts\.(?:googleapis|gstatic)\.com[^>]*>/gi, '')
     .replace(/<script(?![^>]*\b(?:defer|async)\b)(?![^>]*type=['"]module['"])([^>]*\bsrc=[^>]*)>/gi, '<script defer$1>')
     .replace(ASSET_REF_RE, (_match, prefix, name) => `${prefix}${name}?v=${ASSET_VERSIONS.get(name)}`);
