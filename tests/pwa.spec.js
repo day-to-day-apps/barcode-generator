@@ -24,6 +24,12 @@ test.describe('PWA and offline tools', () => {
     expect((await cssResponse.body()).length).toBeLessThanOrEqual(65_000);
   });
 
+  test('service worker precache bypasses stale browser HTTP cache', async ({ request }) => {
+    const worker = await (await request.get('/service-worker.js')).text();
+    expect(worker).toContain("new Request(url, { cache: 'reload' })");
+    expect(worker).toContain('cache.put(url.pathname, copy)');
+  });
+
   test('account actions wait for the active language dictionary', async ({ page }) => {
     await page.goto('/pl/');
     await expect(page.locator('.auth-signin-cta')).toHaveText('Załóż konto');

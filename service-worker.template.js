@@ -17,7 +17,8 @@ function isPublicNavigation(pathname) {
 }
 
 self.addEventListener('install', (event) => {
-    event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting()));
+    const requests = PRECACHE.map((url) => new Request(url, { cache: 'reload' }));
+    event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(requests)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {
