@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 async function installServiceWorker(page) {
   await page.goto('/pl/');
@@ -49,6 +50,83 @@ test.describe('PWA and offline tools', () => {
       expect(iconResponse.headers()['content-type']).toContain('image/png');
       expect((await iconResponse.body()).subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
     }
+  });
+
+  test('new PWA version exposes a localized, dismissible update notice', async ({ page }) => {
+    await page.goto('/pl/');
+    await page.evaluate(() => window.__showBarcodePwaUpdate());
+
+    const notice = page.locator('#pwa-update-notice');
+    await expect(notice).toHaveAttribute('role', 'status');
+    await expect(notice).toContainText('Nowa wersja jest gotowa.');
+    await expect(notice.getByRole('button', { name: 'Odśwież teraz' })).toBeVisible();
+
+    await page.evaluate(() => window.__showBarcodePwaUpdate());
+    await expect(page.locator('#pwa-update-notice')).toHaveCount(1);
+
+    const results = await new AxeBuilder({ page })
+      .include('#pwa-update-notice')
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .analyze();
+    const blocking = results.violations.filter((violation) =>
+      violation.impact === 'critical' || violation.impact === 'serious');
+    expect(blocking, blocking.map((violation) => `${violation.id}: ${violation.help}`).join('\n')).toEqual([]);
+
+    await notice.getByRole('button', { name: 'Zamknij powiadomienie o aktualizacji' }).click();
+    await expect(notice).toHaveCount(0);
+  });
+
+  test('PWA update action is translated in every public language', async ({ page }) => {
+    const languages = [
+      ['/', 'Refresh now'],
+      ['/pl/', 'Odśwież teraz'],
+      ['/de/', 'Jetzt aktualisieren'],
+      ['/fr/', 'Actualiser'],
+      ['/es/', 'Actualizar ahora'],
+      ['/it/', 'Aggiorna ora'],
+      ['/pt/', 'Atualizar agora'],
+      ['/nl/', 'Nu vernieuwen'],
+      ['/cs/', 'Aktualizovat'],
+      ['/uk/', 'Оновити зараз'],
+    ];
+    for (const [path, refreshLabel] of languages) {
+      await page.goto(path);
+      await page.evaluate(() => window.__showBarcodePwaUpdate());
+      await expect(page.locator('#pwa-update-notice').getByRole('button', { name: refreshLabel })).toBeVisible();
+    }
+  });
+
+  test('controller changes stay quiet on first install and announce later updates', async ({ page }) => {
+    await page.goto('/');
+    const alreadyControlled = await page.evaluate(() => Boolean(navigator.serviceWorker.controller));
+
+    await page.evaluate(() => navigator.serviceWorker.dispatchEvent(new Event('controllerchange')));
+    await expect(page.locator('#pwa-update-notice')).toHaveCount(alreadyControlled ? 1 : 0);
+
+    if (!alreadyControlled) {
+      await page.evaluate(() => navigator.serviceWorker.dispatchEvent(new Event('controllerchange')));
+      await expect(page.locator('#pwa-update-notice')).toHaveCount(1);
+    }
+  });
+
+  test('PWA update notice fits a narrow mobile viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.goto('/');
+    await page.evaluate(() => window.__showBarcodePwaUpdate());
+
+    const geometry = await page.locator('#pwa-update-notice').evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return {
+        left: rect.left,
+        right: rect.right,
+        bottom: rect.bottom,
+        viewportWidth: document.documentElement.clientWidth,
+        viewportHeight: document.documentElement.clientHeight,
+      };
+    });
+    expect(geometry.left).toBeGreaterThanOrEqual(0);
+    expect(geometry.right).toBeLessThanOrEqual(geometry.viewportWidth);
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
   });
 
   test('generator, decoder and bulk tool work after the network is disconnected', async ({ page, context }) => {
