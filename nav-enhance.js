@@ -13,13 +13,21 @@
 
 const ITEMS = [
     { href: './',                     i18n: 'backToGenerator',  fallback: '← Generator',     role: 'back', page: 'home' },
-    { href: 'moje-kody.html',         i18n: 'myCodes',          fallback: 'My codes',        role: 'link', auth: 'required', page: 'moje-kody' },
-    { href: 'szablony.html',          i18n: 'myTemplates',      fallback: 'My templates',    role: 'link', auth: 'required', page: 'szablony' },
-    { href: 'drukarki.html',          i18n: 'myPrinters',       fallback: 'My printers',     role: 'link', auth: 'required', page: 'drukarki' },
-    { href: 'wydruk.html',            i18n: 'builderTitle',     fallback: 'Print builder',   role: 'link', auth: 'required', page: 'wydruk' },
-    { href: 'historia-wydrukow.html', i18n: 'printHistory',     fallback: 'Print history',   role: 'link', auth: 'required', page: 'historia' },
-    { href: 'konto.html',             i18n: 'title',            fallback: 'Account',         role: 'cta',  page: 'konto' },
+    { href: 'moje-kody',              i18n: 'myCodes',          fallback: 'My codes',        role: 'link', auth: 'required', page: 'moje-kody' },
+    { href: 'szablony',               i18n: 'myTemplates',      fallback: 'My templates',    role: 'link', auth: 'required', page: 'szablony' },
+    { href: 'drukarki',               i18n: 'myPrinters',       fallback: 'My printers',     role: 'link', auth: 'required', page: 'drukarki' },
+    { href: 'wydruk',                 i18n: 'builderTitle',     fallback: 'Print builder',   role: 'link', auth: 'required', page: 'wydruk' },
+    { href: 'historia-wydrukow',      i18n: 'printHistory',     fallback: 'Print history',   role: 'link', auth: 'required', page: 'historia' },
+    { href: 'konto',                  i18n: 'title',            fallback: 'Account',         role: 'cta',  page: 'konto' },
 ];
+
+function routeName(href) {
+    return href
+        .replace(/^\.\.?\//, '')
+        .replace(/[?#].*$/, '')
+        .replace(/\.html$/, '')
+        .replace(/\/$/, '');
+}
 
 function detectBasePath() {
     try {
@@ -49,7 +57,7 @@ function normaliseNav(nav, basePath, currentPage) {
     const existing = new Map();
     nav.querySelectorAll('a').forEach((a) => {
         const href = a.getAttribute('href') || '';
-        const name = href.replace(/^\.\.?\//, '').replace(/[?#].*$/, '');
+        const name = routeName(href);
         existing.set(name, a);
     });
 
@@ -117,11 +125,12 @@ function annotateExistingLinks(nav, currentPage) {
     nav.querySelectorAll('a').forEach((a) => {
         const href = (a.getAttribute('href') || '').replace(/[?#].*$/, '');
         const isBack = href === './' || href === '../' || href === '';
-        const isAccount = /konto\.html$/.test(href);
+        const name = routeName(href);
+        const isAccount = name === 'konto' || name.endsWith('/konto');
         if (isBack) a.classList.add('app-nav__back');
         else if (isAccount) a.classList.add('app-nav__cta');
         else a.classList.add('app-nav__link');
-        const match = ITEMS.find((item) => href.endsWith(item.href) || (isBack && item.role === 'back'));
+        const match = ITEMS.find((item) => routeName(item.href) === name || (isBack && item.role === 'back'));
         if (match) {
             a.setAttribute('data-page', match.page);
             if (match.auth) a.setAttribute('data-auth', match.auth);

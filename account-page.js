@@ -220,11 +220,13 @@ async function renderSession(session) {
   const revision = ++sessionRenderRevision;
   currentSession = session;
   const signedIn = Boolean(session?.user);
+  const headerSubtitle = document.querySelector('.logo .subtitle');
   $('signed-in').hidden = !signedIn;
   $('signed-out').hidden = signedIn;
   document.body.classList.toggle('account-authenticated', signedIn);
   if (!signedIn) {
     $('account-title').textContent = T.signIn || 'Sign in';
+    if (headerSubtitle) headerSubtitle.textContent = T.subtitleEmailPassword || 'Sign in with your email and password.';
     clearDashboardStats();
     resetRecentCodes();
     return;
@@ -234,6 +236,7 @@ async function renderSession(session) {
   setStatus('');
   $('user-email').textContent = session.user.email || '';
   $('account-title').textContent = T.dashboardTitle || 'Your account';
+  if (headerSubtitle) headerSubtitle.textContent = T.dashboardSubtitle || 'Choose what you’d like to do.';
   ensureDashboardExtras();
   await Promise.all([
     loadDashboardStats({

@@ -23,6 +23,15 @@ W **Authentication → URL Configuration** ustaw:
 
 Adresy generowane przez aplikację wskazują finalne trasy bez rozszerzenia, np. `/konto` i `/reset-hasla`.
 
+## Reset hasła
+
+W ustawieniach **Authentication → Emails → Reset password** ustaw:
+
+- temat: `Ustaw nowe hasło — Generator Kodów Kreskowych`
+- treść: zawartość `reset-password.html`
+
+Szablon jest dwujęzyczny (PL/EN), wskazuje właściwą domenę i zachowuje wymagany placeholder `{{ .ConfirmationURL }}`.
+
 ## Charakterystyka szablonów
 
 - Tabelowy layout 600px (kompatybilność z Outlookiem / Gmail / Apple Mail).

@@ -88,6 +88,17 @@ test('Polish account page localizes legal and navigation labels', async ({ reque
   expect(html).not.toMatch(/href="[^"]+\.html(?:[?#"])/);
 });
 
+test('account navigation stays on direct extensionless routes after JavaScript enhancement', async ({ page }) => {
+  for (const path of ['/konto', '/pl/konto']) {
+    await page.goto(path);
+    const hrefs = await page.locator('.app-nav a').evaluateAll((links) =>
+      links.map((link) => link.getAttribute('href') || ''));
+    expect(hrefs, path).not.toEqual([]);
+    expect(hrefs, path).not.toContain('./konto.html');
+    expect(hrefs.filter((href) => /\.html(?:[?#]|$)/.test(href)), path).toEqual([]);
+  }
+});
+
 test('account controls and save action render without an artificial delay', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('.auth-controls')).toBeAttached({ timeout: 3000 });
@@ -113,9 +124,13 @@ test('public and account pages have no broken internal links', async ({ request 
 });
 
 test('transactional email templates use final production URLs', async () => {
-  const template = await import('node:fs/promises').then(({ readFile }) =>
-    readFile('supabase/email-templates/confirm-signup.pl.html', 'utf8'));
-  expect(template).not.toMatch(/barcode-generator\.daytodayapps\.com\/(?:polityka-prywatnosci|regulamin)\.html/);
-  expect(template).toContain('https://barcode-generator.daytodayapps.com/pl/polityka-prywatnosci');
-  expect(template).toContain('https://barcode-generator.daytodayapps.com/pl/regulamin');
+  const { readFile } = await import('node:fs/promises');
+  const confirmation = await readFile('supabase/email-templates/confirm-signup.pl.html', 'utf8');
+  const recovery = await readFile('supabase/email-templates/reset-password.html', 'utf8');
+  expect(confirmation).not.toMatch(/barcode-generator\.daytodayapps\.com\/(?:polityka-prywatnosci|regulamin)\.html/);
+  expect(confirmation).toContain('https://barcode-generator.daytodayapps.com/pl/polityka-prywatnosci');
+  expect(confirmation).toContain('https://barcode-generator.daytodayapps.com/pl/regulamin');
+  expect(recovery).toContain('{{ .ConfirmationURL }}');
+  expect(recovery).toContain('{{ .Email }}');
+  expect(recovery).toContain('https://barcode-generator.daytodayapps.com/');
 });

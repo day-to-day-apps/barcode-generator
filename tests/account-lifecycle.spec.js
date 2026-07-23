@@ -52,6 +52,7 @@ test.describe('Account lifecycle against Supabase', () => {
 
       await expect(page.locator('#signed-in')).toBeVisible({ timeout: 10_000 });
       await expect(page.locator('#user-email')).toHaveText(email);
+      await expect(page.locator('.logo .subtitle')).toHaveText(/Choose what you.d like to do/i);
       await expect(page.locator('#account-extras')).toBeVisible();
       await expect(page.locator('.quick-actions a[href="/bulk-barcode-generator"]')).toBeVisible();
 
