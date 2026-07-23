@@ -43,6 +43,25 @@ test('imports semicolon CSV and creates a readable PDF and SVG ZIP', async ({ pa
   expect(Object.keys(zip.files).filter((name) => name.endsWith('.svg'))).toHaveLength(3);
 });
 
+test('exports the documented L7163, 5163 and 100 x 50 mm formats at physical size', async ({ page }) => {
+  await page.goto('/bulk-barcode-generator');
+  await page.locator('#bulk-rows [data-field=value]').fill('BOX-100');
+  const cases = [
+    ['avery-l7163-a4', 210, 297],
+    ['avery-5163-letter', 215.9, 279.4],
+    ['thermal-100x50', 100, 50],
+  ];
+  for (const [preset, widthMm, heightMm] of cases) {
+    await page.locator('#page-preset').selectOption(preset);
+    const downloadEvent = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'PDF', exact: true }).click();
+    const pdf = await PDFDocument.load(await downloadBuffer(await downloadEvent));
+    const size = pdf.getPage(0).getSize();
+    expect(size.width, preset).toBeCloseTo(widthMm * 72 / 25.4, 1);
+    expect(size.height, preset).toBeCloseTo(heightMm * 72 / 25.4, 1);
+  }
+});
+
 test('exports a mixed Data Matrix, PDF417 and Aztec batch', async ({ page }) => {
   await page.goto('/bulk-barcode-generator');
   await page.locator('#bulk-rows tr').first().locator('[data-field=value]').fill('BULK-DM-2026');

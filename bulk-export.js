@@ -2,9 +2,12 @@ const MM_TO_PT = 72 / 25.4;
 
 export const BULK_PRESETS = {
   'avery-l7160-a4': { label: 'Avery L7160 - A4 (3 x 7)', pageW: 210, pageH: 297, cols: 3, rows: 7, labelW: 63.5, labelH: 38.1, marginX: 7.2, marginY: 15.1, gapX: 2.5, gapY: 0 },
+  'avery-l7163-a4': { label: 'Avery L7163 - A4 (2 x 7)', pageW: 210, pageH: 297, cols: 2, rows: 7, labelW: 99.1, labelH: 38.1, marginX: 4.65, marginY: 15.1, gapX: 2.5, gapY: 0 },
   'avery-5160-letter': { label: 'Avery 5160 - Letter (3 x 10)', pageW: 215.9, pageH: 279.4, cols: 3, rows: 10, labelW: 66.675, labelH: 25.4, marginX: 4.7625, marginY: 12.7, gapX: 3.175, gapY: 0 },
+  'avery-5163-letter': { label: 'Avery 5163 - Letter (2 x 5)', pageW: 215.9, pageH: 279.4, cols: 2, rows: 5, labelW: 101.6, labelH: 50.8, marginX: 4.7625, marginY: 12.7, gapX: 3.175, gapY: 0 },
   'thermal-58x40': { label: 'Thermal 58 x 40 mm', pageW: 58, pageH: 40, cols: 1, rows: 1, labelW: 58, labelH: 40, marginX: 0, marginY: 0, gapX: 0, gapY: 0 },
   'thermal-62x29': { label: 'Brother 62 x 29 mm', pageW: 62, pageH: 29, cols: 1, rows: 1, labelW: 62, labelH: 29, marginX: 0, marginY: 0, gapX: 0, gapY: 0 },
+  'thermal-100x50': { label: 'Thermal 100 x 50 mm', pageW: 100, pageH: 50, cols: 1, rows: 1, labelW: 100, labelH: 50, marginX: 0, marginY: 0, gapX: 0, gapY: 0 },
   'thermal-100x150': { label: 'Shipping 100 x 150 mm', pageW: 100, pageH: 150, cols: 1, rows: 1, labelW: 100, labelH: 150, marginX: 0, marginY: 0, gapX: 0, gapY: 0 },
 };
 

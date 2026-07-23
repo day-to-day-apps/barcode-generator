@@ -73,18 +73,20 @@ test.describe('Bulk generator account integration', () => {
       await expect(page.locator('#bulk-status')).toHaveText('Imported saved barcodes: 2.');
 
       await page.locator('#job-name').fill(jobName);
+      await page.locator('#page-preset').selectOption('avery-l7163-a4');
       await page.locator('#save-job').click();
-      await expect(page.locator('#bulk-status')).toHaveText('Print job saved.', { timeout: 10_000 });
+      await expect(page.locator('#bulk-status')).toHaveText('Print job and label format saved.', { timeout: 10_000 });
       await expect(page.locator('#saved-job-select')).toHaveValue(/.+/);
       await expect(page.locator('#saved-job-select option:checked')).toHaveText(jobName);
 
       const { data: jobs, error: jobsError } = await userClient
         .from('print_jobs')
-        .select('id, name, print_job_items(value, code_type, position)')
+        .select('id, name, notes, print_job_items(value, code_type, position)')
         .eq('user_id', userId)
         .single();
       expect(jobsError).toBeNull();
       expect(jobs.name).toBe(jobName);
+      expect(jobs.notes).toBe('barcode-bulk:v1:{"preset":"avery-l7163-a4"}');
       expect(jobs.print_job_items).toHaveLength(2);
 
       await page.goto('/historia-wydrukow.html');
@@ -98,13 +100,16 @@ test.describe('Bulk generator account integration', () => {
       await expect(page).toHaveURL(new RegExp(`/bulk-barcode-generator\\?job=${jobs.id}$`));
       await expect(page.locator('#bulk-rows tr')).toHaveCount(2);
       await expect(page.locator('#job-name')).toHaveValue(`${jobName} - copy`);
+      await expect(page.locator('#page-preset')).toHaveValue('avery-l7163-a4');
 
       await page.locator('#clear-rows').click();
       await expect(page.locator('#bulk-rows tr')).toHaveCount(0);
+      await page.locator('#page-preset').selectOption('thermal-100x150');
       await page.locator('#load-job').click();
       await expect(page.locator('#bulk-rows tr')).toHaveCount(2);
       await expect(page.locator('#job-name')).toHaveValue(`${jobName} - copy`);
-      await expect(page.locator('#bulk-status')).toHaveText('Job loaded as a copy.');
+      await expect(page.locator('#page-preset')).toHaveValue('avery-l7163-a4');
+      await expect(page.locator('#bulk-status')).toHaveText('Job and label format loaded as a copy.');
     } finally {
       if (userId) await admin.auth.admin.deleteUser(userId);
     }

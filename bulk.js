@@ -3,12 +3,13 @@ import { getSession } from './supabase-client.js';
 import { listCodes, normaliseProductMetadata } from './db-codes.js';
 import { savePrintJob, listJobs, getJobById } from './db-jobs.js';
 import { BULK_PRESETS, TWO_D_TYPES, validateBulkItem, expandBulkItems, createBulkPdf, createBulkZip, createValidationReport, downloadBytes } from './bulk-export.js';
+import { encodeBulkJobState, decodeBulkJobState } from './bulk-job-state.js';
 
 const pl = document.documentElement.lang === 'pl';
 const copy = pl ? {
-  ready: 'Zaimportuj CSV lub dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', cancelled: 'Generowanie anulowane.', saved: 'Zadanie zostało zapisane.', loaded: 'Zadanie wczytano jako kopię.', importedCodes: 'Zaimportowano zapisane kody:', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', codesLoadFailed: 'Nie udało się pobrać zapisanych kodów.', jobsLoadFailed: 'Nie udało się pobrać zapisanych zadań.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.', pickerSummary: 'Wybrano: {codes} kodów · {labels} etykiet. Dostępne: {rows} pozycji i {remainingLabels} etykiet.', pickerLimit: 'Zmniejsz wybór lub liczbę kopii, aby zmieścić się w limicie zadania.', copies: 'Kopie', unsupported: 'Nieobsługiwany w druku seryjnym'
+  ready: 'Zaimportuj CSV lub dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', cancelled: 'Generowanie anulowane.', saved: 'Zadanie i format etykiety zostały zapisane.', loaded: 'Zadanie i format etykiety wczytano jako kopię.', importedCodes: 'Zaimportowano zapisane kody:', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', codesLoadFailed: 'Nie udało się pobrać zapisanych kodów.', jobsLoadFailed: 'Nie udało się pobrać zapisanych zadań.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.', pickerSummary: 'Wybrano: {codes} kodów · {labels} etykiet. Dostępne: {rows} pozycji i {remainingLabels} etykiet.', pickerLimit: 'Zmniejsz wybór lub liczbę kopii, aby zmieścić się w limicie zadania.', copies: 'Kopie', unsupported: 'Nieobsługiwany w druku seryjnym'
 } : {
-  ready: 'Import a CSV file or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', cancelled: 'Generation cancelled.', saved: 'Print job saved.', loaded: 'Job loaded as a copy.', importedCodes: 'Imported saved barcodes:', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', codesLoadFailed: 'Saved barcodes could not be loaded.', jobsLoadFailed: 'Saved jobs could not be loaded.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.', pickerSummary: 'Selected: {codes} codes · {labels} labels. Available: {rows} items and {remainingLabels} labels.', pickerLimit: 'Reduce the selection or copy count to fit this job limit.', copies: 'Copies', unsupported: 'Not supported in bulk printing'
+  ready: 'Import a CSV file or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', cancelled: 'Generation cancelled.', saved: 'Print job and label format saved.', loaded: 'Job and label format loaded as a copy.', importedCodes: 'Imported saved barcodes:', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', codesLoadFailed: 'Saved barcodes could not be loaded.', jobsLoadFailed: 'Saved jobs could not be loaded.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.', pickerSummary: 'Selected: {codes} codes · {labels} labels. Available: {rows} items and {remainingLabels} labels.', pickerLimit: 'Reduce the selection or copy count to fit this job limit.', copies: 'Copies', unsupported: 'Not supported in bulk printing'
 };
 const $ = (id) => document.getElementById(id);
 let session = null;
@@ -275,7 +276,8 @@ async function saveJob() {
   const selected = exportItems(); if (!selected) return;
   const name = $('job-name').value.trim() || `Bulk ${new Date().toISOString().slice(0, 10)}`;
   const payload = selected.filter((item) => item.status !== 'error').map(({ status: _status, reason: _reason, index: _index, settings, ...item }, position) => ({ ...item, position, extra: { settings: settings || {} } }));
-  const result = await savePrintJob({ name, notes: 'Created with bulk barcode generator' }, payload);
+  const notes = encodeBulkJobState({ preset: $('page-preset').value });
+  const result = await savePrintJob({ name, notes }, payload);
   if (result.error) return status(result.error.message, true);
   await loadJobOptions(result.data);
   status(copy.saved); track('bulk_job_saved', { rows: payload.length });
@@ -284,6 +286,8 @@ async function saveJob() {
 async function loadPreviousJob() {
   const id = $('saved-job-select').value; if (!id) return;
   const { data, error } = await getJobById(id); if (error || !data) return status(error?.message || copy.noCodes, true);
+  const state = decodeBulkJobState(data.notes, Object.keys(BULK_PRESETS));
+  if (state) $('page-preset').value = state.preset;
   $('bulk-rows').innerHTML = ''; (data.items || []).forEach(addRow); $('job-name').value = `${data.name} - ${pl ? 'kopia' : 'copy'}`;
   updateSummary(); status(copy.loaded); track('bulk_job_duplicated', { items: data.items?.length || 0 });
 }
