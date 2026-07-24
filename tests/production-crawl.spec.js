@@ -31,6 +31,7 @@ test('sitemap contains only 112 direct, indexable canonical URLs', async ({ requ
     }
     expect(html.match(/<meta[^>]+name="robots"[^>]+noindex/i), path).toBeNull();
     expect((html.match(/<h1\b/gi) || []).length, path).toBe(1);
+    expect((html.match(/<script[^>]+src="[^"]*analytics\.js\?v=[a-f0-9]+"[^>]*><\/script>/gi) || []).length, `${path} analytics bootstrap`).toBe(1);
     const found = html.match(/<link[^>]+rel="canonical"[^>]+href="([^"]+)"/i)?.[1];
     expect(found, path).toBe(canonical);
     const formatMatch = path.match(new RegExp(`^/(?:(${LOCALES.filter((lang) => lang !== 'en').join('|')})/)?(${FORMATS.join('|')})/$`));

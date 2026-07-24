@@ -537,7 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showError(T.errEmpty || 'Enter text to encode');
             barcodeContainer.style.display = 'none';
             previewHint.style.display = 'block';
-            return;
+            return false;
         }
 
         hideError();
@@ -550,12 +550,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 barcodeContainer.className = 'barcode-container';
                 const rotQ = rotation.value;
                 if (rotQ !== 'N') barcodeContainer.classList.add(`rotate-${rotQ}`);
+                return Boolean(qrMatrix);
             } catch (e) {
                 showError((T.errGen || 'Generation error: {0}').replace('{0}', e.message));
                 barcodeContainer.style.display = 'none';
                 previewHint.style.display = 'block';
+                return false;
             }
-            return;
         }
 
         try {
@@ -584,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 barcodeSvg.replaceChildren();
                 barcodeContainer.style.display = 'none';
                 previewHint.style.display = 'block';
-                return;
+                return false;
             }
 
             barcodeContainer.style.display = 'flex';
@@ -596,11 +597,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (rot !== 'N') {
                 barcodeContainer.classList.add(`rotate-${rot}`);
             }
+            return true;
 
         } catch (e) {
             showError((T.errGen || 'Generation error: {0}').replace('{0}', e.message));
             barcodeContainer.style.display = 'none';
             previewHint.style.display = 'block';
+            return false;
         }
     }
 
@@ -623,12 +626,22 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => toast.remove(), 3000);
     }
 
+    function trackGenerator(eventName, params) {
+        window.trackBarcode?.(eventName, {
+            tool: 'single',
+            code_type: barcodeType.value,
+            ...(params || {}),
+        });
+    }
+
     // Generate on button click
-    btnGenerate.addEventListener('click', generateBarcode);
+    btnGenerate.addEventListener('click', () => {
+        if (generateBarcode()) trackGenerator('generate_barcode', { method: 'button' });
+    });
 
     // Generate on Enter key
     barcodeText.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') generateBarcode();
+        if (e.key === 'Enter' && generateBarcode()) trackGenerator('generate_barcode', { method: 'keyboard' });
     });
 
     // Live generation on text input
@@ -651,6 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 link.click();
                 URL.revokeObjectURL(url);
                 showToast(T.pngDl || 'PNG file downloaded');
+                trackGenerator('export_barcode', { file_type: 'png' });
             } catch {
                 showToast(T.copyFail || 'Could not export');
             }
@@ -678,6 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link.href = canvas.toDataURL('image/png');
             link.click();
             showToast(T.pngDl || 'PNG file downloaded');
+            trackGenerator('export_barcode', { file_type: 'png' });
         };
 
         img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
@@ -702,6 +717,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link.click();
             URL.revokeObjectURL(url);
             showToast(T.svgDl || 'SVG file downloaded');
+            trackGenerator('export_barcode', { file_type: 'svg' });
             return;
         }
         const svgEl = barcodeSvg;
@@ -719,6 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
         link.click();
         URL.revokeObjectURL(url);
         showToast(T.svgDl || 'SVG file downloaded');
+        trackGenerator('export_barcode', { file_type: 'svg' });
     });
 
     // Copy to clipboard
@@ -729,6 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const blob = await qrToPngBlob(1024);
                 await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
                 showToast(T.copied || 'Copied to clipboard');
+                trackGenerator('copy_barcode');
             } catch {
                 showToast(T.copyFail || 'Could not copy');
             }
@@ -764,6 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         new ClipboardItem({ 'image/png': blob })
                     ]);
                     showToast(T.copied || 'Copied to clipboard');
+                    trackGenerator('copy_barcode');
                 } catch {
                     showToast(T.copyFail || 'Could not copy');
                 }
@@ -1058,6 +1077,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Trigger print
         printOutput.style.display = 'block';
+        trackGenerator('print_barcode', {
+            printer_type: currentPrinterType,
+            copies: Math.max(1, Math.min(parseInt(labelCopies.value) || 1, 500)),
+        });
         window.print();
         setTimeout(() => { printOutput.style.display = 'none'; }, 1000);
     });

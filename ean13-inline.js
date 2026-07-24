@@ -83,6 +83,7 @@
     anchor.href = url;
     anchor.download = `ean13-${currentValue}.${extension}`;
     anchor.click();
+    window.trackBarcode?.('export_barcode', { tool: 'ean13_inline', code_type: 'EAN13', file_type: extension });
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
@@ -110,6 +111,7 @@
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     generate();
+    if (currentValue) window.trackBarcode?.('generate_barcode', { tool: 'ean13_inline', code_type: 'EAN13', method: 'button' });
   });
   input.addEventListener('input', () => {
     input.value = input.value.replace(/\D/g, '').slice(0, 13);

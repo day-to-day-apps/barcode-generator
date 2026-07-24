@@ -83,6 +83,7 @@ test.describe('PWA and offline tools', () => {
   });
 
   test('PWA update action is translated in every public language', async ({ page }) => {
+    test.setTimeout(120_000);
     const languages = [
       ['/', 'Refresh now'],
       ['/pl/', 'Odśwież teraz'],

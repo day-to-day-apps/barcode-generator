@@ -153,6 +153,7 @@
     const safeValue = currentValue.slice(0, 40).replace(/[^a-z0-9._-]+/gi, '-').replace(/^-+|-+$/g, '') || 'code';
     anchor.download = `${appType}-${safeValue}.${extension}`;
     anchor.click();
+    window.trackBarcode?.('export_barcode', { tool: 'format_inline', code_type: format, file_type: extension });
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
@@ -180,6 +181,7 @@
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     generate();
+    if (currentValue) window.trackBarcode?.('generate_barcode', { tool: 'format_inline', code_type: format, method: 'button' });
   });
   input.addEventListener('input', () => {
     if (format === 'UPC' || format === 'ITF14') input.value = input.value.replace(/\D/g, '');

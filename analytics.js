@@ -23,60 +23,70 @@
     const CONSENT_TEXT = {
         pl: {
             msg: 'Ta strona u\u017cywa plik\u00f3w cookie do analityki i nieinwazyjnych reklam. Mo\u017cesz zaakceptowa\u0107 lub odrzuci\u0107 te funkcje.',
+            analyticsMsg: 'Ta strona u\u017cywa plik\u00f3w cookie wy\u0142\u0105cznie do zbiorczych statystyk GA4. Mo\u017cesz zaakceptowa\u0107 lub odrzuci\u0107 analityk\u0119.',
             accept: 'Akceptuj\u0119',
             reject: 'Odrzu\u0107',
             choices: 'Ustawienia prywatno\u015bci',
         },
         en: {
             msg: 'This site uses cookies for analytics and non-intrusive ads. You can accept or reject these features.',
+            analyticsMsg: 'This site uses cookies only for aggregate GA4 usage analytics. You can accept or reject analytics.',
             accept: 'Accept',
             reject: 'Reject',
             choices: 'Privacy choices',
         },
         de: {
             msg: 'Diese Website verwendet Cookies f\u00fcr Analysen und unaufdringliche Werbung. Sie k\u00f6nnen diese Funktionen akzeptieren oder ablehnen.',
+            analyticsMsg: 'Diese Website verwendet Cookies nur f\u00fcr zusammengefasste GA4-Nutzungsstatistiken. Sie k\u00f6nnen die Analyse akzeptieren oder ablehnen.',
             accept: 'Akzeptieren',
             reject: 'Ablehnen',
             choices: 'Datenschutzoptionen',
         },
         fr: {
             msg: 'Ce site utilise des cookies pour les statistiques et des publicit\u00e9s discr\u00e8tes. Vous pouvez accepter ou refuser ces fonctions.',
+            analyticsMsg: 'Ce site utilise des cookies uniquement pour des statistiques d\u0027utilisation GA4 agr\u00e9g\u00e9es. Vous pouvez accepter ou refuser les statistiques.',
             accept: 'Accepter',
             reject: 'Refuser',
             choices: 'Choix de confidentialit\u00e9',
         },
         es: {
             msg: 'Este sitio usa cookies para anal\u00edtica y anuncios no intrusivos. Puedes aceptar o rechazar estas funciones.',
+            analyticsMsg: 'Este sitio usa cookies solo para estad\u00edsticas de uso agregadas de GA4. Puedes aceptar o rechazar la anal\u00edtica.',
             accept: 'Aceptar',
             reject: 'Rechazar',
             choices: 'Opciones de privacidad',
         },
         it: {
             msg: 'Questo sito usa cookie per analisi e annunci non invasivi. Puoi accettare o rifiutare queste funzioni.',
+            analyticsMsg: 'Questo sito usa cookie solo per statistiche di utilizzo aggregate di GA4. Puoi accettare o rifiutare l\u0027analisi.',
             accept: 'Accetta',
             reject: 'Rifiuta',
             choices: 'Scelte privacy',
         },
         pt: {
             msg: 'Este site usa cookies para an\u00e1lise e an\u00fancios n\u00e3o intrusivos. Pode aceitar ou rejeitar estas fun\u00e7\u00f5es.',
+            analyticsMsg: 'Este site usa cookies apenas para estat\u00edsticas de utiliza\u00e7\u00e3o agregadas do GA4. Pode aceitar ou rejeitar a an\u00e1lise.',
             accept: 'Aceitar',
             reject: 'Rejeitar',
             choices: 'Op\u00e7\u00f5es de privacidade',
         },
         nl: {
             msg: 'Deze site gebruikt cookies voor analyse en niet-opdringerige advertenties. U kunt deze functies accepteren of weigeren.',
+            analyticsMsg: 'Deze site gebruikt cookies alleen voor geaggregeerde GA4-gebruiksstatistieken. U kunt de analyse accepteren of weigeren.',
             accept: 'Accepteren',
             reject: 'Weigeren',
             choices: 'Privacykeuzes',
         },
         cs: {
             msg: 'Tento web pou\u017e\u00edv\u00e1 cookies pro analytiku a nevt\u00edrav\u00e9 reklamy. Tyto funkce m\u016f\u017eete p\u0159ijmout nebo odm\u00edtnout.',
+            analyticsMsg: 'Tento web pou\u017e\u00edv\u00e1 cookies pouze pro souhrnn\u00e9 statistiky pou\u017eit\u00ed GA4. Analytiku m\u016f\u017eete p\u0159ijmout nebo odm\u00edtnout.',
             accept: 'P\u0159ijmout',
             reject: 'Odm\u00edtnout',
             choices: 'Nastaven\u00ed soukrom\u00ed',
         },
         uk: {
             msg: '\u0426\u0435\u0439 \u0441\u0430\u0439\u0442 \u0432\u0438\u043a\u043e\u0440\u0438\u0441\u0442\u043e\u0432\u0443\u0454 cookie \u0434\u043b\u044f \u0430\u043d\u0430\u043b\u0456\u0442\u0438\u043a\u0438 \u0442\u0430 \u043d\u0435\u043d\u0430\u0432\u0027\u044f\u0437\u043b\u0438\u0432\u043e\u0457 \u0440\u0435\u043a\u043b\u0430\u043c\u0438. \u0412\u0438 \u043c\u043e\u0436\u0435\u0442\u0435 \u043f\u0440\u0438\u0439\u043d\u044f\u0442\u0438 \u0430\u0431\u043e \u0432\u0456\u0434\u0445\u0438\u043b\u0438\u0442\u0438 \u0446\u0456 \u0444\u0443\u043d\u043a\u0446\u0456\u0457.',
+            analyticsMsg: '\u0426\u0435\u0439 \u0441\u0430\u0439\u0442 \u0432\u0438\u043a\u043e\u0440\u0438\u0441\u0442\u043e\u0432\u0443\u0454 cookie \u043b\u0438\u0448\u0435 \u0434\u043b\u044f \u0437\u0432\u0435\u0434\u0435\u043d\u043e\u0457 \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043a\u0438 \u0432\u0438\u043a\u043e\u0440\u0438\u0441\u0442\u0430\u043d\u043d\u044f GA4. \u0412\u0438 \u043c\u043e\u0436\u0435\u0442\u0435 \u043f\u0440\u0438\u0439\u043d\u044f\u0442\u0438 \u0430\u0431\u043e \u0432\u0456\u0434\u0445\u0438\u043b\u0438\u0442\u0438 \u0430\u043d\u0430\u043b\u0456\u0442\u0438\u043a\u0443.',
             accept: '\u041f\u0440\u0438\u0439\u043d\u044f\u0442\u0438',
             reject: '\u0412\u0456\u0434\u0445\u0438\u043b\u0438\u0442\u0438',
             choices: '\u041d\u0430\u043b\u0430\u0448\u0442\u0443\u0432\u0430\u043d\u043d\u044f \u043f\u0440\u0438\u0432\u0430\u0442\u043d\u043e\u0441\u0442\u0456',
@@ -84,7 +94,9 @@
     };
 
     window.trackBarcode = function(eventName, params) {
-        if (window.gtag) window.gtag('event', eventName, params || {});
+        if (window.gtag && hasAnalyticsConsent()) {
+            window.gtag('event', eventName, Object.assign({ language: currentLang() }, params || {}));
+        }
     };
 
     function currentLang() {
@@ -92,7 +104,9 @@
     }
 
     function copy() {
-        return CONSENT_TEXT[currentLang()] || CONSENT_TEXT.en;
+        const value = Object.assign({}, CONSENT_TEXT[currentLang()] || CONSENT_TEXT.en);
+        if (!adsConfigured()) value.msg = value.analyticsMsg;
+        return value;
     }
 
     function getConsent() {
@@ -111,12 +125,20 @@
         }
     }
 
-    function hasConsent() {
-        return getConsent() === 'accepted';
+    function hasAnalyticsConsent() {
+        return ['accepted', 'analytics-accepted'].includes(getConsent());
     }
 
     function enabledAdSlotEntries() {
         return Object.entries(AD_SLOTS).filter(([, cfg]) => cfg.enabled && cfg.id);
+    }
+
+    function adsConfigured() {
+        return Boolean(ADSENSE_PUBLISHER_ID && enabledAdSlotEntries().length > 0);
+    }
+
+    function hasAdsConsent() {
+        return adsConfigured() && getConsent() === 'accepted';
     }
 
     function hasGoogleFeaturesConfigured() {
@@ -149,9 +171,9 @@
 
         window.gtag('consent', 'update', {
             analytics_storage: 'granted',
-            ad_storage: 'granted',
-            ad_user_data: 'granted',
-            ad_personalization: 'granted',
+            ad_storage: hasAdsConsent() ? 'granted' : 'denied',
+            ad_user_data: hasAdsConsent() ? 'granted' : 'denied',
+            ad_personalization: hasAdsConsent() ? 'granted' : 'denied',
         });
         window.gtag('js', new Date());
         window.gtag('config', GA4_MEASUREMENT_ID, {
@@ -248,15 +270,16 @@
     }
 
     function startGoogleFeatures() {
-        if (!hasConsent() || !hasGoogleFeaturesConfigured()) return;
-
-        initGA4();
-        loadAdSense().then(injectAllAds);
+        if (!hasGoogleFeaturesConfigured()) return;
+        if (hasAnalyticsConsent()) initGA4();
+        if (hasAdsConsent()) loadAdSense().then(injectAllAds);
     }
 
     function showConsentBanner(force) {
         if (!hasGoogleFeaturesConfigured()) return;
-        if (!force && getConsent()) return;
+        const decision = getConsent();
+        const needsAdsUpgrade = adsConfigured() && decision === 'analytics-accepted';
+        if (!force && decision && !needsAdsUpgrade) return;
         if (document.getElementById('cookie-banner')) return;
 
         const t = copy();
@@ -279,7 +302,7 @@
         if (force) banner.querySelector('.cookie-accept').focus();
 
         banner.querySelector('.cookie-accept').addEventListener('click', function() {
-            setConsent('accepted');
+            setConsent(adsConfigured() ? 'accepted' : 'analytics-accepted');
             banner.remove();
             document.body.classList.remove('has-cookie-banner');
             startGoogleFeatures();
@@ -318,13 +341,26 @@
         footerLinks.appendChild(button);
     }
 
+    function installToolNavigationTracking() {
+        document.addEventListener('click', function(event) {
+            if (!(event.target instanceof Element)) return;
+            const link = event.target.closest('.search-intent__card, .popular-card__more, .decoder-related a, .task-cta');
+            if (!link) return;
+            const href = link.getAttribute('href') || '';
+            if (!href.startsWith('/')) return;
+            window.trackBarcode('select_content', {
+                content_type: 'tool',
+                item_id: href.split('?')[0],
+                source: link.classList.contains('search-intent__card') ? 'task_discovery' : 'related_link',
+            });
+        });
+    }
+
     function boot() {
         installPrivacyChoicesLink();
-        if (hasConsent()) {
-            startGoogleFeatures();
-        } else {
-            showConsentBanner(false);
-        }
+        installToolNavigationTracking();
+        startGoogleFeatures();
+        showConsentBanner(false);
     }
 
     if (document.readyState === 'loading') {

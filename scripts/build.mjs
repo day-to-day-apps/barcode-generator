@@ -66,6 +66,12 @@ function normaliseHtml(html) {
     .replace(/\s*<link[^>]+https:\/\/fonts\.(?:googleapis|gstatic)\.com[^>]*>/gi, '')
     .replace(/<script(?![^>]*\b(?:defer|async)\b)(?![^>]*type=['"]module['"])([^>]*\bsrc=[^>]*)>/gi, '<script defer$1>')
     .replace(ASSET_REF_RE, (_match, prefix, name) => `${prefix}${name}?v=${ASSET_VERSIONS.get(name)}`);
+  if (!/analytics\.js/i.test(output)) {
+    output = output.replace(
+      '</body>',
+      `    <script defer src="/analytics.js?v=${ASSET_VERSIONS.get('analytics.js')}"></script>\n</body>`,
+    );
+  }
   const analyticsScript = output.match(/\s*<script defer[^>]*src=["'][^"']*analytics\.js[^"']*["'][^>]*><\/script>/i)?.[0];
   if (analyticsScript) {
     output = output
