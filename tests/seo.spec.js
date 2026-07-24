@@ -30,6 +30,15 @@ test.describe('SEO - per language index page', () => {
         await expect(page.locator(`a[href="${path}qr-code/"]`)).toHaveCount(1);
       });
 
+      await test.step('homepage exposes direct task links', async () => {
+        await expect(page.locator('.search-intent')).toHaveCount(1);
+        await expect(page.locator('.search-intent__card')).toHaveCount(3);
+        const localizedPrefix = code === 'en' ? '/' : path;
+        await expect(page.locator(`.search-intent__card[href="${localizedPrefix}decoder"]`)).toHaveCount(1);
+        await expect(page.locator(`.search-intent__card[href="${localizedPrefix}ean-13/"]`)).toHaveCount(1);
+        await expect(page.locator(`.search-intent__card[href="${localizedPrefix}code-128/"]`)).toHaveCount(1);
+      });
+
       await test.step('canonical href matches expected URL', async () => {
         const href = await page.locator('link[rel="canonical"]').getAttribute('href');
         expect(href).toBe(canonical);

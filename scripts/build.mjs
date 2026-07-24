@@ -397,6 +397,18 @@ const DECODER_CONTENT = {
   uk: { title: 'Сканер штрихкодів онлайн - зображення та камера', description: 'Скануйте штрихкоди з фото, зображення або камери. Розпізнавайте EAN, UPC, Code 128, QR, Data Matrix і PDF417 приватно у браузері.', kicker: 'Безкоштовний онлайн-сканер', heading: 'Скануйте штрихкод із зображення або камери', lead: 'Зчитуйте код без встановлення застосунку. Завантажте чи вставте зображення або відкрийте камеру. Обробка відбувається локально на пристрої.', how: 'Як сканувати штрихкод онлайн', steps: ['Відкрийте камеру, завантажте JPG, PNG чи WebP або вставте зображення через Ctrl+V.', 'Покажіть увесь код чітко, з добрим освітленням і без відблисків.', 'Скопіюйте значення або відтворіть код у генераторі.'], formats: 'Підтримувані формати', formatText: 'Сканер автоматично розпізнає поширені роздрібні, логістичні та 2D-символи.', groups: [['Роздріб', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Логістика', 'Code 128, Code 39, ITF, Codabar, RSS'], ['2D-коди', 'QR Code, Data Matrix, PDF417, Aztec'], ['Інші', 'Code 93, MaxiCode та варіанти ZXing']], troubleshoot: 'Якщо код не зчитується', tips: ['Обріжте зображення навколо коду.', 'Використайте оригінальне фото замість стисненого знімка.', 'Фотографуйте етикетку прямо, без відблисків і розмиття.', 'Залиште видимими світлі зони з боків лінійного коду.'], privacy: 'Приватне сканування', privacyText: 'Зображення обробляються у браузері й не надсилаються на сервер. Основні функції можуть працювати офлайн після першого завантаження.', related: 'Створіть або перевірте код', links: [['Відкрити генератор', '/uk/'], ['Генерувати з CSV', '/bulk-barcode-generator'], ['Перевірити GTIN і GS1', '/gs1-barcode-generator']] },
 };
 
+const DECODER_FAQS = {
+  it: {
+    heading: 'Domande frequenti sul lettore di codici a barre',
+    items: [
+      ['Posso leggere un codice a barre da una foto?', 'Sì. Carica una foto JPG, PNG o WebP oppure incollala dagli appunti. Il lettore cerca automaticamente codici EAN, UPC, Code 128, Code 39, QR, Data Matrix, PDF417 e altri formati supportati.'],
+      ['La foto viene inviata a un server?', 'No. L’immagine viene elaborata localmente nel browser. Il file non viene caricato sui nostri server e non serve creare un account per eseguire la scansione.'],
+      ['Perché il lettore non riconosce il codice?', 'Usa la foto originale, ritaglia l’area attorno al codice e verifica che tutte le barre o i moduli siano nitidi. Evita riflessi, inclinazione, sfocatura e il taglio delle zone chiare ai lati.'],
+      ['È possibile leggere più codici nella stessa immagine?', 'Sì. Attiva l’opzione per trovare tutti i codici nell’immagine prima di caricare una foto di un foglio, una scatola o un gruppo di etichette.'],
+    ],
+  },
+};
+
 const DECODER_BATCH_CONTENT = {
   en: ['Find every barcode in this image', 'Use for sheets, cartons or photos with several codes. Processing stays on this device.'],
   pl: ['Znajdź wszystkie kody na tym obrazie', 'Użyj dla arkuszy, kartonów lub zdjęć z kilkoma kodami. Przetwarzanie odbywa się na tym urządzeniu.'],
@@ -412,16 +424,18 @@ const DECODER_BATCH_CONTENT = {
 
 function enhanceDecoderHtml(html, lang) {
   const page = DECODER_CONTENT[lang];
+  const faq = DECODER_FAQS[lang];
   const [batchLabel, batchHint] = DECODER_BATCH_CONTENT[lang];
   const batchOption = `<div class="decoder-batch-option">
                 <input type="checkbox" id="batch-image-mode" aria-describedby="batch-image-hint">
                 <div><label for="batch-image-mode">${batchLabel}</label><p id="batch-image-hint">${batchHint}</p></div>
             </div>`;
+  const faqMarkup = faq ? `<section class="decoder-faq" aria-labelledby="decoder-faq-title"><h2 id="decoder-faq-title">${faq.heading}</h2>${faq.items.map(([question, answer]) => `<details><summary>${question}</summary><p>${answer}</p></details>`).join('')}</section>` : '';
   const guide = `<section class="decoder-guide" aria-labelledby="decoder-guide-title">
     <p class="decoder-guide__kicker">${page.kicker}</p><h2 id="decoder-guide-title">${page.heading}</h2><p class="decoder-guide__lead">${page.lead}</p>
     <div class="decoder-guide__columns"><section><h3>${page.how}</h3><ol>${page.steps.map((step) => `<li>${step}</li>`).join('')}</ol></section><section><h3>${page.formats}</h3><p>${page.formatText}</p><dl class="decoder-format-list">${page.groups.map(([name, formats]) => `<div><dt>${name}</dt><dd>${formats}</dd></div>`).join('')}</dl></section></div>
     <div class="decoder-guide__columns decoder-guide__columns--secondary"><section><h3>${page.troubleshoot}</h3><ul>${page.tips.map((tip) => `<li>${tip}</li>`).join('')}</ul></section><section><h3>${page.privacy}</h3><p>${page.privacyText}</p><h3>${page.related}</h3><nav class="decoder-related" aria-label="${page.related}">${page.links.map(([label, href]) => `<a href="${href}">${label}</a>`).join('')}</nav></section></div>
-  </section>`;
+  </section>${faqMarkup}`;
   return html
     .replace(/<title>[^<]*<\/title>/i, `<title>${page.title}</title>`)
     .replace(/(<meta name="description" content=")[^"]*(">)/i, `$1${page.description}$2`)
@@ -1014,7 +1028,7 @@ const [{ css: purgedLandingCss }] = await new PurgeCSS().purge({
   variables: true,
   safelist: {
     standard: ['active', 'copied', 'error', 'hidden', 'light', 'loading', 'show', 'success', 'visible'],
-    deep: [/^ad-/, /^cookie-/, /^has-/, /^is-/, /^modal/, /^print/, /^qr-/, /^toast/],
+    deep: [/^ad-/, /^cookie-/, /^has-/, /^is-/, /^modal/, /^print/, /^qr-/, /^search-intent/, /^toast/],
   },
 });
 const cssResult = new CleanCSS({ level: 1, rebase: false }).minify(purgedLandingCss);
@@ -1060,6 +1074,28 @@ const qrDiscoveryLabels = {
   fr: 'En savoir plus sur les QR codes', es: 'Más sobre códigos QR', it: 'Scopri di più sui codici QR',
   pt: 'Saiba mais sobre códigos QR', nl: 'Meer over QR-codes', cs: 'Více o QR kódech', uk: 'Докладніше про QR-коди',
 };
+const landingIntentContent = {
+  en: { heading: 'What do you need to do?', lead: 'Open the right tool directly. Every operation runs in your browser.', cards: [['Scan a barcode', 'Read a code from an image or camera.', '/decoder'], ['Create a retail EAN-13', 'Validate the check digit and export PNG or SVG.', '/ean-13/'], ['Create a warehouse Code 128', 'Encode an SKU, asset or location identifier.', '/code-128/']] },
+  pl: { heading: 'Co chcesz zrobić?', lead: 'Przejdź bezpośrednio do właściwego narzędzia. Wszystkie operacje odbywają się w przeglądarce.', cards: [['Odczytać kod kreskowy', 'Zeskanuj kod z obrazu lub kamery.', '/pl/decoder'], ['Utworzyć detaliczny EAN-13', 'Sprawdź cyfrę kontrolną i pobierz PNG lub SVG.', '/pl/ean-13/'], ['Utworzyć magazynowy Code 128', 'Zakoduj SKU, zasób albo lokalizację.', '/pl/code-128/']] },
+  de: { heading: 'Was möchten Sie tun?', lead: 'Öffnen Sie direkt das passende Werkzeug. Alle Vorgänge laufen im Browser.', cards: [['Barcode lesen', 'Code aus Bild oder Kamera scannen.', '/de/decoder'], ['EAN-13 erstellen', 'Prüfziffer kontrollieren und PNG oder SVG exportieren.', '/de/ean-13/'], ['Code 128 fürs Lager erstellen', 'SKU, Inventar oder Lagerplatz codieren.', '/de/code-128/']] },
+  fr: { heading: 'Que voulez-vous faire ?', lead: 'Ouvrez directement le bon outil. Toutes les opérations sont effectuées dans le navigateur.', cards: [['Lire un code-barres', 'Scanner un code depuis une image ou la caméra.', '/fr/decoder'], ['Créer un EAN-13', 'Vérifier la clé et exporter en PNG ou SVG.', '/fr/ean-13/'], ['Créer un Code 128 logistique', 'Encoder une référence, un bien ou un emplacement.', '/fr/code-128/']] },
+  es: { heading: '¿Qué necesitas hacer?', lead: 'Abre directamente la herramienta adecuada. Todo se procesa en el navegador.', cards: [['Leer un código de barras', 'Escanea un código desde una imagen o cámara.', '/es/decoder'], ['Crear un EAN-13', 'Valida el dígito de control y exporta PNG o SVG.', '/es/ean-13/'], ['Crear un Code 128 de almacén', 'Codifica un SKU, activo o ubicación.', '/es/code-128/']] },
+  it: { heading: 'Cosa devi fare?', lead: 'Apri direttamente lo strumento adatto. Tutte le operazioni avvengono nel browser.', cards: [['Leggere un codice a barre', 'Scansiona un codice da immagine o fotocamera.', '/it/decoder'], ['Creare un EAN-13', 'Verifica la cifra di controllo ed esporta PNG o SVG.', '/it/ean-13/'], ['Creare un Code 128 per il magazzino', 'Codifica SKU, beni o posizioni.', '/it/code-128/']] },
+  pt: { heading: 'O que você precisa fazer?', lead: 'Abra diretamente a ferramenta certa. Todas as operações acontecem no navegador.', cards: [['Ler um código de barras', 'Escaneie um código de imagem ou câmera.', '/pt/decoder'], ['Criar um EAN-13', 'Valide o dígito e exporte PNG ou SVG.', '/pt/ean-13/'], ['Criar um Code 128 de estoque', 'Codifique SKU, ativo ou localização.', '/pt/code-128/']] },
+  nl: { heading: 'Wat wilt u doen?', lead: 'Open direct het juiste hulpmiddel. Alle bewerkingen gebeuren in de browser.', cards: [['Barcode lezen', 'Scan een code uit een afbeelding of camera.', '/nl/decoder'], ['EAN-13 maken', 'Controleer het cijfer en exporteer PNG of SVG.', '/nl/ean-13/'], ['Code 128 voor magazijn maken', 'Codeer een SKU, object of locatie.', '/nl/code-128/']] },
+  cs: { heading: 'Co potřebujete udělat?', lead: 'Otevřete přímo správný nástroj. Všechny operace probíhají v prohlížeči.', cards: [['Přečíst čárový kód', 'Naskenujte kód z obrázku nebo kamery.', '/cs/decoder'], ['Vytvořit EAN-13', 'Ověřte kontrolní číslici a exportujte PNG nebo SVG.', '/cs/ean-13/'], ['Vytvořit skladový Code 128', 'Zakódujte SKU, majetek nebo umístění.', '/cs/code-128/']] },
+  uk: { heading: 'Що потрібно зробити?', lead: 'Відкрийте потрібний інструмент. Усі операції виконуються у браузері.', cards: [['Прочитати штрихкод', 'Скануйте код із зображення або камери.', '/uk/decoder'], ['Створити EAN-13', 'Перевірте контрольну цифру та експортуйте PNG або SVG.', '/uk/ean-13/'], ['Створити складський Code 128', 'Закодуйте SKU, актив або місце.', '/uk/code-128/']] },
+};
+
+function addLandingIntentSection(html, lang) {
+  const content = landingIntentContent[lang];
+  const section = `<section class="search-intent" aria-labelledby="search-intent-title">
+    <div class="search-intent__inner"><h2 id="search-intent-title">${content.heading}</h2><p>${content.lead}</p>
+    <div class="search-intent__grid">${content.cards.map(([title, description, href]) => `<a class="search-intent__card" href="${href}"><strong>${title}</strong><span>${description}</span></a>`).join('')}</div></div>
+  </section>`;
+  return html.replace('</main>', `${section}\n        </main>`);
+}
+
 for (const lang of LANGS) {
   const landingPath = lang === 'en' ? path.join(OUT, 'index.html') : path.join(OUT, lang, 'index.html');
   const prefix = lang === 'en' ? '' : '../';
@@ -1081,6 +1117,7 @@ for (const lang of LANGS) {
   html = wrappedQr.test(html)
     ? html.replace(wrappedQr, `$1${qrLink}$2`)
     : html.replace(bareQr, `<div class="popular-card-wrap">$1${qrLink}</div>`);
+  html = addLandingIntentSection(html, lang);
   await writeFile(
     landingPath,
     html.replace(new RegExp(`${prefix.replaceAll('.', '\\.') }styles\\.css\\?v=[a-f0-9]+`, 'g'), `${prefix}landing.css?v=${landingCssVersion}`),

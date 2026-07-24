@@ -61,3 +61,15 @@ test('Localized decoder controls do not overlap the mobile heading', async ({ pa
   expect(heading).not.toBeNull();
   expect(heading.y).toBeGreaterThanOrEqual(language.y + language.height + 8);
 });
+
+test('Italian decoder answers search-intent questions with matching structured data', async ({ page }) => {
+  await page.goto('/it/decoder');
+  await expect(page.locator('.decoder-faq')).toHaveCount(1);
+  await expect(page.locator('.decoder-faq details')).toHaveCount(4);
+
+  const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+  const data = blocks.map(JSON.parse);
+  const faq = data.find((item) => item['@type'] === 'FAQPage');
+  expect(faq?.mainEntity).toHaveLength(4);
+  expect(JSON.stringify(faq)).toContain('leggere un codice a barre da una foto');
+});
