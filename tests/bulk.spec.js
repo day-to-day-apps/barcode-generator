@@ -59,6 +59,26 @@ test('detects tab-separated CSV without counting delimiters inside quoted fields
   await expect(page.locator('#bulk-status')).toContainText('1 label');
 });
 
+test('maps headerless CSV in the documented table column order', async ({ page }) => {
+  await page.goto('/bulk-barcode-generator');
+  await page.locator('#has-header').uncheck();
+  const csv = 'SKU-002,CODE128,Storage box,"Blue, reinforced",12.50 PLN,3';
+  await page.locator('#csv-file').setInputFiles({
+    name: 'headerless-products.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from(csv, 'utf8'),
+  });
+
+  await expect(page.locator('#bulk-rows tr')).toHaveCount(1);
+  await expect(page.locator('#bulk-rows [data-field=value]')).toHaveValue('SKU-002');
+  await expect(page.locator('#bulk-rows [data-field=code_type]')).toHaveValue('CODE128');
+  await expect(page.locator('#bulk-rows [data-field=name]')).toHaveValue('Storage box');
+  await expect(page.locator('#bulk-rows [data-field=description]')).toHaveValue('Blue, reinforced');
+  await expect(page.locator('#bulk-rows [data-field=price]')).toHaveValue('12.50 PLN');
+  await expect(page.locator('#bulk-rows [data-field=copies]')).toHaveValue('3');
+  await expect(page.locator('#bulk-summary')).toContainText('3 labels');
+});
+
 test('rejects malformed CSV without replacing the current rows', async ({ page }) => {
   await page.goto('/bulk-barcode-generator');
   await page.locator('#bulk-rows [data-field=value]').fill('KEEP-ME');

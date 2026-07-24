@@ -99,11 +99,11 @@ function mapRow(row, headerMap) {
   if (!headerMap) {
     return {
       value: get(0),
-      name: get(1) || null,
-      price: get(2) || null,
+      code_type: get(1) || 'CODE128',
+      name: get(2) || null,
       description: get(3) || null,
-      copies: parseCopies(get(4)),
-      code_type: get(5) || 'CODE128',
+      price: get(4) || null,
+      copies: parseCopies(get(5)),
     };
   }
   const value = get(headerMap.value);
