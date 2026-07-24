@@ -4692,6 +4692,7 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
     font-size: 13px;
     font-weight: 600;
     color: var(--text-secondary);
+    opacity: 1;
     cursor: pointer;
     transition: background var(--transition), color var(--transition), box-shadow var(--transition);
 }
@@ -4956,6 +4957,16 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
     .appearance-segments { width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
+.checkbox-row a {
+    color: #4338ca;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+
+[data-theme="dark"] .checkbox-row a {
+    color: #c7d2fe;
+}
+
 /* ===== Password show/hide toggle ===== */
 .password-field { position: relative; display: block; }
 .password-field input { width: 100%; box-sizing: border-box; padding-right: 44px; }
@@ -5077,6 +5088,11 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
 
 [data-theme="dark"] .animated-header nav.app-nav a {
     color: var(--text);
+}
+[data-theme="dark"] .animated-header nav.app-nav .app-nav__cta {
+    background: #4338ca;
+    border-color: #4338ca;
+    color: #ffffff;
 }
 [data-theme="dark"] .animated-header nav.app-nav a:hover {
     background: rgba(124, 58, 237, 0.18);

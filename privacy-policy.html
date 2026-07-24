@@ -25,8 +25,17 @@
   <h2>1. Controller and contact</h2><p>Barcode Generator is operated by Day to Day Apps. Privacy enquiries can be sent to <strong>daytodayapps.contact@gmail.com</strong>.</p>
   <h2>2. Barcode generation</h2><p>Basic barcode generation, visual settings and file export run locally in your browser. Entered barcode values are not sent to our server merely to generate an image.</p>
   <h2>3. Accounts and Supabase</h2><p>If you create an account, Supabase processes your email address, authentication data, saved barcodes, templates, printer profiles and print jobs. These data are used to provide account features and are not sold.</p>
-  <h2>4. Browser storage</h2><p>We use essential local storage for theme, consent, pending saves and decoder scan history. The decoder history remains in your browser unless you export it.</p>
-  <h2>5. Analytics and advertising</h2><p>Google Analytics and Google AdSense are loaded only where permitted and after the required consent. Advertising remains disabled until valid AdSense configuration is available. You can change your consent by clearing site data in your browser.</p>
+  <h2>4. Browser storage</h2>
+  <p>We use essential browser storage for settings and workflows that you start. It is not used to sell your barcode data.</p>
+  <ul>
+    <li><code>barcode-theme</code> stores your light or dark theme preference.</li>
+    <li><code>decoder.scanMap.v1</code> stores up to 1,000 decoder history entries locally in your browser.</li>
+    <li><code>barcode-cookie-consent</code> stores your analytics and advertising choice.</li>
+    <li><code>bc_pending_code</code> is created only when you choose to save a barcode while signed out. It keeps the barcode and its settings for no more than 24 hours so the save can finish after you sign in.</li>
+  </ul>
+  <h2>5. Analytics and advertising</h2>
+  <p>Google Analytics and Google AdSense are loaded only where permitted and after the required consent. Advertising remains disabled until valid AdSense configuration is available.</p>
+  <p><button type="button" class="cookie-settings-link">Privacy choices</button></p>
   <h2>6. Retention and your rights</h2><p>Account data are retained while the account exists. You can export your data, update your email or password, and permanently delete the account from the account dashboard. You may also request access, correction or deletion by email.</p>
   <h2>7. Service providers</h2><p>We use Cloudflare for hosting and security, Supabase for authentication and database storage, and Google for consented analytics or advertising. Each provider may process technical information under its own privacy terms.</p>
 </main><script defer src="/analytics.js"></script></body></html>

@@ -59,6 +59,14 @@ function clearPendingCookie() {
   document.cookie = `${PENDING_COOKIE}=; path=/; max-age=0; SameSite=Strict`;
 }
 
+function hasPersistedSessionHint() {
+  try {
+    return Boolean(localStorage.getItem('bg.auth'));
+  } catch {
+    return false;
+  }
+}
+
 function t(key) {
   const lang = document.documentElement.lang || 'en';
   const dict = (window.BARCODE_I18N || {})[lang] || (window.BARCODE_I18N || {}).en || {};
@@ -288,6 +296,16 @@ function collectSettings() {
 
 async function saveCurrentBarcode(btn) {
   if (state.saving) return;
+  if (!state.session?.user && !hasPersistedSessionHint()) {
+    const pending = readCurrentBarcode();
+    if (pending) {
+      writePendingCookie({ ...pending, ts: Date.now() });
+      announce(t('pendingCodePrompt'));
+    }
+    window.location.href = `${ROUTES.account}#register`;
+    return;
+  }
+
   const sb = await getSupabase();
   if (sb && !state.session?.user) {
     state.session = await getSession();
@@ -393,9 +411,7 @@ async function init() {
 
   // Anonymous visitors do not need the Supabase SDK. Avoid downloading and
   // evaluating it on the critical path unless a persisted session exists.
-  let hasPersistedSession = true;
-  try { hasPersistedSession = Boolean(localStorage.getItem('bg.auth')); } catch (_) { /* keep compatibility */ }
-  if (!hasPersistedSession) return;
+  if (!hasPersistedSessionHint()) return;
 
   if ('requestIdleCallback' in window) {
     window.requestIdleCallback(() => hydrateSession(), { timeout: 1500 });

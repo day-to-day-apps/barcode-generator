@@ -501,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
     syncQrColorMode();
 
     // ===== Popular Gallery wiring =====
-    document.querySelectorAll('.popular-card').forEach(card => {
+    document.querySelectorAll('.popular-card[data-format]').forEach(card => {
         card.addEventListener('click', () => {
             const fmt = card.dataset.format;
             if (!fmt) return;
@@ -509,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const prevY = window.scrollY;
             const prevX = window.scrollX;
             barcodeType.value = fmt;
-            document.querySelectorAll('.popular-card').forEach(c => c.setAttribute('aria-pressed', c === card ? 'true' : 'false'));
+            document.querySelectorAll('.popular-card[data-format]').forEach(c => c.setAttribute('aria-pressed', c === card ? 'true' : 'false'));
             barcodeType.dispatchEvent(new Event('change'));
             barcodeText.focus({ preventScroll: true });
             requestAnimationFrame(() => {

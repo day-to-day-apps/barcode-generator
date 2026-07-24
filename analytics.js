@@ -292,19 +292,27 @@
     }
 
     function installPrivacyChoicesLink() {
-        if (!hasGoogleFeaturesConfigured() || document.querySelector('.cookie-settings-link')) return;
+        if (!hasGoogleFeaturesConfigured()) return;
+
+        const bindButton = function(button) {
+            if (button.dataset.cookieSettingsBound === 'true') return;
+            button.dataset.cookieSettingsBound = 'true';
+            button.addEventListener('click', function() {
+                showConsentBanner(true);
+            });
+        };
+
+        document.querySelectorAll('.cookie-settings-link').forEach(bindButton);
 
         const footerLinks = document.querySelector('.footer-links');
-        if (!footerLinks) return;
+        if (!footerLinks || footerLinks.querySelector('.cookie-settings-link')) return;
 
         const separator = document.createTextNode(' \u00b7 ');
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'cookie-settings-link';
         button.textContent = copy().choices;
-        button.addEventListener('click', function() {
-            showConsentBanner(true);
-        });
+        bindButton(button);
 
         footerLinks.appendChild(separator);
         footerLinks.appendChild(button);

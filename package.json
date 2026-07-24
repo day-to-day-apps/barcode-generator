@@ -9,7 +9,7 @@
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
-    "test:comprehensive": "playwright test --project=tester-pl-desktop --project=tester-pl-mobile --project=tester-en-desktop --project=tester-en-mobile",
+    "test:comprehensive": "playwright test --project=tester-pl-desktop --project=tester-pl-mobile --project=tester-en-desktop --project=tester-en-mobile --workers=2",
     "test:review": "node tests/reviewer/eval.mjs",
     "test:full": "npm run test:comprehensive && npm run test:review",
     "report": "playwright show-report",

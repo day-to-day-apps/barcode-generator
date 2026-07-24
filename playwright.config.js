@@ -30,12 +30,12 @@ export default defineConfig({
     {
       name: 'tester-en-desktop',
       testDir: './tests/comprehensive',
-      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, locale: 'en-US', baseURL: 'http://127.0.0.1:8765/en/' },
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, locale: 'en-US', baseURL: 'http://127.0.0.1:8765/' },
     },
     {
       name: 'tester-en-mobile',
       testDir: './tests/comprehensive',
-      use: { ...devices['Pixel 5'], viewport: { width: 390, height: 844 }, locale: 'en-US', baseURL: 'http://127.0.0.1:8765/en/' },
+      use: { ...devices['Pixel 5'], viewport: { width: 390, height: 844 }, locale: 'en-US', baseURL: 'http://127.0.0.1:8765/' },
     },
   ],
   globalSetup: './tests/comprehensive/_helpers/global-setup.js',

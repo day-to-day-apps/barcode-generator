@@ -49,4 +49,23 @@ test.describe('Consent banner', () => {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
     expect(overflow).toBe(false);
   });
+
+  for (const [path, label, message] of [
+    ['/privacy-policy', 'Privacy choices', 'This site uses cookies'],
+    ['/pl/polityka-prywatnosci', 'Ustawienia prywatności', 'Ta strona używa plików cookie'],
+  ]) {
+    test(`${path} reopens consent choices without clearing browser data`, async ({ page }) => {
+      await page.goto(path);
+      await page.locator('.cookie-reject').click();
+      await expect(page.locator('#cookie-banner')).toBeHidden();
+
+      const settings = page.getByRole('button', { name: label });
+      await expect(settings).toBeVisible();
+      await settings.click();
+
+      await expect(page.locator('#cookie-banner')).toBeVisible();
+      await expect(page.locator('#cookie-consent-description')).toContainText(message);
+      await expect(page.locator('.cookie-accept')).toBeFocused();
+    });
+  }
 });

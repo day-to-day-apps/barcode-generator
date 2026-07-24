@@ -8,8 +8,7 @@ const ARTIFACTS_ROOT = path.resolve(process.cwd(), 'tests', 'artifacts');
 
 function detectLang(baseURL = '') {
   if (baseURL.includes('/pl/')) return 'pl';
-  if (baseURL.includes('/en/')) return 'en';
-  return 'unknown';
+  return 'en';
 }
 
 function detectViewport(viewport) {

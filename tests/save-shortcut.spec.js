@@ -4,6 +4,10 @@ import { test, expect } from '@playwright/test';
 const SDK_URL = /cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\/\+esm/;
 
 test('Ctrl+S keeps an anonymous barcode pending and opens registration', async ({ page }) => {
+  let sdkRequests = 0;
+  page.on('request', (request) => {
+    if (SDK_URL.test(request.url())) sdkRequests += 1;
+  });
   await page.goto('/');
   const save = page.locator('.btn-save-code');
   await expect(save).toHaveAttribute('aria-keyshortcuts', 'Control+S Meta+S');
@@ -16,6 +20,7 @@ test('Ctrl+S keeps an anonymous barcode pending and opens registration', async (
   const cookie = pending.find((entry) => entry.name === 'bc_pending_code');
   expect(cookie).toBeTruthy();
   expect(JSON.parse(decodeURIComponent(cookie?.value || '')).value).toBe('SHORTCUT-GUEST-2026');
+  expect(sdkRequests, 'anonymous saves must not wait for the Supabase SDK').toBe(0);
 });
 
 test('Ctrl+S saves the current barcode for an authenticated user', async ({ page }) => {
