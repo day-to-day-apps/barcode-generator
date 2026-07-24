@@ -43,6 +43,45 @@ test('imports semicolon CSV and creates a readable PDF and SVG ZIP', async ({ pa
   expect(Object.keys(zip.files).filter((name) => name.endsWith('.svg'))).toHaveLength(3);
 });
 
+test('detects tab-separated CSV without counting delimiters inside quoted fields', async ({ page }) => {
+  await page.goto('/bulk-barcode-generator');
+  const csv = '\uFEFFvalue\ttype\tdescription\nSKU-001\tCODE128\t"Blue, large, boxed, 20; cm | fragile"';
+  await page.locator('#csv-file').setInputFiles({
+    name: 'quoted-products.tsv.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from(csv, 'utf8'),
+  });
+
+  await expect(page.locator('#bulk-rows tr')).toHaveCount(1);
+  await expect(page.locator('#bulk-rows [data-field=value]')).toHaveValue('SKU-001');
+  await expect(page.locator('#bulk-rows [data-field=code_type]')).toHaveValue('CODE128');
+  await expect(page.locator('#bulk-rows [data-field=description]')).toHaveValue('Blue, large, boxed, 20; cm | fragile');
+  await expect(page.locator('#bulk-status')).toContainText('1 label');
+});
+
+test('rejects malformed CSV without replacing the current rows', async ({ page }) => {
+  await page.goto('/bulk-barcode-generator');
+  await page.locator('#bulk-rows [data-field=value]').fill('KEEP-ME');
+  await page.locator('#csv-file').setInputFiles({
+    name: 'malformed.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from('value,type\n"BROKEN,CODE128', 'utf8'),
+  });
+
+  await expect(page.locator('#bulk-status')).toHaveText('The CSV file contains an unterminated quoted field.');
+  await expect(page.locator('#bulk-status')).toHaveClass(/is-error/);
+  await expect(page.locator('#bulk-rows tr')).toHaveCount(1);
+  await expect(page.locator('#bulk-rows [data-field=value]')).toHaveValue('KEEP-ME');
+
+  await page.goto('/pl/generator-kodow-z-csv');
+  await page.locator('#csv-file').setInputFiles({
+    name: 'uszkodzony.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from('value,type\n"BROKEN,CODE128', 'utf8'),
+  });
+  await expect(page.locator('#bulk-status')).toHaveText('Plik CSV zawiera niedomknięte pole w cudzysłowie.');
+});
+
 test('exports the documented L7163, 5163 and 100 x 50 mm formats at physical size', async ({ page }) => {
   await page.goto('/bulk-barcode-generator');
   await page.locator('#bulk-rows [data-field=value]').fill('BOX-100');
