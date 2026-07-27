@@ -7,6 +7,9 @@ const ROOT = process.cwd();
 const HISTORICAL_FILES = new Set([
   'SEO-INDEXING-FIX-2026-07-07.md',
 ]);
+const TECHNICAL_HOST_CHECK_FILES = new Set([
+  'scripts/check-production.mjs',
+]);
 const SKIP_DIRS = new Set([
   '.git',
   'node_modules',
@@ -61,6 +64,7 @@ test.describe('Domain and ads configuration guardrails', () => {
       const rel = relative(file);
       if (rel === 'tests/domain-ads-config.spec.js') continue;
       if (HISTORICAL_FILES.has(rel)) continue;
+      if (TECHNICAL_HOST_CHECK_FILES.has(rel)) continue;
 
       const text = fs.readFileSync(file, 'utf8');
       for (const pattern of legacyPatterns) {
@@ -69,6 +73,21 @@ test.describe('Domain and ads configuration guardrails', () => {
     }
 
     expect(offenders).toEqual([]);
+  });
+
+  test('production monitor verifies the exact Pages technical host redirect', () => {
+    const monitor = fs.readFileSync(path.join(ROOT, 'scripts/check-production.mjs'), 'utf8');
+
+    expect(monitor).toContain(
+      "const technicalBase = 'https://barcode-generator-5ee.pages.dev';",
+    );
+    expect(monitor).toContain("const redirectPath = '/code-128/?monitor=1';");
+    expect(monitor).toContain("assert.equal(technicalResponse.status, 301");
+    expect(monitor).toContain(
+      "assert.equal(technicalResponse.headers.get('location'), `${base}${redirectPath}`",
+    );
+    expect(monitor.match(/pages\.dev/gi)).toHaveLength(1);
+    expect(monitor).not.toMatch(/workers\.dev/i);
   });
 
   test('_redirects leaves canonical host enforcement to Cloudflare Bulk Redirects', () => {

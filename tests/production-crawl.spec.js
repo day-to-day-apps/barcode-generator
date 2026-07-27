@@ -7,7 +7,19 @@ const LANGS = ['', 'pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cs', 'uk'];
 const LOCALES = ['en', 'pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cs', 'uk'];
 const FORMATS = ['ean-13', 'code-128', 'upc-a', 'code-39', 'itf-14', 'codabar', 'qr-code'];
 
+async function runWithConcurrency(items, limit, worker) {
+  let cursor = 0;
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (cursor < items.length) {
+      const item = items[cursor];
+      cursor += 1;
+      await worker(item);
+    }
+  }));
+}
+
 test('sitemap contains only 112 direct, indexable canonical URLs', async ({ request }) => {
+  test.setTimeout(120_000);
   const xml = await (await request.get('/sitemap.xml')).text();
   const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
   const internalLinks = new Set();
@@ -16,7 +28,7 @@ test('sitemap contains only 112 direct, indexable canonical URLs', async ({ requ
     expect(urls).toContain(`${PROD}${legal}`);
   }
   expect(xml).not.toMatch(/node_modules|playwright|tests\/|supabase\/|konto|wydruk|szablony|drukarki/);
-  for (const canonical of urls) {
+  await runWithConcurrency(urls, 8, async (canonical) => {
     const path = new URL(canonical).pathname;
     const response = await request.get(path, { maxRedirects: 0 });
     expect(response.status(), path).toBe(200);
@@ -49,11 +61,11 @@ test('sitemap contains only 112 direct, indexable canonical URLs', async ({ requ
     for (const block of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
       expect(() => JSON.parse(block[1]), `${path} has invalid JSON-LD`).not.toThrow();
     }
-  }
-  for (const path of internalLinks) {
+  });
+  await runWithConcurrency([...internalLinks], 8, async (path) => {
     const response = await request.get(path, { maxRedirects: 0 });
     expect(response.status(), `${path} must be a direct internal destination`).toBe(200);
-  }
+  });
 });
 
 test('all localized private routes resolve without redirects or 404s', async ({ request }) => {
