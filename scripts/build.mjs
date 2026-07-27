@@ -7,6 +7,7 @@ import { PurgeCSS } from 'purgecss';
 import CleanCSS from 'clean-css';
 import { minify } from 'terser';
 import { PNG } from 'pngjs';
+import bwipjs from 'bwip-js';
 import { qrPageHtml } from './qr-pages.mjs';
 import { ADDITIONAL_GUIDE_PAGES } from './additional-guides.mjs';
 
@@ -901,6 +902,36 @@ await rm(OUT, { recursive: true, force: true });
 await mkdir(OUT, { recursive: true });
 for (const asset of ROOT_ASSETS) await copyFile(asset);
 await cp(path.join(ROOT, 'flags'), path.join(OUT, 'flags'), { recursive: true });
+const previewConfigs = {
+  ean13: { bcid: 'ean13', text: '5901234123457' },
+  ean8: { bcid: 'ean8', text: '96385074' },
+  upc: { bcid: 'upca', text: '042100005264' },
+  code128: { bcid: 'code128', text: 'CODE-128' },
+  code39: { bcid: 'code39', text: 'CODE 39' },
+  itf14: { bcid: 'itf14', text: '9824988021500' },
+  codabar: { bcid: 'rationalizedCodabar', text: 'A12345B' },
+  qr: { bcid: 'qrcode', text: `${BASE}/` },
+};
+await mkdir(path.join(OUT, 'previews'), { recursive: true });
+for (const [name, config] of Object.entries(previewConfigs)) {
+  const isQr = config.bcid === 'qrcode';
+  const options = {
+    ...config,
+    scale: isQr ? 3 : 2,
+    padding: isQr ? 2 : 1,
+    backgroundcolor: 'FFFFFF',
+    barcolor: '0F172A',
+    textcolor: '0F172A',
+  };
+  if (!isQr) Object.assign(options, {
+    height: 10,
+    includetext: true,
+    textxalign: 'center',
+    textsize: 9,
+  });
+  const svg = bwipjs.toSVG(options);
+  await writeFile(path.join(OUT, 'previews', `${name}.svg`), svg, 'utf8');
+}
 await writeFile(path.join(OUT, 'pwa-icon-192.png'), pwaIcon(192));
 await writeFile(path.join(OUT, 'pwa-icon-512.png'), pwaIcon(512));
 await mkdir(path.join(OUT, 'vendor'), { recursive: true });
@@ -1144,6 +1175,7 @@ const precache = [
   ...GUIDE_PAGES.flatMap((group) => [`/${group.en.route}`, `/pl/${group.pl.route}`]),
   '/qr-code/', '/pl/qr-code/',
   '/manifest.webmanifest', '/pwa-icon-192.png', '/pwa-icon-512.png', '/favicon.svg',
+  ...Object.keys(previewConfigs).map((name) => `/previews/${name}.svg`),
   '/landing.css', '/decoder.css', '/ean13-inline.css', '/format-inline.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
   '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/decoder-i18n.js', '/ean13-inline.js', '/format-inline.js', '/i18n.js', '/label-renderer.js', '/analytics.js', '/appearance.js',
   '/pwa-register.js', '/auth-ui.js', '/supabase-client.js', '/supabase-config.js', '/db-codes.js',

@@ -23,7 +23,7 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
       expect(formats).toEqual(['EAN13', 'EAN8', 'UPC', 'CODE128', 'CODE39', 'QR']);
       for (const fmt of formats) {
         const card = page.locator(`.popular-card[data-format="${fmt}"]`);
-        await expect(card.locator('.popular-card__preview').locator('svg, canvas').first()).toBeVisible();
+        await expect(card.locator('.popular-card__preview img')).toBeVisible();
       }
     });
 
@@ -56,10 +56,10 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
       await expect(qrPreview.locator('canvas, svg').first()).toBeVisible({ timeout: 5000 });
     });
 
-    test(`[${code}] popular cards are visually distinct (border accents + displayValue text)`, async ({ page }) => {
+    test(`[${code}] popular cards are visually distinct and use compact image previews`, async ({ page }) => {
       await page.goto(path);
-      await expect(page.locator('.popular-card[data-format="EAN13"] svg')).toBeVisible();
-      // Cards must have non-default left-border colour, and each linear card must show <text> (displayValue:true)
+      await expect(page.locator('.popular-card[data-format="EAN13"] img')).toBeVisible();
+      // Cards must have non-default left-border colours.
       const borderColors = await page.locator('.popular-card[data-format]').evaluateAll((els) =>
         els.map((el) => ({
           fmt: el.getAttribute('data-format'),
@@ -69,14 +69,29 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
       // All six must have a colour set, and at least 3 distinct values across the row
       const unique = new Set(borderColors.map((b) => b.color));
       expect(unique.size).toBeGreaterThanOrEqual(3);
-      // Each linear card SVG must contain a <text> node (proves displayValue:true)
+
+      // Build-time thumbnails avoid hundreds of inline SVG nodes while retaining visible bars and text.
+      const sources = new Set();
       for (const fmt of ['EAN13', 'EAN8', 'UPC', 'CODE128', 'CODE39']) {
-        const hasText = await page
-          .locator(`.popular-card[data-format="${fmt}"] svg text`)
-          .first()
-          .count();
-        expect(hasText, `${fmt} preview should render <text>`).toBeGreaterThan(0);
+        const preview = page.locator(`.popular-card[data-format="${fmt}"] img`);
+        await expect(preview).toBeVisible();
+        const image = await preview.evaluate((element) => {
+          return {
+            source: element.getAttribute('src'),
+            naturalWidth: element.naturalWidth,
+            naturalHeight: element.naturalHeight,
+          };
+        });
+        expect(image.source).toMatch(/^\/previews\/[a-z0-9]+\.svg$/);
+        expect(image.naturalWidth).toBeGreaterThan(40);
+        expect(image.naturalHeight).toBeGreaterThan(30);
+        sources.add(image.source);
       }
+      expect(sources.size).toBe(5);
+
+      await expect(page.locator('.popular-card[data-format="QR"] img')).toBeVisible();
+      await expect(page.locator('.popular-card__preview svg')).toHaveCount(0);
+      expect(await page.locator('*').count()).toBeLessThan(900);
     });
 
     test(`[${code}] main QR preview fills panel (>= 280px)`, async ({ page }) => {
@@ -93,5 +108,15 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
     await page.goto('/');
     const og = await page.locator('meta[property="og:description"]').getAttribute('content');
     expect(og).toContain('20 standards + QR Code');
+  });
+
+  test('[en] compact gallery and guide link fit a 360px viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.goto('/');
+    const gallery = page.locator('.popular-section[aria-labelledby="popular-title"]');
+    await gallery.scrollIntoViewIfNeeded();
+    await expect(gallery.locator('.popular-card__preview img')).toHaveCount(6);
+    await expect(page.locator('.popular-card__more')).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(360);
   });
 });

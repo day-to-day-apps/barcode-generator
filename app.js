@@ -383,53 +383,31 @@ document.addEventListener('DOMContentLoaded', () => {
     function isQR() { return barcodeType.value === 'QR'; }
 
     function renderPopularPreviews() {
-        // Per-format presets so each card visually reflects its actual standard:
-        // different sample value lengths, bar widths, heights and visible
-        // human-readable text make the 6 cards immediately distinguishable.
-        const presets = {
-            EAN13:   { value: '5901234123457',  width: 1.0, height: 38, fontSize: 9,  textMargin: 1, margin: 4 },
-            EAN8:    { value: '96385074',       width: 1.4, height: 38, fontSize: 9,  textMargin: 1, margin: 4 },
-            UPC:     { value: '042100005264',   width: 1.1, height: 38, fontSize: 9,  textMargin: 1, margin: 4 },
-            CODE128: { value: 'CODE-128',       width: 1.6, height: 40, fontSize: 10, textMargin: 1, margin: 2 },
-            CODE39:  { value: 'CODE 39',        width: 1.4, height: 40, fontSize: 10, textMargin: 1, margin: 2 },
-            ITF14:   { format: 'ITF14',   value: '98249880215005', width: 1.2, height: 38, fontSize: 9, textMargin: 1, margin: 4 },
-            CODABAR: { format: 'codabar', value: 'A12345B',        width: 1.6, height: 40, fontSize: 10, textMargin: 1, margin: 2 },
-            QR:      { value: 'https://barcode-generator.daytodayapps.com/' }
+        // Preview assets are rendered once at build time. Keeping each thumbnail
+        // as one image avoids adding hundreds of barcode rectangles to the DOM.
+        const assets = {
+            EAN13: '/previews/ean13.svg',
+            EAN8: '/previews/ean8.svg',
+            UPC: '/previews/upc.svg',
+            CODE128: '/previews/code128.svg',
+            CODE39: '/previews/code39.svg',
+            ITF14: '/previews/itf14.svg',
+            CODABAR: '/previews/codabar.svg',
+            QR: '/previews/qr.svg'
         };
-        const SVG_NS = 'http://www.w3.org/2000/svg';
-        const monoFont = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
         document.querySelectorAll('.popular-card__preview').forEach(el => {
             const fmt = el.getAttribute('data-preview');
-            const cfg = presets[fmt];
-            if (!cfg) return;
+            const source = assets[fmt];
+            if (!source) return;
             el.innerHTML = '';
-            if (fmt === 'QR') {
-                if (typeof window.qrcode === 'undefined') return;
-                try {
-                    const qr = window.qrcode(0, 'M');
-                    qr.addData(cfg.value);
-                    qr.make();
-                    el.innerHTML = buildQrSvgString(qr, { fg: '#0f172a', bg: '#ffffff', margin: 2, pxSize: 80 });
-                } catch (_) { /* preview only */ }
-                return;
-            }
-            if (typeof JsBarcode === 'undefined') return;
-            try {
-                const svg = document.createElementNS(SVG_NS, 'svg');
-                el.appendChild(svg);
-                JsBarcode(svg, cfg.value, {
-                    format: cfg.format || fmt,
-                    width: cfg.width,
-                    height: cfg.height,
-                    displayValue: true,
-                    fontSize: cfg.fontSize,
-                    textMargin: cfg.textMargin,
-                    font: monoFont,
-                    margin: cfg.margin,
-                    background: '#ffffff',
-                    lineColor: '#0f172a'
-                });
-            } catch (_) { /* preview only */ }
+            const image = new Image();
+            image.alt = '';
+            image.loading = el.closest('.popular-card[data-format]') ? 'eager' : 'lazy';
+            image.decoding = 'async';
+            image.width = fmt === 'QR' ? 80 : 240;
+            image.height = fmt === 'QR' ? 80 : 72;
+            image.src = source;
+            el.appendChild(image);
         });
     }
 
