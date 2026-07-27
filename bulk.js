@@ -180,7 +180,12 @@ async function runExport(kind) {
       await loadVendor('JsBarcode', 'jsbarcode.min.js');
       if (selected.some((item) => TWO_D_TYPES.has(item.code_type))) await loadVendor('bwipjs', 'bwip-js-min.js');
     }
-    if (kind === 'pdf') await loadVendor('PDFLib', 'pdf-lib.min.js');
+    if (kind === 'pdf') {
+      await Promise.all([
+        loadVendor('PDFLib', 'pdf-lib.min.js'),
+        loadVendor('fontkit', 'fontkit.min.js'),
+      ]);
+    }
     if (kind.startsWith('zip-')) await loadVendor('JSZip', 'jszip.min.js');
     if (kind === 'pdf') {
       const result = await createBulkPdf(selected, $('page-preset').value, { maxLabels: limits().labels, signal: controller.signal, onProgress });

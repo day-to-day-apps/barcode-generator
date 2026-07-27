@@ -905,6 +905,8 @@ await writeFile(path.join(OUT, 'pwa-icon-192.png'), pwaIcon(192));
 await writeFile(path.join(OUT, 'pwa-icon-512.png'), pwaIcon(512));
 await mkdir(path.join(OUT, 'vendor'), { recursive: true });
 await cp(path.join(ROOT, 'node_modules/pdf-lib/dist/pdf-lib.min.js'), path.join(OUT, 'vendor/pdf-lib.min.js'));
+await cp(path.join(ROOT, 'node_modules/@pdf-lib/fontkit/dist/fontkit.umd.min.js'), path.join(OUT, 'vendor/fontkit.min.js'));
+await cp(path.join(ROOT, 'assets/fonts/NotoSans-Regular.ttf'), path.join(OUT, 'vendor/NotoSans-Regular.ttf'));
 await cp(path.join(ROOT, 'node_modules/jszip/dist/jszip.min.js'), path.join(OUT, 'vendor/jszip.min.js'));
 await cp(path.join(ROOT, 'node_modules/jsbarcode/dist/JsBarcode.all.min.js'), path.join(OUT, 'vendor/jsbarcode.min.js'));
 await cp(path.join(ROOT, 'node_modules/qrcode-generator/qrcode.js'), path.join(OUT, 'vendor/qrcode-generator.js'));
@@ -917,6 +919,8 @@ await writeFile(path.join(OUT, 'vendor/barcode-detector-polyfill.js'), `${barcod
 await mkdir(path.join(OUT, 'licenses'), { recursive: true });
 await cp(path.join(ROOT, 'node_modules/@undecaf/zbar-wasm/LICENSE'), path.join(OUT, 'licenses/zbar-wasm-LICENSE.txt'));
 await cp(path.join(ROOT, 'node_modules/@undecaf/barcode-detector-polyfill/LICENSE'), path.join(OUT, 'licenses/barcode-detector-polyfill-LICENSE.txt'));
+await cp(path.join(ROOT, 'node_modules/pdf-lib/LICENSE.md'), path.join(OUT, 'licenses/fontkit-LICENSE.txt'));
+await cp(path.join(ROOT, 'assets/fonts/OFL.txt'), path.join(OUT, 'licenses/noto-sans-OFL.txt'));
 await writeFile(path.join(OUT, 'bulk-barcode-generator.html'), normaliseHtml(await readFile(path.join(ROOT, 'bulk.html'), 'utf8')), 'utf8');
 await mkdir(path.join(OUT, 'pl'), { recursive: true });
 await writeFile(path.join(OUT, 'pl', 'generator-kodow-z-csv.html'), normaliseHtml(await readFile(path.join(ROOT, 'bulk-pl.html'), 'utf8')), 'utf8');
@@ -1147,7 +1151,8 @@ const precache = [
   '/db-jobs.js', '/gs1.js', '/gs1-generator.js', '/two-d-generator.js', '/specialized-save.js',
   '/vendor/jsbarcode.min.js', '/vendor/qrcode-generator.js', '/vendor/zxing.min.js',
   '/vendor/zbar-wasm.js', '/vendor/zbar.wasm', '/vendor/barcode-detector-polyfill.js',
-  '/vendor/pdf-lib.min.js', '/vendor/jszip.min.js', '/vendor/bwip-js-min.js',
+  '/vendor/pdf-lib.min.js', '/vendor/fontkit.min.js', '/vendor/NotoSans-Regular.ttf',
+  '/vendor/jszip.min.js', '/vendor/bwip-js-min.js',
   ...FLAG_CODES.flatMap((code) => [`/flags/${code}.png`, `/flags/${code}@2x.png`]),
 ];
 const serviceWorkerTemplate = await readFile(path.join(ROOT, 'service-worker.template.js'), 'utf8');

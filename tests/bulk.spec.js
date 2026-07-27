@@ -1,6 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 import { PDFDocument } from 'pdf-lib';
+import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import JSZip from 'jszip';
 import AxeBuilder from '@axe-core/playwright';
 
@@ -41,6 +42,29 @@ test('imports semicolon CSV and creates a readable PDF and SVG ZIP', async ({ pa
   await page.getByRole('button', { name: 'SVG ZIP' }).click();
   const zip = await JSZip.loadAsync(await downloadBuffer(await zipEvent));
   expect(Object.keys(zip.files).filter((name) => name.endsWith('.svg'))).toHaveLength(3);
+});
+
+test('preserves Unicode product labels in PDF exports', async ({ page }) => {
+  await page.goto('/pl/generator-kodow-z-csv');
+  const row = page.locator('#bulk-rows tr').first();
+  const productName = '\u017b\u00f3\u0142ta \u0141\u00f3d\u017a \u2013 \u0107ma';
+  const price = '12,50 z\u0142';
+  await row.locator('[data-field=value]').fill('POLSKA-001');
+  await row.locator('[data-field=name]').fill(productName);
+  await row.locator('[data-field=price]').fill(price);
+
+  const pdfEvent = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'PDF', exact: true }).click();
+  const bytes = new Uint8Array(await downloadBuffer(await pdfEvent));
+  const loadingTask = getDocument({ data: bytes, disableWorker: true });
+  const pdf = await loadingTask.promise;
+  const content = await (await pdf.getPage(1)).getTextContent();
+  const text = content.items.map((item) => ('str' in item ? item.str : '')).join(' ');
+  await loadingTask.destroy();
+
+  expect(text).toContain(productName);
+  expect(text).toContain(price);
+  expect(text).not.toContain('?');
 });
 
 test('detects tab-separated CSV without counting delimiters inside quoted fields', async ({ page }) => {

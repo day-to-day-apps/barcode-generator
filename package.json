@@ -28,11 +28,13 @@
     "@supabase/supabase-js": "^2.110.5",
     "@zxing/library": "^0.21.3",
     "clean-css": "^5.3.3",
+    "pdfjs-dist": "^6.1.200",
     "pngjs": "^7.0.0",
     "purgecss": "^8.0.0",
     "terser": "^5.49.0"
   },
   "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
     "@undecaf/barcode-detector-polyfill": "^0.9.23",
     "bwip-js": "^4.11.2",
     "jsbarcode": "^3.11.6",

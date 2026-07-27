@@ -1,4 +1,5 @@
 const MM_TO_PT = 72 / 25.4;
+let unicodeFontPromise = null;
 
 export const BULK_PRESETS = {
   'avery-l7160-a4': { label: 'Avery L7160 - A4 (3 x 7)', pageW: 210, pageH: 297, cols: 3, rows: 7, labelW: 63.5, labelH: 38.1, marginX: 7.2, marginY: 15.1, gapX: 2.5, gapY: 0 },
@@ -120,11 +121,23 @@ function assertActive(signal) {
   if (signal?.aborted) throw new DOMException('Export cancelled', 'AbortError');
 }
 
+async function loadUnicodeFont() {
+  if (!unicodeFontPromise) {
+    unicodeFontPromise = fetch(new URL('./vendor/NotoSans-Regular.ttf', import.meta.url))
+      .then((response) => {
+        if (!response.ok) throw new Error(`Font request failed: ${response.status}`);
+        return response.arrayBuffer();
+      });
+  }
+  return unicodeFontPromise;
+}
+
 export async function createBulkPdf(items, presetId, options = {}) {
   const preset = BULK_PRESETS[presetId] || BULK_PRESETS['avery-l7160-a4'];
   const labels = expandBulkItems(items, options.maxLabels || 2000);
   const pdf = await window.PDFLib.PDFDocument.create();
-  const font = await pdf.embedFont(window.PDFLib.StandardFonts.Helvetica);
+  pdf.registerFontkit(window.fontkit);
+  const font = await pdf.embedFont(await loadUnicodeFont(), { subset: true });
   const cache = new Map();
   const perPage = preset.cols * preset.rows;
   for (let i = 0; i < labels.length; i++) {
