@@ -1,5 +1,5 @@
 import { getSupabase, getSession, onAuthStateChange } from './supabase-client.js';
-import { signUp, signIn, requestPasswordReset, signOut, validateEmail, validatePassword } from './auth-email-password.js';
+import { signUp, signIn, requestPasswordReset, signOut, validateEmail, validatePassword, resolveSafeReturnTo } from './auth-email-password.js';
 import { loadDashboardStats, clearDashboardStats } from './dashboard-stats.js';
 import { countCodes, listCodes, FREE_CODES_LIMIT } from './db-codes.js';
 import { countTemplates, listTemplates, FREE_TEMPLATES_LIMIT } from './db-templates.js';
@@ -285,8 +285,8 @@ function bindForms() {
     $('login-submit').disabled = false;
     if (error) return setStatus(friendlyError(error, T.signInFail || 'Could not sign in.'), true);
     window.trackBarcode?.('login', { method: 'email' });
-    const returnTo = new URLSearchParams(location.search).get('returnTo');
-    if (returnTo?.startsWith('/') && !returnTo.startsWith('//')) location.assign(returnTo);
+    const returnTo = resolveSafeReturnTo(new URLSearchParams(location.search).get('returnTo'));
+    if (returnTo) location.assign(returnTo);
   });
   $('register-form').addEventListener('submit', async (event) => {
     event.preventDefault();

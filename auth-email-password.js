@@ -10,6 +10,18 @@ export function validatePassword(password) {
     return typeof password === 'string' && password.length >= 8 && password.length <= 128;
 }
 
+export function resolveSafeReturnTo(value, origin = window.location.origin) {
+    if (typeof value !== 'string' || !value.startsWith('/')) return null;
+    try {
+        const trustedOrigin = new URL(origin).origin;
+        const target = new URL(value, trustedOrigin);
+        if (target.origin !== trustedOrigin || target.username || target.password) return null;
+        return `${target.pathname}${target.search}${target.hash}`;
+    } catch {
+        return null;
+    }
+}
+
 function originPath(path) {
     return window.location.origin + path;
 }
