@@ -56,7 +56,7 @@ Goal: logged-in account panel must feel finished before we point the world at it
 Scope: verify active URLs across `*.html`, `sitemap.xml`, `robots.txt`, Supabase docs, and operational docs.
 - [x] Confirm every active production URL uses `barcode-generator.daytodayapps.com`.
 - [x] BOM/mojibake guard: verify no `EF BB BF` introduced (`[System.IO.File]::ReadAllBytes()` byte check on `<!DOCTYPE`)
-- [x] active production HTML/config contains no `workers.dev` URL
+- [x] active production HTML/config contains no legacy Worker host URL
 - [x] generate the production sitemap from the public-route allowlist
 - [x] canonical/hreflang/og/jsonld point to `daytodayapps.com`
 

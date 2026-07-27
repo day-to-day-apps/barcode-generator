@@ -119,14 +119,15 @@ test.describe('Domain and ads configuration guardrails', () => {
   });
 
   test('Lighthouse profiles use isolated preview ports', () => {
-    const mobile = fs.readFileSync(path.join(ROOT, 'lighthouserc-mobile.cjs'), 'utf8');
-    const desktop = fs.readFileSync(path.join(ROOT, 'lighthouserc-desktop.cjs'), 'utf8');
+    const runner = fs.readFileSync(path.join(ROOT, 'scripts/run-lighthouse.mjs'), 'utf8');
     const previewServer = fs.readFileSync(path.join(ROOT, 'scripts/serve.mjs'), 'utf8');
 
-    expect(mobile).toContain("scripts/serve.mjs --port 8766");
-    expect(mobile).toContain('http://127.0.0.1:8766/');
-    expect(desktop).toContain("scripts/serve.mjs --port 8767");
-    expect(desktop).toContain('http://127.0.0.1:8767/');
+    expect(runner).toMatch(/mobile:[\s\S]*port: 8766/);
+    expect(runner).toMatch(/desktop:[\s\S]*port: 8767/);
+    expect(runner).toContain('const runsPerRoute = 3');
+    expect(runner).toContain("aggregation: 'median'");
+    expect(runner).toContain("'/qr-code/'");
+    expect(runner).toContain("path.join(root, '.lighthouseci', mode)");
     expect(previewServer).toContain("process.argv.indexOf('--port')");
   });
 

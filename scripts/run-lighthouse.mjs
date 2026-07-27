@@ -1,103 +1,226 @@
-import { mkdir, readFile, rm } from 'node:fs/promises';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import path from 'node:path';
+import process from 'node:process';
+import lighthouse from 'lighthouse';
+import desktopConfig from 'lighthouse/core/config/desktop-config.js';
+import * as chromeLauncher from 'chrome-launcher';
 
+const profiles = {
+  mobile: {
+    port: 8766,
+    minimums: {
+      performance: 0.85,
+      accessibility: 0.95,
+      'best-practices': 0.95,
+      seo: 0.95,
+    },
+    settings: {
+      formFactor: 'mobile',
+      screenEmulation: {
+        mobile: true,
+        width: 390,
+        height: 844,
+        deviceScaleFactor: 2.75,
+        disabled: false,
+      },
+    },
+  },
+  desktop: {
+    port: 8767,
+    minimums: {
+      performance: 0.9,
+      accessibility: 0.95,
+      'best-practices': 0.95,
+      seo: 0.95,
+    },
+    config: desktopConfig,
+  },
+};
+
+const routes = [
+  '/',
+  '/decoder',
+  '/es/ean-13/',
+  '/code-128/',
+  '/qr-code/',
+  '/bulk-barcode-generator',
+  '/pl/drukowanie-etykiet-avery',
+];
+const categories = ['performance', 'accessibility', 'best-practices', 'seo'];
+const runsPerRoute = 3;
+const maxAttemptsPerRoute = 5;
 const mode = process.argv[2];
-if (!['mobile', 'desktop'].includes(mode)) throw new Error('Usage: node scripts/run-lighthouse.mjs <mobile|desktop>');
+const profile = profiles[mode];
 
-const ROOT = process.cwd();
-const config = path.join(ROOT, `lighthouserc-${mode}.cjs`);
-
-function run(command, args, options = {}) {
-  return new Promise((resolve) => {
-    const child = spawn(command, args, { cwd: ROOT, windowsHide: true, ...options });
-    let stdout = '';
-    let stderr = '';
-    child.stdout?.on('data', (chunk) => { stdout += chunk; if (options.echo !== false) process.stdout.write(chunk); });
-    child.stderr?.on('data', (chunk) => { stderr += chunk; if (options.echo !== false) process.stderr.write(chunk); });
-    child.on('close', (code) => resolve({ code, stdout, stderr }));
-  });
+if (!profile) {
+  console.error('Usage: node scripts/run-lighthouse.mjs <mobile|desktop>');
+  process.exit(2);
 }
 
-if (process.platform !== 'win32') {
-  const cli = path.join(ROOT, 'node_modules', '@lhci', 'cli', 'src', 'cli.js');
-  const result = await run(process.execPath, [cli, 'autorun', `--config=${config}`], { stdio: ['ignore', 'pipe', 'pipe'] });
-  process.exit(result.code || 0);
+const root = process.cwd();
+const baseUrl = `http://127.0.0.1:${profile.port}`;
+const outputDir = path.join(root, '.lighthouseci', mode);
+let server;
+let chrome;
+
+function routeSlug(route) {
+  return route === '/' ? 'home' : route.slice(1).replaceAll('/', '-').replace(/-$/, '');
 }
 
-const port = mode === 'mobile' ? 8766 : 8767;
-const urls = ['/', '/decoder', '/es/ean-13/', '/code-128/', '/qr-code/', '/bulk-barcode-generator', '/pl/drukowanie-etykiet-avery'];
-const thresholds = { performance: mode === 'mobile' ? 0.85 : 0.90, accessibility: 0.95, 'best-practices': 0.95, seo: 0.95 };
-const outputDir = path.join(ROOT, '.lighthouseci', mode);
-await rm(outputDir, { recursive: true, force: true });
-await mkdir(outputDir, { recursive: true });
+function median(values) {
+  const sorted = [...values].sort((left, right) => left - right);
+  return sorted[Math.floor(sorted.length / 2)];
+}
 
-const server = spawn(process.execPath, ['scripts/serve.mjs', '--port', String(port)], {
-  cwd: ROOT,
-  windowsHide: true,
-  stdio: ['ignore', 'pipe', 'pipe'],
-});
-
-await new Promise((resolve, reject) => {
-  const timer = setTimeout(() => reject(new Error('Preview server did not start in time')), 15000);
-  server.stdout.on('data', (chunk) => {
-    if (String(chunk).includes('Production preview')) {
-      clearTimeout(timer);
-      resolve();
+async function waitForServer(url, timeoutMs = 20_000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (server.exitCode !== null) {
+      throw new Error(`Preview server exited early (${server.exitCode})`);
     }
-  });
-  server.once('exit', (code) => reject(new Error(`Preview server exited early (${code})`)));
-});
+    try {
+      const response = await fetch(url);
+      if (response.ok) return;
+    } catch {
+      // The server may still be binding its port.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  throw new Error(`Preview server did not start at ${url}`);
+}
 
-let failed = false;
+async function stopProcess(child) {
+  if (!child || child.exitCode !== null) return;
+  child.kill('SIGTERM');
+  await Promise.race([
+    new Promise((resolve) => child.once('exit', resolve)),
+    new Promise((resolve) => setTimeout(resolve, 5_000)),
+  ]);
+  if (child.exitCode === null) child.kill('SIGKILL');
+}
+
 try {
-  for (const route of urls) {
-    const slug = route === '/' ? 'home' : route.slice(1).replaceAll('/', '-');
-    const lighthouseCli = path.join(ROOT, 'node_modules', 'lighthouse', 'cli', 'index.js');
-    const validReports = [];
-    for (let attempt = 1; attempt <= 5 && validReports.length < 3; attempt++) {
-      const reportPath = path.join(outputDir, `${slug}-${attempt}.report.json`);
-      const args = [
-        lighthouseCli,
-        `http://127.0.0.1:${port}${route}`,
-        '--quiet',
-        '--output=json',
-        `--output-path=${reportPath}`,
-        '--only-categories=performance,accessibility,best-practices,seo',
-        '--chrome-flags=--headless --no-sandbox',
-      ];
-      if (mode === 'mobile') {
-        args.push('--form-factor=mobile', '--screen-emulation.mobile=true', '--screen-emulation.width=390', '--screen-emulation.height=844', '--screen-emulation.deviceScaleFactor=2.75');
-      } else {
-        args.push('--preset=desktop');
-      }
+  await rm(outputDir, { recursive: true, force: true });
+  await mkdir(outputDir, { recursive: true });
 
-      const result = await run(process.execPath, args, { echo: false });
-      let report;
-      try { report = JSON.parse(await readFile(reportPath, 'utf8')); } catch (_) { /* retry below */ }
-      const cleanupOnlyFailure = result.code !== 0 && /EPERM[\s\S]*lighthouse\./i.test(result.stderr) && report?.categories;
-      if (result.code === 0 || cleanupOnlyFailure) {
-        if (report?.categories) validReports.push(report);
-      } else {
-        console.warn(`${route}: Lighthouse attempt ${attempt} did not complete; retrying.`);
+  server = spawn(
+    process.execPath,
+    ['scripts/serve.mjs', '--port', String(profile.port)],
+    {
+      cwd: root,
+      windowsHide: true,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    },
+  );
+  server.stdout.on('data', (chunk) => process.stdout.write(chunk));
+  server.stderr.on('data', (chunk) => process.stderr.write(chunk));
+  await waitForServer(baseUrl);
+
+  chrome = await chromeLauncher.launch({
+    chromePath: process.env.CHROME_PATH || undefined,
+    chromeFlags: [
+      '--headless',
+      '--no-sandbox',
+      '--disable-gpu',
+      '--disable-dev-shm-usage',
+    ],
+  });
+
+  const routeResults = [];
+  for (const route of routes) {
+    const validRuns = [];
+    for (
+      let attempt = 1;
+      attempt <= maxAttemptsPerRoute && validRuns.length < runsPerRoute;
+      attempt += 1
+    ) {
+      try {
+        const result = await lighthouse(
+          `${baseUrl}${route}`,
+          {
+            port: chrome.port,
+            output: ['json', 'html'],
+            logLevel: 'error',
+            onlyCategories: categories,
+            ...profile.settings,
+          },
+          profile.config,
+        );
+        if (!result) throw new Error('Lighthouse returned no result');
+
+        const run = validRuns.length + 1;
+        const scores = Object.fromEntries(
+          categories.map((category) => [category, result.lhr.categories[category].score]),
+        );
+        validRuns.push({ run, attempt, scores });
+        const [jsonReport, htmlReport] = result.report;
+        const slug = routeSlug(route);
+        await Promise.all([
+          writeFile(path.join(outputDir, `${slug}-run-${run}.json`), jsonReport),
+          writeFile(path.join(outputDir, `${slug}-run-${run}.html`), htmlReport),
+        ]);
+      } catch (error) {
+        console.warn(`${route}: attempt ${attempt} failed (${error.message}); retrying.`);
       }
     }
-    if (validReports.length < 3) throw new Error(`Lighthouse produced only ${validReports.length}/3 valid reports for ${route}`);
 
-    const median = (values) => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
-    const scores = Object.fromEntries(Object.keys(thresholds).map((key) => [key, median(validReports.map((report) => report.categories[key].score))]));
-    const summary = Object.entries(scores).map(([key, value]) => `${key}=${Math.round(value * 100)}`).join(' ');
-    const performanceRuns = validReports.map((report) => Math.round(report.categories.performance.score * 100)).join('/');
-    console.log(`${route} ${summary} (performance runs: ${performanceRuns})`);
-    for (const [key, minimum] of Object.entries(thresholds)) {
-      if (scores[key] < minimum) {
-        failed = true;
-        console.error(`${route}: ${key} expected >= ${Math.round(minimum * 100)}, found ${Math.round(scores[key] * 100)}`);
-      }
+    if (validRuns.length < runsPerRoute) {
+      throw new Error(`Lighthouse produced only ${validRuns.length}/${runsPerRoute} reports for ${route}`);
     }
+
+    const scores = Object.fromEntries(
+      categories.map((category) => [
+        category,
+        median(validRuns.map((result) => result.scores[category])),
+      ]),
+    );
+    routeResults.push({ route, aggregation: 'median', scores, runs: validRuns });
+    console.log(
+      `${mode.padEnd(7)} ${route.padEnd(36)} ${categories
+        .map((category) => `${category}=${Math.round(scores[category] * 100)}`)
+        .join(' ')}`,
+    );
+  }
+
+  const failures = routeResults.flatMap(({ route, scores }) =>
+    categories
+      .filter((category) => scores[category] < profile.minimums[category])
+      .map(
+        (category) =>
+          `${route} ${category}: ${scores[category].toFixed(2)} < ${profile.minimums[
+            category
+          ].toFixed(2)}`,
+      ),
+  );
+  await writeFile(
+    path.join(outputDir, 'summary.json'),
+    `${JSON.stringify(
+      {
+        profile: mode,
+        generatedAt: new Date().toISOString(),
+        aggregation: 'median',
+        runsPerRoute,
+        minimums: profile.minimums,
+        routes: routeResults,
+        failures,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+
+  if (failures.length) {
+    throw new Error(`Lighthouse quality gates failed:\n${failures.join('\n')}`);
   }
 } finally {
-  server.kill('SIGTERM');
+  if (chrome) {
+    try {
+      await chrome.kill();
+    } catch (error) {
+      if (process.platform !== 'win32' || error?.code !== 'EPERM') throw error;
+      console.warn(`Chrome stopped, but Windows kept its temporary profile locked: ${error.path}`);
+    }
+  }
+  await stopProcess(server);
 }
-
-if (failed) process.exit(1);
