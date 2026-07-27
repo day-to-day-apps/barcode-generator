@@ -5050,6 +5050,8 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
 .account-settings[open] > summary::after { transform: rotate(225deg); }
 .account-settings > summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
 .account-settings-content { max-width: 560px; margin-top: 16px; }
+.account-current-email { margin: 0 0 14px; color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
+#account-settings-status { min-height: 22px; margin: -4px 0 10px; }
 .quick-actions, .settings-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .quick-actions .btn-action { margin: 0; text-decoration: none; }
 .recent-codes { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }

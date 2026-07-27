@@ -94,7 +94,7 @@ test.describe('Account lifecycle against Supabase', () => {
 
       await page.locator('#account-new-password').fill(newPassword);
       await page.locator('#account-password-form button[type="submit"]').click();
-      await expect(page.locator('#email-status')).toContainText(/updated|changed|zmienione/i);
+      await expect(page.locator('#account-settings-status')).toContainText(/updated|changed|zmienione/i);
 
       const freshClient = createClient(SUPABASE_URL, ANON_KEY, {
         auth: { autoRefreshToken: false, persistSession: false },

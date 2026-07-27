@@ -32,6 +32,18 @@ const copy = ({
   uk: { recent: 'Нещодавно збережені коди', empty: 'Збережених кодів ще немає.', quick: 'Швидкі дії', createCode: 'Створити код', createTemplate: 'Створити шаблон', createPrint: 'Підготувати друк', settings: 'Налаштування облікового запису', export: 'Експортувати дані (JSON)', remove: 'Видалити обліковий запис', resend: 'Надіслати підтвердження ще раз', changeEmail: 'Змінити e-mail', changePassword: 'Змінити пароль', cancel: 'Скасувати', confirm: 'Видалити назавжди', deleteHelp: 'Введіть фразу підтвердження, щоб назавжди видалити обліковий запис і всі дані.' },
 }[LANG] || dashboardCopy);
 Object.assign(copy, Object.fromEntries(Object.entries(dashboardCopy).filter(([key]) => !copy[key])));
+const settingsCopy = ({
+  en: { currentEmail: 'Current email', sameEmail: 'This is already your current email address.', updatingEmail: 'Updating email...', emailChangeSent: 'Confirm the change at the new email address.', updatingPassword: 'Updating password...', passwordUpdated: 'Password updated.' },
+  pl: { currentEmail: 'Aktualny e-mail', sameEmail: 'To jest już Twój aktualny adres e-mail.', updatingEmail: 'Zmienianie adresu e-mail...', emailChangeSent: 'Potwierdź zmianę na nowym adresie e-mail.', updatingPassword: 'Zmienianie hasła...', passwordUpdated: 'Hasło zostało zmienione.' },
+  de: { currentEmail: 'Aktuelle E-Mail-Adresse', sameEmail: 'Dies ist bereits Ihre aktuelle E-Mail-Adresse.', updatingEmail: 'E-Mail-Adresse wird geändert...', emailChangeSent: 'Bestätigen Sie die Änderung über die neue E-Mail-Adresse.', updatingPassword: 'Passwort wird geändert...', passwordUpdated: 'Passwort wurde geändert.' },
+  fr: { currentEmail: 'E-mail actuel', sameEmail: 'Il s’agit déjà de votre adresse e-mail actuelle.', updatingEmail: 'Modification de l’e-mail...', emailChangeSent: 'Confirmez la modification depuis la nouvelle adresse e-mail.', updatingPassword: 'Modification du mot de passe...', passwordUpdated: 'Mot de passe modifié.' },
+  es: { currentEmail: 'Correo actual', sameEmail: 'Esta ya es tu dirección de correo actual.', updatingEmail: 'Actualizando el correo...', emailChangeSent: 'Confirma el cambio desde la nueva dirección de correo.', updatingPassword: 'Actualizando la contraseña...', passwordUpdated: 'Contraseña actualizada.' },
+  it: { currentEmail: 'E-mail attuale', sameEmail: 'Questo è già il tuo indirizzo e-mail attuale.', updatingEmail: 'Aggiornamento dell’e-mail...', emailChangeSent: 'Conferma la modifica dal nuovo indirizzo e-mail.', updatingPassword: 'Aggiornamento della password...', passwordUpdated: 'Password aggiornata.' },
+  pt: { currentEmail: 'E-mail atual', sameEmail: 'Este já é o seu endereço de e-mail atual.', updatingEmail: 'A atualizar o e-mail...', emailChangeSent: 'Confirme a alteração no novo endereço de e-mail.', updatingPassword: 'A atualizar a palavra-passe...', passwordUpdated: 'Palavra-passe atualizada.' },
+  nl: { currentEmail: 'Huidig e-mailadres', sameEmail: 'Dit is al uw huidige e-mailadres.', updatingEmail: 'E-mailadres bijwerken...', emailChangeSent: 'Bevestig de wijziging via het nieuwe e-mailadres.', updatingPassword: 'Wachtwoord bijwerken...', passwordUpdated: 'Wachtwoord bijgewerkt.' },
+  cs: { currentEmail: 'Aktuální e-mail', sameEmail: 'Toto je již váš aktuální e-mail.', updatingEmail: 'Aktualizace e-mailu...', emailChangeSent: 'Potvrďte změnu na nové e-mailové adrese.', updatingPassword: 'Aktualizace hesla...', passwordUpdated: 'Heslo bylo změněno.' },
+  uk: { currentEmail: 'Поточна електронна адреса', sameEmail: 'Це вже ваша поточна електронна адреса.', updatingEmail: 'Оновлення електронної адреси...', emailChangeSent: 'Підтвердьте зміну на новій електронній адресі.', updatingPassword: 'Оновлення пароля...', passwordUpdated: 'Пароль оновлено.' },
+}[LANG] || {});
 const bulkCopy = ({
   pl: 'Generator z CSV', de: 'CSV-Stapelgenerator', fr: 'Générateur CSV', es: 'Generador desde CSV',
   it: 'Generatore da CSV', pt: 'Gerador a partir de CSV', nl: 'CSV-batchgenerator',
@@ -116,8 +128,10 @@ function ensureDashboardExtras() {
     <details id="settings" class="dashboard-panel account-settings" open>
       <summary><span>${copy.settings}</span></summary>
       <div class="account-settings-content">
-        <form id="account-email-form" class="settings-form"><label for="account-new-email">${T.email || 'Email address'}</label><div class="settings-row"><input id="account-new-email" type="email" autocomplete="email" required><button class="btn-action" type="submit">${copy.changeEmail}</button></div></form>
-        <form id="account-password-form" class="settings-form"><label for="account-new-password">${T.password || 'Password'}</label><div class="settings-row"><input id="account-new-password" type="password" autocomplete="new-password" minlength="8" required><button class="btn-action" type="submit">${copy.changePassword}</button></div></form>
+        <p class="account-current-email">${settingsCopy.currentEmail}: <strong id="account-current-email"></strong></p>
+        <form id="account-email-form" class="settings-form"><label for="account-new-email">${T.email || 'Email address'}</label><div class="settings-row"><input id="account-new-email" type="email" autocomplete="email" required><button id="account-email-submit" class="btn-action" type="submit">${copy.changeEmail}</button></div></form>
+        <form id="account-password-form" class="settings-form"><label for="account-new-password">${T.password || 'Password'}</label><div class="settings-row"><input id="account-new-password" type="password" autocomplete="new-password" minlength="8" required><button id="account-password-submit" class="btn-action" type="submit">${copy.changePassword}</button></div></form>
+        <div id="account-settings-status" role="status" aria-live="polite"></div>
         <div class="settings-actions"><button id="export-account" class="btn-action" type="button">${copy.export}</button><button id="delete-account" class="btn-action btn-danger" type="button">${copy.remove}</button></div>
       </div>
     </details>
@@ -174,19 +188,44 @@ function bindDashboardActions() {
   $('account-email-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const email = $('account-new-email').value.trim();
-    if (!validateEmail(email)) return setStatus(T.invalidEmail || 'Enter a valid email.', true);
+    const settingsStatus = $('account-settings-status');
+    const button = $('account-email-submit');
+    const updateStatus = (message, isError = false) => {
+      settingsStatus.textContent = '';
+      settingsStatus.className = isError ? 'form-error' : 'form-success';
+      requestAnimationFrame(() => { settingsStatus.textContent = message || ''; });
+    };
+    if (!validateEmail(email)) return updateStatus(T.invalidEmail || 'Enter a valid email.', true);
+    if (email.toLowerCase() === String(currentSession?.user?.email || '').toLowerCase()) return updateStatus(settingsCopy.sameEmail);
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    updateStatus(settingsCopy.updatingEmail);
     const sb = await getSupabase();
     const { error } = await sb.auth.updateUser({ email });
-    setStatus(error ? error.message : (LANG === 'pl' ? 'Potwierdz zmiane na nowym adresie e-mail.' : 'Confirm the change at the new email address.'), !!error);
+    button.disabled = false;
+    button.removeAttribute('aria-busy');
+    updateStatus(error ? friendlyError(error, T.genericError) : settingsCopy.emailChangeSent, !!error);
   });
   $('account-password-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const password = $('account-new-password').value;
-    if (!validatePassword(password)) return setStatus(T.weakPassword || 'Password must be at least 8 characters.', true);
+    const settingsStatus = $('account-settings-status');
+    const button = $('account-password-submit');
+    const updateStatus = (message, isError = false) => {
+      settingsStatus.textContent = '';
+      settingsStatus.className = isError ? 'form-error' : 'form-success';
+      requestAnimationFrame(() => { settingsStatus.textContent = message || ''; });
+    };
+    if (!validatePassword(password)) return updateStatus(T.weakPassword || 'Password must be at least 8 characters.', true);
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    updateStatus(settingsCopy.updatingPassword);
     const sb = await getSupabase();
     const { error } = await sb.auth.updateUser({ password });
+    button.disabled = false;
+    button.removeAttribute('aria-busy');
     if (!error) event.target.reset();
-    setStatus(error ? error.message : (LANG === 'pl' ? 'Haslo zostalo zmienione.' : 'Password updated.'), !!error);
+    updateStatus(error ? friendlyError(error, T.genericError) : settingsCopy.passwordUpdated, !!error);
   });
   $('export-account').addEventListener('click', async () => {
     setStatus(T.sending || 'Preparing export...');
@@ -242,6 +281,8 @@ async function renderSession(session) {
   $('account-title').textContent = T.dashboardTitle || 'Your account';
   if (headerSubtitle) headerSubtitle.textContent = T.dashboardSubtitle || 'Choose what you’d like to do.';
   ensureDashboardExtras();
+  $('account-current-email').textContent = session.user.email || '';
+  $('account-new-email').value = session.user.email || '';
   await Promise.all([
     loadDashboardStats({
       helpers: { countCodes, countTemplates, countPrinters, countJobs },
