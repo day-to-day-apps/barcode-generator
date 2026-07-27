@@ -1,91 +1,53 @@
-# Barcode Generator — Deploy Checklist
+# Barcode Generator - Deploy Checklist
 
-## 🔧 Co musisz zrobić (krok po kroku):
+Stan zweryfikowany: 2026-07-27.
 
-### 1. ~~GitHub — repozytorium~~ ✅
-- [x] Repozytorium: [github.com/day-to-day-apps/barcode-generator](https://github.com/day-to-day-apps/barcode-generator)
+## Produkcja
 
-### 2. ~~Cloudflare Pages — hosting~~ ✅
-- [x] Strona live: [barcode-generator.daytodayapps.com](https://barcode-generator.daytodayapps.com/)
+- [x] Repozytorium: [day-to-day-apps/barcode-generator](https://github.com/day-to-day-apps/barcode-generator)
+- [x] Produkcja: [barcode-generator.daytodayapps.com](https://barcode-generator.daytodayapps.com/)
+- [x] Custom domain ma poprawny HTTPS.
+- [x] Techniczny host Cloudflare Pages przekierowuje `301` na domenę canonical z zachowaniem ścieżki i query.
+- [x] Canonical, hreflang, Open Graph, robots i sitemap używają domeny produkcyjnej.
+- [x] Prywatne ekrany konta pozostają poza sitemapą i mają `noindex`.
+- [x] Nagłówki bezpieczeństwa i prawdziwe odpowiedzi `404` są wdrożone.
 
-### 3. Własna domena (opcjonalnie)
-- [ ] Kup domenę (np. na [OVH](https://ovh.pl), [Cloudflare Registrar](https://dash.cloudflare.com/domains), [Porkbun](https://porkbun.com))
-- [ ] W Cloudflare Pages → **Custom domains** → dodaj swoją domenę
-- [ ] Skonfiguruj DNS (Cloudflare poda instrukcje CNAME)
-- [ ] **Po zmianie domeny** zaktualizuj we wszystkich plikach:
-  - `sitemap.xml` — URL-e
-  - `robots.txt` — URL sitemap
-  - Wszystkie `index.html` — canonical, hreflang, og:url, og:image
-  - `analytics.js` — (jeśli potrzebne)
+## Analityka i indeksowanie
 
-### 4. Google Analytics 4
-- [ ] Utwórz konto na [analytics.google.com](https://analytics.google.com)
-- [ ] Utwórz nową usługę (property) → Web
-- [ ] Skopiuj **Measurement ID** (format: `G-XXXXXXXXXX`)
-- [ ] Otwórz plik `analytics.js` i wklej ID:
-  ```js
-  const GA4_MEASUREMENT_ID = 'G-XXXXXXXXXX';
-  ```
-- [ ] Commit + push
+- [x] GA4 jest skonfigurowane jako `G-SVBQKGWE1Y` i ładuje się dopiero po zgodzie.
+- [x] Własność domeny `daytodayapps.com` jest zweryfikowana w Google Search Console.
+- [x] Sitemap generatora została zgłoszona w Search Console.
+- [x] Główne publiczne adresy są indeksowalne; `/pl/` został potwierdzony jako zaindeksowany.
+- [ ] Monitorować raport Pages/Indexing po kolejnych przetworzeniach sitemapy przez Google.
 
-### 5. Google AdSense
-- [ ] Utwórz konto na [adsense.google.com](https://adsense.google.com)
-- [ ] Dodaj swoją stronę i przejdź weryfikację (zajmuje 1-14 dni)
-- [ ] Skopiuj **Publisher ID** (format: `ca-pub-XXXXXXXXXXXXXXXX`)
-- [ ] Otwórz plik `analytics.js` i wklej ID:
-  ```js
-  const ADSENSE_PUBLISHER_ID = 'ca-pub-XXXXXXXXXXXXXXXX';
-  ```
-- [ ] Utwórz bloki reklamowe w AdSense i wklej kod `<ins>` w miejsce istniejących `<!-- AD SLOT -->` komentarzy w HTML
-- [ ] Commit + push
+## Supabase i konto
 
-### 6. Google Search Console
-- [ ] Otwórz [search.google.com/search-console](https://search.google.com/search-console)
-- [ ] Dodaj property → Wpisz URL strony
-- [ ] Zweryfikuj (Cloudflare DNS verification jest najłatwiejszy)
-- [ ] Zgłoś sitemap: `https://barcode-generator.daytodayapps.com/sitemap.xml`
-- [ ] Poproś o indeksowanie strony głównej
+- [x] `Site URL` oraz dozwolone redirecty wskazują `https://barcode-generator.daytodayapps.com`.
+- [x] Produkcyjny cykl tymczasowego użytkownika przeszedł: auth, konto, CRUD i usunięcie danych testowych.
+- [x] Linki powrotne są ograniczone do własnego originu.
+- [ ] Utrzymywać okresowy automatyczny test pełnego cyklu Supabase.
 
-### 7. Sprawdzenie po deployu
-- [ ] Otwórz stronę — czy działa?
-- [ ] Sprawdź wszystkie 10 wersji językowych
-- [ ] Sprawdź dark mode
-- [ ] Wygeneruj kod kreskowy i pobierz PNG/SVG
-- [ ] Test mobilny (telefon lub DevTools → responsive)
-- [ ] Sprawdź 404 — wejdź na `/nieistniejaca-strona`
-- [ ] Otwórz [PageSpeed Insights](https://pagespeed.web.dev/) — wklej URL
-- [ ] Sprawdź OG image: [opengraph.xyz](https://www.opengraph.xyz/)
+## AdSense
 
----
+- [x] Publisher ID: `ca-pub-2527047257613855`.
+- [x] `ads.txt` jest opublikowany pod `/ads.txt`.
+- [x] Kod nie renderuje pustych reklam bez prawdziwego `data-ad-slot`.
+- [x] Dolny sticky slot pozostaje wyłączony.
+- [ ] Potwierdzić w AdSense status witryny `Ready`.
+- [ ] Utworzyć prawdziwe display ad units i wpisać ich identyfikatory do `AD_SLOTS` w `analytics.js`.
+- [ ] Po aktywacji sprawdzić desktop/mobile, CLS i zgodność zgody reklamowej dla EOG/UK/Szwajcarii.
 
-## 📁 Struktura plików (gotowa):
+## QA po każdym deployu
 
-```
-wersja zarobkowa/
-├── index.html          ← 🇵🇱 Strona główna (polski)
-├── en/index.html       ← 🇬🇧 English
-├── de/index.html       ← 🇩🇪 Deutsch
-├── fr/index.html       ← 🇫🇷 Français
-├── es/index.html       ← 🇪🇸 Español
-├── it/index.html       ← 🇮🇹 Italiano
-├── pt/index.html       ← 🇵🇹 Português
-├── nl/index.html       ← 🇳🇱 Nederlands
-├── cs/index.html       ← 🇨🇿 Čeština
-├── uk/index.html       ← 🇺🇦 Українська
-├── polityka-prywatnosci.html
-├── regulamin.html
-├── 404.html            ← Strona błędu (auto-detect język)
-├── app.js              ← Logika generatora
-├── i18n.js             ← Tłumaczenia (10 języków)
-├── analytics.js        ← GA4 + AdSense + cookie banner
-├── styles.css          ← Style + dark mode + cookie banner
-├── favicon.svg         ← Ikona strony
-├── og-image.svg        ← Obraz do social media
-├── sitemap.xml         ← Mapa strony (SEO)
-├── robots.txt          ← Instrukcje dla botów
-├── _headers            ← Cloudflare: nagłówki bezpieczeństwa + cache
-├── _redirects          ← Cloudflare: przekierowania językowe
-└── .gitignore          ← Ignorowane pliki
-```
+- [ ] Uruchomić build oraz pełny Playwright.
+- [ ] Sprawdzić generator, dekoder, PNG, SVG, CSV/PDF/ZIP i kopiowanie.
+- [ ] Sprawdzić 10 wersji językowych, mobile, dark mode i brak błędów konsoli.
+- [ ] Sprawdzić logowanie, reset hasła, zapisane kody, szablony, drukarki i historię.
+- [ ] Sprawdzić A4, Letter i formaty termiczne w podglądzie PDF.
+- [ ] Zweryfikować `robots.txt`, `sitemap.xml`, `ads.txt`, canonical i prawdziwe `404` na produkcji.
 
-## ⏱ Szacowany czas: ~30-60 minut (bez czekania na weryfikację AdSense)
+## Otwarte testy fizyczne
+
+- [ ] Wydrukować stronę kalibracyjną przy skali sterownika 100%.
+- [ ] Potwierdzić przesunięcia i `bar_width_correction` na realnej drukarce termicznej.
+- [ ] Odczytać próbki fizycznym skanerem; test przeglądarkowy nie zastępuje certyfikowanego weryfikatora kodów.

@@ -31,8 +31,8 @@
 - i18n (10 języków: en + pl, de, fr, es, it, pt, nl, cs, uk),
 - pełne SEO (hreflang, canonical, Schema.org JSON-LD: WebApplication / HowTo / FAQPage / BreadcrumbList, Open Graph, Twitter Card),
 - analytics + consent (GA4, AdSense),
-- monetyzację (AdSense — w trakcie konfiguracji),
-- (planowane) konta użytkowników i zapisywanie kodów (Supabase).
+- monetyzację (AdSense — publisher i `ads.txt` gotowe, approval i sloty reklamowe oczekują),
+- konta użytkowników, zapisywanie kodów, szablony, profile drukarek i historię zadań (Supabase).
 
 **Model biznesowy (aktualny):** Aplikacja **darmowa** dla użytkownika końcowego. Monetyzacja przez reklamy AdSense + opcjonalne konto pozwalające zapisywać własne kody. Brak Stripe / planów płatnych (Pro 19 zł zostało zarzucone — zob. §4).
 
@@ -62,7 +62,7 @@ Techniczny host Cloudflare Pages jest przekierowany 301 do domeny canonical.
 | Dekodowanie kodów | `@zxing/library` (CDN) |
 | Generowanie kodów | `JsBarcode`, `qrcode` (CDN) |
 | Analytics | GA4 + AdSense — bootstrap w `analytics.js` z cookie consent |
-| Backend (planowany) | **Supabase** (PostgreSQL + Auth + RLS) |
+| Backend | **Supabase** (PostgreSQL + Auth + RLS) |
 
 ### Tooling (developerskie, lokalnie)
 | Narzędzie | Wersja / uwagi |
@@ -318,7 +318,7 @@ supabase link --project-ref aoqxznukwbdgrggxloou
 - ✅ **`db-jobs.js`** (NEW, ESM) — wrapper RPC `save_print_job` + CRUD czytane bezpośrednio (`listJobs`, `getJobById` z JOIN items, `countJobs`, `deleteJob`). Stałe `FREE_JOBS_LIMIT=20`, `MAX_ITEMS_PER_JOB=500`. Eksport `normaliseJobItem` (walidacja długości pól, clamp `copies` 1–1000, default `code_type='CODE128'`).
 - ✅ **`csv-worker.js`** (NEW, classic worker) — self-contained parser CSV. Auto-detekcja separatora z `, ; \t |` (zliczanie wystąpień w pierwszej linii). Obsługa cudzysłowów RFC 4180 (escape `""`). Worker odpowiada `{type:'rows', rows, headers}` lub `{type:'error', message}`.
 - ✅ **`csv-import.js`** (NEW, ESM) — orkiestrator importu CSV w Web Workerze. `MAX_FILE_BYTES=5*1024*1024`, `MAX_ROWS=500`. Header auto-map: `value←{value,code,barcode,sku,ean}`, `name←{name,product,title}`, `price←{price,cost}`, `description←{description,desc,notes}`, `copies←{copies,qty,quantity,count}`, `code_type←{code_type,type,format}`. Zwraca `{items, skipped}`. CSP wymaga `worker-src 'self' blob:` (już ustawione w `_headers`).
-- ✅ **`print-builder.js`** (NEW, ESM) — silnik paginacji + druk. Eksporty: stała `MAX_LABELS=2000`, `expandItems(items)` (rozwija `copies`, error przy przekroczeniu), `paginate(labels, layout)` (układa w kolumny/wiersze wg profilu drukarki), `buildSheetHTML(pages, template, printer, t)` (HTML standalone z inline CSS `@page` size + margin, woła `LabelRenderer.createLabelHTML` per etykieta), `openPrintWindow(html)` (window.open + auto `window.print()`). **TODO:** `bar_width_correction` z `printer_profiles` jeszcze nie aplikowane do JsBarcode (Phase 6 fix).
+- ✅ **`print-builder.js`** (NEW, ESM) — silnik paginacji + druk. Eksporty: stała `MAX_LABELS=2000`, `expandItems(items)` (rozwija `copies`, error przy przekroczeniu), `paginate(labels, layout)` (układa w kolumny/wiersze wg profilu drukarki), `buildSheetHTML(pages, template, printer, t)` (HTML standalone z inline CSS `@page` size + margin, woła `LabelRenderer.createLabelHTML` per etykieta), `openPrintWindow(html)` (window.open + auto `window.print()`). `bar_width_correction` z profilu drukarki jest stosowane przez `label-renderer.js`; pozostaje walidacja na fizycznej drukarce.
 - ✅ **`wydruk.html`** (NEW, EN-only, `noindex,follow`, canonical `daytodayapps.com`) — Print Builder. Form: job name, template select (z `label_templates`), printer profile select (wymagane, z `printer_profiles`), notes. Tabela items (`.items-table` w `.table-scroll`) z kolumnami: value, code type, name, price, copies, delete row. Toolbar: Add row, Import CSV (file input → `csv-import.js` → worker), Clear all (confirm). Akcje: Preview (`paginate` + `buildSheetHTML` w `<iframe>` w `#preview-area`), Print now (`openPrintWindow`), Save job (`savePrintJob` przez RPC; limit free=20 jobs sprawdzony przez `countJobs` przed save). Auth-gate przez `getSession()`. Komunikat „Free plan limit reached ({max}). Delete a saved job to add another." gdy quota wyczerpana.
 - ✅ **`historia-wydrukow.html`** (NEW, EN-only, `noindex,follow`, canonical `daytodayapps.com`) — lista zapisanych zadań druku. Reuse Phase 3 klas: `.codes-list`, `.code-row`, `.template-summary`, `.code-name`, `.template-meta`, `.code-actions`, `.empty-state`. Toolbar: licznik `{n}/{max} jobs saved` + CTA „New print job" → `wydruk.html`. Akcja delete z `confirm()`. Brak akcji „Load" w tej wersji — szczegóły dostępne tylko przez DB (load do buildera odłożone na post-MVP).
 - ✅ **Nawigacja** — link „Print builder" → `wydruk.html` i „Print history" → `historia-wydrukow.html` w `drukarki.html`, `szablony.html`, `moje-kody.html`, `konto.html`.
@@ -440,7 +440,7 @@ supabase link --project-ref aoqxznukwbdgrggxloou
 
 ## 9. Otwarte pytania i ryzyka
 
-- [ ] **Domena.** Kiedy własna domena? Wymaga aktualizacji `canonical`, `sitemap.xml`, `og:url`, `_headers` (HSTS preload).
+- [x] **Domena.** `barcode-generator.daytodayapps.com` działa jako canonical, a host techniczny przekierowuje `301`.
 - [ ] **AdSense weryfikacja.** Czy konto AdSense jest już zatwierdzone, czy wciąż w review? (Wpływa na harmonogram E3.)
 - [ ] **Migracje Supabase.** Czy zostały uruchomione na hostowanej bazie? (W repo są pliki, ale nie ma śladu `supabase db push`.) — Audyt w F2.
 - [ ] **Hasło bazy.** Czy mamy zapisane hasło z `[YOUR-PASSWORD]` w bezpiecznym miejscu (manager haseł)? Nie wpisujemy go do repo.

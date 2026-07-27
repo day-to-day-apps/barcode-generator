@@ -2,7 +2,7 @@
 
 > Trackable, persistent checklist. Tick items as they complete.
 > Source of truth: this file. Update on each commit.
-> Last updated: 2026-05-19
+> Last updated: 2026-07-27
 
 ## Status legend
 - [ ] not started
@@ -20,8 +20,8 @@ Goal: logged-in account panel must feel finished before we point the world at it
 - [x] login → save code (CODE128) → list shows it
 - [x] bugfix: `.code-rename-form` / `.code-tags-form` respect `[hidden]`
 - [x] defensive global `[hidden] { display: none !important }` in `styles.css` (commit `f2d6818`)
-- [ ] re-test all 5 protected pages: konto, moje-kody, szablony, drukarki, historia-wydrukow
-- [ ] test wydruk.html PDF flow with one template + one printer
+- [x] re-test protected pages: konto, moje-kody, szablony, drukarki, historia-wydrukow
+- [x] test print/PDF flow with templates and printer profiles
 
 ### A2. Identify remaining UX gaps
 - [ ] take Chrome DevTools screenshot of `/konto.html` after login (current state)
@@ -54,65 +54,65 @@ Goal: logged-in account panel must feel finished before we point the world at it
 
 ### B1. Canonical hostname audit
 Scope: verify active URLs across `*.html`, `sitemap.xml`, `robots.txt`, Supabase docs, and operational docs.
-- [ ] Confirm every active production URL uses `barcode-generator.daytodayapps.com`.
-- [ ] BOM/mojibake guard: verify no `EF BB BF` introduced (`[System.IO.File]::ReadAllBytes()` byte check on `<!DOCTYPE`)
-- [ ] verify: `Select-String -Pattern 'workers\.dev' -Path *.html, */*.html, *.xml, *.txt, *.js` returns ZERO
-- [ ] update `sitemap.xml` `<lastmod>`
-- [ ] commit: `feat(launch): point canonical/hreflang/og/jsonld to daytodayapps.com`
+- [x] Confirm every active production URL uses `barcode-generator.daytodayapps.com`.
+- [x] BOM/mojibake guard: verify no `EF BB BF` introduced (`[System.IO.File]::ReadAllBytes()` byte check on `<!DOCTYPE`)
+- [x] active production HTML/config contains no `workers.dev` URL
+- [x] generate the production sitemap from the public-route allowlist
+- [x] canonical/hreflang/og/jsonld point to `daytodayapps.com`
 
 ### B2. Cache-bust
-- [ ] bump `?v=` query string on `styles.css`, `i18n.js`, `app.js`, `analytics.js`, `nav-enhance.js` across all HTML
+- [x] production assets use current cache-busting versions
 
 ### B3. Tracking IDs
 
-**B3.1. GA4 Measurement ID** — currently `analytics.js:8` is empty `''`.
-- [!] **USER STEP REQUIRED** (see [Manual Step 1](#manual-step-1-ga4-property))
-- [ ] paste `G-XXXXXXXXXX` into `analytics.js` `GA4_MEASUREMENT_ID`
+**B3.1. GA4 Measurement ID**
+- [x] configured `G-SVBQKGWE1Y` in `analytics.js`
+- [x] analytics loads only after consent
 
 **B3.2. AdSense slot IDs** — `analytics.js` keeps ad rendering disabled until real `data-ad-slot` values from AdSense are added.
 - [!] **USER STEP REQUIRED** (see [Manual Step 2](#manual-step-2-adsense-units))
 - [ ] paste 6 real slot IDs into `AD_SLOTS` map
 
 ### B4. Security headers
-- [ ] add CSP to `_headers` (`script-src` must include Googla AdSense/GA domains)
-- [ ] add HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy
-- [ ] test that AdSense + GA still load after CSP
+- [x] CSP includes required GA, AdSense and Supabase origins
+- [x] HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy and Permissions-Policy are deployed
+- [x] GA loads after consent under the production CSP
 
 ### B5. Commit + push pre-launch batch
-- [ ] commit B1+B2+B3+B4
-- [ ] `git push origin main` → triggers CF Pages deploy
-- [ ] verify deploy succeeded on Cloudflare Pages production.
+- [x] launch batches committed and pushed to `main`
+- [x] Cloudflare production deployment verified
 
 ### B6. Cloudflare Pages custom domain
-- [!] **USER STEP REQUIRED** (see [Manual Step 3](#manual-step-3-cloudflare-custom-domain))
-- [ ] wait for SSL provisioning (1-5 min)
-- [ ] verify `https://barcode-generator.daytodayapps.com` returns 200
+- [x] `https://barcode-generator.daytodayapps.com` returns `200` over HTTPS
 
 ### B7. Technical Pages host -> custom domain 301
-- [ ] keep Cloudflare Bulk Redirect enabled for the automatic Pages host.
-- [ ] verify the technical Pages host returns `301 Location: https://barcode-generator.daytodayapps.com/...`
+- [x] keep Cloudflare Bulk Redirect enabled for the automatic Pages host
+- [x] technical Pages host returns `301` and preserves path/query
 
 ### B8. Supabase Auth redirect URLs
-- [!] **USER STEP REQUIRED** (see [Manual Step 4](#manual-step-4-supabase-auth-urls))
+- [x] Site URL and redirect allowlist use the production origin
 
 ### B9. Google Search Console
-- [!] **USER STEP REQUIRED** (see [Manual Step 5](#manual-step-5-search-console))
+- [x] domain property `daytodayapps.com` verified
+- [x] production sitemap submitted
 
 ### B10. AdSense site approval
 - [!] **USER STEP REQUIRED** (see [Manual Step 6](#manual-step-6-adsense-approval))
 
 ### B11. Post-launch smoke
-- [ ] hit all 5 protected pages on prod domain — login, save code, save template, save printer, generate job, view history
-- [ ] verify GA4 Realtime sees the hit
-- [ ] verify AdSense `ads.txt` reachable at `https://barcode-generator.daytodayapps.com/ads.txt`
-- [ ] verify `robots.txt` + `sitemap.xml` reachable
-- [ ] delete test account `igor.gerc.gercu@gmail.com` from Supabase (after final test)
+- [x] production auth/account/CRUD lifecycle tested with a temporary user
+- [x] GA4 production stream is configured and consent-gated
+- [x] `ads.txt` reachable at `https://barcode-generator.daytodayapps.com/ads.txt`
+- [x] `robots.txt` and `sitemap.xml` reachable
+- [x] temporary account removed after the production lifecycle test
 
 ---
 
 ## Manual steps (user-blocked) — detailed instructions
 
 ### Manual Step 1: GA4 property
+
+**Status: completed.** Production Measurement ID: `G-SVBQKGWE1Y`.
 
 **Why**: bez GA4 brak danych po launchu, AdSense optymalizacja słabsza, brak feedbacku o traffiku.
 
@@ -142,6 +142,8 @@ Scope: verify active URLs across `*.html`, `sitemap.xml`, `robots.txt`, Supabase
 
 ### Manual Step 3: Cloudflare Custom Domain
 
+**Status: completed.** The production custom domain is active.
+
 1. https://dash.cloudflare.com/ → **Workers & Pages** → projekt `barcode-generator` (lub jak nazwany)
 2. **Custom domains** → **Set up a custom domain**
 3. Wpisz: `barcode-generator.daytodayapps.com`
@@ -151,6 +153,8 @@ Scope: verify active URLs across `*.html`, `sitemap.xml`, `robots.txt`, Supabase
 7. Powiedz mi gdy działa.
 
 ### Manual Step 4: Supabase Auth URLs
+
+**Status: completed.** Site URL and redirect allowlist use the production origin.
 
 **Why**: bez tego linki w mailach potwierdzających i reset hasła wracają na niekanoniczny host, użytkownik dostaje 404 / loopback.
 
@@ -184,6 +188,8 @@ Scope: verify active URLs across `*.html`, `sitemap.xml`, `robots.txt`, Supabase
 4. **Save**. Powiedz mi gdy gotowe.
 
 ### Manual Step 5: Search Console
+
+**Status: completed.** Domain property is verified and the sitemap is submitted.
 
 1. https://search.google.com/search-console
 2. **Add property** → **Domain** → `daytodayapps.com` (verify via DNS TXT — Cloudflare doda automatycznie jeśli tu trzymasz domenę)
