@@ -23,6 +23,18 @@ for (const lang of LANGS) {
     await expect(page.locator('.decoder-guide h3')).toHaveCount(5);
     await expect(page.locator('.decoder-format-list dt')).toHaveCount(4);
     await expect(page.locator('.decoder-related a')).toHaveCount(lang === 'en' || lang === 'pl' ? 4 : 3);
+    await expect(page.locator('.decoder-faq')).toHaveCount(1);
+
+    const structuredBlocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const structuredData = structuredBlocks.map(JSON.parse);
+    const structuredFaq = structuredData.find((item) => item['@type'] === 'FAQPage');
+    const faqItems = structuredFaq?.mainEntity ?? [];
+    await expect(page.locator('.decoder-faq details')).toHaveCount(faqItems.length);
+    for (const item of faqItems) {
+      await expect(page.locator('.decoder-faq summary', { hasText: item.name })).toHaveCount(1);
+      await expect(page.locator('.decoder-faq p', { hasText: item.acceptedAnswer.text })).toHaveCount(1);
+    }
+
     const cameraButton = page.locator('#camera-btn');
     await expect(cameraButton).not.toHaveAttribute('aria-label', /.+/);
     expect((await cameraButton.innerText()).trim().length).toBeGreaterThan(0);

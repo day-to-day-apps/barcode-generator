@@ -404,17 +404,33 @@ const DECODER_CONTENT = {
   uk: { title: 'Сканер штрихкодів онлайн - зображення та камера', description: 'Скануйте штрихкоди з фото, зображення або камери. Розпізнавайте EAN, UPC, Code 128, QR, Data Matrix і PDF417 приватно у браузері.', kicker: 'Безкоштовний онлайн-сканер', heading: 'Скануйте штрихкод із зображення або камери', lead: 'Зчитуйте код без встановлення застосунку. Завантажте чи вставте зображення або відкрийте камеру. Обробка відбувається локально на пристрої.', how: 'Як сканувати штрихкод онлайн', steps: ['Відкрийте камеру, завантажте JPG, PNG чи WebP або вставте зображення через Ctrl+V.', 'Покажіть увесь код чітко, з добрим освітленням і без відблисків.', 'Скопіюйте значення або відтворіть код у генераторі.'], formats: 'Підтримувані формати', formatText: 'Сканер автоматично розпізнає поширені роздрібні, логістичні та 2D-символи.', groups: [['Роздріб', 'EAN-13, EAN-8, UPC-A, UPC-E'], ['Логістика', 'Code 128, Code 39, ITF, Codabar, RSS'], ['2D-коди', 'QR Code, Data Matrix, PDF417, Aztec'], ['Інші', 'Code 93, MaxiCode та варіанти ZXing']], troubleshoot: 'Якщо код не зчитується', tips: ['Обріжте зображення навколо коду.', 'Використайте оригінальне фото замість стисненого знімка.', 'Фотографуйте етикетку прямо, без відблисків і розмиття.', 'Залиште видимими світлі зони з боків лінійного коду.'], privacy: 'Приватне сканування', privacyText: 'Зображення обробляються у браузері й не надсилаються на сервер. Основні функції можуть працювати офлайн після першого завантаження.', related: 'Створіть або перевірте код', links: [['Відкрити генератор', '/uk/'], ['Генерувати з CSV', '/bulk-barcode-generator'], ['Перевірити GTIN і GS1', '/gs1-barcode-generator']] },
 };
 
-const DECODER_FAQS = {
-  it: {
-    heading: 'Domande frequenti sul lettore di codici a barre',
-    items: [
-      ['Posso leggere un codice a barre da una foto?', 'Sì. Carica una foto JPG, PNG o WebP oppure incollala dagli appunti. Il lettore cerca automaticamente codici EAN, UPC, Code 128, Code 39, QR, Data Matrix, PDF417 e altri formati supportati.'],
-      ['La foto viene inviata a un server?', 'No. L’immagine viene elaborata localmente nel browser. Il file non viene caricato sui nostri server e non serve creare un account per eseguire la scansione.'],
-      ['Perché il lettore non riconosce il codice?', 'Usa la foto originale, ritaglia l’area attorno al codice e verifica che tutte le barre o i moduli siano nitidi. Evita riflessi, inclinazione, sfocatura e il taglio delle zone chiare ai lati.'],
-      ['È possibile leggere più codici nella stessa immagine?', 'Sì. Attiva l’opzione per trovare tutti i codici nell’immagine prima di caricare una foto di un foglio, una scatola o un gruppo di etichette.'],
-    ],
-  },
+const DECODER_FAQ_HEADINGS = {
+  en: 'Frequently asked questions about barcode scanning',
+  pl: 'Najczęstsze pytania o skanowanie kodów',
+  de: 'Häufige Fragen zum Barcode-Scannen',
+  fr: 'Questions fréquentes sur la lecture des codes-barres',
+  es: 'Preguntas frecuentes sobre el escaneo de códigos',
+  it: 'Domande frequenti sul lettore di codici a barre',
+  pt: 'Perguntas frequentes sobre leitura de códigos',
+  nl: 'Veelgestelde vragen over barcodes scannen',
+  cs: 'Časté dotazy ke skenování čárových kódů',
+  uk: 'Поширені запитання про сканування штрихкодів',
 };
+
+function decoderFaqItems(html) {
+  for (const match of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi)) {
+    try {
+      const data = JSON.parse(match[1]);
+      if (data['@type'] !== 'FAQPage' || !Array.isArray(data.mainEntity)) continue;
+      return data.mainEntity
+        .map((item) => [item?.name, item?.acceptedAnswer?.text])
+        .filter(([question, answer]) => typeof question === 'string' && typeof answer === 'string');
+    } catch {
+      // Ignore unrelated malformed structured-data blocks; SEO tests validate the result.
+    }
+  }
+  return [];
+}
 
 const DECODER_BATCH_CONTENT = {
   en: ['Find every barcode in this image', 'Use for sheets, cartons or photos with several codes. Processing stays on this device.'],
@@ -431,13 +447,16 @@ const DECODER_BATCH_CONTENT = {
 
 function enhanceDecoderHtml(html, lang) {
   const page = DECODER_CONTENT[lang];
-  const faq = DECODER_FAQS[lang];
+  const faqItems = decoderFaqItems(html);
+  const faqHeading = DECODER_FAQ_HEADINGS[lang];
   const [batchLabel, batchHint] = DECODER_BATCH_CONTENT[lang];
   const batchOption = `<div class="decoder-batch-option">
                 <input type="checkbox" id="batch-image-mode" aria-describedby="batch-image-hint">
                 <div><label for="batch-image-mode">${batchLabel}</label><p id="batch-image-hint">${batchHint}</p></div>
             </div>`;
-  const faqMarkup = faq ? `<section class="decoder-faq" aria-labelledby="decoder-faq-title"><h2 id="decoder-faq-title">${faq.heading}</h2>${faq.items.map(([question, answer]) => `<details><summary>${question}</summary><p>${answer}</p></details>`).join('')}</section>` : '';
+  const faqMarkup = faqHeading && faqItems.length
+    ? `<section class="decoder-faq" aria-labelledby="decoder-faq-title"><h2 id="decoder-faq-title">${faqHeading}</h2>${faqItems.map(([question, answer]) => `<details><summary>${question}</summary><p>${answer}</p></details>`).join('')}</section>`
+    : '';
   const guide = `<section class="decoder-guide" aria-labelledby="decoder-guide-title">
     <p class="decoder-guide__kicker">${page.kicker}</p><h2 id="decoder-guide-title">${page.heading}</h2><p class="decoder-guide__lead">${page.lead}</p>
     <div class="decoder-guide__columns"><section><h3>${page.how}</h3><ol>${page.steps.map((step) => `<li>${step}</li>`).join('')}</ol></section><section><h3>${page.formats}</h3><p>${page.formatText}</p><dl class="decoder-format-list">${page.groups.map(([name, formats]) => `<div><dt>${name}</dt><dd>${formats}</dd></div>`).join('')}</dl></section></div>
