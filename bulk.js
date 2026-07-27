@@ -7,9 +7,9 @@ import { encodeBulkJobState, decodeBulkJobState } from './bulk-job-state.js';
 
 const pl = document.documentElement.lang === 'pl';
 const copy = pl ? {
-  ready: 'Zaimportuj CSV lub dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', importFailed: 'Nie udało się odczytać pliku CSV.', csvInvalid: 'Plik CSV zawiera niedomknięte pole w cudzysłowie.', rowLimit: 'Plik zawiera {count} rekordów danych. Ten tryb pozwala na maksymalnie {limit}.', templateDownloaded: 'Wzór CSV został pobrany.', cancelled: 'Generowanie anulowane.', saved: 'Zadanie i format etykiety zostały zapisane.', loaded: 'Zadanie i format etykiety wczytano jako kopię.', importedCodes: 'Zaimportowano zapisane kody:', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', codesLoadFailed: 'Nie udało się pobrać zapisanych kodów.', jobsLoadFailed: 'Nie udało się pobrać zapisanych zadań.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.', pickerSummary: 'Wybrano: {codes} kodów · {labels} etykiet. Dostępne: {rows} pozycji i {remainingLabels} etykiet.', pickerLimit: 'Zmniejsz wybór lub liczbę kopii, aby zmieścić się w limicie zadania.', copies: 'Kopie', unsupported: 'Nieobsługiwany w druku seryjnym'
+  ready: 'Zaimportuj CSV lub dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', importFailed: 'Nie udało się odczytać pliku CSV.', csvInvalid: 'Plik CSV zawiera niedomknięte pole w cudzysłowie.', rowLimit: 'Plik zawiera {count} rekordów danych. Ten tryb pozwala na maksymalnie {limit}.', templateDownloaded: 'Wzór CSV został pobrany.', cancelled: 'Generowanie anulowane.', compressing: 'Kompresowanie', saved: 'Zadanie i format etykiety zostały zapisane.', loaded: 'Zadanie i format etykiety wczytano jako kopię.', importedCodes: 'Zaimportowano zapisane kody:', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', codesLoadFailed: 'Nie udało się pobrać zapisanych kodów.', jobsLoadFailed: 'Nie udało się pobrać zapisanych zadań.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.', pickerSummary: 'Wybrano: {codes} kodów · {labels} etykiet. Dostępne: {rows} pozycji i {remainingLabels} etykiet.', pickerLimit: 'Zmniejsz wybór lub liczbę kopii, aby zmieścić się w limicie zadania.', copies: 'Kopie', unsupported: 'Nieobsługiwany w druku seryjnym'
 } : {
-  ready: 'Import a CSV file or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', importFailed: 'The CSV file could not be read.', csvInvalid: 'The CSV file contains an unterminated quoted field.', rowLimit: 'This file contains {count} data records. This mode allows up to {limit}.', templateDownloaded: 'The CSV template has been downloaded.', cancelled: 'Generation cancelled.', saved: 'Print job and label format saved.', loaded: 'Job and label format loaded as a copy.', importedCodes: 'Imported saved barcodes:', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', codesLoadFailed: 'Saved barcodes could not be loaded.', jobsLoadFailed: 'Saved jobs could not be loaded.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.', pickerSummary: 'Selected: {codes} codes · {labels} labels. Available: {rows} items and {remainingLabels} labels.', pickerLimit: 'Reduce the selection or copy count to fit this job limit.', copies: 'Copies', unsupported: 'Not supported in bulk printing'
+  ready: 'Import a CSV file or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', importFailed: 'The CSV file could not be read.', csvInvalid: 'The CSV file contains an unterminated quoted field.', rowLimit: 'This file contains {count} data records. This mode allows up to {limit}.', templateDownloaded: 'The CSV template has been downloaded.', cancelled: 'Generation cancelled.', compressing: 'Compressing', saved: 'Print job and label format saved.', loaded: 'Job and label format loaded as a copy.', importedCodes: 'Imported saved barcodes:', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', codesLoadFailed: 'Saved barcodes could not be loaded.', jobsLoadFailed: 'Saved jobs could not be loaded.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.', pickerSummary: 'Selected: {codes} codes · {labels} labels. Available: {rows} items and {remainingLabels} labels.', pickerLimit: 'Reduce the selection or copy count to fit this job limit.', copies: 'Copies', unsupported: 'Not supported in bulk printing'
 };
 const $ = (id) => document.getElementById(id);
 let session = null;
@@ -33,7 +33,13 @@ function loadVendor(globalName, filename) {
 function limits() { return session ? { rows: 500, labels: 2000 } : { rows: 50, labels: 200 }; }
 function track(name, params = {}) { window.trackBarcode?.(name, { tool: 'bulk', ...params }); }
 function status(message, error = false) { $('bulk-status').textContent = message; $('bulk-status').classList.toggle('is-error', error); }
-function setBusy(busy) { document.querySelectorAll('[data-export]').forEach((button) => button.disabled = busy); $('cancel-export').hidden = !busy; $('bulk-progress').hidden = !busy; }
+function setBusy(busy) {
+  document.querySelectorAll('[data-export]').forEach((button) => button.disabled = busy);
+  $('cancel-export').hidden = !busy;
+  $('bulk-progress').hidden = !busy;
+  $('bulk-progress').parentElement.classList.toggle('is-active', busy);
+  if (!busy) $('progress-label').textContent = '';
+}
 function formatText(template, values) { return Object.entries(values).reduce((text, [key, value]) => text.replaceAll(`{${key}}`, String(value)), template); }
 
 function downloadCsvTemplate() {
@@ -163,6 +169,12 @@ async function runExport(kind) {
   const selected = exportItems(); if (!selected) return;
   controller = new AbortController(); setBusy(true); $('bulk-progress').value = 0;
   const onProgress = (done, total) => { $('bulk-progress').max = total; $('bulk-progress').value = done; $('progress-label').textContent = `${done}/${total}`; };
+  const onArchiveProgress = (percent) => {
+    const value = Math.max(0, Math.min(100, Math.round(percent)));
+    $('bulk-progress').max = 100;
+    $('bulk-progress').value = value;
+    $('progress-label').textContent = `${copy.compressing} ${value}%`;
+  };
   try {
     if (kind !== 'report') {
       await loadVendor('JsBarcode', 'jsbarcode.min.js');
@@ -176,7 +188,7 @@ async function runExport(kind) {
       track('bulk_export_pdf', { labels: result.labels, pages: result.pages, preset: $('page-preset').value });
     } else if (kind === 'zip-svg' || kind === 'zip-png') {
       const format = kind.endsWith('png') ? 'png' : 'svg';
-      const bytes = await createBulkZip(selected, format, { maxLabels: limits().labels, signal: controller.signal, onProgress });
+      const bytes = await createBulkZip(selected, format, { maxLabels: limits().labels, signal: controller.signal, onProgress, onArchiveProgress });
       downloadBytes(bytes, `barcodes-${format}.zip`, 'application/zip');
       track('bulk_export_zip', { labels: expandBulkItems(selected, limits().labels).length, format });
     } else {

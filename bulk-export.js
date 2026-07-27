@@ -153,7 +153,9 @@ export async function createBulkPdf(items, presetId, options = {}) {
     options.onProgress?.(i + 1, labels.length);
     if (i % 12 === 0) await new Promise((resolve) => setTimeout(resolve, 0));
   }
-  return { bytes: await pdf.save(), labels: labels.length, pages: Math.ceil(labels.length / perPage), preset };
+  const bytes = await pdf.save();
+  assertActive(options.signal);
+  return { bytes, labels: labels.length, pages: Math.ceil(labels.length / perPage), preset };
 }
 
 function safeName(value, index) {
@@ -173,7 +175,15 @@ export async function createBulkZip(items, format, options = {}) {
     options.onProgress?.(i + 1, labels.length);
     if (i % 10 === 0) await new Promise((resolve) => setTimeout(resolve, 0));
   }
-  return zip.generateAsync({ type: 'uint8array', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+  const bytes = await zip.generateAsync(
+    { type: 'uint8array', compression: 'DEFLATE', compressionOptions: { level: 6 } },
+    (metadata) => {
+      assertActive(options.signal);
+      options.onArchiveProgress?.(metadata.percent);
+    },
+  );
+  assertActive(options.signal);
+  return bytes;
 }
 
 export function createValidationReport(items) {

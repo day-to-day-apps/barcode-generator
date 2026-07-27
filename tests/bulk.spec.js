@@ -126,6 +126,37 @@ test('shows the requested label count live instead of silently capping the summa
   await expect(page.locator('#bulk-summary')).not.toHaveClass(/is-error/);
 });
 
+test('cancels a ZIP export while the archive is being compressed', async ({ page }) => {
+  await page.route('**/vendor/jszip.min.js', (route) => route.fulfill({
+    contentType: 'application/javascript',
+    body: `window.JSZip = class {
+      file() {}
+      async generateAsync(options, onUpdate) {
+        for (let percent = 0; percent <= 100; percent += 5) {
+          await new Promise((resolve) => setTimeout(resolve, 75));
+          onUpdate({ percent });
+        }
+        return new Uint8Array([1, 2, 3]);
+      }
+    };`,
+  }));
+  const downloads = [];
+  page.on('download', (download) => downloads.push(download.suggestedFilename()));
+
+  await page.goto('/bulk-barcode-generator');
+  await page.locator('#bulk-rows [data-field=value]').fill('CANCEL-ZIP');
+  await page.locator('[data-export="zip-svg"]').click();
+  await expect(page.locator('#progress-label')).toContainText('Compressing');
+  await page.locator('#cancel-export').click();
+
+  await expect(page.locator('#bulk-status')).toHaveText('Generation cancelled.');
+  await expect(page.locator('#cancel-export')).toBeHidden();
+  await expect(page.locator('.bulk-progress')).not.toHaveClass(/is-active/);
+  await expect(page.locator('#progress-label')).toHaveText('');
+  await page.waitForTimeout(300);
+  expect(downloads).toEqual([]);
+});
+
 test('downloads localized CSV templates with BOM and documented columns', async ({ page }) => {
   await page.goto('/bulk-barcode-generator');
   const englishDownload = page.waitForEvent('download');
