@@ -113,17 +113,21 @@ function ensureDashboardExtras() {
     </div></section>
     <section class="dashboard-panel"><div class="dashboard-panel-heading"><h3>${copy.recent}</h3><a href="${localPath('moje-kody.html')}">${T.myCodes || 'My codes'}</a></div>
       <ul id="recent-codes" class="recent-codes"><li>${copy.empty}</li></ul></section>
-    <section id="settings" class="dashboard-panel"><h3>${copy.settings}</h3>
-      <form id="account-email-form" class="settings-form"><label for="account-new-email">${T.email || 'Email address'}</label><div class="settings-row"><input id="account-new-email" type="email" autocomplete="email" required><button class="btn-action" type="submit">${copy.changeEmail}</button></div></form>
-      <form id="account-password-form" class="settings-form"><label for="account-new-password">${T.password || 'Password'}</label><div class="settings-row"><input id="account-new-password" type="password" autocomplete="new-password" minlength="8" required><button class="btn-action" type="submit">${copy.changePassword}</button></div></form>
-      <div class="settings-actions"><button id="export-account" class="btn-action" type="button">${copy.export}</button><button id="delete-account" class="btn-action btn-danger" type="button">${copy.remove}</button></div>
-    </section>
+    <details id="settings" class="dashboard-panel account-settings" open>
+      <summary><span>${copy.settings}</span></summary>
+      <div class="account-settings-content">
+        <form id="account-email-form" class="settings-form"><label for="account-new-email">${T.email || 'Email address'}</label><div class="settings-row"><input id="account-new-email" type="email" autocomplete="email" required><button class="btn-action" type="submit">${copy.changeEmail}</button></div></form>
+        <form id="account-password-form" class="settings-form"><label for="account-new-password">${T.password || 'Password'}</label><div class="settings-row"><input id="account-new-password" type="password" autocomplete="new-password" minlength="8" required><button class="btn-action" type="submit">${copy.changePassword}</button></div></form>
+        <div class="settings-actions"><button id="export-account" class="btn-action" type="button">${copy.export}</button><button id="delete-account" class="btn-action btn-danger" type="button">${copy.remove}</button></div>
+      </div>
+    </details>
     <dialog id="delete-account-dialog" class="account-delete-dialog" aria-labelledby="delete-account-title">
       <form id="delete-account-form" method="dialog"><h3 id="delete-account-title">${copy.remove}</h3><p>${copy.deleteHelp}</p>
       <label for="delete-account-confirmation" class="sr-only">${copy.remove}</label><input id="delete-account-confirmation" autocomplete="off" required>
       <div class="dialog-actions"><button value="cancel" class="btn-action" type="button" id="delete-account-cancel">${copy.cancel}</button><button class="btn-action btn-danger" type="submit">${copy.confirm}</button></div></form>
     </dialog>`;
   $('signed-in').insertBefore(container, $('signed-in').querySelector('.dashboard-actions'));
+  if (matchMedia('(max-width: 520px)').matches && location.hash !== '#settings') $('settings').open = false;
   bindDashboardActions();
 }
 
@@ -248,7 +252,10 @@ async function renderSession(session) {
     loadRecentCodes(revision, userId),
   ]);
   if (!isCurrentSessionRender(revision, userId)) return;
-  if (location.hash === '#settings') $('settings').scrollIntoView({ behavior: 'smooth' });
+  if (location.hash === '#settings') {
+    $('settings').open = true;
+    $('settings').scrollIntoView({ behavior: 'smooth' });
+  }
 }
 
 function ensureResendButton(email) {

@@ -5023,9 +5023,33 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
 .account-authenticated main.container > .card[aria-labelledby="account-title"] { max-width: 920px; }
 .account-extras { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; text-align: left; }
 .dashboard-panel { padding: 18px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
-.dashboard-panel:last-child { grid-column: 1 / -1; }
+#settings { grid-column: 1 / -1; }
 .dashboard-panel h3 { margin: 0 0 14px; font-size: 16px; color: var(--text); }
 .dashboard-panel-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.account-settings > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    list-style: none;
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.account-settings > summary::-webkit-details-marker { display: none; }
+.account-settings > summary::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform .2s ease;
+}
+.account-settings[open] > summary::after { transform: rotate(225deg); }
+.account-settings > summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.account-settings-content { max-width: 560px; margin-top: 16px; }
 .quick-actions, .settings-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .quick-actions .btn-action { margin: 0; text-decoration: none; }
 .recent-codes { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
@@ -5055,7 +5079,7 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
 @media (max-width: 520px) {
     .dashboard-tiles { grid-template-columns: 1fr; }
     .account-extras { grid-template-columns: 1fr; }
-    .dashboard-panel:last-child { grid-column: auto; }
+    #settings { grid-column: auto; }
     .settings-row { grid-template-columns: 1fr; }
     .recent-codes li { flex-direction: column; }
     .appearance-setting { align-items: flex-start; flex-direction: column; }
