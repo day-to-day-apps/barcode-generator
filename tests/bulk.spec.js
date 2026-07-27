@@ -114,6 +114,18 @@ test('accepts 50 guest records and rejects 51 without truncating the current bat
   await expect(page.locator('#bulk-status')).toHaveText('Plik zawiera 51 rekordów danych. Ten tryb pozwala na maksymalnie 50.');
 });
 
+test('shows the requested label count live instead of silently capping the summary', async ({ page }) => {
+  await page.goto('/bulk-barcode-generator');
+  await page.locator('#bulk-rows [data-field=value]').fill('LABEL-LIMIT');
+  await page.locator('#bulk-rows [data-field=copies]').fill('201');
+  await expect(page.locator('#bulk-summary')).toContainText('201 labels · limit 200');
+  await expect(page.locator('#bulk-summary')).toHaveClass(/is-error/);
+
+  await page.locator('#bulk-rows [data-field=copies]').fill('200');
+  await expect(page.locator('#bulk-summary')).toContainText('200 labels');
+  await expect(page.locator('#bulk-summary')).not.toHaveClass(/is-error/);
+});
+
 test('downloads localized CSV templates with BOM and documented columns', async ({ page }) => {
   await page.goto('/bulk-barcode-generator');
   const englishDownload = page.waitForEvent('download');

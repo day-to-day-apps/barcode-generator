@@ -70,14 +70,20 @@ function updateSummary() {
     row.querySelector('.row-status').textContent = item.status === 'valid' ? 'OK' : item.status === 'corrected' ? item.reason : item.reason;
     if (item.status === 'corrected') row.querySelector('[data-field=value]').value = item.value;
   });
-  const totalLabels = expandBulkItems(items, limits().labels).length;
-  $('bulk-summary').textContent = `${counts.valid} ${copy.valid} · ${counts.corrected} ${copy.corrected} · ${counts.error} ${copy.errors} · ${totalLabels} ${copy.labels}`;
+  const totalLabels = items.reduce((sum, item) => sum + (item.status === 'error' ? 0 : item.copies), 0);
+  const labelsOverLimit = totalLabels > limits().labels;
+  const labelSummary = labelsOverLimit
+    ? `${totalLabels} ${copy.labels} · limit ${limits().labels}`
+    : `${totalLabels} ${copy.labels}`;
+  $('bulk-summary').textContent = `${counts.valid} ${copy.valid} · ${counts.corrected} ${copy.corrected} · ${counts.error} ${copy.errors} · ${labelSummary}`;
+  $('bulk-summary').classList.toggle('is-error', labelsOverLimit);
   return { counts, totalLabels };
 }
 
 function bindRow(row) {
   row.querySelector('.remove-row').addEventListener('click', () => { row.remove(); updateSummary(); });
-  row.querySelectorAll('input,select').forEach((control) => control.addEventListener('change', updateSummary));
+  row.querySelectorAll('input').forEach((control) => control.addEventListener('input', updateSummary));
+  row.querySelectorAll('select').forEach((control) => control.addEventListener('change', updateSummary));
 }
 
 function addRow(item = {}) {
