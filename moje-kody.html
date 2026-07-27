@@ -432,6 +432,7 @@
             });
 
             li.querySelector('.btn-delete').addEventListener('click', async (e) => {
+                const deleteButton = e.currentTarget;
                 const accepted = await confirmAction({
                     title: T.delete || 'Delete',
                     message: T.deleteConfirm || 'Delete this code?',
@@ -439,11 +440,11 @@
                     cancelLabel: T.cancel || 'Cancel',
                 });
                 if (!accepted) return;
-                e.currentTarget.disabled = true;
+                deleteButton.disabled = true;
                 const { error } = await deleteCode(row.id);
                 if (error) {
                     showError((T.deleteFail || 'Could not delete') + ': ' + (error.message || ''));
-                    e.currentTarget.disabled = false;
+                    deleteButton.disabled = false;
                     return;
                 }
                 li.remove();

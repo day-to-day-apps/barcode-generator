@@ -16,6 +16,14 @@ test('account workflows do not use blocking browser dialogs', async ({ request }
   }
 });
 
+test('async delete handlers retain their button before opening a dialog', async ({ request }) => {
+  for (const path of ['/moje-kody.html', '/szablony.html']) {
+    const html = await (await request.get(path)).text();
+    expect(html, path).toContain('const deleteButton = e.currentTarget;');
+    expect(html, path).not.toMatch(/await confirmAction\([\s\S]*?e\.currentTarget/);
+  }
+});
+
 test('decoder uses the shared accessible confirmation dialog', async ({ request }) => {
   const response = await request.get('/decoder.js');
   expect(response.ok()).toBeTruthy();
