@@ -79,6 +79,37 @@ test('maps headerless CSV in the documented table column order', async ({ page }
   await expect(page.locator('#bulk-summary')).toContainText('3 labels');
 });
 
+test('downloads localized CSV templates with BOM and documented columns', async ({ page }) => {
+  await page.goto('/bulk-barcode-generator');
+  const englishDownload = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download CSV template' }).click();
+  const english = await englishDownload;
+  expect(english.suggestedFilename()).toBe('barcode-template.csv');
+  const englishText = (await downloadBuffer(english)).toString('utf8');
+  expect(englishText.startsWith('\uFEFF')).toBe(true);
+  expect(englishText).toContain('"value","type","name","description","price","copies"');
+  expect(englishText).toContain('"590123412345","EAN13","Green tea"');
+  await expect(page.locator('#bulk-status')).toHaveText('The CSV template has been downloaded.');
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/pl/generator-kodow-z-csv');
+  const mobileGeometry = await page.locator('.bulk-toolbar').evaluate((element) => ({
+    documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    buttonWidth: element.querySelector('#download-csv-template')?.getBoundingClientRect().width || 0,
+  }));
+  expect(mobileGeometry.documentOverflow).toBe(0);
+  expect(mobileGeometry.buttonWidth).toBeGreaterThan(120);
+  const polishDownload = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Pobierz wzór CSV' }).click();
+  const polish = await polishDownload;
+  expect(polish.suggestedFilename()).toBe('wzor-kodow-kreskowych.csv');
+  const polishText = (await downloadBuffer(polish)).toString('utf8');
+  expect(polishText.startsWith('\uFEFF')).toBe(true);
+  expect(polishText).toContain('"value";"type";"name";"description";"price";"copies"');
+  expect(polishText).toContain('"Herbata zielona"');
+  await expect(page.locator('#bulk-status')).toHaveText('Wzór CSV został pobrany.');
+});
+
 test('rejects malformed CSV without replacing the current rows', async ({ page }) => {
   await page.goto('/bulk-barcode-generator');
   await page.locator('#bulk-rows [data-field=value]').fill('KEEP-ME');

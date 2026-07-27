@@ -7,9 +7,9 @@ import { encodeBulkJobState, decodeBulkJobState } from './bulk-job-state.js';
 
 const pl = document.documentElement.lang === 'pl';
 const copy = pl ? {
-  ready: 'Zaimportuj CSV lub dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', importFailed: 'Nie udało się odczytać pliku CSV.', csvInvalid: 'Plik CSV zawiera niedomknięte pole w cudzysłowie.', cancelled: 'Generowanie anulowane.', saved: 'Zadanie i format etykiety zostały zapisane.', loaded: 'Zadanie i format etykiety wczytano jako kopię.', importedCodes: 'Zaimportowano zapisane kody:', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', codesLoadFailed: 'Nie udało się pobrać zapisanych kodów.', jobsLoadFailed: 'Nie udało się pobrać zapisanych zadań.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.', pickerSummary: 'Wybrano: {codes} kodów · {labels} etykiet. Dostępne: {rows} pozycji i {remainingLabels} etykiet.', pickerLimit: 'Zmniejsz wybór lub liczbę kopii, aby zmieścić się w limicie zadania.', copies: 'Kopie', unsupported: 'Nieobsługiwany w druku seryjnym'
+  ready: 'Zaimportuj CSV lub dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', importFailed: 'Nie udało się odczytać pliku CSV.', csvInvalid: 'Plik CSV zawiera niedomknięte pole w cudzysłowie.', templateDownloaded: 'Wzór CSV został pobrany.', cancelled: 'Generowanie anulowane.', saved: 'Zadanie i format etykiety zostały zapisane.', loaded: 'Zadanie i format etykiety wczytano jako kopię.', importedCodes: 'Zaimportowano zapisane kody:', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', codesLoadFailed: 'Nie udało się pobrać zapisanych kodów.', jobsLoadFailed: 'Nie udało się pobrać zapisanych zadań.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.', pickerSummary: 'Wybrano: {codes} kodów · {labels} etykiet. Dostępne: {rows} pozycji i {remainingLabels} etykiet.', pickerLimit: 'Zmniejsz wybór lub liczbę kopii, aby zmieścić się w limicie zadania.', copies: 'Kopie', unsupported: 'Nieobsługiwany w druku seryjnym'
 } : {
-  ready: 'Import a CSV file or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', importFailed: 'The CSV file could not be read.', csvInvalid: 'The CSV file contains an unterminated quoted field.', cancelled: 'Generation cancelled.', saved: 'Print job and label format saved.', loaded: 'Job and label format loaded as a copy.', importedCodes: 'Imported saved barcodes:', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', codesLoadFailed: 'Saved barcodes could not be loaded.', jobsLoadFailed: 'Saved jobs could not be loaded.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.', pickerSummary: 'Selected: {codes} codes · {labels} labels. Available: {rows} items and {remainingLabels} labels.', pickerLimit: 'Reduce the selection or copy count to fit this job limit.', copies: 'Copies', unsupported: 'Not supported in bulk printing'
+  ready: 'Import a CSV file or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', importFailed: 'The CSV file could not be read.', csvInvalid: 'The CSV file contains an unterminated quoted field.', templateDownloaded: 'The CSV template has been downloaded.', cancelled: 'Generation cancelled.', saved: 'Print job and label format saved.', loaded: 'Job and label format loaded as a copy.', importedCodes: 'Imported saved barcodes:', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', codesLoadFailed: 'Saved barcodes could not be loaded.', jobsLoadFailed: 'Saved jobs could not be loaded.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.', pickerSummary: 'Selected: {codes} codes · {labels} labels. Available: {rows} items and {remainingLabels} labels.', pickerLimit: 'Reduce the selection or copy count to fit this job limit.', copies: 'Copies', unsupported: 'Not supported in bulk printing'
 };
 const $ = (id) => document.getElementById(id);
 let session = null;
@@ -35,6 +35,18 @@ function track(name, params = {}) { window.trackBarcode?.(name, { tool: 'bulk', 
 function status(message, error = false) { $('bulk-status').textContent = message; $('bulk-status').classList.toggle('is-error', error); }
 function setBusy(busy) { document.querySelectorAll('[data-export]').forEach((button) => button.disabled = busy); $('cancel-export').hidden = !busy; $('bulk-progress').hidden = !busy; }
 function formatText(template, values) { return Object.entries(values).reduce((text, [key, value]) => text.replaceAll(`{${key}}`, String(value)), template); }
+
+function downloadCsvTemplate() {
+  const delimiter = pl ? ';' : ',';
+  const quote = (value) => `"${String(value).replaceAll('"', '""')}"`;
+  const rows = pl
+    ? [['value', 'type', 'name', 'description', 'price', 'copies'], ['590123412345', 'EAN13', 'Herbata zielona', 'Opakowanie 20 saszetek', '12,50 PLN', '2']]
+    : [['value', 'type', 'name', 'description', 'price', 'copies'], ['590123412345', 'EAN13', 'Green tea', 'Box of 20 bags', '12.50', '2']];
+  const csv = '\uFEFF' + rows.map((row) => row.map(quote).join(delimiter)).join('\r\n') + '\r\n';
+  downloadBytes(csv, pl ? 'wzor-kodow-kreskowych.csv' : 'barcode-template.csv', 'text/csv;charset=utf-8');
+  status(copy.templateDownloaded);
+  track('bulk_csv_template_download', { locale: pl ? 'pl' : 'en', delimiter: pl ? 'semicolon' : 'comma' });
+}
 
 function readRows() {
   return [...document.querySelectorAll('#bulk-rows tr')].map((row, index) => validateBulkItem({
@@ -326,6 +338,7 @@ async function loadJobOptions(selectedId = '') {
 
 Object.entries(BULK_PRESETS).forEach(([value, preset]) => $('page-preset').add(new Option(preset.label, value)));
 $('csv-file').addEventListener('change', (event) => { const file = event.target.files[0]; if (file) importFile(file); event.target.value = ''; });
+$('download-csv-template').addEventListener('click', downloadCsvTemplate);
 $('add-row').addEventListener('click', () => addRow());
 $('clear-rows').addEventListener('click', () => { $('bulk-rows').innerHTML = ''; updateSummary(); status(copy.ready); });
 $('import-saved').addEventListener('click', importSavedCodes);
