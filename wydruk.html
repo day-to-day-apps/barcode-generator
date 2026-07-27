@@ -299,7 +299,9 @@
             els.csvStatus.hidden = true;
             try {
                 const parsed = await parseCsvFile(file);
-                const { items, skipped } = rowsToJobItems(parsed.rows, { header: true });
+                if (parsed.errors && parsed.errors.length) throw new Error('csv_invalid_format');
+                const { items, skipped, overflow } = rowsToJobItems(parsed.rows, { header: true, maxRows: 500 });
+                if (overflow) throw new Error('csv_row_limit');
                 let added = 0;
                 for (const it of items) { if (addRow(it)) added++; else break; }
                 const tpl = T.csvImported || 'Imported {n} rows ({skipped} skipped).';

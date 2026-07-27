@@ -79,6 +79,41 @@ test('maps headerless CSV in the documented table column order', async ({ page }
   await expect(page.locator('#bulk-summary')).toContainText('3 labels');
 });
 
+test('accepts 50 guest records and rejects 51 without truncating the current batch', async ({ page }) => {
+  await page.goto('/bulk-barcode-generator');
+  const makeCsv = (count) => [
+    'value,type,name,description,price,copies',
+    ...Array.from({ length: count }, (_, index) => `SKU-${String(index + 1).padStart(3, '0')},CODE128,Product ${index + 1},Box,,1`),
+  ].join('\n');
+
+  await page.locator('#csv-file').setInputFiles({
+    name: 'fifty.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from(makeCsv(50), 'utf8'),
+  });
+  await expect(page.locator('#bulk-rows tr')).toHaveCount(50);
+  await expect(page.locator('#bulk-rows [data-field=value]').first()).toHaveValue('SKU-001');
+  await expect(page.locator('#bulk-rows [data-field=value]').last()).toHaveValue('SKU-050');
+
+  await page.locator('#csv-file').setInputFiles({
+    name: 'fifty-one.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from(makeCsv(51), 'utf8'),
+  });
+  await expect(page.locator('#bulk-status')).toHaveText('This file contains 51 data records. This mode allows up to 50.');
+  await expect(page.locator('#bulk-status')).toHaveClass(/is-error/);
+  await expect(page.locator('#bulk-rows tr')).toHaveCount(50);
+  await expect(page.locator('#bulk-rows [data-field=value]').last()).toHaveValue('SKU-050');
+
+  await page.goto('/pl/generator-kodow-z-csv');
+  await page.locator('#csv-file').setInputFiles({
+    name: 'piecdziesiat-jeden.csv',
+    mimeType: 'text/csv',
+    buffer: Buffer.from(makeCsv(51), 'utf8'),
+  });
+  await expect(page.locator('#bulk-status')).toHaveText('Plik zawiera 51 rekordów danych. Ten tryb pozwala na maksymalnie 50.');
+});
+
 test('downloads localized CSV templates with BOM and documented columns', async ({ page }) => {
   await page.goto('/bulk-barcode-generator');
   const englishDownload = page.waitForEvent('download');

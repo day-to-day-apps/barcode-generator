@@ -55,8 +55,9 @@ export async function parseCsvFile(file) {
 export function rowsToJobItems(rows, options) {
   const opts = options || {};
   const useHeader = opts.header !== false;
+  const maxRows = Math.max(1, Math.min(MAX_ROWS, Number(opts.maxRows) || MAX_ROWS));
   if (!Array.isArray(rows) || rows.length === 0) {
-    return { items: [], skipped: 0, headerMap: null };
+    return { items: [], skipped: 0, overflow: 0, recordCount: 0, headerMap: null };
   }
 
   let headerMap = null;
@@ -69,14 +70,18 @@ export function rowsToJobItems(rows, options) {
 
   const items = [];
   let skipped = 0;
-  for (let i = dataStart; i < rows.length && items.length < MAX_ROWS; i++) {
+  let overflow = 0;
+  let recordCount = 0;
+  for (let i = dataStart; i < rows.length; i++) {
     const r = rows[i];
     if (!r || r.length === 0) { skipped++; continue; }
     const item = mapRow(r, headerMap);
     if (!item || !item.value) { skipped++; continue; }
-    items.push({ position: items.length, ...item });
+    recordCount++;
+    if (items.length < maxRows) items.push({ position: items.length, ...item });
+    else overflow++;
   }
-  return { items, skipped, headerMap };
+  return { items, skipped, overflow, recordCount, headerMap };
 }
 
 function mapHeaders(head) {
