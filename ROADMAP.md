@@ -67,7 +67,7 @@ Cel: bezpiecznie połączyć się z istniejącym projektem Supabase i przejrzeć
   - Walidacje CHECK: rozmiary mm 0-1000, dpi 72-1200, offset ±20mm, bar_width 0.5-1.5, długości stringów na print_job_items, max 500 items per save_print_job.
   - ~~**Uwaga niska priorytet**: tabela `subscriptions` martwa po decyzji 2026-05-07.~~ — **Rozwiązane 2026-05-21**: drop tabeli + enum `subscription_status` + `is_pro()` zwraca stale `false` (free-tier-only). Migracja `20260613140000_drop_subscriptions.sql`.
 - [x] ~~`.env.local` (gitignore) z `SUPABASE_URL` + `SUPABASE_ANON_KEY` (publishable).~~ — Zamiast `.env.local` użyto `supabase-config.js` (gitignored przez root `.gitignore`), z `supabase-config.example.js` jako szablon. Lepsze dla static-client (brak build stepu do substytucji env).
-- [x] `supabase-client.js` — singleton ESM ładowany dynamicznie (tylko gdy potrzebny). — Lazy `getSupabase()`, dynamic `import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm')` zgodne z CSP `script-src cdn.jsdelivr.net`, storageKey `bg.auth`.
+- [x] `supabase-client.js` — singleton ESM ładowany dynamicznie (tylko gdy potrzebny). — Lazy `getSupabase()`, lokalny bundle `/vendor/supabase.min.js`, timeout i natychmiastowy stan formularza, storageKey `bg.auth`.
 
 ### M2 — Auth (email + hasło) i prywatne kody (MVP konta)
 

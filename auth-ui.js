@@ -4,7 +4,8 @@
 // - eksponuje window.__authState dla diagnostyki/integracji
 
 import { getSupabase, getSession, onAuthStateChange } from './supabase-client.js';
-import { countCodes, FREE_CODES_LIMIT } from './db-codes.js';
+import { insertCode } from './db-codes.js';
+import { rememberPendingCode, consumePendingCode } from './pending-code.js';
 
 const ROUTES = {
   account: '/konto',
@@ -32,31 +33,12 @@ const FALLBACK_TEXT = {
   accountSettings: 'Account settings',
 };
 
-const PENDING_COOKIE = 'bc_pending_code';
-const PENDING_TTL_SECONDS = 86400;
+const PUBLIC_LANGUAGES = new Set(['pl', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'cs', 'uk']);
 
-function writePendingCookie(payload) {
-  try {
-    const value = encodeURIComponent(JSON.stringify(payload));
-    document.cookie = `${PENDING_COOKIE}=${value}; path=/; max-age=${PENDING_TTL_SECONDS}; SameSite=Strict`;
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function readPendingCookie() {
-  const match = document.cookie.split('; ').find(c => c.startsWith(`${PENDING_COOKIE}=`));
-  if (!match) return null;
-  try {
-    return JSON.parse(decodeURIComponent(match.split('=')[1]));
-  } catch {
-    return null;
-  }
-}
-
-function clearPendingCookie() {
-  document.cookie = `${PENDING_COOKIE}=; path=/; max-age=0; SameSite=Strict`;
+function getActiveLanguage() {
+  const routeLanguage = window.location.pathname.split('/').filter(Boolean)[0];
+  if (PUBLIC_LANGUAGES.has(routeLanguage)) return routeLanguage;
+  return document.documentElement.lang || 'en';
 }
 
 function hasPersistedSessionHint() {
@@ -68,13 +50,13 @@ function hasPersistedSessionHint() {
 }
 
 function t(key) {
-  const lang = document.documentElement.lang || 'en';
+  const lang = getActiveLanguage();
   const dict = (window.BARCODE_I18N || {})[lang] || (window.BARCODE_I18N || {}).en || {};
   return (dict.account && dict.account[key]) || FALLBACK_TEXT[key] || key;
 }
 
 async function waitForTranslations() {
-  const lang = document.documentElement.lang || 'en';
+  const lang = getActiveLanguage();
   if ((window.BARCODE_I18N || {})[lang]?.account) return;
   await Promise.race([
     new Promise((resolve) => window.addEventListener('barcode:i18n-ready', resolve, { once: true })),
@@ -277,14 +259,21 @@ function readCurrentBarcode() {
 function collectSettings() {
   const out = {};
   const ids = [
-    'barcode-width', 'barcode-height', 'barcode-margin',
-    'fg-color', 'bg-color', 'rotation', 'show-text', 'text-align',
+    'bar-width', 'bar-height', 'bar-margin', 'font-size',
+    'line-color', 'bg-color', 'rotation', 'show-text',
+    'qr-ecc', 'qr-fg-color', 'qr-bg-color', 'qr-bg-transparent',
+    'qr-eye-style', 'qr-quiet-zone', 'qr-logo-size', 'qr-logo-shape',
+    'qr-caption', 'qr-caption-size', 'qr-grad-start', 'qr-grad-end', 'qr-grad-angle',
   ];
   for (const id of ids) {
     const el = document.getElementById(id);
     if (!el) continue;
     out[id] = el.type === 'checkbox' ? el.checked : el.value;
   }
+  const alignment = document.querySelector('.btn-option[data-target="text-align"][aria-pressed="true"]')?.dataset.value;
+  if (alignment) out['text-align'] = alignment;
+  const qrColorMode = document.querySelector('input[name="qr-color-mode-radio"]:checked')?.value;
+  if (qrColorMode) out['qr-color-mode'] = qrColorMode;
   const product = {
     description: document.getElementById('label-description')?.value?.trim().slice(0, 500) || '',
     price: document.getElementById('label-price')?.value?.trim().slice(0, 64) || '',
@@ -299,7 +288,7 @@ async function saveCurrentBarcode(btn) {
   if (!state.session?.user && !hasPersistedSessionHint()) {
     const pending = readCurrentBarcode();
     if (pending) {
-      writePendingCookie({ ...pending, ts: Date.now() });
+      rememberPendingCode(pending);
       announce(t('pendingCodePrompt'));
     }
     window.location.href = `${ROUTES.account}#register`;
@@ -314,7 +303,7 @@ async function saveCurrentBarcode(btn) {
   if (!sb || !state.session?.user) {
     const pending = readCurrentBarcode();
     if (pending) {
-      writePendingCookie({ ...pending, ts: Date.now() });
+      rememberPendingCode(pending);
       announce(t('pendingCodePrompt'));
     }
     window.location.href = `${ROUTES.account}#register`;
@@ -333,15 +322,7 @@ async function saveCurrentBarcode(btn) {
   label.textContent = t('saving');
 
   try {
-    const { count, error: countErr } = await countCodes();
-    if (countErr) throw countErr;
-    if (count >= FREE_CODES_LIMIT) {
-      const msg = (t('freeLimitReached') || 'Free limit reached. Delete a code first or upgrade.');
-      announce(msg);
-      label.textContent = original;
-      return;
-    }
-    const { error } = await sb.from('saved_codes').insert({
+    const { error } = await insertCode({
       user_id: state.session.user.id,
       code_type: data.code_type,
       value: data.value,
@@ -400,12 +381,12 @@ async function init() {
       state.user = session?.user ?? null;
       renderHeaderState(headerControls);
       if (wasAnon && session?.user) {
-        consumePendingCode().catch(err => console.warn('[auth-ui] pending consume:', err?.message));
+        consumePendingBarcode().catch(err => console.warn('[auth-ui] pending consume:', err?.message));
       }
     });
 
     if (state.session?.user) {
-      consumePendingCode().catch(err => console.warn('[auth-ui] pending consume:', err?.message));
+      consumePendingBarcode().catch(err => console.warn('[auth-ui] pending consume:', err?.message));
     }
   };
 
@@ -420,29 +401,12 @@ async function init() {
   }
 }
 
-async function consumePendingCode() {
-  const pending = readPendingCookie();
-  if (!pending || !pending.code_type || !pending.value) return;
-  const sb = await getSupabase();
-  if (!sb || !state.session?.user) return;
+async function consumePendingBarcode() {
+  if (!state.session?.user) return;
   try {
-    const { count, error: countErr } = await countCodes();
-    if (countErr) throw countErr;
-    if (count >= FREE_CODES_LIMIT) {
-      clearPendingCookie();
-      announce(t('freeLimit'));
-      return;
-    }
-    const { error } = await sb.from('saved_codes').insert({
-      user_id: state.session.user.id,
-      code_type: pending.code_type,
-      value: pending.value,
-      name: pending.name || null,
-      settings: pending.settings || {},
-    });
-    if (error) throw error;
-    clearPendingCookie();
-    announce(t('pendingCodeSaved'));
+    const result = await consumePendingCode(state.session.user.id);
+    if (result.error) throw result.error;
+    if (result.saved) announce(t('pendingCodeSaved'));
   } catch (err) {
     console.warn('[auth-ui] pending save error:', err?.message);
   }

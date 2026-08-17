@@ -6,10 +6,12 @@
     empty: 'Wpisz dane do zakodowania.', ready: 'Kod jest gotowy do pobrania.', bytes: 'bajtów',
     pixels: 'px', copied: 'Skopiowano dane.', copyFailed: 'Nie udało się skopiować.',
     renderError: 'Tych danych nie można zakodować przy wybranych ustawieniach.',
+    contrast: 'Zwiększ kontrast: kod powinien być ciemny, a tło jasne.',
   } : {
     empty: 'Enter data to encode.', ready: 'The barcode is ready to download.', bytes: 'bytes',
     pixels: 'px', copied: 'Data copied.', copyFailed: 'Copy failed.',
     renderError: 'This data cannot be encoded with the selected settings.',
+    contrast: 'Increase contrast: the barcode should be dark on a light background.',
   };
 
   const $ = (id) => document.getElementById(id);
@@ -73,11 +75,15 @@
       options.bcid = $('aztec-format').value === 'compact' ? 'azteccodecompact' : 'azteccode';
       options.eclevel = Number($('aztec-error-level').value);
     }
+    if (!window.BarcodeQuality?.assessContrast(options.barcolor, options.backgroundcolor).valid) {
+      throw new Error('contrast');
+    }
     return options;
   }
 
   function friendlyError(error) {
     if (error.message === 'empty') return copy.empty;
+    if (error.message === 'contrast') return copy.contrast;
     const detail = String(error.message || error).replace(/^bwipp\.[^:]+:\s*/i, '').trim();
     return detail && detail.length < 180 ? `${copy.renderError} ${detail}` : copy.renderError;
   }

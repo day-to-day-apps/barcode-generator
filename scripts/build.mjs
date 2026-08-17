@@ -23,11 +23,11 @@ const PRIVATE_PAGES = ['konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', '
 const ROOT_ASSETS = [
   '404.html', '_headers', '_redirects', 'ads.txt', 'robots.txt', 'favicon.svg', 'og-image.svg',
   'manifest.webmanifest', 'pwa-register.js',
-  'analytics.js', 'appearance.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
+  'analytics.js', 'appearance.js', 'app.js', 'barcode-quality.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
   'ean13-inline.js', 'ean13-inline.css', 'format-inline.js', 'format-inline.css',
   'bulk.js', 'bulk-export.js', 'bulk-job-state.js', 'bulk.css', 'gs1.js', 'gs1-generator.js', 'gs1.css',
   'two-d-generator.js', 'two-d.css', 'specialized-save.js',
-  'csv-import.js', 'csv-worker.js', 'xlsx-worker.js', 'dashboard-stats.js', 'db-codes.js', 'db-jobs.js',
+  'csv-import.js', 'csv-worker.js', 'xlsx-worker.js', 'dashboard-stats.js', 'db-codes.js', 'db-jobs.js', 'pending-code.js',
   'db-printers.js', 'db-templates.js', 'decoder.js', 'i18n.js', 'label-renderer.js',
   'nav-enhance.js', 'print-builder.js', 'printer-presets.json', 'reset-password-page.js',
   'styles.css', 'supabase-client.js', 'supabase-config.js',
@@ -712,7 +712,7 @@ function guidePageHtml(page, lang, alternate) {
         url: canonical,
         inLanguage: lang,
         datePublished: page.datePublished || '2026-07-21',
-        dateModified: new Date().toISOString().slice(0, 10),
+        dateModified: page.dateModified || page.datePublished || '2026-07-21',
         author: { '@type': 'Organization', name: 'Day to Day Apps', url: 'https://daytodayapps.com/' },
         publisher: { '@type': 'Organization', name: 'Day to Day Apps', url: 'https://daytodayapps.com/' },
       },
@@ -854,7 +854,6 @@ async function copyPublicDirectory(name) {
 }
 
 function sitemapXml() {
-  const today = new Date().toISOString().slice(0, 10);
   const groups = [
     { page: '', priority: '1.0' },
     { page: 'decoder', priority: '0.9' },
@@ -869,7 +868,6 @@ function sitemapXml() {
         rows.push(`    <xhtml:link rel="alternate" hreflang="${alternate}" href="${canonicalFor(alternate, group.page)}"/>`);
       }
       rows.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${canonicalFor('en', group.page)}"/>`);
-      rows.push(`    <lastmod>${today}</lastmod>`);
       rows.push(`    <priority>${group.priority}</priority>`);
       rows.push('  </url>');
     }
@@ -891,7 +889,6 @@ function sitemapXml() {
       rows.push(`    <xhtml:link rel="alternate" hreflang="en" href="${alternatives.en}"/>`);
       rows.push(`    <xhtml:link rel="alternate" hreflang="pl" href="${alternatives.pl}"/>`);
       rows.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${alternatives.en}"/>`);
-      rows.push(`    <lastmod>${today}</lastmod>`);
       rows.push('    <priority>0.8</priority>');
       rows.push('  </url>');
     }
@@ -908,7 +905,6 @@ function sitemapXml() {
       rows.push(`    <xhtml:link rel="alternate" hreflang="en" href="${alternatives.en}"/>`);
       rows.push(`    <xhtml:link rel="alternate" hreflang="pl" href="${alternatives.pl}"/>`);
       rows.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${alternatives.en}"/>`);
-      rows.push(`    <lastmod>${today}</lastmod>`);
       rows.push('    <priority>0.3</priority>');
       rows.push('  </url>');
     }
@@ -961,6 +957,8 @@ await cp(path.join(ROOT, 'node_modules/xlsx/dist/xlsx.mini.min.js'), path.join(O
 await cp(path.join(ROOT, 'node_modules/jsbarcode/dist/JsBarcode.all.min.js'), path.join(OUT, 'vendor/jsbarcode.min.js'));
 await cp(path.join(ROOT, 'node_modules/qrcode-generator/qrcode.js'), path.join(OUT, 'vendor/qrcode-generator.js'));
 await cp(path.join(ROOT, 'node_modules/bwip-js/dist/bwip-js-min.js'), path.join(OUT, 'vendor/bwip-js-min.js'));
+const supabaseUmd = await readFile(path.join(ROOT, 'node_modules/@supabase/supabase-js/dist/umd/supabase.js'), 'utf8');
+await writeFile(path.join(OUT, 'vendor/supabase.min.js'), `${supabaseUmd}\nexport const createClient = supabase.createClient;\n`, 'utf8');
 await cp(path.join(ROOT, 'node_modules/@zxing/library/umd/index.min.js'), path.join(OUT, 'vendor/zxing.min.js'));
 await cp(path.join(ROOT, 'node_modules/@undecaf/zbar-wasm/dist/index.js'), path.join(OUT, 'vendor/zbar-wasm.js'));
 await cp(path.join(ROOT, 'node_modules/@undecaf/zbar-wasm/dist/zbar.wasm'), path.join(OUT, 'vendor/zbar.wasm'));
@@ -971,6 +969,7 @@ await cp(path.join(ROOT, 'node_modules/@undecaf/zbar-wasm/LICENSE'), path.join(O
 await cp(path.join(ROOT, 'node_modules/@undecaf/barcode-detector-polyfill/LICENSE'), path.join(OUT, 'licenses/barcode-detector-polyfill-LICENSE.txt'));
 await cp(path.join(ROOT, 'node_modules/pdf-lib/LICENSE.md'), path.join(OUT, 'licenses/fontkit-LICENSE.txt'));
 await cp(path.join(ROOT, 'node_modules/xlsx/LICENSE'), path.join(OUT, 'licenses/xlsx-LICENSE.txt'));
+await cp(path.join(ROOT, 'node_modules/@supabase/supabase-js/LICENSE'), path.join(OUT, 'licenses/supabase-js-LICENSE.txt'));
 await cp(path.join(ROOT, 'assets/fonts/OFL.txt'), path.join(OUT, 'licenses/noto-sans-OFL.txt'));
 await writeFile(path.join(OUT, 'bulk-barcode-generator.html'), normaliseHtml(await readFile(path.join(ROOT, 'bulk.html'), 'utf8')), 'utf8');
 await mkdir(path.join(OUT, 'pl'), { recursive: true });
@@ -1078,7 +1077,7 @@ for (const [source, target] of polishLegal) {
 const landingContent = [
   'index.html',
   ...LOCALE_DIRS.map((lang) => `${lang}/index.html`),
-  ...['app.js', 'i18n.js', 'label-renderer.js', 'analytics.js', 'appearance.js', 'auth-ui.js', 'db-codes.js', 'supabase-client.js']
+  ...['app.js', 'barcode-quality.js', 'i18n.js', 'label-renderer.js', 'analytics.js', 'appearance.js', 'auth-ui.js', 'db-codes.js', 'supabase-client.js']
     .map((name) => name),
 ];
 const [{ css: purgedLandingCss }] = await new PurgeCSS().purge({
@@ -1111,6 +1110,7 @@ if (immediateLandingApp === landingAppBase) throw new Error('Could not create im
 const landingAppSource = [
   await readFile(path.join(ROOT, 'node_modules/jsbarcode/dist/JsBarcode.all.min.js'), 'utf8'),
   await readFile(path.join(ROOT, 'node_modules/qrcode-generator/qrcode.js'), 'utf8'),
+  await readFile(path.join(ROOT, 'barcode-quality.js'), 'utf8'),
   await readFile(path.join(ROOT, 'i18n.js'), 'utf8'),
   "window.dispatchEvent(new Event('barcode:i18n-ready'));",
   await readFile(path.join(ROOT, 'label-renderer.js'), 'utf8'),
@@ -1194,14 +1194,15 @@ const precache = [
   '/manifest.webmanifest', '/pwa-icon-192.png', '/pwa-icon-512.png', '/favicon.svg',
   ...Object.keys(previewConfigs).map((name) => `/previews/${name}.svg`),
   '/landing.css', '/decoder.css', '/ean13-inline.css', '/format-inline.css', '/styles.css', '/bulk.css', '/gs1.css', '/two-d.css',
-  '/app-landing.js', '/landing-loader.js', '/app.js', '/decoder.js', '/decoder-i18n.js', '/ean13-inline.js', '/format-inline.js', '/i18n.js', '/label-renderer.js', '/analytics.js', '/appearance.js',
-  '/pwa-register.js', '/auth-ui.js', '/supabase-client.js', '/supabase-config.js', '/db-codes.js',
+  '/app-landing.js', '/landing-loader.js', '/app.js', '/barcode-quality.js', '/decoder.js', '/decoder-i18n.js', '/ean13-inline.js', '/format-inline.js', '/i18n.js', '/label-renderer.js', '/analytics.js', '/appearance.js',
+  '/pwa-register.js', '/auth-ui.js', '/supabase-client.js', '/supabase-config.js', '/db-codes.js', '/pending-code.js',
   '/account-dialogs.js', '/bulk.js', '/bulk-export.js', '/bulk-job-state.js', '/csv-import.js', '/csv-worker.js',
   '/db-jobs.js', '/gs1.js', '/gs1-generator.js', '/two-d-generator.js', '/specialized-save.js',
   '/vendor/jsbarcode.min.js', '/vendor/qrcode-generator.js', '/vendor/zxing.min.js',
   '/vendor/zbar-wasm.js', '/vendor/zbar.wasm', '/vendor/barcode-detector-polyfill.js',
   '/vendor/pdf-lib.min.js', '/vendor/fontkit.min.js', '/vendor/NotoSans-Regular.ttf',
   '/vendor/jszip.min.js', '/vendor/bwip-js-min.js',
+  '/vendor/supabase.min.js',
   ...FLAG_CODES.flatMap((code) => [`/flags/${code}.png`, `/flags/${code}@2x.png`]),
 ];
 const serviceWorkerTemplate = await readFile(path.join(ROOT, 'service-worker.template.js'), 'utf8');

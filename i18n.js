@@ -115,6 +115,8 @@ window.BARCODE_I18N = {
         qrCaption: 'Podpis pod kodem',
         qrCaptionSize: 'Rozmiar podpisu',
         errLogoSize: 'Plik logo jest za duży (max 2 MB)',
+        advancedSettings: 'Ustawienia zaawansowane',
+        errContrast: 'Zwiększ kontrast: kod powinien być ciemny, a tło jasne.',
     },
 
     /* ── English ── */
@@ -231,6 +233,8 @@ window.BARCODE_I18N = {
         qrCaption: 'Caption',
         qrCaptionSize: 'Caption size',
         errLogoSize: 'Logo file is too large (max 2 MB)',
+        advancedSettings: 'Advanced settings',
+        errContrast: 'Increase contrast: use a dark barcode on a light background.',
     },
 
     /* ── German ── */
@@ -347,6 +351,8 @@ window.BARCODE_I18N = {
         qrCaption: 'Beschriftung',
         qrCaptionSize: 'Beschriftungsgröße',
         errLogoSize: 'Logo-Datei ist zu groß (max. 2 MB)',
+        advancedSettings: 'Erweiterte Einstellungen',
+        errContrast: 'Erhöhen Sie den Kontrast: dunkler Barcode auf hellem Hintergrund.',
     },
 
     /* ── French ── */
@@ -463,6 +469,8 @@ window.BARCODE_I18N = {
         qrCaption: 'Légende',
         qrCaptionSize: 'Taille de la légende',
         errLogoSize: 'Le fichier logo est trop volumineux (max 2 Mo)',
+        advancedSettings: 'Paramètres avancés',
+        errContrast: 'Augmentez le contraste : code sombre sur fond clair.',
     },
 
     /* ── Spanish ── */
@@ -579,6 +587,8 @@ window.BARCODE_I18N = {
         qrCaption: 'Pie de texto',
         qrCaptionSize: 'Tamaño del pie',
         errLogoSize: 'El archivo del logo es demasiado grande (máx. 2 MB)',
+        advancedSettings: 'Ajustes avanzados',
+        errContrast: 'Aumenta el contraste: código oscuro sobre fondo claro.',
     },
 
     /* ── Italian ── */
@@ -695,6 +705,8 @@ window.BARCODE_I18N = {
         qrCaption: 'Didascalia',
         qrCaptionSize: 'Dimensione didascalia',
         errLogoSize: 'Il file del logo è troppo grande (max 2 MB)',
+        advancedSettings: 'Impostazioni avanzate',
+        errContrast: 'Aumenta il contrasto: codice scuro su sfondo chiaro.',
     },
 
     /* ── Portuguese ── */
@@ -811,6 +823,8 @@ window.BARCODE_I18N = {
         qrCaption: 'Legenda',
         qrCaptionSize: 'Tamanho da legenda',
         errLogoSize: 'O arquivo do logo é muito grande (máx. 2 MB)',
+        advancedSettings: 'Definições avançadas',
+        errContrast: 'Aumente o contraste: código escuro sobre fundo claro.',
     },
 
     /* ── Dutch ── */
@@ -927,6 +941,8 @@ window.BARCODE_I18N = {
         qrCaption: 'Bijschrift',
         qrCaptionSize: 'Bijschriftgrootte',
         errLogoSize: 'Logobestand is te groot (max. 2 MB)',
+        advancedSettings: 'Geavanceerde instellingen',
+        errContrast: 'Verhoog het contrast: donkere barcode op een lichte achtergrond.',
     },
 
     /* ── Czech ── */
@@ -1043,6 +1059,8 @@ window.BARCODE_I18N = {
         qrCaption: 'Popisek',
         qrCaptionSize: 'Velikost popisku',
         errLogoSize: 'Soubor s logem je příliš velký (max 2 MB)',
+        advancedSettings: 'Pokročilá nastavení',
+        errContrast: 'Zvyšte kontrast: tmavý kód na světlém pozadí.',
     },
 
     /* ── Ukrainian ── */
@@ -1159,6 +1177,8 @@ window.BARCODE_I18N = {
         qrCaption: 'Підпис',
         qrCaptionSize: 'Розмір підпису',
         errLogoSize: 'Файл логотипа завеликий (макс. 2 МБ)',
+        advancedSettings: 'Розширені налаштування',
+        errContrast: 'Збільште контраст: темний код на світлому тлі.',
     },
 };
 

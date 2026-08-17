@@ -1,8 +1,18 @@
-// Lazy singleton klienta Supabase ładowanego z jsDelivr (CSP: script-src zawiera cdn.jsdelivr.net).
+// Lazy singleton klienta Supabase ładowanego z lokalnego buildu produkcyjnego.
 // Konfiguracja: skopiuj supabase-config.example.js → supabase-config.js i uzupełnij anon key.
 // Anon key jest bezpieczny do publikacji w kliencie — RLS pilnuje dostępu po stronie bazy.
 
 let clientPromise = null;
+const SDK_URL = '/vendor/supabase.min.js';
+const SDK_TIMEOUT_MS = 8000;
+
+async function loadSdk() {
+  const importPromise = import(SDK_URL);
+  const timeoutPromise = new Promise((_, reject) => {
+    window.setTimeout(() => reject(new Error('Supabase SDK load timed out')), SDK_TIMEOUT_MS);
+  });
+  return Promise.race([importPromise, timeoutPromise]);
+}
 
 async function loadConfig() {
   try {
@@ -26,7 +36,7 @@ export async function getSupabase() {
     if (!cfg) return null;
 
     try {
-      const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+      const { createClient } = await loadSdk();
       return createClient(cfg.url, cfg.anonKey, {
         auth: {
           persistSession: true,

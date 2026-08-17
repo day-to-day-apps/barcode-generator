@@ -2,7 +2,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const SDK_URL = /cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\/\+esm/;
+const SDK_URL = /\/vendor\/supabase\.min\.js/;
 
 test('dashboard ignores delayed data from a previous account session', async ({ page }) => {
   await page.route(SDK_URL, (route) => route.fulfill({

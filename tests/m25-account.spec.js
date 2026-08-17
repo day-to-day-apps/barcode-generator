@@ -49,6 +49,15 @@ test.describe('M2.5 — konto.html register form', () => {
     const submits = page.locator('button[type="submit"], input[type="submit"]');
     expect(await submits.count()).toBeGreaterThan(0);
   });
+
+  test('shows the signed-out form before the account SDK finishes loading', async ({ page }) => {
+    await page.route(/\/vendor\/supabase\.min\.js/, async () => {
+      await new Promise(() => {});
+    });
+    await page.goto('/konto', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#signed-out')).toBeVisible();
+    await expect(page.locator('#login-email')).toBeVisible();
+  });
 });
 
 test.describe('M2.5 — wydruk.html builder shell', () => {

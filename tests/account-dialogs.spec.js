@@ -1,5 +1,6 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
 
 const ACCOUNT_PAGES = [
   '/moje-kody.html',
@@ -14,6 +15,11 @@ test('account workflows do not use blocking browser dialogs', async ({ request }
     const html = await (await request.get(path)).text();
     expect(html, path).not.toMatch(/\b(?:confirm|alert|prompt)\s*\(/);
   }
+});
+
+test('account deletion rejects a missing server-side confirmation', async () => {
+  const migration = await readFile('supabase/migrations/20260817000000_fix_delete_own_account_confirmation.sql', 'utf8');
+  expect(migration).toContain('confirmation is null or confirmation not in');
 });
 
 test('async delete handlers retain their button before opening a dialog', async ({ request }) => {

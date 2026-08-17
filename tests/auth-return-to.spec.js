@@ -1,7 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-const SDK_URL = /cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\/\+esm/;
+const SDK_URL = /\/vendor\/supabase\.min\.js/;
 
 async function mockSignedOutAuth(page) {
   await page.route(SDK_URL, (route) => route.fulfill({

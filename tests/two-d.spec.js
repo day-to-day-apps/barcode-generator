@@ -79,6 +79,14 @@ test.describe('2D barcode generator', () => {
     expect(filenames[1]).toMatch(/^datamatrix-\d+\.png$/);
   });
 
+  test('blocks an unreadable low-contrast symbol before export', async ({ page }) => {
+    await page.locator('#two-d-foreground').fill('#ffffff');
+    await page.locator('#two-d-background').fill('#ffffff');
+    await expect(page.locator('#two-d-status')).toContainText('Increase contrast');
+    await expect(page.locator('#download-two-d-svg')).toBeDisabled();
+    await expect(page.locator('#two-d-preview')).not.toHaveAttribute('data-format');
+  });
+
   test('updates format-specific settings without console errors', async ({ page }) => {
     const errors = [];
     page.on('console', (message) => {
@@ -129,7 +137,7 @@ test.describe('2D barcode generator', () => {
   });
 
   test('saves the generated 2D payload for an authenticated account', async ({ page }) => {
-    await page.route(/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\/\+esm/, (route) => route.fulfill({
+    await page.route(/\/vendor\/supabase\.min\.js/, (route) => route.fulfill({
       status: 200,
       contentType: 'application/javascript',
       headers: { 'access-control-allow-origin': '*' },
@@ -176,6 +184,12 @@ test.describe('2D barcode generator', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/pl/generator-kodow-2d');
     await expect(page.locator('#two-d-advanced')).not.toHaveAttribute('open', '');
+    const navLinks = page.locator('.bulk-header nav a');
+    await expect(navLinks).toHaveCount(4);
+    for (const link of await navLinks.all()) {
+      await expect(link).toBeVisible();
+      expect((await link.boundingBox())?.height).toBeGreaterThanOrEqual(40);
+    }
     const geometry = await page.evaluate(() => {
       const controls = [...document.querySelectorAll('#two-d-form input, #two-d-form select, #two-d-form textarea, .two-d-actions button')];
       return {
@@ -207,7 +221,7 @@ test.describe('2D barcode generator', () => {
 });
 
 test('saved-code catalog renders a Data Matrix preview with the local library', async ({ page }) => {
-  await page.route(/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\/\+esm/, (route) => route.fulfill({
+  await page.route(/\/vendor\/supabase\.min\.js/, (route) => route.fulfill({
     status: 200,
     contentType: 'application/javascript',
     headers: { 'access-control-allow-origin': '*' },

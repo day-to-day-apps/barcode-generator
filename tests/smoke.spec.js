@@ -105,6 +105,41 @@ test.describe('Index page - per language', () => {
   }
 });
 
+test('mobile generator keeps the primary flow visible and advanced settings operable', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/pl/');
+  const advanced = page.locator('.advanced-settings');
+  await expect(advanced).not.toHaveAttribute('open', '');
+  await expect(page.locator('#barcode-type')).toBeVisible();
+  await expect(page.locator('#barcode-text')).toBeVisible();
+  await expect(page.locator('#btn-generate')).toBeVisible();
+  await advanced.locator('summary').click();
+  await expect(advanced).toHaveAttribute('open', '');
+  await expect(page.locator('#bar-width')).toBeVisible();
+});
+
+test('QR quick print reuses the generated SVG instead of showing a barcode error', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('barcode-cookie-consent', 'rejected'));
+  await page.goto('/pl/');
+  await page.locator('#barcode-type').selectOption('QR');
+  await page.locator('#barcode-text').fill('https://daytodayapps.com/qr-print-test');
+  await page.locator('#btn-generate').click();
+  await page.locator('#btn-print-labels').click();
+  await expect(page.locator('#print-modal')).toBeVisible();
+  await expect(page.locator('#print-preview .label-barcode svg')).toBeVisible();
+  await expect(page.locator('#print-preview')).not.toContainText(/błąd kodu|barcode error/i);
+});
+
+test('generator blocks a low-contrast barcode before download or print', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('barcode-cookie-consent', 'rejected'));
+  await page.goto('/');
+  await page.locator('#line-color').fill('#ffffff');
+  await page.locator('#bg-color').fill('#ffffff');
+  await page.locator('#btn-generate').click();
+  await expect(page.locator('#error-message')).toBeVisible();
+  await expect(page.locator('#error-text')).toContainText('Increase contrast');
+});
+
 test.describe('Decoder page - per language', () => {
   for (const { code, path } of LANGS) {
     test(`[${code}] decoder.html has exactly one #camera-modal`, async ({ page }) => {

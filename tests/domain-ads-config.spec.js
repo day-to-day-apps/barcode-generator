@@ -51,6 +51,22 @@ function listTextFiles(dir = ROOT) {
 }
 
 test.describe('Domain and ads configuration guardrails', () => {
+  test('account SDK is served locally instead of blocking on a third-party CDN', async () => {
+    const client = fs.readFileSync(path.join(ROOT, 'supabase-client.js'), 'utf8');
+    const build = fs.readFileSync(path.join(ROOT, 'scripts', 'build.mjs'), 'utf8');
+    expect(client).toContain("import(SDK_URL)");
+    expect(client).toContain("'/vendor/supabase.min.js'");
+    expect(client).not.toContain('cdn.jsdelivr.net/npm/@supabase/supabase-js');
+    expect(build).toContain("node_modules/@supabase/supabase-js/dist/umd/supabase.js");
+  });
+
+  test('sitemap and article metadata do not claim every build is a content update', () => {
+    const build = fs.readFileSync(path.join(ROOT, 'scripts', 'build.mjs'), 'utf8');
+    expect(build).not.toContain('const today = new Date().toISOString().slice(0, 10)');
+    expect(build).not.toContain('<lastmod>${today}</lastmod>');
+    expect(build).toContain("dateModified: page.dateModified || page.datePublished");
+  });
+
   test('active files do not reference legacy production hosts', () => {
     const legacyPatterns = [
       /barcode-generator-5ee\.pages\.dev/i,

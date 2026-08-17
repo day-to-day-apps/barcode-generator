@@ -405,7 +405,7 @@ test('exports a mixed Data Matrix, PDF417 and Aztec batch', async ({ page }) => 
 });
 
 test('signed-in users can search saved codes and choose label quantities', async ({ page }) => {
-  await page.route(/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\/\+esm/, (route) => route.fulfill({
+  await page.route(/\/vendor\/supabase\.min\.js/, (route) => route.fulfill({
     status: 200,
     contentType: 'application/javascript',
     headers: { 'access-control-allow-origin': '*' },

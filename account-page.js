@@ -5,6 +5,7 @@ import { countCodes, listCodes, FREE_CODES_LIMIT } from './db-codes.js';
 import { countTemplates, listTemplates, FREE_TEMPLATES_LIMIT } from './db-templates.js';
 import { countPrinters, listPrinters, FREE_PRINTERS_LIMIT } from './db-printers.js';
 import { countJobs, listJobs, FREE_JOBS_LIMIT } from './db-jobs.js';
+import { consumePendingCode } from './pending-code.js';
 
 const LANG = document.documentElement.lang || 'en';
 const I = window.BARCODE_I18N || {};
@@ -283,6 +284,10 @@ async function renderSession(session) {
   ensureDashboardExtras();
   $('account-current-email').textContent = session.user.email || '';
   $('account-new-email').value = session.user.email || '';
+  const pending = await consumePendingCode(userId);
+  if (!isCurrentSessionRender(revision, userId)) return;
+  if (pending.error) console.warn('[account] pending save failed:', pending.error.message);
+  else if (pending.saved) setStatus(T.pendingCodeSaved || 'Your pending code was saved to your account.');
   await Promise.all([
     loadDashboardStats({
       helpers: { countCodes, countTemplates, countPrinters, countJobs },
@@ -377,9 +382,13 @@ function bindForms() {
 async function init() {
   applyTranslations();
   addPasswordMeter();
-  const sb = await getSupabase();
-  if (!sb) { setStatus(T.notConfigured || 'Account features are not configured.', true); $('signed-out').hidden = false; return; }
   bindForms();
+  await renderSession(null);
+  const sb = await getSupabase();
+  if (!sb) {
+    setStatus(T.notConfigured || 'Account features are temporarily unavailable. Please refresh the page and try again.', true);
+    return;
+  }
   const initialSession = await getSession();
   let authEventSeen = false;
   await onAuthStateChange((_event, session) => {

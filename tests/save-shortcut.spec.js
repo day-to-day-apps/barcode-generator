@@ -1,7 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-const SDK_URL = /cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\/\+esm/;
+const SDK_URL = /\/vendor\/supabase\.min\.js/;
 
 test('Ctrl+S keeps an anonymous barcode pending and opens registration', async ({ page }) => {
   let sdkRequests = 0;
@@ -38,7 +38,7 @@ test('Ctrl+S saves the current barcode for an authenticated user', async ({ page
         select(_columns,options){return options?.head
           ? Promise.resolve({count:0,error:null})
           : Promise.resolve({data:[],error:null})},
-        insert(payload){window.__shortcutSavedPayload=payload;return Promise.resolve({error:null})}
+        insert(payload){window.__shortcutSavedPayload=payload;const query={select(){return query},single:async()=>({data:{id:'shortcut-saved'},error:null})};return query}
       }}
     }}`,
   }));
@@ -49,6 +49,9 @@ test('Ctrl+S saves the current barcode for an authenticated user', async ({ page
   await page.goto('/');
   await expect(page.locator('.auth-user')).toBeVisible();
   await page.locator('#barcode-text').fill('SHORTCUT-SIGNED-IN-2026');
+  await page.locator('#bar-width').fill('3');
+  await page.locator('#font-size').fill('20');
+  await page.locator('#line-color').fill('#112233');
 
   await page.keyboard.press('Control+s');
 
@@ -60,6 +63,11 @@ test('Ctrl+S saves the current barcode for an authenticated user', async ({ page
     user_id: '00000000-0000-4000-8000-000000000099',
     code_type: 'CODE128',
     value: 'SHORTCUT-SIGNED-IN-2026',
+    settings: {
+      'bar-width': '3',
+      'font-size': '20',
+      'line-color': '#112233',
+    },
   });
 });
 

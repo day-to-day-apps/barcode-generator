@@ -23,7 +23,7 @@ test('product metadata helpers clamp values and preserve barcode settings', asyn
 });
 
 test('saved-code catalog edits product details without losing renderer settings', async ({ page }) => {
-  await page.route(/cdn\.jsdelivr\.net\/npm\/@supabase\/supabase-js@2\/\+esm/, (route) => route.fulfill({
+  await page.route(/\/vendor\/supabase\.min\.js/, (route) => route.fulfill({
     status: 200,
     contentType: 'application/javascript',
     headers: { 'access-control-allow-origin': '*' },
@@ -67,10 +67,11 @@ test('product controls and print-job action are translated in every account loca
 
 test('main generator persists visible label fields with a saved barcode', async ({ request }) => {
   const source = await (await request.get('/auth-ui.js')).text();
+  const pendingSource = await (await request.get('/pending-code.js')).text();
   expect(source).toContain("document.getElementById('label-product-name')");
   expect(source).toContain("document.getElementById('label-description')");
   expect(source).toContain("document.getElementById('label-price')");
   expect(source).toContain("document.getElementById('label-copies')");
   expect(source).toContain('name: data.name');
-  expect(source).toContain('name: pending.name || null');
+  expect(pendingSource).toContain('name: pending.name || null');
 });

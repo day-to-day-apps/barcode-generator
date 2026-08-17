@@ -68,6 +68,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorMessage = document.getElementById('error-message');
     const errorText = document.getElementById('error-text');
 
+    function installAdvancedSettings() {
+        const controls = barcodeType?.closest('.controls');
+        const typeGroup = barcodeType?.closest('.control-group');
+        const valueGroup = barcodeText?.closest('.control-group');
+        const qrOptions = document.getElementById('qr-options');
+        if (!controls || !typeGroup || !valueGroup || !btnGenerate || controls.querySelector('.advanced-settings')) return;
+
+        const details = document.createElement('details');
+        details.className = 'advanced-settings';
+        details.open = !window.matchMedia('(max-width: 600px)').matches;
+
+        const summary = document.createElement('summary');
+        summary.textContent = T.advancedSettings || 'Advanced settings';
+        const content = document.createElement('div');
+        content.className = 'advanced-settings__content';
+
+        if (qrOptions) content.appendChild(qrOptions);
+        let current = valueGroup.nextElementSibling;
+        while (current && current !== btnGenerate) {
+            const next = current.nextElementSibling;
+            content.appendChild(current);
+            current = next;
+        }
+
+        details.append(summary, content);
+        btnGenerate.before(details);
+    }
+
+    installAdvancedSettings();
+
     // Range value displays
     const rangeInputs = [
         { input: barWidth, display: document.getElementById('bar-width-val') },
@@ -350,15 +380,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const ecc = ECC_NAMES[eccRank];
         try {
+            const renderOptions = getQrOptsFromDom();
+            const foregrounds = renderOptions.gradient
+                ? [renderOptions.gradient.start, renderOptions.gradient.end]
+                : [renderOptions.fg];
+            if (foregrounds.some((color) => {
+                const quality = window.BarcodeQuality?.assessContrast(color, renderOptions.bg);
+                return quality && !quality.valid;
+            })) {
+                throw new Error(T.errContrast || 'Increase contrast: use a dark barcode on a light background.');
+            }
             const qr = window.qrcode(0, ecc);
             qr.addData(text);
             qr.make();
             qrMatrix = qr;
-            qrPreview.innerHTML = buildQrSvgString(qr, getQrOptsFromDom());
+            qrPreview.innerHTML = buildQrSvgString(qr, renderOptions);
             qrPreview.classList.add('active');
-        } catch (_) {
+        } catch (error) {
             qrMatrix = null;
             qrPreview.innerHTML = '';
+            throw error;
         }
     }
 
@@ -538,6 +579,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
+            const quality = window.BarcodeQuality?.assessContrast(lineColor.value, bgColor.value);
+            if (quality && !quality.valid) {
+                showError(T.errContrast || 'Increase contrast: use a dark barcode on a light background.');
+                barcodeContainer.style.display = 'none';
+                previewHint.style.display = 'block';
+                return false;
+            }
             let isValid = true;
             JsBarcode(barcodeSvg, text, {
                 format: barcodeType.value,
@@ -820,7 +868,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Open/close modal
     btnPrintLabels.addEventListener('click', () => {
-        if (!barcodeSvg.getBBox().width) {
+        const hasPrintableSymbol = isQR()
+            ? Boolean(qrMatrix && qrPreview?.querySelector('svg'))
+            : Boolean(barcodeSvg.getBBox().width);
+        if (!hasPrintableSymbol) {
             showToast(T.genFirst || 'Generate a barcode first');
             return;
         }
@@ -921,6 +972,7 @@ document.addEventListener('DOMContentLoaded', () => {
             description: labelDescription.value,
             cutLines: labelCutLines.checked,
             lineColor: lineColor.value,
+            svgMarkup: isQR() ? qrPreview?.querySelector('svg')?.outerHTML : '',
             t: T,
         });
     }
@@ -1098,6 +1150,32 @@ document.addEventListener('DOMContentLoaded', () => {
             apply('bg-color', s['bg-color']);
             apply('rotation', s['rotation']);
             apply('show-text', s['show-text']);
+            apply('qr-ecc', s['qr-ecc']);
+            apply('qr-fg-color', s['qr-fg-color']);
+            apply('qr-bg-color', s['qr-bg-color']);
+            apply('qr-bg-transparent', s['qr-bg-transparent']);
+            apply('qr-eye-style', s['qr-eye-style']);
+            apply('qr-quiet-zone', s['qr-quiet-zone']);
+            apply('qr-logo-size', s['qr-logo-size']);
+            apply('qr-logo-shape', s['qr-logo-shape']);
+            apply('qr-caption', s['qr-caption']);
+            apply('qr-caption-size', s['qr-caption-size']);
+            apply('qr-grad-start', s['qr-grad-start']);
+            apply('qr-grad-end', s['qr-grad-end']);
+            apply('qr-grad-angle', s['qr-grad-angle']);
+            const colorMode = document.querySelector(`input[name="qr-color-mode-radio"][value="${CSS.escape(s['qr-color-mode'] || '')}"]`);
+            if (colorMode) {
+                colorMode.checked = true;
+                colorMode.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            const alignment = document.querySelector(`.btn-option[data-target="text-align"][data-value="${CSS.escape(s['text-align'] || '')}"]`);
+            alignment?.click();
+            if (data.name) labelProductName.value = data.name;
+            if (s.product) {
+                labelDescription.value = s.product.description || '';
+                labelPrice.value = s.product.price || '';
+                labelCopies.value = String(Math.max(1, Number(s.product.copies) || 1));
+            }
             generateBarcode();
         } catch (err) {
             console.warn('[load] failed:', err?.message);
