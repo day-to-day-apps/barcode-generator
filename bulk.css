@@ -39,3 +39,4 @@ body{background:#f4f5fb}
 .bulk-header nav a:focus-visible,.btn-primary:focus-visible,.btn-secondary:focus-visible,.btn-link:focus-visible{outline:3px solid #c4b5fd;outline-offset:2px}
 .cookie-btn{border-color:#5b36f2}.cookie-accept{background:#5b36f2}.cookie-reject{color:#4f2bd8}.cookie-btn:focus-visible{outline-color:#c4b5fd}
 @media(max-width:800px){.bulk-header nav a,.bulk-header nav a:not(:last-child){border-color:#e1e4ef}}
+.bulk-header nav a{display:inline-flex;align-items:center;min-height:44px;padding:10px 8px}.task-shell summary,.guide-faq summary,.task-faq summary,.cookie-settings-link{display:flex;align-items:center;min-height:44px}.cookie-settings-link{padding:8px 4px}

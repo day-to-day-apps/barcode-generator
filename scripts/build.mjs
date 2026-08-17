@@ -41,6 +41,9 @@ const ASSET_VERSIONS = new Map(await Promise.all(VERSIONED_ASSETS.map(async (nam
   return [name, digest];
 })));
 const ASSET_REF_RE = new RegExp(`((?:\\.\\.\\/)*)(${VERSIONED_ASSETS.map((name) => name.replaceAll('.', '\\.')).join('|')})(?:\\?v=[^"' ]+)?`, 'g');
+const BUILD_I18N_CONTEXT = { window: {} };
+runInNewContext(await readFile(path.join(ROOT, 'i18n.js'), 'utf8'), BUILD_I18N_CONTEXT);
+const BUILD_I18N = BUILD_I18N_CONTEXT.window.BARCODE_I18N;
 
 function routeFor(lang, page = '') {
   const prefix = lang === 'en' ? '' : `/${lang}`;
@@ -136,9 +139,43 @@ function textContent(html) {
   return html.replace(/<[^>]+>/g, ' ').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-function clipDescription(value) {
-  if (value.length <= 155) return value;
-  return `${value.slice(0, 152).replace(/\s+\S*$/, '')}...`;
+function escapeHtml(value, attribute = false) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', attribute ? '&quot;' : '"')
+    .replaceAll("'", attribute ? '&#39;' : "'");
+}
+
+function replaceAttribute(tag, name, value) {
+  const escaped = escapeHtml(value, true);
+  const pattern = new RegExp(`(\\s${name}=)(["'])[^"']*\\2`, 'i');
+  return pattern.test(tag) ? tag.replace(pattern, `$1"${escaped}"`) : tag.replace(/>$/, ` ${name}="${escaped}">`);
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function localiseDataFallbacks(html, translations) {
+  let result = html.replace(
+    /(<([a-z][\w-]*)\b[^>]*\bdata-i18n="([^"]+)"[^>]*>)([^<]*)(<\/\2>)/gi,
+    (match, open, tag, key, current, close) => translations[key] == null
+      ? match
+      : `${open}${escapeHtml(translations[key])}${close}`,
+  );
+  for (const [dataName, attributeName] of [
+    ['data-i18n-placeholder', 'placeholder'],
+    ['data-i18n-aria-label', 'aria-label'],
+    ['data-i18n-title', 'title'],
+  ]) {
+    const pattern = new RegExp(`<[^>]+\\b${dataName}="([^"]+)"[^>]*>`, 'gi');
+    result = result.replace(pattern, (tag, key) => translations[key] == null
+      ? tag
+      : replaceAttribute(tag, attributeName, translations[key]));
+  }
+  return result;
 }
 
 function formatHreflangCluster(page) {
@@ -147,6 +184,17 @@ function formatHreflangCluster(page) {
     `    <link rel="alternate" hreflang="x-default" href="${canonicalFor('en', `${page}/`)}">`,
   ].join('\n');
 }
+
+const FORMAT_DESCRIPTION_OVERRIDES = {
+  'pl/codabar': 'Darmowy generator kodów Codabar. Kod numeryczny używany w bibliotekach, bankach krwi i usługach kurierskich. Eksport PNG/SVG i druk etykiet bez rejestracji.',
+  'fr/code-128': 'Générateur Code 128 gratuit. Code-barres alphanumérique pour expédition, logistique et GS1-128. Export PNG/SVG et impression d’étiquettes, sans inscription.',
+  'fr/upc-a': 'Générateur UPC-A gratuit. Code-barres de vente à 12 chiffres pour supermarchés et commerce mondial. Export PNG/SVG et impression d’étiquettes, sans inscription.',
+  'fr/code-39': 'Générateur Code 39 gratuit. Code-barres alphanumérique variable pour industrie et stocks. Export PNG/SVG et impression d’étiquettes, sans inscription.',
+  'fr/itf-14': 'Générateur ITF-14 gratuit. Code-barres d’emballage à 14 chiffres pour caisses et cartons. Export PNG/SVG et impression d’étiquettes, sans inscription.',
+  'fr/codabar': 'Générateur Codabar gratuit. Code-barres numérique pour bibliothèques, banque du sang et messagerie. Export PNG/SVG et impression d’étiquettes, sans inscription.',
+  'it/code-128': 'Generatore Code 128 gratuito. Codice alfanumerico ad alta densità per spedizioni, logistica e GS1-128. Esporta PNG/SVG e stampa etichette senza registrazione.',
+  'it/codabar': 'Generatore Codabar gratuito. Codice numerico usato in biblioteche, banche del sangue e spedizioni. Esporta PNG/SVG e stampa etichette senza registrazione.',
+};
 
 function improveLandingSeo(html, lang, page) {
   const withoutAlternates = html.replace(
@@ -157,31 +205,68 @@ function improveLandingSeo(html, lang, page) {
     .replace(/(<link\s+rel=["']canonical["'][^>]*>)/i, `$1\n${formatHreflangCluster(page)}`)
     .replaceAll('{{', '{')
     .replaceAll('}}', '}');
-  if (lang === 'en') return output;
   const pick = (regex) => textContent((output.match(regex) || [])[1] || '');
   const title = pick(/<h1>([\s\S]*?)<\/h1>/i);
-  const lead = pick(/<p class="landing__lead">([\s\S]*?)<\/p>/i);
-  const cta = pick(/<a class="landing__cta"[^>]*>([\s\S]*?)<\/a>/i);
-  const sections = [...output.matchAll(/<section class="landing__section[^>]*>[\s\S]*?<h2[^>]*>([\s\S]*?)<\/h2>[\s\S]*?<p>([\s\S]*?)<\/p>/gi)]
-    .slice(0, 3)
-    .map((match) => ({ name: textContent(match[1]), text: textContent(match[2]) }));
-  if (!title || !lead || sections.length < 3) return output;
-
-  const description = clipDescription(lead);
+  let description = output.match(/<meta name="description" content="([^"]+)"/i)?.[1] || '';
+  if (!title || !description) return output;
+  const descriptionOverride = FORMAT_DESCRIPTION_OVERRIDES[`${lang}/${page}`];
+  if (descriptionOverride) {
+    output = output.replaceAll(description, descriptionOverride);
+    description = descriptionOverride;
+  }
   output = output
-    .replace(/(<meta name="description" content=")[^"]*(">)/i, `$1${description}$2`)
-    .replace(/(<meta property="og:description" content=")[^"]*(">)/i, `$1${description}$2`)
-    .replace(/(<meta name="twitter:description" content=")[^"]*(">)/i, `$1${description}$2`);
+    .replace(/<meta name="author" content="[^"]*">/i, '<meta name="author" content="Day to Day Apps">')
+    .replace(/<p class="landing__lead">[\s\S]*?<\/p>/i, `<p class="landing__lead">${description}</p>`)
+    .replace(/\s*<li>(?:(?!<\/li>)[\s\S])*\b02\b(?:(?!<\/li>)[\s\S])*20[–-]29(?:(?!<\/li>)[\s\S])*<\/li>/i, '')
+    .replaceAll('Best Practices', 'Bewährte Verfahren');
+  if (lang === 'de') output = output.replaceAll('EAN-13 Code', 'EAN-13-Code');
+  if (lang === 'pt') {
+    output = output
+      .replaceAll('Baixar', 'Transferir').replaceAll('baixar', 'transferir')
+      .replaceAll('estoque', 'armazém').replaceAll('rastreamento', 'rastreio')
+      .replaceAll('registro', 'registo');
+    description = output.match(/<meta name="description" content="([^"]+)"/i)?.[1] || description;
+  }
+
+  if (['upc-a', 'itf-14', 'codabar'].includes(page)) {
+    const placeholderKey = { 'upc-a': 'UPC', 'itf-14': 'ITF14', codabar: 'codabar' }[page];
+    const inputLabels = {
+      en: 'Accepted input:', pl: 'Akceptowane dane:', de: 'Zulässige Eingabe:', fr: 'Saisie acceptée :',
+      es: 'Entrada admitida:', it: 'Dati accettati:', pt: 'Dados aceites:', nl: 'Toegestane invoer:',
+      cs: 'Povolený vstup:', uk: 'Допустимі дані:',
+    };
+    const inputAnswer = `${inputLabels[lang]} ${BUILD_I18N[lang].placeholders[placeholderKey]}.`;
+    const faqPattern = /(<script type="application\/ld\+json">)\s*(\{\s*"@context":\s*"https:\/\/schema\.org",\s*"@type":\s*"FAQPage"[\s\S]*?\})\s*(<\/script>)/i;
+    const faqMatch = output.match(faqPattern);
+    if (faqMatch) {
+      const faq = JSON.parse(faqMatch[2]);
+      if (faq.mainEntity?.[0]?.acceptedAnswer) faq.mainEntity[0].acceptedAnswer.text = inputAnswer;
+      if (faq.mainEntity?.[1]?.acceptedAnswer) faq.mainEntity[1].acceptedAnswer.text = description;
+      output = output.replace(faqPattern, `${faqMatch[1]}\n${JSON.stringify(faq, null, 2)}\n    ${faqMatch[3]}`);
+      for (const item of faq.mainEntity.slice(0, 2)) {
+        output = output.replace(
+          new RegExp(`(<details><summary>${escapeRegExp(item.name)}<\\/summary><p>)[\\s\\S]*?(<\\/p><\\/details>)`, 'i'),
+          `$1${escapeHtml(item.acceptedAnswer.text)}$2`,
+        );
+      }
+    }
+  }
+
+  const template = page === 'ean-13' ? EAN13_TOOL_CONTENT[lang] : FORMAT_TOOL_CONTENT[lang];
+  const formatName = page === 'ean-13' ? 'EAN-13' : FORMAT_TOOL_CONFIG[page]?.name || page;
+  const ui = Object.fromEntries(Object.entries(template || {}).map(([key, value]) => [key, value.replaceAll('{format}', formatName)]));
 
   const howTo = {
     '@context': 'https://schema.org',
     '@type': 'HowTo',
     name: title,
-    description: lead,
+    description,
     totalTime: 'PT1M',
     step: [
-      { '@type': 'HowToStep', position: 1, name: cta || title, text: lead },
-      ...sections.map((section, index) => ({ '@type': 'HowToStep', position: index + 2, ...section })),
+      { '@type': 'HowToStep', position: 1, name: ui.full, text: ui.full },
+      { '@type': 'HowToStep', position: 2, name: ui.label, text: ui.hint },
+      { '@type': 'HowToStep', position: 3, name: ui.generate, text: ui.hint },
+      { '@type': 'HowToStep', position: 4, name: `${ui.png} / ${ui.svg}`, text: `${ui.png}. ${ui.svg}.` },
     ],
   };
   output = output.replace(
@@ -198,7 +283,7 @@ const EAN13_TOOL_CONTENT = {
   fr: { title: 'Créer un code EAN-13 maintenant', label: '12 ou 13 chiffres', hint: 'Saisissez 12 chiffres pour calculer automatiquement la clé de contrôle, ou un EAN complet à 13 chiffres.', generate: 'Générer', svg: 'Télécharger SVG', png: 'Télécharger PNG', full: 'Ouvrir le générateur avancé', invalid: 'Saisissez exactement 12 ou 13 chiffres.', checksum: 'La clé de contrôle est incorrecte. Valeur attendue : {digit}.', ready: 'EAN-13 valide : {value}' },
   es: { title: 'Crea un código EAN-13 ahora', label: '12 o 13 dígitos', hint: 'Introduce 12 dígitos para calcular automáticamente el dígito de control, o un EAN completo de 13 dígitos.', generate: 'Generar', svg: 'Descargar SVG', png: 'Descargar PNG', full: 'Abrir el generador avanzado', invalid: 'Introduce exactamente 12 o 13 dígitos.', checksum: 'El dígito de control es incorrecto. Se esperaba: {digit}.', ready: 'EAN-13 válido: {value}' },
   it: { title: 'Crea subito un codice EAN-13', label: '12 o 13 cifre', hint: 'Inserisci 12 cifre per calcolare automaticamente la cifra di controllo, oppure un EAN completo di 13 cifre.', generate: 'Genera', svg: 'Scarica SVG', png: 'Scarica PNG', full: 'Apri il generatore avanzato', invalid: 'Inserisci esattamente 12 o 13 cifre.', checksum: 'La cifra di controllo non è corretta. Valore atteso: {digit}.', ready: 'EAN-13 valido: {value}' },
-  pt: { title: 'Crie um código EAN-13 agora', label: '12 ou 13 dígitos', hint: 'Digite 12 dígitos para calcular automaticamente o dígito de verificação, ou um EAN completo de 13 dígitos.', generate: 'Gerar', svg: 'Baixar SVG', png: 'Baixar PNG', full: 'Abrir gerador avançado', invalid: 'Digite exatamente 12 ou 13 dígitos.', checksum: 'O dígito de verificação está incorreto. Esperado: {digit}.', ready: 'EAN-13 válido: {value}' },
+  pt: { title: 'Crie um código EAN-13 agora', label: '12 ou 13 dígitos', hint: 'Introduza 12 dígitos para calcular automaticamente o dígito de controlo, ou um EAN completo de 13 dígitos.', generate: 'Gerar', svg: 'Transferir SVG', png: 'Transferir PNG', full: 'Abrir o gerador avançado', invalid: 'Introduza exatamente 12 ou 13 dígitos.', checksum: 'O dígito de controlo está incorreto. Esperado: {digit}.', ready: 'EAN-13 válido: {value}' },
   nl: { title: 'Maak nu een EAN-13-barcode', label: '12 of 13 cijfers', hint: 'Voer 12 cijfers in om het controlecijfer automatisch te berekenen, of een volledige EAN van 13 cijfers.', generate: 'Genereren', svg: 'SVG downloaden', png: 'PNG downloaden', full: 'Geavanceerde generator openen', invalid: 'Voer precies 12 of 13 cijfers in.', checksum: 'Het controlecijfer is onjuist. Verwacht: {digit}.', ready: 'Geldige EAN-13: {value}' },
   cs: { title: 'Vytvořte kód EAN-13 hned', label: '12 nebo 13 číslic', hint: 'Zadejte 12 číslic pro automatický výpočet kontrolní číslice nebo celý 13místný kód EAN.', generate: 'Vygenerovat', svg: 'Stáhnout SVG', png: 'Stáhnout PNG', full: 'Otevřít pokročilý generátor', invalid: 'Zadejte přesně 12 nebo 13 číslic.', checksum: 'Kontrolní číslice není správná. Očekáváno: {digit}.', ready: 'Platný EAN-13: {value}' },
   uk: { title: 'Створіть штрихкод EAN-13 зараз', label: '12 або 13 цифр', hint: 'Введіть 12 цифр для автоматичного обчислення контрольної цифри або повний 13-значний EAN.', generate: 'Створити', svg: 'Завантажити SVG', png: 'Завантажити PNG', full: 'Відкрити розширений генератор', invalid: 'Введіть рівно 12 або 13 цифр.', checksum: 'Контрольна цифра неправильна. Очікується: {digit}.', ready: 'Дійсний EAN-13: {value}' },
@@ -275,7 +360,7 @@ const FORMAT_TOOL_CONTENT = {
   fr: { title: 'Créer un code {format} maintenant', label: 'Valeur du code', hint: 'Saisissez une valeur compatible avec {format}. Elle est validée localement avant l’export.', generate: 'Générer', svg: 'Télécharger SVG', png: 'Télécharger PNG', full: 'Ouvrir le générateur avancé', invalid: 'Saisissez une valeur valide pour {format}.', checksum: 'La clé de contrôle est incorrecte. Valeur attendue : {digit}.', ready: '{format} valide : {value}' },
   es: { title: 'Crea un código {format} ahora', label: 'Valor del código', hint: 'Introduce un valor compatible con {format}. Se valida localmente antes de exportarlo.', generate: 'Generar', svg: 'Descargar SVG', png: 'Descargar PNG', full: 'Abrir el generador avanzado', invalid: 'Introduce un valor válido para {format}.', checksum: 'El dígito de control es incorrecto. Se esperaba: {digit}.', ready: '{format} válido: {value}' },
   it: { title: 'Crea subito un codice {format}', label: 'Valore del codice', hint: 'Inserisci un valore compatibile con {format}. Viene verificato localmente prima dell’esportazione.', generate: 'Genera', svg: 'Scarica SVG', png: 'Scarica PNG', full: 'Apri il generatore avanzato', invalid: 'Inserisci un valore valido per {format}.', checksum: 'La cifra di controllo non è corretta. Valore atteso: {digit}.', ready: '{format} valido: {value}' },
-  pt: { title: 'Crie um código {format} agora', label: 'Valor do código', hint: 'Digite um valor compatível com {format}. Ele é validado localmente antes da exportação.', generate: 'Gerar', svg: 'Baixar SVG', png: 'Baixar PNG', full: 'Abrir gerador avançado', invalid: 'Digite um valor válido para {format}.', checksum: 'O dígito de verificação está incorreto. Esperado: {digit}.', ready: '{format} válido: {value}' },
+  pt: { title: 'Crie um código {format} agora', label: 'Valor do código', hint: 'Introduza um valor compatível com {format}. O valor é validado localmente antes da exportação.', generate: 'Gerar', svg: 'Transferir SVG', png: 'Transferir PNG', full: 'Abrir o gerador avançado', invalid: 'Introduza um valor válido para {format}.', checksum: 'O dígito de controlo está incorreto. Esperado: {digit}.', ready: '{format} válido: {value}' },
   nl: { title: 'Maak nu een {format}-barcode', label: 'Barcodewaarde', hint: 'Voer een waarde in die geschikt is voor {format}. Deze wordt lokaal gecontroleerd voor export.', generate: 'Genereren', svg: 'SVG downloaden', png: 'PNG downloaden', full: 'Geavanceerde generator openen', invalid: 'Voer een geldige waarde voor {format} in.', checksum: 'Het controlecijfer is onjuist. Verwacht: {digit}.', ready: 'Geldige {format}: {value}' },
   cs: { title: 'Vytvořte kód {format} hned', label: 'Hodnota kódu', hint: 'Zadejte hodnotu kompatibilní s {format}. Před exportem se ověří přímo v prohlížeči.', generate: 'Vygenerovat', svg: 'Stáhnout SVG', png: 'Stáhnout PNG', full: 'Otevřít pokročilý generátor', invalid: 'Zadejte platnou hodnotu pro {format}.', checksum: 'Kontrolní číslice není správná. Očekáváno: {digit}.', ready: 'Platný {format}: {value}' },
   uk: { title: 'Створіть штрихкод {format} зараз', label: 'Значення коду', hint: 'Введіть значення, сумісне з {format}. Воно перевіряється локально перед експортом.', generate: 'Створити', svg: 'Завантажити SVG', png: 'Завантажити PNG', full: 'Відкрити розширений генератор', invalid: 'Введіть дійсне значення для {format}.', checksum: 'Контрольна цифра неправильна. Очікується: {digit}.', ready: 'Дійсний {format}: {value}' },
@@ -308,6 +393,7 @@ function addFormatTool(html, lang, format) {
   const formatName = config.name;
   const t = Object.fromEntries(Object.entries(content).map(([key, value]) => [key, value.replaceAll('{format}', formatName)]));
   if (config.titles?.[lang]) t.title = config.titles[lang];
+  if (lang === 'en' && format === 'itf-14') t.title = t.title.replace('Create a ITF-14', 'Create an ITF-14');
   const advancedRoute = routeFor(lang);
   const [generatorLabel, scannerLabel, bulkLabel] = FORMAT_NAV_CONTENT[lang] || FORMAT_NAV_CONTENT.en;
   const bulkRoute = lang === 'pl' ? '/pl/generator-kodow-z-csv' : '/bulk-barcode-generator';
@@ -761,25 +847,56 @@ function guidePageHtml(page, lang, alternate) {
 
 function localisePrivateHtml(source, lang, page) {
   const privateUi = {
-    en: { privacy: 'Privacy', terms: 'Terms', primary: 'Primary', accountActions: 'Account actions' },
-    pl: { privacy: 'Prywatność', terms: 'Regulamin', primary: 'Główna', accountActions: 'Akcje konta' },
-    de: { privacy: 'Datenschutz', terms: 'Nutzungsbedingungen', primary: 'Hauptnavigation', accountActions: 'Kontoaktionen' },
-    fr: { privacy: 'Confidentialité', terms: 'Conditions', primary: 'Navigation principale', accountActions: 'Actions du compte' },
-    es: { privacy: 'Privacidad', terms: 'Términos', primary: 'Navegación principal', accountActions: 'Acciones de cuenta' },
-    it: { privacy: 'Privacy', terms: 'Termini', primary: 'Navigazione principale', accountActions: 'Azioni account' },
-    pt: { privacy: 'Privacidade', terms: 'Termos', primary: 'Navegação principal', accountActions: 'Ações da conta' },
-    nl: { privacy: 'Privacy', terms: 'Voorwaarden', primary: 'Hoofdnavigatie', accountActions: 'Accountacties' },
-    cs: { privacy: 'Soukromí', terms: 'Podmínky', primary: 'Hlavní navigace', accountActions: 'Akce účtu' },
-    uk: { privacy: 'Конфіденційність', terms: 'Умови', primary: 'Основна навігація', accountActions: 'Дії облікового запису' },
+    en: { privacy: 'Privacy', terms: 'Terms', primary: 'Primary', accountActions: 'Account actions', noscript: 'This page requires JavaScript.' },
+    pl: { privacy: 'Prywatność', terms: 'Regulamin', primary: 'Główna', accountActions: 'Akcje konta', noscript: 'Ta strona wymaga włączonej obsługi JavaScript.' },
+    de: { privacy: 'Datenschutz', terms: 'Nutzungsbedingungen', primary: 'Hauptnavigation', accountActions: 'Kontoaktionen', noscript: 'Diese Seite benötigt JavaScript.' },
+    fr: { privacy: 'Confidentialité', terms: 'Conditions', primary: 'Navigation principale', accountActions: 'Actions du compte', noscript: 'Cette page nécessite JavaScript.' },
+    es: { privacy: 'Privacidad', terms: 'Términos', primary: 'Navegación principal', accountActions: 'Acciones de cuenta', noscript: 'Esta página requiere JavaScript.' },
+    it: { privacy: 'Privacy', terms: 'Termini', primary: 'Navigazione principale', accountActions: 'Azioni account', noscript: 'Questa pagina richiede JavaScript.' },
+    pt: { privacy: 'Privacidade', terms: 'Termos', primary: 'Navegação principal', accountActions: 'Ações da conta', noscript: 'Esta página requer JavaScript.' },
+    nl: { privacy: 'Privacy', terms: 'Voorwaarden', primary: 'Hoofdnavigatie', accountActions: 'Accountacties', noscript: 'Deze pagina vereist JavaScript.' },
+    cs: { privacy: 'Soukromí', terms: 'Podmínky', primary: 'Hlavní navigace', accountActions: 'Akce účtu', noscript: 'Tato stránka vyžaduje JavaScript.' },
+    uk: { privacy: 'Конфіденційність', terms: 'Умови', primary: 'Основна навігація', accountActions: 'Дії облікового запису', noscript: 'Для цієї сторінки потрібен JavaScript.' },
   }[lang];
+  const translations = BUILD_I18N[lang]?.account || {};
+  const metaKeys = {
+    konto: ['title', 'subtitleEmailPassword'],
+    'moje-kody': ['myCodes', 'subtitleMyCodes'],
+    szablony: ['templatesTitle', 'subtitleTemplates'],
+    drukarki: ['printersTitle', 'subtitlePrinters'],
+    wydruk: ['builderTitle', 'subtitleBuilder'],
+    'historia-wydrukow': ['printHistoryTitle', 'subtitlePrintHistory'],
+    'reset-hasla': ['setNewPasswordTitle', null],
+  }[page];
+  const resetDescriptions = {
+    en: 'Set a new password for your Barcode Generator account.',
+    pl: 'Ustaw nowe hasło do konta w Generatorze kodów kreskowych.',
+    de: 'Legen Sie ein neues Passwort für Ihr Barcode-Generator-Konto fest.',
+    fr: 'Définissez un nouveau mot de passe pour votre compte Barcode Generator.',
+    es: 'Establece una nueva contraseña para tu cuenta de Barcode Generator.',
+    it: 'Imposta una nuova password per il tuo account Barcode Generator.',
+    pt: 'Defina uma nova palavra-passe para a sua conta Barcode Generator.',
+    nl: 'Stel een nieuw wachtwoord in voor uw Barcode Generator-account.',
+    cs: 'Nastavte nové heslo k účtu Barcode Generator.',
+    uk: 'Установіть новий пароль для облікового запису Barcode Generator.',
+  };
   const prefix = lang === 'en' ? '' : '../';
-  let html = source
+  let html = localiseDataFallbacks(source, translations)
     .replace(/<html lang=(['"])[^'"]+\1/, `<html lang="${lang}"`)
     .replace(/<link rel="canonical" href="[^"]+">/, `<link rel="canonical" href="${canonicalFor(lang, page)}">`)
+    .replace(/<noscript>[\s\S]*?<\/noscript>/i, `<noscript>${privateUi.noscript}</noscript>`)
     .replaceAll('aria-label="Primary"', `aria-label="${privateUi.primary}"`)
     .replaceAll('aria-label="Account actions"', `aria-label="${privateUi.accountActions}"`)
     .replaceAll('>Privacy</a>', `>${privateUi.privacy}</a>`)
     .replaceAll('>Terms</a>', `>${privateUi.terms}</a>`);
+
+  if (metaKeys) {
+    const [titleKey, descriptionKey] = metaKeys;
+    const title = translations[titleKey];
+    const description = descriptionKey ? translations[descriptionKey] : resetDescriptions[lang];
+    if (title) html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(title)} — Barcode Generator</title>`);
+    if (description) html = html.replace(/<meta name="description" content="[^"]*">/i, `<meta name="description" content="${escapeHtml(description, true)}">`);
+  }
 
   if (lang !== 'en') {
     const assets = [
@@ -999,11 +1116,9 @@ for (const lang of LANGS) {
   );
 }
 
-const decoderI18nContext = { window: {} };
-runInNewContext(await readFile(path.join(ROOT, 'i18n.js'), 'utf8'), decoderI18nContext);
 const decoderTranslations = Object.fromEntries(LANGS.map((lang) => [
   lang,
-  Object.fromEntries(Object.entries(decoderI18nContext.window.BARCODE_I18N[lang] || {})
+  Object.fromEntries(Object.entries(BUILD_I18N[lang] || {})
     .filter(([key]) => key.startsWith('decoder_'))),
 ]));
 const decoderI18n = `window.BARCODE_I18N=${JSON.stringify(decoderTranslations)};`;
@@ -1061,8 +1176,9 @@ for (const lang of LANGS) {
 }
 
 const resetSource = await readFile(path.join(ROOT, 'reset-hasla.html'), 'utf8');
-for (const lang of LOCALE_DIRS) {
-  await writeFile(path.join(OUT, lang, 'reset-hasla.html'), localisePrivateHtml(resetSource, lang, 'reset-hasla'), 'utf8');
+for (const lang of LANGS) {
+  const target = lang === 'en' ? path.join(OUT, 'reset-hasla.html') : path.join(OUT, lang, 'reset-hasla.html');
+  await writeFile(target, localisePrivateHtml(resetSource, lang, 'reset-hasla'), 'utf8');
 }
 
 const polishLegal = [
@@ -1142,7 +1258,7 @@ const landingIntentContent = {
   fr: { heading: 'Que voulez-vous faire ?', lead: 'Ouvrez directement le bon outil. Toutes les opérations sont effectuées dans le navigateur.', cards: [['Lire un code-barres', 'Scanner un code depuis une image ou la caméra.', '/fr/decoder'], ['Créer un EAN-13', 'Vérifier la clé et exporter en PNG ou SVG.', '/fr/ean-13/'], ['Créer un Code 128 logistique', 'Encoder une référence, un bien ou un emplacement.', '/fr/code-128/']] },
   es: { heading: '¿Qué necesitas hacer?', lead: 'Abre directamente la herramienta adecuada. Todo se procesa en el navegador.', cards: [['Leer un código de barras', 'Escanea un código desde una imagen o cámara.', '/es/decoder'], ['Crear un EAN-13', 'Valida el dígito de control y exporta PNG o SVG.', '/es/ean-13/'], ['Crear un Code 128 de almacén', 'Codifica un SKU, activo o ubicación.', '/es/code-128/']] },
   it: { heading: 'Cosa devi fare?', lead: 'Apri direttamente lo strumento adatto. Tutte le operazioni avvengono nel browser.', cards: [['Leggere un codice a barre', 'Scansiona un codice da immagine o fotocamera.', '/it/decoder'], ['Creare un EAN-13', 'Verifica la cifra di controllo ed esporta PNG o SVG.', '/it/ean-13/'], ['Creare un Code 128 per il magazzino', 'Codifica SKU, beni o posizioni.', '/it/code-128/']] },
-  pt: { heading: 'O que você precisa fazer?', lead: 'Abra diretamente a ferramenta certa. Todas as operações acontecem no navegador.', cards: [['Ler um código de barras', 'Escaneie um código de imagem ou câmera.', '/pt/decoder'], ['Criar um EAN-13', 'Valide o dígito e exporte PNG ou SVG.', '/pt/ean-13/'], ['Criar um Code 128 de estoque', 'Codifique SKU, ativo ou localização.', '/pt/code-128/']] },
+  pt: { heading: 'O que precisa de fazer?', lead: 'Abra diretamente a ferramenta certa. Todas as operações decorrem no navegador.', cards: [['Ler um código de barras', 'Digitalize um código a partir de uma imagem ou câmara.', '/pt/decoder'], ['Criar um EAN-13', 'Valide o dígito de controlo e exporte PNG ou SVG.', '/pt/ean-13/'], ['Criar um Code 128 de armazém', 'Codifique um SKU, ativo ou localização.', '/pt/code-128/']] },
   nl: { heading: 'Wat wilt u doen?', lead: 'Open direct het juiste hulpmiddel. Alle bewerkingen gebeuren in de browser.', cards: [['Barcode lezen', 'Scan een code uit een afbeelding of camera.', '/nl/decoder'], ['EAN-13 maken', 'Controleer het cijfer en exporteer PNG of SVG.', '/nl/ean-13/'], ['Code 128 voor magazijn maken', 'Codeer een SKU, object of locatie.', '/nl/code-128/']] },
   cs: { heading: 'Co potřebujete udělat?', lead: 'Otevřete přímo správný nástroj. Všechny operace probíhají v prohlížeči.', cards: [['Přečíst čárový kód', 'Naskenujte kód z obrázku nebo kamery.', '/cs/decoder'], ['Vytvořit EAN-13', 'Ověřte kontrolní číslici a exportujte PNG nebo SVG.', '/cs/ean-13/'], ['Vytvořit skladový Code 128', 'Zakódujte SKU, majetek nebo umístění.', '/cs/code-128/']] },
   uk: { heading: 'Що потрібно зробити?', lead: 'Відкрийте потрібний інструмент. Усі операції виконуються у браузері.', cards: [['Прочитати штрихкод', 'Скануйте код із зображення або камери.', '/uk/decoder'], ['Створити EAN-13', 'Перевірте контрольну цифру та експортуйте PNG або SVG.', '/uk/ean-13/'], ['Створити складський Code 128', 'Закодуйте SKU, актив або місце.', '/uk/code-128/']] },
@@ -1160,10 +1276,13 @@ function addLandingIntentSection(html, lang) {
 for (const lang of LANGS) {
   const landingPath = lang === 'en' ? path.join(OUT, 'index.html') : path.join(OUT, lang, 'index.html');
   const prefix = lang === 'en' ? '' : '../';
-  let html = (await readFile(landingPath, 'utf8'))
+  let html = localiseDataFallbacks(await readFile(landingPath, 'utf8'), BUILD_I18N[lang])
     .replace(/\s*<script defer src="\/vendor\/(?:jsbarcode\.min|qrcode-generator)\.js"><\/script>/g, '')
     .replace(new RegExp(`\\s*<script defer src="${prefix.replaceAll('.', '\\.')}(?:i18n|label-renderer)\\.js\\?v=[a-f0-9]+"><\\/script>`, 'g'), '')
     .replace(new RegExp(`${prefix.replaceAll('.', '\\.') }app\\.js\\?v=[a-f0-9]+`, 'g'), `${prefix}landing-loader.js?v=${landingLoaderVersion}`);
+  html = html.replace(/<meta name="author" content="[^"]*">/i, '<meta name="author" content="Day to Day Apps">');
+  const siteControlsLabels = { en: 'Site controls', pl: 'Sterowanie stroną', de: 'Seitensteuerung', fr: 'Commandes du site', es: 'Controles del sitio', it: 'Controlli del sito', pt: 'Controlos do site', nl: 'Sitebediening', cs: 'Ovládání stránky', uk: 'Елементи керування сайтом' };
+  html = html.replaceAll('aria-label="Site controls"', `aria-label="${siteControlsLabels[lang]}"`);
   html = html.replace(
     `<script defer src="${prefix}landing-loader.js?v=${landingLoaderVersion}"></script>`,
     `${criticalThemeControl}<script defer src="${prefix}landing-loader.js?v=${landingLoaderVersion}"></script>`,

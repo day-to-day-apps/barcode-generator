@@ -5455,7 +5455,7 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
         padding-top: 16px;
     }
     .animated-header:has(> .lang-switch) {
-        padding-top: 68px;
+        padding-top: 72px;
     }
     .topbar {
         flex-wrap: wrap;
@@ -5731,4 +5731,67 @@ main.container > .card[aria-labelledby="account-title"] > h2 {
     color: #ffffff !important;
     border: 2px solid #000000 !important;
     box-shadow: none !important;
+}
+
+/* Consistent form controls and touch targets on utility pages. */
+#reset-password-form {
+    display: grid;
+    gap: 10px;
+    max-width: 460px;
+}
+
+#reset-password-form input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--border, #cbd5e1);
+    border-radius: 8px;
+    background: var(--surface, #ffffff);
+    color: inherit;
+    font: inherit;
+}
+
+#reset-password-submit,
+.calibration > .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 8px;
+    background: #5b36f2;
+    color: #ffffff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.cookie-settings-link,
+.decoder-faq summary,
+.two-d-advanced > summary,
+.landing__faq summary,
+.task-faq summary,
+.guide-faq summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+}
+
+.cookie-settings-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 4px;
+}
+
+@media (pointer: coarse), (max-width: 700px) {
+    #lang-toggle,
+    #barcode-type,
+    #barcode-text,
+    #rotation,
+    .btn-option,
+    .action-btn,
+    .download-btn {
+        min-height: 44px;
+    }
 }

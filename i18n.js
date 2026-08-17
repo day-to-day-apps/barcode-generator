@@ -330,7 +330,7 @@ window.BARCODE_I18N = {
         popularEan8: 'EAN-8',
         popularQr: 'QR-Code',
         qrEccLabel: 'Fehlerkorrektur',
-        qrLogoLabel: 'Logo (optional)',
+        qrLogoLabel: 'Logo (wahlweise)',
         qrColorMode: 'Farbmodus',
         qrSolid: 'Einfarbig',
         qrGradient: 'Verlauf',

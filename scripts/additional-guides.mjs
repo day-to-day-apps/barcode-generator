@@ -137,7 +137,7 @@ export const ADDITIONAL_GUIDE_PAGES = [
     },
     pl: {
       route: 'poradniki/darmowy-generator-kodow-dla-firmy',
-      title: 'Czy darmowy generator kodów można używać w firmie?',
+      title: 'Czy można używać darmowego generatora kodów w firmie?',
       description: 'Sprawdź, kiedy darmowy generator kodów nadaje się do firmy, czego nie zapewnia i jak zweryfikować identyfikator, plik oraz wydrukowaną etykietę.',
       h1: 'Czy można używać darmowego generatora kodów w firmie?',
       lead: 'Tak, ten generator pozwala bezpłatnie tworzyć grafiki kodów do zastosowań komercyjnych. Trzeba jednak odróżnić wygenerowanie symbolu od uzyskania prawa do identyfikatora zapisanego w jego wnętrzu.',

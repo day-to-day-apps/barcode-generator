@@ -1,5 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
+import { runInNewContext } from 'node:vm';
 
 const PROD = 'https://barcode-generator.daytodayapps.com';
 const PRIVATE = ['konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', 'historia-wydrukow', 'reset-hasla'];
@@ -99,6 +101,41 @@ test('Polish account page localizes legal and navigation labels', async ({ reque
   expect(html).toContain('>Regulamin</a>');
   expect(html).not.toMatch(/>(?:Privacy|Terms)<\/a>/);
   expect(html).not.toMatch(/href="[^"]+\.html(?:[?#"])/);
+});
+
+test('private pages ship localized metadata and fallback text before JavaScript runs', async () => {
+  const context = { window: {} };
+  runInNewContext(await readFile('i18n.js', 'utf8'), context);
+  const pageKeys = {
+    konto: ['title', 'subtitleEmailPassword'],
+    'moje-kody': ['myCodes', 'subtitleMyCodes'],
+    szablony: ['templatesTitle', 'subtitleTemplates'],
+    drukarki: ['printersTitle', 'subtitlePrinters'],
+    wydruk: ['builderTitle', 'subtitleBuilder'],
+    'historia-wydrukow': ['printHistoryTitle', 'subtitlePrintHistory'],
+    'reset-hasla': ['setNewPasswordTitle', null],
+  };
+  for (const locale of LOCALES) {
+    const translations = context.window.BARCODE_I18N[locale].account;
+    for (const [page, [titleKey, descriptionKey]] of Object.entries(pageKeys)) {
+      const file = locale === 'en' ? `dist/${page}.html` : `dist/${locale}/${page}.html`;
+      const html = await readFile(file, 'utf8');
+      expect(html, `${locale}/${page} title`).toContain(`<title>${translations[titleKey]} — Barcode Generator</title>`);
+      const description = html.match(/<meta name="description" content="([^"]+)"/i)?.[1] || '';
+      if (descriptionKey) {
+        expect(description, `${locale}/${page} description`).toBe(translations[descriptionKey].replaceAll('&', '&amp;').replaceAll('"', '&quot;'));
+      } else {
+        expect(description.length, `${locale}/${page} description`).toBeGreaterThan(24);
+      }
+      for (const match of html.matchAll(/<([a-z][\w-]*)\b[^>]*\bdata-i18n="([^"]+)"[^>]*>([^<]*)<\/\1>/gi)) {
+        const [, , key, text] = match;
+        if (translations[key] != null) {
+          expect(text, `${locale}/${page} data-i18n=${key}`).toBe(translations[key]
+            .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'));
+        }
+      }
+    }
+  }
 });
 
 test('account navigation stays on direct extensionless routes after JavaScript enhancement', async ({ page }) => {

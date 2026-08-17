@@ -17,6 +17,11 @@
     .calibration-cross::before,.calibration-cross::after { content:''; position:absolute; background:#000; }
     .calibration-cross::before { width:20mm; height:.3mm; top:9.85mm; }
     .calibration-cross::after { height:20mm; width:.3mm; left:9.85mm; }
+    @media screen and (max-width: 850px) {
+      .calibration-sheet { width: calc(100% - 24px); height: auto; min-height: 0; margin: 24px auto; padding: clamp(16px, 5vw, 32px); overflow: hidden; }
+      .calibration-line { width: min(100mm, 100%); }
+      .calibration-square { width: min(50mm, 52vw); height: min(50mm, 52vw); }
+    }
     @media print { body>*:not(.calibration-sheet){display:none!important}.calibration-sheet{display:block!important;margin:0;padding:20mm}@page{size:A4;margin:0} }
   </style>
 </head>
