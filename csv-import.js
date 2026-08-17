@@ -6,6 +6,7 @@ const MAX_ROWS = 500;
 let workerRef = null;
 let nextId = 1;
 const pending = new Map();
+let spreadsheetLoader = null;
 
 function getWorker() {
   if (workerRef) return workerRef;
@@ -47,6 +48,71 @@ export async function parseCsvFile(file) {
   if (file.size > MAX_FILE_BYTES) throw new Error('csv_file_too_large');
   const text = await file.text();
   return parseCsvText(text);
+}
+
+function isWorkbookFile(file) {
+  return /\.xlsx$/i.test(file?.name || '')
+    || file?.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+}
+
+function loadSpreadsheetParser() {
+  if (globalThis.XLSX) return Promise.resolve();
+  if (spreadsheetLoader) return spreadsheetLoader;
+  spreadsheetLoader = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = new URL('./vendor/xlsx.min.js', import.meta.url).href;
+    script.async = true;
+    script.onload = resolve;
+    script.onerror = () => {
+      spreadsheetLoader = null;
+      script.remove();
+      reject(new Error('workbook_parser_unavailable'));
+    };
+    document.head.appendChild(script);
+  });
+  return spreadsheetLoader;
+}
+
+async function parseWorkbookFile(file, maxRows) {
+  if (!file || file.size > MAX_FILE_BYTES) {
+    throw new Error(file ? 'csv_file_too_large' : 'workbook_invalid');
+  }
+  try {
+    const signature = new Uint8Array(await file.slice(0, 4).arrayBuffer());
+    if (signature.length < 4 || signature[0] !== 0x50 || signature[1] !== 0x4b || signature[2] !== 0x03 || signature[3] !== 0x04) {
+      throw new Error('workbook_invalid');
+    }
+    await loadSpreadsheetParser();
+    const workbook = globalThis.XLSX.read(await file.arrayBuffer(), {
+      type: 'array',
+      cellDates: false,
+      dense: true,
+      sheetRows: Math.max(1, Math.min(MAX_ROWS, Number(maxRows) || MAX_ROWS)) + 2,
+    });
+    for (const sheetName of workbook.SheetNames || []) {
+      const rows = globalThis.XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+        header: 1,
+        raw: false,
+        defval: '',
+        blankrows: false,
+      });
+      if (rows.length) {
+        return {
+          rows,
+          sheetName,
+          format: 'xlsx',
+        };
+      }
+    }
+  } catch (_error) {
+    throw new Error('workbook_invalid');
+  }
+  throw new Error('workbook_invalid');
+}
+
+export async function parseDataFile(file, options = {}) {
+  if (isWorkbookFile(file)) return parseWorkbookFile(file, options.maxRows);
+  return { ...await parseCsvFile(file), format: 'csv' };
 }
 
 // Mapuje wiersze CSV na items joba.

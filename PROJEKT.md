@@ -296,7 +296,7 @@ supabase link --project-ref aoqxznukwbdgrggxloou
 - ✅ **Pre-fill buildera z historii** — `wydruk.html` przyjmuje `?id=<job_id>`, na bootstrapie woła `getJobById(prefillId)` z `db-jobs.js` i wypełnia: name, template, printer, notes oraz items via `addRow(it)` (gdy brak items, fallback do pojedynczego `addRow()`). `historia-wydrukow.html` dorzucił akcję „Edit" w wierszu (`btn-edit` → `wydruk.html?id=…`). Bez aktywnego prefill builder działa jak dotychczas.
 - 🐛 **Fix: TypeError 'escapeHtml' na localized index.html** — 9 plików `*/index.html` (pl, de, fr, es, it, pt, nl, cs, uk) nie ładowało `../label-renderer.js`, przez co `app.js` wyrzucał `TypeError: Cannot read properties of undefined (reading 'escapeHtml')` przy load. Dodano `<script src="../label-renderer.js?v=20260601000000"></script>` między JsBarcode a `app.js` we wszystkich lokalach. Root `/index.html` (en) miał już wpis. Smoke suite po fixie: **76 passed / 1 skipped**.
 - 📋 **Wymagane od użytkownika (ręcznie):** uruchomienie migracji triggerów w Supabase SQL Editor — zobacz końcowy checklist tej wiadomości.
-- ⏸ **Pozostałe z Path A do późniejszej iteracji:** `xlsx-import.js`, `batch-scan.js`, automatyczny deploy migracji przez CLI/CI, testy z realną drukarką termiczną (walidacja `bar_width_correction`).
+- ⏸ **Pozostałe z Path A do późniejszej iteracji:** `batch-scan.js`, automatyczny deploy migracji przez CLI/CI, testy z realną drukarką termiczną (walidacja `bar_width_correction`). Import XLSX działa lokalnie w generatorze paczek i kreatorze wydruku.
 
 ### 2026-06-06 (M2.5 Phase 6 — zamknięcie kamienia: i18n 10 lokali, sitemap, deploy)
 
@@ -305,7 +305,7 @@ supabase link --project-ref aoqxznukwbdgrggxloou
 - ✅ **Deploy potwierdzony** — push `65d7f16..2e78549` na `origin/main` o ~14:00 UTC; build Cloudflare Workers OK, propagacja <30 s, wszystkie surfaces (`/konto.html`, `/moje-kody.html`, `/szablony.html`, `/drukarki.html`, `/wydruk.html`, `/historia-wydrukow.html`) odpowiadają 200.
 - 🟡 **Odłożone do post-MVP / M3+:**
   - Playwright TS specs (auth, codes, templates, printers, builder, csv-import) — szkielet zostanie dodany razem z setupem CI w M3.
-  - `xlsx-import.js` (SheetJS lazy via CDN) — odłożone, użytkownicy enterprise mogą eksportować z Excela do CSV.
+  - ✅ Import `.xlsx` przez lokalnie pakowany SheetJS `0.20.3`, ładowany dopiero po wybraniu skoroszytu.
   - `batch-scan.js` (BarcodeDetector + getUserMedia) — odłożone, wymaga osobnej rundy UX.
   - Pre-wypełniony builder przy `wydruk.html?id=<job_id>` — pomocna QoL, ale nie blokuje MVP.
   - Aplikacja `bar_width_correction` z `printer_profiles` do `JsBarcode` w `print-builder.js` — wymaga testów na realnej drukarce termicznej.
@@ -325,7 +325,7 @@ supabase link --project-ref aoqxznukwbdgrggxloou
 - ✅ **`i18n.js`** — dodano ~50 nowych kluczy EN w `en.account`: `builderTitle`, `subtitleBuilder`, `printHistory`, `printHistoryTitle`, `subtitlePrintHistory`, `jobName`, `jobNamePlaceholder`, `useTemplate`, `usePrinter`, `selectPrinter`, `optional`, `jobNotes`, `items`, `itemsCount` (`{n} items`), `addRow`, `importCsv`, `clearAll`, `clearAllConfirm`, `colValue`, `colCodeType`, `colName`, `colPrice`, `colCopies`, `preview`, `previewSummary` (`{pages} pages, {labels} labels`), `previewFailed`, `printNow`, `popupBlocked`, `saveJob`, `jobSaved`, `jobSaveFail`, `jobNameRequired`, `jobItemsRequired`, `jobItemsLimit`, `freeJobsLimitReached`, `jobsUsed`, `builderLoadFail`, `csvImported` (`Imported {n} rows ({skipped} skipped).`), `csvFailed`, `csvFileTooLarge`, `newJob`, `emptyJobs`, `jobLoadFail`, `deleteJobConfirm`, `jobDeleteFail`, `jobDeleted`. **Tylko EN — 9 pozostałych lokalizacji odłożone do Phase 6.**
 - ✅ **`styles.css`** — dodane reguły Phase 5: `.builder-form` (grid 1fr/1fr responsive), `.builder-toolbar`, `.items-table` + `.table-scroll` (overflow-x dla mobilnych), `.btn-link`, `.btn-row-delete` (transparent → hover #fee2e2), `.preview-area` z `iframe { height: 400px }`. `.preview-area` (Phase 5) ≠ `.print-preview-area` (Phase 3) — różne kontekst i layout.
 - ✅ **Cache-bust** — `?v=20260612000000` na `styles.css` i `i18n.js` we wszystkich pages M2.5 (`drukarki.html`, `szablony.html`, `moje-kody.html`, `konto.html`, `wydruk.html`, `historia-wydrukow.html`).
-- ⏸ **Odłożone do Phase 5.5 / post-MVP:** `xlsx-import.js` (lazy SheetJS, dodatkowy format obok CSV), `batch-scan.js` (BarcodeDetector API + getUserMedia jako trzeci sposób inputu obok manual/CSV), load saved job do buildera w `wydruk.html?id=...`, `bar_width_correction` aplikowane do JsBarcode w `print-builder.js`.
+- ⏸ **Odłożone do Phase 5.5 / post-MVP:** `batch-scan.js` (BarcodeDetector API + getUserMedia jako trzeci sposób inputu obok manual/CSV), load saved job do buildera w `wydruk.html?id=...`, `bar_width_correction` aplikowane do JsBarcode w `print-builder.js`. Import XLSX został domknięty późniejszą iteracją.
 - **Powód:** Phase 5 z planu Multi-Barcode Print Builder — kluczowa funkcja produkcyjna: użytkownik dodaje wiele kodów ręcznie lub przez import CSV, wybiera szablon + profil drukarki, podgląda w iframe i drukuje arkusz w jednym kliku. Web Worker przy CSV trzyma main thread responsive nawet przy 500 rows. Quota free=20 jobs spójna z 10 saved_codes / 5 templates / 5 printers — bardziej liberalna, bo job to wartość użytkowa (historia), nie aktywny zasób runtime. Limit 500 itemów per job + 2000 etykiet po expand-copies chroni przed nadużyciem RPC i `window.print()` OOM. `template_id`/`printer_profile_id` z `ON DELETE SET NULL`, bo historia ma przeżyć usunięcie zasobu.
 - ⏸ **Następne kroki:** Phase 6 (Playwright specs dla auth/codes/templates/printers/print-builder, `sitemap.xml` + `robots.txt` z noindex dla `/konto.html`, `/moje-kody.html`, `/szablony.html`, `/drukarki.html`, `/wydruk.html`, `/historia-wydrukow.html`; 9-locale i18n batch dla Phases 1+3+4+5 jednorazowo; PROJEKT.md M2.5 closure; DEPLOY-CHECKLIST.md; final `get_errors` sweep).
 
@@ -339,7 +339,7 @@ supabase link --project-ref aoqxznukwbdgrggxloou
 - ✅ **`styles.css`** — brak zmian; `drukarki.html` reuse'uje pełen zestaw klas Phase 3 (`.template-form`, `.form-row`, `.form-row-2`, `.form-fieldset`, `.form-grid-4`, `.form-actions`, `.form-error`, `.checkbox-row`, `.template-row`, `.template-summary`, `.template-meta`, `.badge-default`).
 - ✅ **Cache-bust** — `?v=20260612000000` dla `styles.css` i `i18n.js` w `drukarki.html`.
 - **Powód:** Phase 4 z planu Multi-Barcode Print Builder. Profile drukarek to wymagana składnia dla Phase 5 (`wydruk.html` użyje `getPrinterById` + `LabelRenderer` z poprawkami DPI/offset/bar-width). Quota free=5 spójna z `label_templates`. Presety statyczne (JSON) zamiast w DB, bo nie wymagają edycji per user — usera obchodzi tylko jego własny profil (kopia presetu z lokalnymi korekcjami).
-- ⏸ **Następne kroki:** Phase 5 (`db-jobs.js` + `csv-import.js` w Web Worker + `xlsx-import.js` z lazy SheetJS + `batch-scan.js` z BarcodeDetector + `print-builder.js` jako orkiestrator + `wydruk.html` + `historia-wydrukow.html`).
+- ✅ **Phase 5:** `db-jobs.js`, CSV w Web Workerze, lokalny import XLSX, `print-builder.js`, `wydruk.html` i `historia-wydrukow.html` są wdrożone. Osobny `batch-scan.js` pozostaje opcjonalny.
 
 ### 2026-06-03 (M2.5 Phase 3 — biblioteka szablonów etykiet, EN-only)
 
@@ -350,7 +350,7 @@ supabase link --project-ref aoqxznukwbdgrggxloou
 - ✅ **`styles.css`** (append, blok „Phase 3: Label templates") — `.template-row` (align-items: flex-start), `.template-summary` (column flex w grid-area `meta`), `.template-meta` (muted text 0.9rem), `.badge-default` (pill z `--accent`, biały tekst, 0.75rem). `.template-form` (grid 2-col 1rem gap, card bg, border, padding 1.25rem). `.form-row`/`.form-row-2`/`.form-fieldset`/`.form-grid-4` jako sub-grid layouty. Inputy z focus-visible 2px outline `--accent`. `.form-error` z czerwonym tłem `#fee2e2` / borderem `#fca5a5` / kolorem `#991b1b`. Media query ≤ 720px: single column + 2-col grids dla margins/sizes.
 - ✅ **Cache-bust** — `?v=20260603000000` dla `styles.css` i `i18n.js` w nowych/zmienionych plikach HTML.
 - **Powód:** Phase 3 z planu Multi-Barcode Print Builder. Szablony to fundament Phase 5 (`wydruk.html` użyje `getTemplateById` + `LabelRenderer` do batch-printu). Quota free=5 spójna z 10 dla `saved_codes`, ale bardziej restrykcyjna ze względu na większy ciężar i przewidywaną niższą rotację. Logo upload (Storage bucket `logos`) odłożone — nie blokuje Phase 5, a wymaga manualnej konfiguracji bucketu + CSP `img-src`.
-- ⏸ **Następne kroki:** Phase 4 (`drukarki.html` + `printer-presets.json` — profile Zebra/Brother/Dymo/Rongta/Munbyn/Avery), potem Phase 5 (Print Builder + CSV/XLSX import + Web Worker).
+- ✅ **Phase 4 i 5:** profile Zebra/Brother/Dymo/Rongta/Munbyn/Avery, Print Builder oraz import CSV/XLSX są wdrożone.
 
 ### 2026-06-01 (M2.5 Phase 0 + Phase 1 — fundamenty Print Builder + email+hasło)
 

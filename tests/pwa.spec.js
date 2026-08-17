@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import * as XLSX from 'xlsx';
 
 async function installServiceWorker(page) {
   await page.goto('/pl/');
@@ -199,6 +200,40 @@ test.describe('PWA and offline tools', () => {
       expect(cachedPaths).not.toContain(`${privateRoute}.html`);
     }
     await expect.poll(() => page.evaluate(async () => !(await caches.keys()).includes('barcode-tools-stale'))).toBe(true);
+  });
+
+  test('Excel parser stays lazy and works offline after its first use', async ({ page, context }) => {
+    await installServiceWorker(page);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet([
+      ['value', 'type'],
+      ['OFFLINE-XLSX-2026', 'CODE128'],
+    ]), 'Products');
+    const spreadsheet = {
+      name: 'offline-products.xlsx',
+      mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      buffer: XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' }),
+    };
+
+    const cachedBeforeUse = await page.evaluate(async () => {
+      const cacheName = (await caches.keys()).find((name) => name.startsWith('barcode-tools-'));
+      const entries = await (await caches.open(cacheName)).keys();
+      return entries.map((request) => new URL(request.url).pathname);
+    });
+    expect(cachedBeforeUse).not.toContain('/vendor/xlsx.min.js');
+
+    await page.goto('/bulk-barcode-generator');
+    await page.locator('#csv-file').setInputFiles(spreadsheet);
+    await expect(page.locator('#bulk-rows [data-field=value]')).toHaveValue('OFFLINE-XLSX-2026');
+    await expect.poll(() => page.evaluate(async () => {
+      const cacheName = (await caches.keys()).find((name) => name.startsWith('barcode-tools-'));
+      return Boolean(await (await caches.open(cacheName)).match('/vendor/xlsx.min.js'));
+    })).toBe(true);
+
+    await context.setOffline(true);
+    await page.reload();
+    await page.locator('#csv-file').setInputFiles(spreadsheet);
+    await expect(page.locator('#bulk-rows [data-field=value]')).toHaveValue('OFFLINE-XLSX-2026');
   });
 
   test('versioned asset refresh replaces the canonical precache entry', async ({ page }) => {

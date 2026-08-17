@@ -1,5 +1,6 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
+import * as XLSX from 'xlsx';
 
 const CONSENT_KEY = 'barcode-cookie-consent';
 
@@ -108,4 +109,30 @@ test('inline EAN-13 tool reports generation without the GTIN value', async ({ pa
     expect.objectContaining({ tool: 'ean13_inline', code_type: 'EAN13', method: 'button', language: 'en' }),
   ]);
   expect(JSON.stringify(events)).not.toContain('5901234123457');
+});
+
+test('Excel import reports only aggregate metadata', async ({ page }) => {
+  await page.addInitScript((key) => localStorage.setItem(key, 'analytics-accepted'), CONSENT_KEY);
+  await page.goto('/bulk-barcode-generator');
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet([
+    ['value', 'type', 'name'],
+    ['PRIVATE-SKU-2026', 'CODE128', 'Internal product'],
+  ]), 'Products');
+
+  await page.locator('#csv-file').setInputFiles({
+    name: 'products.xlsx',
+    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    buffer: XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' }),
+  });
+  await expect(page.locator('#bulk-status')).toContainText('Worksheet: Products.');
+
+  const events = await analyticsEvents(page);
+  expect(events).toContainEqual([
+    'event',
+    'bulk_spreadsheet_import',
+    expect.objectContaining({ tool: 'bulk', format: 'xlsx', rows: 1, skipped: 0 }),
+  ]);
+  expect(JSON.stringify(events)).not.toContain('PRIVATE-SKU-2026');
+  expect(JSON.stringify(events)).not.toContain('Internal product');
 });

@@ -958,6 +958,7 @@ await cp(path.join(ROOT, 'node_modules/pdf-lib/dist/pdf-lib.min.js'), path.join(
 await cp(path.join(ROOT, 'node_modules/@pdf-lib/fontkit/dist/fontkit.umd.min.js'), path.join(OUT, 'vendor/fontkit.min.js'));
 await cp(path.join(ROOT, 'assets/fonts/NotoSans-Regular.ttf'), path.join(OUT, 'vendor/NotoSans-Regular.ttf'));
 await cp(path.join(ROOT, 'node_modules/jszip/dist/jszip.min.js'), path.join(OUT, 'vendor/jszip.min.js'));
+await cp(path.join(ROOT, 'node_modules/xlsx/dist/xlsx.mini.min.js'), path.join(OUT, 'vendor/xlsx.min.js'));
 await cp(path.join(ROOT, 'node_modules/jsbarcode/dist/JsBarcode.all.min.js'), path.join(OUT, 'vendor/jsbarcode.min.js'));
 await cp(path.join(ROOT, 'node_modules/qrcode-generator/qrcode.js'), path.join(OUT, 'vendor/qrcode-generator.js'));
 await cp(path.join(ROOT, 'node_modules/bwip-js/dist/bwip-js-min.js'), path.join(OUT, 'vendor/bwip-js-min.js'));
@@ -970,6 +971,7 @@ await mkdir(path.join(OUT, 'licenses'), { recursive: true });
 await cp(path.join(ROOT, 'node_modules/@undecaf/zbar-wasm/LICENSE'), path.join(OUT, 'licenses/zbar-wasm-LICENSE.txt'));
 await cp(path.join(ROOT, 'node_modules/@undecaf/barcode-detector-polyfill/LICENSE'), path.join(OUT, 'licenses/barcode-detector-polyfill-LICENSE.txt'));
 await cp(path.join(ROOT, 'node_modules/pdf-lib/LICENSE.md'), path.join(OUT, 'licenses/fontkit-LICENSE.txt'));
+await cp(path.join(ROOT, 'node_modules/xlsx/LICENSE'), path.join(OUT, 'licenses/xlsx-LICENSE.txt'));
 await cp(path.join(ROOT, 'assets/fonts/OFL.txt'), path.join(OUT, 'licenses/noto-sans-OFL.txt'));
 await writeFile(path.join(OUT, 'bulk-barcode-generator.html'), normaliseHtml(await readFile(path.join(ROOT, 'bulk.html'), 'utf8')), 'utf8');
 await mkdir(path.join(OUT, 'pl'), { recursive: true });

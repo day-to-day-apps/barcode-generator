@@ -3,7 +3,7 @@
 Create a GA4 Exploration named **Organic tool funnel** with a weekly date range:
 
 1. `session_start` filtered to `google / organic`.
-2. `bulk_csv_import` or `generate_barcode`.
+2. `bulk_csv_import`, `bulk_spreadsheet_import` or `generate_barcode`.
 3. `bulk_export_pdf`, `bulk_export_zip`, `save_barcode` or `print_job_saved`.
 4. `sign_up`.
 

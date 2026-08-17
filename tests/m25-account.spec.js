@@ -60,6 +60,8 @@ test.describe('M2.5 — wydruk.html builder shell', () => {
     await page.goto('/wydruk.html');
 
     await expect(page.locator('body')).toBeVisible();
+    await expect(page.locator('#csv-file')).toHaveAttribute('accept', /\.xlsx/);
+    await expect(page.locator('label[for="csv-file"]')).toContainText(/CSV.*Excel/i);
     const filtered = errors.filter((e) => !/favicon|supabase|adsbygoogle|googletagmanager|gtag/i.test(e));
     expect(filtered, filtered.join('\n')).toEqual([]);
   });

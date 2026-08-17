@@ -1,4 +1,4 @@
-import { parseCsvFile, rowsToJobItems } from './csv-import.js';
+import { parseDataFile, rowsToJobItems } from './csv-import.js';
 import { getSession } from './supabase-client.js';
 import { listCodes, normaliseProductMetadata } from './db-codes.js';
 import { savePrintJob, listJobs, getJobById } from './db-jobs.js';
@@ -7,15 +7,15 @@ import { encodeBulkJobState, decodeBulkJobState } from './bulk-job-state.js';
 
 const pl = document.documentElement.lang === 'pl';
 const copy = pl ? {
-  ready: 'Zaimportuj CSV lub dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', importFailed: 'Nie udało się odczytać pliku CSV.', csvInvalid: 'Plik CSV zawiera niedomknięte pole w cudzysłowie.', rowLimit: 'Plik zawiera {count} rekordów danych. Ten tryb pozwala na maksymalnie {limit}.', templateDownloaded: 'Wzór CSV został pobrany.', cancelled: 'Generowanie anulowane.', compressing: 'Kompresowanie', saved: 'Zadanie i format etykiety zostały zapisane.', loaded: 'Zadanie i format etykiety wczytano jako kopię.', importedCodes: 'Zaimportowano zapisane kody:', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', codesLoadFailed: 'Nie udało się pobrać zapisanych kodów.', jobsLoadFailed: 'Nie udało się pobrać zapisanych zadań.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.', pickerSummary: 'Wybrano: {codes} kodów · {labels} etykiet. Dostępne: {rows} pozycji i {remainingLabels} etykiet.', pickerLimit: 'Zmniejsz wybór lub liczbę kopii, aby zmieścić się w limicie zadania.', copies: 'Kopie', unsupported: 'Nieobsługiwany w druku seryjnym'
+  ready: 'Zaimportuj CSV lub Excel albo dodaj pierwszy rekord.', valid: 'poprawnych', corrected: 'poprawionych', errors: 'błędnych', labels: 'etykiet', anonymous: 'Tryb bez konta: do 50 rekordów i 200 etykiet.', signed: 'Zalogowano: do 500 rekordów i 2000 etykiet, zapis zadań aktywny.', importDone: 'Plik przeanalizowany.', importFailed: 'Nie udało się odczytać pliku.', csvInvalid: 'Plik CSV zawiera niedomknięte pole w cudzysłowie.', workbookInvalid: 'Nie udało się odczytać skoroszytu Excel.', worksheet: 'Arkusz', rowLimit: 'Plik zawiera {count} rekordów danych. Ten tryb pozwala na maksymalnie {limit}.', templateDownloaded: 'Wzór CSV został pobrany.', cancelled: 'Generowanie anulowane.', compressing: 'Kompresowanie', saved: 'Zadanie i format etykiety zostały zapisane.', loaded: 'Zadanie i format etykiety wczytano jako kopię.', importedCodes: 'Zaimportowano zapisane kody:', login: 'Zaloguj się, aby zapisać zadanie.', noCodes: 'Brak zapisanych kodów.', codesLoadFailed: 'Nie udało się pobrać zapisanych kodów.', jobsLoadFailed: 'Nie udało się pobrać zapisanych zadań.', exportFailed: 'Nie udało się wygenerować pliku.', limit: 'Przekroczono limit dla tego trybu.', pickerSummary: 'Wybrano: {codes} kodów · {labels} etykiet. Dostępne: {rows} pozycji i {remainingLabels} etykiet.', pickerLimit: 'Zmniejsz wybór lub liczbę kopii, aby zmieścić się w limicie zadania.', copies: 'Kopie', unsupported: 'Nieobsługiwany w druku seryjnym'
 } : {
-  ready: 'Import a CSV file or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', importFailed: 'The CSV file could not be read.', csvInvalid: 'The CSV file contains an unterminated quoted field.', rowLimit: 'This file contains {count} data records. This mode allows up to {limit}.', templateDownloaded: 'The CSV template has been downloaded.', cancelled: 'Generation cancelled.', compressing: 'Compressing', saved: 'Print job and label format saved.', loaded: 'Job and label format loaded as a copy.', importedCodes: 'Imported saved barcodes:', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', codesLoadFailed: 'Saved barcodes could not be loaded.', jobsLoadFailed: 'Saved jobs could not be loaded.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.', pickerSummary: 'Selected: {codes} codes · {labels} labels. Available: {rows} items and {remainingLabels} labels.', pickerLimit: 'Reduce the selection or copy count to fit this job limit.', copies: 'Copies', unsupported: 'Not supported in bulk printing'
+  ready: 'Import a CSV or Excel file, or add the first record.', valid: 'valid', corrected: 'corrected', errors: 'errors', labels: 'labels', anonymous: 'Guest mode: up to 50 records and 200 labels.', signed: 'Signed in: up to 500 records and 2,000 labels, job saving enabled.', importDone: 'File analysed.', importFailed: 'The file could not be read.', csvInvalid: 'The CSV file contains an unterminated quoted field.', workbookInvalid: 'The Excel workbook could not be read.', worksheet: 'Worksheet', rowLimit: 'This file contains {count} data records. This mode allows up to {limit}.', templateDownloaded: 'The CSV template has been downloaded.', cancelled: 'Generation cancelled.', compressing: 'Compressing', saved: 'Print job and label format saved.', loaded: 'Job and label format loaded as a copy.', importedCodes: 'Imported saved barcodes:', login: 'Sign in to save this job.', noCodes: 'No saved barcodes.', codesLoadFailed: 'Saved barcodes could not be loaded.', jobsLoadFailed: 'Saved jobs could not be loaded.', exportFailed: 'The export could not be generated.', limit: 'This mode limit has been exceeded.', pickerSummary: 'Selected: {codes} codes · {labels} labels. Available: {rows} items and {remainingLabels} labels.', pickerLimit: 'Reduce the selection or copy count to fit this job limit.', copies: 'Copies', unsupported: 'Not supported in bulk printing'
 };
 const $ = (id) => document.getElementById(id);
 let session = null;
 let items = [];
 let controller = null;
-let pendingCsvRows = null;
+let pendingImportRows = null;
 let savedCodeCatalog = null;
 const savedCodeSelection = new Map();
 
@@ -105,8 +105,11 @@ function addRow(item = {}) {
 }
 
 async function importFile(file) {
+  const excel = /\.xlsx$/i.test(file.name)
+    || file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   try {
-    const parsed = await parseCsvFile(file);
+    status(excel ? (pl ? 'Odczytuję skoroszyt Excel…' : 'Reading Excel workbook…') : (pl ? 'Odczytuję plik CSV…' : 'Reading CSV file…'));
+    const parsed = await parseDataFile(file, { maxRows: limits().rows });
     if (parsed.errors?.length) throw new Error('csv_invalid_format');
     const mapped = rowsToJobItems(parsed.rows, { header: $('has-header').checked, maxRows: limits().rows });
     if (mapped.overflow) {
@@ -114,24 +117,32 @@ async function importFile(file) {
       error.recordCount = mapped.recordCount;
       throw error;
     }
-    pendingCsvRows = parsed.rows;
+    pendingImportRows = parsed.rows;
     renderMapping(mapped.headerMap, parsed.rows[0] || []);
     $('bulk-rows').innerHTML = '';
     mapped.items.forEach(addRow);
     const summary = updateSummary();
-    status(`${copy.importDone} ${summary.totalLabels} ${copy.labels}.`);
-    track('bulk_csv_import', { delimiter: parsed.delimiter === '\t' ? 'tab' : parsed.delimiter, rows: mapped.items.length, skipped: mapped.skipped });
+    const sheetSummary = parsed.sheetName ? ` ${copy.worksheet}: ${parsed.sheetName}.` : '';
+    status(`${copy.importDone}${sheetSummary} ${summary.totalLabels} ${copy.labels}.`);
+    track(excel ? 'bulk_spreadsheet_import' : 'bulk_csv_import', {
+      format: parsed.format,
+      delimiter: excel ? undefined : (parsed.delimiter === '\t' ? 'tab' : parsed.delimiter),
+      rows: mapped.items.length,
+      skipped: mapped.skipped,
+    });
     track('bulk_validation', { valid: summary.counts.valid, corrected: summary.counts.corrected, errors: summary.counts.error });
   } catch (error) {
     const message = error.message === 'csv_file_too_large'
       ? copy.limit
       : error.message === 'csv_invalid_format'
         ? copy.csvInvalid
+        : error.message === 'workbook_invalid'
+          ? copy.workbookInvalid
         : error.message === 'csv_row_limit'
           ? formatText(copy.rowLimit, { count: error.recordCount, limit: limits().rows })
           : copy.importFailed;
     status(message, true);
-    track('bulk_csv_error', { reason: error.message || 'unknown' });
+    track(excel ? 'bulk_spreadsheet_error' : 'bulk_csv_error', { reason: error.message || 'unknown' });
   }
 }
 
@@ -150,11 +161,11 @@ function renderMapping(headerMap, headers) {
 }
 
 function applyMapping() {
-  if (!pendingCsvRows?.length) return;
+  if (!pendingImportRows?.length) return;
   const map = Object.fromEntries([...document.querySelectorAll('[data-map-field]')].map((select) => [select.dataset.mapField, Number(select.value)]));
   $('bulk-rows').innerHTML = '';
   const read = (row, field) => map[field] >= 0 ? String(row[map[field]] || '').trim() : '';
-  for (const row of pendingCsvRows.slice(1, limits().rows + 1)) addRow({ value: read(row, 'value'), code_type: read(row, 'code_type') || 'CODE128', name: read(row, 'name'), description: read(row, 'description'), price: read(row, 'price'), copies: read(row, 'copies') || 1 });
+  for (const row of pendingImportRows.slice(1, limits().rows + 1)) addRow({ value: read(row, 'value'), code_type: read(row, 'code_type') || 'CODE128', name: read(row, 'name'), description: read(row, 'description'), price: read(row, 'price'), copies: read(row, 'copies') || 1 });
   updateSummary(); track('bulk_column_mapping', map); status(copy.importDone);
 }
 

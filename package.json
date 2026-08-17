@@ -42,7 +42,8 @@
     "jsbarcode": "^3.11.6",
     "jszip": "^3.10.1",
     "pdf-lib": "^1.17.1",
-    "qrcode-generator": "^1.4.4"
+    "qrcode-generator": "^1.4.4",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "overrides": {
     "tmp": "^0.2.7",

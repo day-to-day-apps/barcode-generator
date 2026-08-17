@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 import { PDFDocument } from 'pdf-lib';
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import JSZip from 'jszip';
+import * as XLSX from 'xlsx';
 import AxeBuilder from '@axe-core/playwright';
 
 async function downloadBuffer(download) {
@@ -42,6 +43,47 @@ test('imports semicolon CSV and creates a readable PDF and SVG ZIP', async ({ pa
   await page.getByRole('button', { name: 'SVG ZIP' }).click();
   const zip = await JSZip.loadAsync(await downloadBuffer(await zipEvent));
   expect(Object.keys(zip.files).filter((name) => name.endsWith('.svg'))).toHaveLength(3);
+});
+
+test('imports the first non-empty Excel worksheet without external requests', async ({ page }) => {
+  await page.route('https://cdn.sheetjs.com/**', (route) => route.abort());
+  await page.goto('/bulk-barcode-generator');
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet([]), 'Read me');
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet([
+    ['value', 'type', 'name', 'description', 'price', 'copies'],
+    ['0012345678905', 'EAN13', 'Coffee', 'Whole beans', '24.90', 2],
+    ['BOX-XL', 'CODE128', 'Storage box', '', '', 1],
+  ]), 'Products');
+  const buffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+
+  await page.locator('#csv-file').setInputFiles({
+    name: 'products.xlsx',
+    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    buffer,
+  });
+
+  await expect(page.locator('#bulk-rows tr')).toHaveCount(2);
+  await expect(page.locator('#bulk-rows [data-field=value]').first()).toHaveValue('0012345678905');
+  await expect(page.locator('#bulk-rows [data-field=name]').last()).toHaveValue('Storage box');
+  await expect(page.locator('#bulk-summary')).toContainText('3 labels');
+  await expect(page.locator('#bulk-status')).toContainText('Worksheet: Products.');
+});
+
+test('rejects a damaged Excel workbook without replacing current rows', async ({ page }) => {
+  await page.goto('/pl/generator-kodow-z-csv');
+  await page.locator('#bulk-rows [data-field=value]').fill('ZACHOWAJ-001');
+  await page.locator('#csv-file').setInputFiles({
+    name: 'uszkodzony.xlsx',
+    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    buffer: Buffer.from('not an Excel workbook'),
+  });
+
+  await expect(page.locator('#bulk-status')).toHaveText('Nie udało się odczytać skoroszytu Excel.');
+  await expect(page.locator('#bulk-status')).toHaveClass(/is-error/);
+  await expect(page.locator('#bulk-rows tr')).toHaveCount(1);
+  await expect(page.locator('#bulk-rows [data-field=value]')).toHaveValue('ZACHOWAJ-001');
 });
 
 test('preserves Unicode product labels in PDF exports', async ({ page }) => {

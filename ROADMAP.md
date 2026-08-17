@@ -3,14 +3,14 @@
 > **Status:** Aktualna mapa drogowa po decyzji **Supabase + free-with-ads**.
 > Stara wersja (Clerk + Stripe + Pro 19 zł) jest **zarchiwizowana w historii Git**.
 > Pełny kontekst i kompendium → [`PROJEKT.md`](./PROJEKT.md).
-> Ostatnia aktualizacja: **2026-07-21**.
+> Ostatnia aktualizacja: **2026-07-27**.
 
 ## Aktualny kierunek: ruch organiczny + narzędzia dla firm
 
 - [x] Kontrolowany build `dist`, czysta sitemap i routing extensionless.
 - [x] Stabilne konto, biblioteka kodów, profile drukarek, historia i usuwanie konta.
 - [x] Poprawne presety Avery A4/Letter, termiczne i strona kalibracyjna.
-- [x] Publiczny generator paczek CSV z walidacją oraz eksportem PDF/PNG/SVG/CSV.
+- [x] Publiczny generator paczek CSV/XLSX z walidacją oraz eksportem PDF/PNG/SVG/CSV.
 - [x] Strony zadaniowe PL/EN: CSV, Avery, magazyn i druk termiczny.
 - [x] GitHub Actions, Lighthouse CI i zdarzenia lejka GA4.
 - [x] Tryb GS1, generowanie Data Matrix/PDF417/Aztec i katalog produktów.
@@ -127,7 +127,7 @@ Sugerowana ścieżka: `/<lang>/ean-13/`, `/<lang>/upc/`, `/<lang>/code-128/`, `/
 
 - [x] Dekoder z dłuższych obrazów / batch (kilka kodów na jednym zdjęciu).
 - [x] Eksport listy kodów do PDF (wydruk arkusza etykiet).
-- [x] Bulk import z CSV → generowanie wielu kodów naraz, także z zapisanych kodów konta.
+- [x] Bulk import z CSV/XLSX → generowanie wielu kodów naraz, także z zapisanych kodów konta.
 - [x] Skrót klawiaturowy „Ctrl+S" / „Cmd+S" w generatorze → szybki zapis do konta.
 - [x] Tryb wysokiego kontrastu jako opcja w ustawieniach, z obsługą systemowego `prefers-contrast`.
 
@@ -267,12 +267,11 @@ Przed wdrożeniem Phase 3 (szablony etykiet z logo):
 
 ---
 
-## Manual config — Phase 5 prep (SheetJS via CDN)
+## Import arkuszy Excel
 
-Przed wdrożeniem importu XLSX:
-- Pin wersję `xlsx@0.20.3` z jsDelivr.
-- Wygenerować i wkleić SRI hash do `_headers` (lub bezpośrednio do `<script integrity="…">`).
-- Sprawdzić licencję (SheetJS Community Edition = Apache-2.0, OK do projektu komercyjnego).
+- [x] SheetJS Community Edition `0.20.3` jest przypięty jako zależność i kopiowany do lokalnego katalogu `/vendor`.
+- [x] Parser ładuje się dopiero po wybraniu `.xlsx`; arkusz nie jest wysyłany do zewnętrznej usługi.
+- [x] Licencja Apache-2.0 jest publikowana w `/licenses/xlsx-LICENSE.txt`.
 
 ---
 

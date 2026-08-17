@@ -40,7 +40,7 @@ Stan zweryfikowany: 2026-07-27.
 ## QA po każdym deployu
 
 - [ ] Uruchomić build oraz pełny Playwright.
-- [ ] Sprawdzić generator, dekoder, PNG, SVG, CSV/PDF/ZIP i kopiowanie.
+- [ ] Sprawdzić generator, dekoder, PNG, SVG, import CSV/XLSX, PDF/ZIP i kopiowanie.
 - [ ] Sprawdzić 10 wersji językowych, mobile, dark mode i brak błędów konsoli.
 - [ ] Sprawdzić logowanie, reset hasła, zapisane kody, szablony, drukarki i historię.
 - [ ] Sprawdzić A4, Letter i formaty termiczne w podglądzie PDF.

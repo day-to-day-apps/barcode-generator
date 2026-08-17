@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print builder — Barcode Generator</title>
-    <meta name="description" content="Compose multi-barcode print sheets from saved templates, printer profiles, manual rows, and CSV imports.">
+    <meta name="description" content="Compose multi-barcode print sheets from saved templates, printer profiles, manual rows, and CSV or Excel imports.">
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://barcode-generator.daytodayapps.com/wydruk.html">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -72,8 +72,8 @@
                             </div>
                             <div class="codes-toolbar-right">
                                 <button type="button" id="btn-add-row" class="btn-secondary" data-i18n="addRow">Add row</button>
-                                <label for="csv-file" class="btn-secondary" style="cursor:pointer;" data-i18n="importCsv">Import CSV</label>
-                                <input type="file" id="csv-file" accept=".csv,text/csv" hidden>
+                                <label for="csv-file" class="btn-secondary" style="cursor:pointer;" data-i18n="importCsv">Import CSV or Excel</label>
+                                <input type="file" id="csv-file" accept=".csv,.tsv,.xlsx,text/csv,text/tab-separated-values,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
                                 <button type="button" id="btn-clear" class="btn-link" data-i18n="clearAll">Clear all</button>
                             </div>
                         </div>
@@ -146,7 +146,7 @@
         import { listTemplates } from './db-templates.js';
         import { listPrinters } from './db-printers.js';
         import { savePrintJob, countJobs, getJobById, FREE_JOBS_LIMIT, normaliseJobItem } from './db-jobs.js';
-        import { parseCsvFile, rowsToJobItems, MAX_ROWS } from './csv-import.js';
+        import { parseDataFile, rowsToJobItems, MAX_ROWS } from './csv-import.js';
         import { buildSheetHTML, openPrintWindow, MAX_LABELS } from './print-builder.js';
 
         const LANG = document.documentElement.lang || 'en';
@@ -298,7 +298,7 @@
             if (!file) return;
             els.csvStatus.hidden = true;
             try {
-                const parsed = await parseCsvFile(file);
+                const parsed = await parseDataFile(file, { maxRows: MAX_ROWS });
                 if (parsed.errors && parsed.errors.length) throw new Error('csv_invalid_format');
                 const { items, skipped, overflow } = rowsToJobItems(parsed.rows, { header: true, maxRows: 500 });
                 if (overflow) throw new Error('csv_row_limit');
@@ -307,6 +307,7 @@
                 const tpl = T.csvImported || 'Imported {n} rows ({skipped} skipped).';
                 els.csvStatus.hidden = false;
                 els.csvStatus.textContent = tpl.replace('{n}', String(added)).replace('{skipped}', String(skipped));
+                window.trackBarcode?.('print_job_file_import', { format: parsed.format, rows: added, skipped });
             } catch (err) {
                 els.csvStatus.hidden = false;
                 els.csvStatus.textContent = T.csvFailed || ('CSV import failed: ' + (err && err.message || err));
