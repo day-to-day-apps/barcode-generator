@@ -137,16 +137,16 @@ test.describe('Domain and ads configuration guardrails', () => {
     expect(activeAuth).toContain("redirectPath = '/reset-hasla'");
   });
 
-  test('Lighthouse profiles use isolated preview ports', () => {
+  test('Lighthouse profiles use isolated run directories and dynamic ports', () => {
     const runner = fs.readFileSync(path.join(ROOT, 'scripts/run-lighthouse.mjs'), 'utf8');
     const previewServer = fs.readFileSync(path.join(ROOT, 'scripts/serve.mjs'), 'utf8');
 
-    expect(runner).toMatch(/mobile:[\s\S]*port: 8766/);
-    expect(runner).toMatch(/desktop:[\s\S]*port: 8767/);
     expect(runner).toContain('const runsPerRoute = 3');
     expect(runner).toContain("aggregation: 'median'");
     expect(runner).toContain("'/qr-code/'");
-    expect(runner).toContain("path.join(root, '.lighthouseci', mode)");
+    expect(runner).toContain("path.join(lighthouseRoot, 'runs', id)");
+    expect(runner).toContain('findAvailablePort()');
+    expect(runner).toContain('createDistSnapshot');
     expect(previewServer).toContain("process.argv.indexOf('--port')");
   });
 
