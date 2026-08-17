@@ -221,13 +221,18 @@ test.describe('PWA and offline tools', () => {
       return entries.map((request) => new URL(request.url).pathname);
     });
     expect(cachedBeforeUse).not.toContain('/vendor/xlsx.min.js');
+    expect(cachedBeforeUse).not.toContain('/xlsx-worker.js');
 
     await page.goto('/bulk-barcode-generator');
     await page.locator('#csv-file').setInputFiles(spreadsheet);
     await expect(page.locator('#bulk-rows [data-field=value]')).toHaveValue('OFFLINE-XLSX-2026');
     await expect.poll(() => page.evaluate(async () => {
       const cacheName = (await caches.keys()).find((name) => name.startsWith('barcode-tools-'));
-      return Boolean(await (await caches.open(cacheName)).match('/vendor/xlsx.min.js'));
+      const cache = await caches.open(cacheName);
+      return Boolean(
+        await cache.match('/vendor/xlsx.min.js')
+        && await cache.match('/xlsx-worker.js')
+      );
     })).toBe(true);
 
     await context.setOffline(true);

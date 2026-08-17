@@ -71,6 +71,88 @@ test('imports the first non-empty Excel worksheet without external requests', as
   await expect(page.locator('#bulk-status')).toContainText('Worksheet: Products.');
 });
 
+test('parses a large Excel workbook in a worker without blocking the UI thread', async ({ page }) => {
+  await page.goto('/bulk-barcode-generator');
+  const warmWorkbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(warmWorkbook, XLSX.utils.aoa_to_sheet([['value'], ['WARM-UP']]), 'Warmup');
+  const largeWorkbook = XLSX.utils.book_new();
+  const largeRows = Array.from({ length: 450 }, (_, row) => (
+    Array.from({ length: 180 }, (_, column) => `R${row}C${column}`)
+  ));
+  XLSX.utils.book_append_sheet(largeWorkbook, XLSX.utils.aoa_to_sheet(largeRows), 'Large');
+
+  const result = await page.evaluate(async ({ warm, large }) => {
+    const OriginalWorker = window.Worker;
+    let workerCount = 0;
+    window.Worker = class extends OriginalWorker {
+      constructor(...args) {
+        workerCount++;
+        super(...args);
+      }
+    };
+    const { parseDataFile } = await import('/csv-import.js');
+    const file = (bytes, name) => new File([Uint8Array.from(atob(bytes), (char) => char.charCodeAt(0))], name, {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    await parseDataFile(file(warm, 'warm.xlsx'));
+
+    let uiTicks = 0;
+    const timer = setInterval(() => { uiTicks++; }, 1);
+    const parsed = await parseDataFile(file(large, 'large.xlsx'), { maxRows: 500, timeoutMs: 15000 });
+    clearInterval(timer);
+    return { uiTicks, workerCount, rows: parsed.rows.length, sheetName: parsed.sheetName };
+  }, {
+    warm: XLSX.write(warmWorkbook, { bookType: 'xlsx', type: 'base64' }),
+    large: XLSX.write(largeWorkbook, { bookType: 'xlsx', type: 'base64' }),
+  });
+
+  expect(result).toMatchObject({ workerCount: 2, rows: 450, sheetName: 'Large' });
+  expect(result.uiTicks).toBeGreaterThan(0);
+});
+
+test('enforces the Excel cell limit and supports timeout and cancellation', async ({ page }) => {
+  await page.goto('/bulk-barcode-generator');
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet([
+    ['value', 'type', 'name'],
+    ['SKU-1', 'CODE128', 'Product'],
+  ]), 'Products');
+  const workbookBase64 = XLSX.write(workbook, { bookType: 'xlsx', type: 'base64' });
+
+  const limited = await page.evaluate(async (base64) => {
+    const { parseDataFile } = await import('/csv-import.js');
+    const bytes = Uint8Array.from(atob(base64), (char) => char.charCodeAt(0));
+    try {
+      await parseDataFile(new File([bytes], 'limited.xlsx'), { maxCells: 4 });
+      return null;
+    } catch (error) {
+      return { name: error.name, message: error.message };
+    }
+  }, workbookBase64);
+  expect(limited).toEqual({ name: 'Error', message: 'workbook_invalid' });
+
+  await page.route('**/xlsx-worker.js*', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    await route.continue();
+  });
+  const interrupted = await page.evaluate(async (base64) => {
+    const { parseDataFile } = await import('/csv-import.js');
+    const makeFile = () => new File([
+      Uint8Array.from(atob(base64), (char) => char.charCodeAt(0)),
+    ], 'interrupted.xlsx');
+    const timeout = await parseDataFile(makeFile(), { timeoutMs: 20 })
+      .then(() => null, (error) => ({ name: error.name, message: error.message }));
+    const controller = new AbortController();
+    const cancelledPromise = parseDataFile(makeFile(), { signal: controller.signal, timeoutMs: 1000 })
+      .then(() => null, (error) => ({ name: error.name }));
+    controller.abort();
+    return { timeout, cancelled: await cancelledPromise };
+  }, workbookBase64);
+
+  expect(interrupted.timeout).toEqual({ name: 'TimeoutError', message: 'workbook_invalid' });
+  expect(interrupted.cancelled).toEqual({ name: 'AbortError' });
+});
+
 test('rejects a damaged Excel workbook without replacing current rows', async ({ page }) => {
   await page.goto('/pl/generator-kodow-z-csv');
   await page.locator('#bulk-rows [data-field=value]').fill('ZACHOWAJ-001');

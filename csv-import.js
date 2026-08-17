@@ -2,11 +2,12 @@
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const MAX_ROWS = 500;
+const MAX_WORKBOOK_CELLS = 100000;
+const WORKBOOK_TIMEOUT_MS = 15000;
 
 let workerRef = null;
 let nextId = 1;
 const pending = new Map();
-let spreadsheetLoader = null;
 
 function getWorker() {
   if (workerRef) return workerRef;
@@ -55,25 +56,58 @@ function isWorkbookFile(file) {
     || file?.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 }
 
-function loadSpreadsheetParser() {
-  if (globalThis.XLSX) return Promise.resolve();
-  if (spreadsheetLoader) return spreadsheetLoader;
-  spreadsheetLoader = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = new URL('./vendor/xlsx.min.js', import.meta.url).href;
-    script.async = true;
-    script.onload = resolve;
-    script.onerror = () => {
-      spreadsheetLoader = null;
-      script.remove();
-      reject(new Error('workbook_parser_unavailable'));
-    };
-    document.head.appendChild(script);
-  });
-  return spreadsheetLoader;
+function abortError() {
+  return new DOMException('The operation was aborted.', 'AbortError');
 }
 
-async function parseWorkbookFile(file, maxRows) {
+function parseWorkbookBuffer(buffer, options = {}) {
+  return new Promise((resolve, reject) => {
+    const signal = options.signal;
+    if (signal?.aborted) {
+      reject(abortError());
+      return;
+    }
+
+    let worker;
+    try {
+      worker = new Worker(new URL('./xlsx-worker.js', import.meta.url));
+    } catch (_error) {
+      reject(new Error('workbook_invalid'));
+      return;
+    }
+
+    const timeoutMs = Math.max(1, Number(options.timeoutMs) || WORKBOOK_TIMEOUT_MS);
+    let settled = false;
+    const finish = (callback, value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeoutId);
+      signal?.removeEventListener('abort', onAbort);
+      worker.terminate();
+      callback(value);
+    };
+    const onAbort = () => finish(reject, abortError());
+    const timeoutId = setTimeout(() => {
+      const error = new Error('workbook_invalid');
+      error.name = 'TimeoutError';
+      finish(reject, error);
+    }, timeoutMs);
+
+    signal?.addEventListener('abort', onAbort, { once: true });
+    worker.addEventListener('message', (event) => {
+      const { ok, result } = event.data || {};
+      finish(ok ? resolve : reject, ok ? result : new Error('workbook_invalid'));
+    });
+    worker.addEventListener('error', () => finish(reject, new Error('workbook_invalid')));
+    worker.postMessage({
+      buffer,
+      maxRows: Math.max(1, Math.min(MAX_ROWS, Number(options.maxRows) || MAX_ROWS)),
+      maxCells: Math.max(1, Math.min(MAX_WORKBOOK_CELLS, Number(options.maxCells) || MAX_WORKBOOK_CELLS)),
+    }, [buffer]);
+  });
+}
+
+async function parseWorkbookFile(file, options = {}) {
   if (!file || file.size > MAX_FILE_BYTES) {
     throw new Error(file ? 'csv_file_too_large' : 'workbook_invalid');
   }
@@ -82,36 +116,15 @@ async function parseWorkbookFile(file, maxRows) {
     if (signature.length < 4 || signature[0] !== 0x50 || signature[1] !== 0x4b || signature[2] !== 0x03 || signature[3] !== 0x04) {
       throw new Error('workbook_invalid');
     }
-    await loadSpreadsheetParser();
-    const workbook = globalThis.XLSX.read(await file.arrayBuffer(), {
-      type: 'array',
-      cellDates: false,
-      dense: true,
-      sheetRows: Math.max(1, Math.min(MAX_ROWS, Number(maxRows) || MAX_ROWS)) + 2,
-    });
-    for (const sheetName of workbook.SheetNames || []) {
-      const rows = globalThis.XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-        header: 1,
-        raw: false,
-        defval: '',
-        blankrows: false,
-      });
-      if (rows.length) {
-        return {
-          rows,
-          sheetName,
-          format: 'xlsx',
-        };
-      }
-    }
-  } catch (_error) {
+    return await parseWorkbookBuffer(await file.arrayBuffer(), options);
+  } catch (error) {
+    if (error?.name === 'AbortError' || error?.name === 'TimeoutError' || error?.message === 'csv_file_too_large') throw error;
     throw new Error('workbook_invalid');
   }
-  throw new Error('workbook_invalid');
 }
 
 export async function parseDataFile(file, options = {}) {
-  if (isWorkbookFile(file)) return parseWorkbookFile(file, options.maxRows);
+  if (isWorkbookFile(file)) return parseWorkbookFile(file, options);
   return { ...await parseCsvFile(file), format: 'csv' };
 }
 
@@ -195,4 +208,4 @@ function parseCopies(s) {
   return Math.min(1000, Math.floor(n));
 }
 
-export { MAX_FILE_BYTES, MAX_ROWS };
+export { MAX_FILE_BYTES, MAX_ROWS, MAX_WORKBOOK_CELLS, WORKBOOK_TIMEOUT_MS };

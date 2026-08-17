@@ -23,12 +23,11 @@ const PRIVATE_PAGES = ['konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', '
 const ROOT_ASSETS = [
   '404.html', '_headers', '_redirects', 'ads.txt', 'robots.txt', 'favicon.svg', 'og-image.svg',
   'manifest.webmanifest', 'pwa-register.js',
-  'googlec18ae46a3db92f98.html',
   'analytics.js', 'appearance.js', 'app.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
   'ean13-inline.js', 'ean13-inline.css', 'format-inline.js', 'format-inline.css',
   'bulk.js', 'bulk-export.js', 'bulk-job-state.js', 'bulk.css', 'gs1.js', 'gs1-generator.js', 'gs1.css',
   'two-d-generator.js', 'two-d.css', 'specialized-save.js',
-  'csv-import.js', 'csv-worker.js', 'dashboard-stats.js', 'db-codes.js', 'db-jobs.js',
+  'csv-import.js', 'csv-worker.js', 'xlsx-worker.js', 'dashboard-stats.js', 'db-codes.js', 'db-jobs.js',
   'db-printers.js', 'db-templates.js', 'decoder.js', 'i18n.js', 'label-renderer.js',
   'nav-enhance.js', 'print-builder.js', 'printer-presets.json', 'reset-password-page.js',
   'styles.css', 'supabase-client.js', 'supabase-config.js',
@@ -1169,9 +1168,6 @@ for (const lang of LANGS) {
     `<script defer src="${prefix}landing-loader.js?v=${landingLoaderVersion}"></script>`,
     `${criticalThemeControl}<script defer src="${prefix}landing-loader.js?v=${landingLoaderVersion}"></script>`,
   );
-  if (lang === 'en') {
-    html = html.replace('</head>', '    <meta name="google-site-verification" content="rU82pkm5jXvVq8joqzYzgD_fHJrA1SbdmtGTAjDScLE">\n</head>');
-  }
   const qrRoute = routeFor(lang, 'qr-code/');
   const qrLink = `<a class="popular-card__more" href="${qrRoute}">${qrDiscoveryLabels[lang]}</a>`;
   const wrappedQr = /(<div class="popular-card-wrap"><button type="button" class="popular-card" data-format="QR"[\s\S]*?<\/button>)(<\/div>)/;
