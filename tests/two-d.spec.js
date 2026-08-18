@@ -185,7 +185,7 @@ test.describe('2D barcode generator', () => {
     await page.goto('/pl/generator-kodow-2d');
     await expect(page.locator('#two-d-advanced')).not.toHaveAttribute('open', '');
     const navLinks = page.locator('.site-nav__link');
-    await expect(navLinks).toHaveCount(6);
+    await expect(navLinks).toHaveCount(4);
     for (const link of await navLinks.all()) {
       await expect(link).toBeVisible();
       expect((await link.boundingBox())?.height).toBeGreaterThanOrEqual(40);

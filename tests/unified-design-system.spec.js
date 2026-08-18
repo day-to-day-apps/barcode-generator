@@ -14,7 +14,7 @@ test.describe('shared site shell', () => {
       await page.goto(route);
       await expect(page.locator('.site-header')).toHaveCount(1);
       await expect(page.locator('.site-brand')).toBeVisible();
-      await expect(page.locator('.site-nav__link')).toHaveCount(6);
+      await expect(page.locator('.site-nav__link')).toHaveCount(4);
       await expect(page.locator('#lang-toggle')).toBeVisible();
       await expect(page.locator('#theme-toggle')).toBeVisible();
       await expect(page.locator('[id="lang-toggle"]')).toHaveCount(1);
@@ -38,11 +38,11 @@ test.describe('shared site shell', () => {
     }
   });
 
-  test('decoder links directly to every current generator mode', async ({ page }) => {
+  test('decoder keeps the primary product navigation concise', async ({ page }) => {
     await page.goto('/pl/decoder');
     await expect(page.locator('.site-nav a[href="/pl/generator-kodow-z-csv"]')).toBeVisible();
-    await expect(page.locator('.site-nav a[href="/pl/generator-kodow-gs1"]')).toBeVisible();
-    await expect(page.locator('.site-nav a[href="/pl/generator-kodow-2d"]')).toBeVisible();
+    await expect(page.locator('.site-nav a[href="/pl/generator-kodow-gs1"]')).toHaveCount(0);
+    await expect(page.locator('.site-nav a[href="/pl/generator-kodow-2d"]')).toHaveCount(0);
     const cameraButton = await page.locator('#camera-btn').boundingBox();
     expect(cameraButton).not.toBeNull();
     expect(cameraButton.width).toBeLessThanOrEqual(240);
@@ -57,6 +57,22 @@ test.describe('shared site shell', () => {
       const before = await page.locator('html').getAttribute('data-theme');
       await page.locator('#theme-toggle').click();
       await expect(page.locator('html')).not.toHaveAttribute('data-theme', before || 'light');
+    }
+  });
+
+  test('English language control uses a language code, not a country code', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#lang-toggle')).toContainText('EN');
+    await expect(page.locator('#lang-toggle')).not.toContainText('GB');
+  });
+
+  test('GS1 and 2D formats are available in the main generator', async ({ page }) => {
+    await page.goto('/');
+    for (const format of ['GS1_128', 'DATAMATRIX', 'PDF417', 'AZTEC']) {
+      await expect(page.locator(`#barcode-type option[value="${format}"]`)).toHaveCount(1);
+      await page.locator('#barcode-type').selectOption(format);
+      await expect(page.locator('#qr-preview svg')).toBeVisible();
+      await expect(page.locator('.format-advanced-link')).toBeVisible();
     }
   });
 

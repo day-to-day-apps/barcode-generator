@@ -46,7 +46,7 @@ const BUILD_I18N_CONTEXT = { window: {} };
 runInNewContext(await readFile(path.join(ROOT, 'i18n.js'), 'utf8'), BUILD_I18N_CONTEXT);
 const BUILD_I18N = BUILD_I18N_CONTEXT.window.BARCODE_I18N;
 const SHELL_LANGUAGES = [
-  ['en', 'GB', 'gb', 'English'], ['pl', 'PL', 'pl', 'Polski'], ['de', 'DE', 'de', 'Deutsch'],
+  ['en', 'EN', 'gb', 'English'], ['pl', 'PL', 'pl', 'Polski'], ['de', 'DE', 'de', 'Deutsch'],
   ['fr', 'FR', 'fr', 'Français'], ['es', 'ES', 'es', 'Español'], ['it', 'IT', 'it', 'Italiano'],
   ['pt', 'PT', 'pt', 'Português'], ['nl', 'NL', 'nl', 'Nederlands'], ['cs', 'CS', 'cz', 'Čeština'],
   ['uk', 'UK', 'ua', 'Українська'],
@@ -64,6 +64,12 @@ const SHELL_COPY = {
   uk: ['Генератор', 'Сканер', 'Пакет / CSV', 'GS1', '2D-коди', 'Акаунт', 'Мова', 'Змінити тему', 'Головна навігація'],
 };
 const SHELL_CORE_PAGES = new Set(['', 'decoder', 'konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', 'historia-wydrukow', 'reset-hasla']);
+const UNIFIED_FORMAT_GROUP = {
+  en: '2D and GS1 formats', pl: 'Formaty 2D i GS1', de: '2D- und GS1-Formate',
+  fr: 'Formats 2D et GS1', es: 'Formatos 2D y GS1', it: 'Formati 2D e GS1',
+  pt: 'Formatos 2D e GS1', nl: '2D- en GS1-formaten', cs: '2D a GS1 formáty',
+  uk: 'Формати 2D та GS1',
+};
 
 function routeFor(lang, page = '') {
   const prefix = lang === 'en' ? '' : `/${lang}`;
@@ -145,8 +151,8 @@ function sharedShellHtml(html) {
     `<a class="lang-option${code === activeLang ? ' active' : ''}" href="${alternates.get(code)}" lang="${code}"${code === activeLang ? ' aria-current="page"' : ''}>${flag(flagCode, name)}</a>`
   )).join('');
   const header = `<header class="site-header"><div class="site-header__inner">
-    <a class="site-brand" href="${routes.generator}" aria-label="Barcode Generator"><span class="site-brand__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span>Barcode Generator</span></a>
-    <nav class="site-nav" aria-label="${labels[8]}">${nav('generator', routes.generator, labels[0])}${nav('decoder', routes.decoder, labels[1])}${nav('bulk', routes.bulk, labels[2])}${nav('gs1', routes.gs1, labels[3])}${nav('twoD', routes.twoD, labels[4])}${nav('account', routes.account, labels[5])}</nav>
+    <a class="site-brand" href="${routes.generator}" aria-label="Barcode Generator"><img src="/favicon.svg" width="34" height="34" alt=""><span>Barcode Generator</span></a>
+    <nav class="site-nav" aria-label="${labels[8]}">${nav('generator', routes.generator, labels[0])}${nav('decoder', routes.decoder, labels[1])}${nav('bulk', routes.bulk, labels[2])}${nav('account', routes.account, labels[5])}</nav>
     <div class="site-header__actions topbar__right"><div class="lang-switch"><button class="lang-current" id="lang-toggle" type="button" aria-haspopup="true" aria-expanded="false" aria-label="${labels[6]}">${flag(current[2], current[1])}<span aria-hidden="true">▾</span></button><div class="lang-dropdown" id="lang-dropdown">${languageOptions}</div></div><button class="theme-toggle" id="theme-toggle" type="button" title="${labels[7]}" aria-label="${labels[7]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg></button></div>
   </div></header>`;
   let output = html;
@@ -177,6 +183,15 @@ function normaliseHtml(html) {
     .replace(/<script(?![^>]*\b(?:defer|async)\b)(?![^>]*type=['"]module['"])([^>]*\bsrc=[^>]*)>/gi, '<script defer$1>')
     .replace(ASSET_REF_RE, (_match, prefix, name) => `${prefix}${name}?v=${ASSET_VERSIONS.get(name)}`);
   const pageLang = html.match(/<html\b[^>]*\blang=["']([^"']+)/i)?.[1]?.split('-')[0] || 'en';
+  if (/id=["']barcode-type["']/i.test(output) && !/data-unified-formats/i.test(output)) {
+    const options = `<optgroup data-unified-formats label="${UNIFIED_FORMAT_GROUP[pageLang] || UNIFIED_FORMAT_GROUP.en}">
+      <option value="GS1_128">GS1-128</option>
+      <option value="DATAMATRIX">Data Matrix</option>
+      <option value="PDF417">PDF417</option>
+      <option value="AZTEC">Aztec</option>
+    </optgroup>`;
+    output = output.replace(/(<select\b[^>]*\bid=["']barcode-type["'][^>]*>[\s\S]*?)(<\/select>)/i, `$1${options}$2`);
+  }
   const introLabels = {
     en: 'Page introduction', pl: 'Wprowadzenie do strony', de: 'Seiteneinführung', fr: 'Présentation de la page',
     es: 'Introducción de la página', it: 'Introduzione alla pagina', pt: 'Introdução da página',
@@ -1323,7 +1338,7 @@ const appSource = normaliseJavaScript(await readFile(path.join(ROOT, 'app.js'), 
 const prefillSource = await readFile(path.join(ROOT, 'generator-prefill.js'), 'utf8');
 const landingAppBase = appSource.replace(
   /    \/\/ The gallery sits below the generator on mobile,[\s\S]*?    }\r?\n\r?\n    syncTypeUI\(\);/,
-  `    // Render previews as soon as the browser is idle, without delaying them long enough to leave visible empty cards.\n    addEventListener('load', () => {\n        if ('requestIdleCallback' in window) requestIdleCallback(renderPopularPreviews, { timeout: 800 });\n        else setTimeout(renderPopularPreviews, 200);\n    }, { once: true });\n\n    syncTypeUI();`,
+  `    // Keep desktop previews immediate; defer only the below-the-fold mobile gallery.\n    if (innerWidth <= 600 && 'requestIdleCallback' in window) {\n        requestIdleCallback(renderPopularPreviews, { timeout: 500 });\n    } else {\n        renderPopularPreviews();\n    }\n\n    syncTypeUI();`,
 );
 if (landingAppBase === appSource) throw new Error('Could not create deferred landing app bundle.');
 const immediateLandingApp = landingAppBase

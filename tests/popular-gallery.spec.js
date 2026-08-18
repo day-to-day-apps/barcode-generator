@@ -35,14 +35,16 @@ test.describe('Popular Gallery + More-formats + QR options', () => {
       await expect(page.locator('#barcode-type')).toHaveValue('EAN13');
     });
 
-    test(`[${code}] select uses two optgroups (popular + more) and no toggle button`, async ({ page }) => {
+    test(`[${code}] select groups popular, additional, and 2D or GS1 formats`, async ({ page }) => {
       await page.goto(path);
       const groups = page.locator('#barcode-type optgroup');
-      await expect(groups).toHaveCount(2);
+      await expect(groups).toHaveCount(3);
       const popularOpts = page.locator('#barcode-type optgroup:nth-of-type(1) option');
       const moreOpts = page.locator('#barcode-type optgroup:nth-of-type(2) option');
+      const unifiedOpts = page.locator('#barcode-type optgroup:nth-of-type(3) option');
       await expect(popularOpts).toHaveCount(7);
       await expect(moreOpts).toHaveCount(13);
+      await expect(unifiedOpts).toHaveCount(4);
       await expect(page.locator('#btn-more-formats')).toHaveCount(0);
     });
 

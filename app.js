@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const barcodeSvg = document.getElementById('barcode-svg');
     const barcodeContainer = document.getElementById('barcode-container');
     const previewHint = document.getElementById('preview-hint');
+    const previewHintDefault = previewHint.textContent;
     const errorMessage = document.getElementById('error-message');
     const errorText = document.getElementById('error-text');
 
@@ -173,6 +174,10 @@ document.addEventListener('DOMContentLoaded', () => {
         'UPC': '123456789012',
         'CODE39': 'CODE39TEST',
         'ITF14': '98249880215005',
+        'GS1_128': '(01)09501101530003(10)LOT2026',
+        'DATAMATRIX': 'PART-2026-001',
+        'PDF417': 'Shipment 2026 / Dock 4',
+        'AZTEC': 'https://barcode-generator.daytodayapps.com/',
         'ITF': '123456',
         'MSI': '123456',
         'MSI10': '123456',
@@ -213,6 +218,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const qrCaptionSizeVal = document.getElementById('qr-caption-size-val');
     let qrLogoDataUrl = null;
     let qrMatrix = null; // last successfully built qrcode-generator instance
+    let bwipSvg = '';
+    let bwipLoadPromise = null;
     const QR_LOGO_SIZE_PCT = 22; // default logo size relative to QR side
     let qrUniqId = 0;
 
@@ -421,7 +428,110 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const BWIP_FORMATS = {
+        GS1_128: 'gs1-128',
+        DATAMATRIX: 'datamatrix',
+        PDF417: 'pdf417',
+        AZTEC: 'azteccode',
+    };
+
     function isQR() { return barcodeType.value === 'QR'; }
+    function isBwip() { return Object.hasOwn(BWIP_FORMATS, barcodeType.value); }
+    function isMatrix2D() { return ['DATAMATRIX', 'PDF417', 'AZTEC'].includes(barcodeType.value); }
+    function usesCustomSvg() { return isQR() || isBwip(); }
+
+    function ensureBwip() {
+        if (window.bwipjs) return Promise.resolve(window.bwipjs);
+        if (bwipLoadPromise) return bwipLoadPromise;
+        bwipLoadPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = '/vendor/bwip-js-min.js';
+            script.onload = () => window.bwipjs ? resolve(window.bwipjs) : reject(new Error('Could not initialise the selected format.'));
+            script.onerror = () => reject(new Error('Could not load the selected format.'));
+            document.head.appendChild(script);
+        });
+        return bwipLoadPromise;
+    }
+
+    function renderBwip(text) {
+        if (!window.bwipjs || !qrPreview) throw new Error('The selected format is still loading.');
+        const linear = barcodeType.value === 'GS1_128';
+        const options = {
+            bcid: BWIP_FORMATS[barcodeType.value],
+            text,
+            scale: linear ? Math.max(1, Number(barWidth.value)) : 3,
+            padding: linear ? Math.max(2, Number(barMargin.value)) : 4,
+            barcolor: lineColor.value.replace('#', ''),
+            backgroundcolor: bgColor.value.replace('#', ''),
+        };
+        if (linear) Object.assign(options, {
+            height: Math.max(8, Number(barHeight.value) / 4),
+            includetext: showText.checked,
+            textxalign: textAlign,
+            textsize: Math.max(8, Number(fontSize.value)),
+        });
+        bwipSvg = window.bwipjs.toSVG(options);
+        qrMatrix = null;
+        qrPreview.innerHTML = bwipSvg;
+        qrPreview.classList.add('active', 'bwip-preview');
+    }
+
+    function customSvgMarkup() {
+        if (isQR()) return qrMatrix ? buildQrSvgString(qrMatrix, getQrOptsFromDom(1024)) : '';
+        return isBwip() ? bwipSvg : '';
+    }
+
+    function svgMarkupToPngBlob(svg, maxSize = 1024) {
+        return new Promise((resolve, reject) => {
+            if (!svg) { reject(new Error('No SVG')); return; }
+            const image = new Image();
+            image.onload = () => {
+                const ratio = Math.min(maxSize / Math.max(image.width, image.height), 3);
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.max(1, Math.round(image.width * ratio));
+                canvas.height = Math.max(1, Math.round(image.height * ratio));
+                const context = canvas.getContext('2d');
+                context.fillStyle = bgColor.value;
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('toBlob failed')), 'image/png');
+            };
+            image.onerror = () => reject(new Error('SVG load failed'));
+            image.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+        });
+    }
+
+    const advancedFormatCopy = {
+        pl: { gs1: 'Potrzebujesz AI, SSCC lub daty ważności? Otwórz kreator GS1.', twoD: 'Potrzebujesz ustawień technicznych? Otwórz zaawansowany kreator 2D.', gs1Link: '/pl/generator-kodow-gs1', twoDLink: '/pl/generator-kodow-2d' },
+        en: { gs1: 'Need AIs, SSCC or expiry fields? Open the advanced GS1 builder.', twoD: 'Need technical symbol settings? Open the advanced 2D builder.', gs1Link: '/gs1-barcode-generator', twoDLink: '/2d-barcode-generator' },
+        de: { gs1: 'Benötigen Sie AIs, SSCC oder ein Ablaufdatum? Erweiterter GS1-Generator (EN).', twoD: 'Benötigen Sie technische Einstellungen? Erweiterter 2D-Generator (EN).', gs1Link: '/gs1-barcode-generator', twoDLink: '/2d-barcode-generator' },
+        fr: { gs1: 'Besoin des AI, du SSCC ou d’une date d’expiration ? Générateur GS1 avancé (EN).', twoD: 'Besoin de réglages techniques ? Générateur 2D avancé (EN).', gs1Link: '/gs1-barcode-generator', twoDLink: '/2d-barcode-generator' },
+        es: { gs1: '¿Necesitas AI, SSCC o caducidad? Generador GS1 avanzado (EN).', twoD: '¿Necesitas ajustes técnicos? Generador 2D avanzado (EN).', gs1Link: '/gs1-barcode-generator', twoDLink: '/2d-barcode-generator' },
+        it: { gs1: 'Servono AI, SSCC o scadenza? Generatore GS1 avanzato (EN).', twoD: 'Servono impostazioni tecniche? Generatore 2D avanzato (EN).', gs1Link: '/gs1-barcode-generator', twoDLink: '/2d-barcode-generator' },
+        pt: { gs1: 'Precisa de AI, SSCC ou validade? Gerador GS1 avançado (EN).', twoD: 'Precisa de definições técnicas? Gerador 2D avançado (EN).', gs1Link: '/gs1-barcode-generator', twoDLink: '/2d-barcode-generator' },
+        nl: { gs1: 'AI’s, SSCC of vervaldatum nodig? Geavanceerde GS1-generator (EN).', twoD: 'Technische instellingen nodig? Geavanceerde 2D-generator (EN).', gs1Link: '/gs1-barcode-generator', twoDLink: '/2d-barcode-generator' },
+        cs: { gs1: 'Potřebujete AI, SSCC nebo datum spotřeby? Pokročilý GS1 generátor (EN).', twoD: 'Potřebujete technická nastavení? Pokročilý 2D generátor (EN).', gs1Link: '/gs1-barcode-generator', twoDLink: '/2d-barcode-generator' },
+        uk: { gs1: 'Потрібні AI, SSCC або дата придатності? Розширений генератор GS1 (EN).', twoD: 'Потрібні технічні налаштування? Розширений генератор 2D (EN).', gs1Link: '/gs1-barcode-generator', twoDLink: '/2d-barcode-generator' },
+    };
+    const formatHelp = document.createElement('a');
+    formatHelp.className = 'format-advanced-link';
+    formatHelp.hidden = true;
+    barcodeType.closest('.control-group')?.appendChild(formatHelp);
+
+    function syncFormatHelp() {
+        const copy = advancedFormatCopy[LANG] || advancedFormatCopy.en;
+        if (barcodeType.value === 'GS1_128') {
+            formatHelp.textContent = copy.gs1;
+            formatHelp.href = copy.gs1Link;
+            formatHelp.hidden = false;
+        } else if (isMatrix2D()) {
+            formatHelp.textContent = copy.twoD;
+            formatHelp.href = copy.twoDLink;
+            formatHelp.hidden = false;
+        } else {
+            formatHelp.hidden = true;
+        }
+    }
 
     function renderPopularPreviews() {
         // Preview assets are rendered once at build time. Keeping each thumbnail
@@ -454,12 +564,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function syncTypeUI() {
         const qr = isQR();
+        const custom = usesCustomSvg();
+        const advancedSettings = document.querySelector('.advanced-settings');
         if (qrOptions) qrOptions.hidden = !qr;
-        if (qrPreview) qrPreview.classList.toggle('active', qr);
-        // Hide JsBarcode SVG host when in QR mode; show otherwise
-        barcodeSvg.style.display = qr ? 'none' : '';
+        if (advancedSettings) advancedSettings.hidden = isMatrix2D();
+        if (qrPreview) {
+            qrPreview.classList.toggle('active', custom);
+            qrPreview.classList.toggle('bwip-preview', isBwip());
+        }
+        barcodeSvg.style.display = custom ? 'none' : '';
         // Hide barcode-only controls (bar width/height/margin, font size, show-text label, text-align)
-        document.querySelectorAll('.non-qr-control').forEach(el => { el.hidden = qr; });
+        document.querySelectorAll('.non-qr-control').forEach(el => { el.hidden = qr || isMatrix2D(); });
+        syncFormatHelp();
     }
 
     barcodeType.addEventListener('change', () => {
@@ -555,6 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!text) {
             showError(T.errEmpty || 'Enter text to encode');
             barcodeContainer.style.display = 'none';
+            previewHint.textContent = previewHintDefault;
             previewHint.style.display = 'block';
             return false;
         }
@@ -578,7 +695,37 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        if (isBwip()) {
+            if (!window.bwipjs) {
+                previewHint.textContent = T.loading || 'Loading format...';
+                previewHint.style.display = 'block';
+                barcodeContainer.style.display = 'none';
+                ensureBwip()
+                    .then(() => { if (isBwip() && barcodeText.value.trim()) generateBarcode(); })
+                    .catch((error) => showError(error.message));
+                return false;
+            }
+            try {
+                renderBwip(text);
+                barcodeContainer.style.display = 'flex';
+                previewHint.style.display = 'none';
+                barcodeContainer.className = 'barcode-container';
+                const rotB = rotation.value;
+                if (rotB !== 'N') barcodeContainer.classList.add(`rotate-${rotB}`);
+                return Boolean(bwipSvg);
+            } catch (e) {
+                bwipSvg = '';
+                qrPreview.innerHTML = '';
+                showError((T.errGen || 'Generation error: {0}').replace('{0}', e.message));
+                barcodeContainer.style.display = 'none';
+                previewHint.style.display = 'block';
+                return false;
+            }
+        }
+
         try {
+            bwipSvg = '';
+            qrPreview.innerHTML = '';
             const quality = window.BarcodeQuality?.assessContrast(lineColor.value, bgColor.value);
             if (quality && !quality.valid) {
                 showError(T.errContrast || 'Increase contrast: use a dark barcode on a light background.');
@@ -679,13 +826,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Download PNG
     btnDownloadPng.addEventListener('click', async () => {
-        if (isQR()) {
-            if (!qrMatrix) { showToast(T.genFirst || 'Generate a barcode first'); return; }
+        if (usesCustomSvg()) {
+            const svg = customSvgMarkup();
+            if (!svg) { showToast(T.genFirst || 'Generate a barcode first'); return; }
             try {
-                const blob = await qrToPngBlob(1024);
+                const blob = await svgMarkupToPngBlob(svg, 1024);
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
-                link.download = `qr_${barcodeText.value.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40)}.png`;
+                link.download = `${barcodeType.value.toLowerCase()}_${barcodeText.value.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40)}.png`;
                 link.href = url;
                 link.click();
                 URL.revokeObjectURL(url);
@@ -726,19 +874,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Download SVG
     btnDownloadSvg.addEventListener('click', async () => {
-        if (isQR()) {
-            if (!qrMatrix) { showToast(T.genFirst || 'Generate a barcode first'); return; }
-            const svg = buildQrSvgString(qrMatrix, {
-                fg: lineColor.value,
-                bg: bgColor.value,
-                margin: 4,
-                logoDataUrl: qrLogoDataUrl,
-                pxSize: 1024,
-            });
+        if (usesCustomSvg()) {
+            const svg = customSvgMarkup();
+            if (!svg) { showToast(T.genFirst || 'Generate a barcode first'); return; }
             const blob = new Blob([`<?xml version="1.0" encoding="UTF-8"?>\n` + svg], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.download = `qr_${barcodeText.value.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40)}.svg`;
+            link.download = `${barcodeType.value.toLowerCase()}_${barcodeText.value.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 40)}.svg`;
             link.href = url;
             link.click();
             URL.revokeObjectURL(url);
@@ -766,10 +908,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Copy to clipboard
     btnCopy.addEventListener('click', async () => {
-        if (isQR()) {
-            if (!qrMatrix) { showToast(T.genFirst || 'Generate a barcode first'); return; }
+        if (usesCustomSvg()) {
+            const svg = customSvgMarkup();
+            if (!svg) { showToast(T.genFirst || 'Generate a barcode first'); return; }
             try {
-                const blob = await qrToPngBlob(1024);
+                const blob = await svgMarkupToPngBlob(svg, 1024);
                 await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
                 showToast(T.copied || 'Copied to clipboard');
                 trackGenerator('copy_barcode');
@@ -868,8 +1011,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Open/close modal
     btnPrintLabels.addEventListener('click', () => {
-        const hasPrintableSymbol = isQR()
-            ? Boolean(qrMatrix && qrPreview?.querySelector('svg'))
+        const hasPrintableSymbol = usesCustomSvg()
+            ? Boolean(customSvgMarkup())
             : Boolean(barcodeSvg.getBBox().width);
         if (!hasPrintableSymbol) {
             showToast(T.genFirst || 'Generate a barcode first');
@@ -972,7 +1115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             description: labelDescription.value,
             cutLines: labelCutLines.checked,
             lineColor: lineColor.value,
-            svgMarkup: isQR() ? qrPreview?.querySelector('svg')?.outerHTML : '',
+            svgMarkup: usesCustomSvg() ? customSvgMarkup() : '',
             t: T,
         });
     }
