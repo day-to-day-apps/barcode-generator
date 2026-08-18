@@ -23,6 +23,7 @@ const PRIVATE_PAGES = ['konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', '
 const ROOT_ASSETS = [
   '404.html', '_headers', '_redirects', 'ads.txt', 'robots.txt', 'favicon.svg', 'og-image.svg',
   'manifest.webmanifest', 'pwa-register.js',
+  'site-shell.js', 'site-shell.css',
   'analytics.js', 'appearance.js', 'app.js', 'barcode-quality.js', 'auth-email-password.js', 'auth-ui.js', 'account-page.js', 'account-dialogs.js',
   'ean13-inline.js', 'ean13-inline.css', 'format-inline.js', 'format-inline.css',
   'bulk.js', 'bulk-export.js', 'bulk-job-state.js', 'bulk.css', 'gs1.js', 'gs1-generator.js', 'gs1.css',
@@ -44,6 +45,25 @@ const ASSET_REF_RE = new RegExp(`((?:\\.\\.\\/)*)(${VERSIONED_ASSETS.map((name) 
 const BUILD_I18N_CONTEXT = { window: {} };
 runInNewContext(await readFile(path.join(ROOT, 'i18n.js'), 'utf8'), BUILD_I18N_CONTEXT);
 const BUILD_I18N = BUILD_I18N_CONTEXT.window.BARCODE_I18N;
+const SHELL_LANGUAGES = [
+  ['en', 'GB', 'gb', 'English'], ['pl', 'PL', 'pl', 'Polski'], ['de', 'DE', 'de', 'Deutsch'],
+  ['fr', 'FR', 'fr', 'Français'], ['es', 'ES', 'es', 'Español'], ['it', 'IT', 'it', 'Italiano'],
+  ['pt', 'PT', 'pt', 'Português'], ['nl', 'NL', 'nl', 'Nederlands'], ['cs', 'CS', 'cz', 'Čeština'],
+  ['uk', 'UK', 'ua', 'Українська'],
+];
+const SHELL_COPY = {
+  en: ['Generator', 'Scanner', 'Bulk / CSV', 'GS1', '2D codes', 'Account', 'Language', 'Toggle theme', 'Main navigation'],
+  pl: ['Generator', 'Skaner', 'Serie / CSV', 'GS1', 'Kody 2D', 'Konto', 'Język', 'Zmień motyw', 'Nawigacja główna'],
+  de: ['Generator', 'Scanner', 'Stapel / CSV', 'GS1', '2D-Codes', 'Konto', 'Sprache', 'Design wechseln', 'Hauptnavigation'],
+  fr: ['Générateur', 'Scanner', 'Lot / CSV', 'GS1', 'Codes 2D', 'Compte', 'Langue', 'Changer le thème', 'Navigation principale'],
+  es: ['Generador', 'Escáner', 'Lotes / CSV', 'GS1', 'Códigos 2D', 'Cuenta', 'Idioma', 'Cambiar tema', 'Navegación principal'],
+  it: ['Generatore', 'Scanner', 'Serie / CSV', 'GS1', 'Codici 2D', 'Account', 'Lingua', 'Cambia tema', 'Navigazione principale'],
+  pt: ['Gerador', 'Scanner', 'Lote / CSV', 'GS1', 'Códigos 2D', 'Conta', 'Idioma', 'Mudar tema', 'Navegação principal'],
+  nl: ['Generator', 'Scanner', 'Bulk / CSV', 'GS1', '2D-codes', 'Account', 'Taal', 'Thema wijzigen', 'Hoofdnavigatie'],
+  cs: ['Generátor', 'Skener', 'Dávka / CSV', 'GS1', '2D kódy', 'Účet', 'Jazyk', 'Změnit motiv', 'Hlavní navigace'],
+  uk: ['Генератор', 'Сканер', 'Пакет / CSV', 'GS1', '2D-коди', 'Акаунт', 'Мова', 'Змінити тему', 'Головна навігація'],
+};
+const SHELL_CORE_PAGES = new Set(['', 'decoder', 'konto', 'moje-kody', 'szablony', 'drukarki', 'wydruk', 'historia-wydrukow', 'reset-hasla']);
 
 function routeFor(lang, page = '') {
   const prefix = lang === 'en' ? '' : `/${lang}`;
@@ -52,6 +72,93 @@ function routeFor(lang, page = '') {
 
 function canonicalFor(lang, page) {
   return `${BASE}${routeFor(lang, page)}`;
+}
+
+function removeElementByClass(html, tagName, className) {
+  let output = html;
+  const opening = new RegExp(`<${tagName}\\b[^>]*\\bclass=["'][^"']*\\b${className}\\b[^"']*["'][^>]*>`, 'i');
+  while (opening.test(output)) {
+    const start = output.search(opening);
+    const tags = new RegExp(`<\\/?${tagName}\\b[^>]*>`, 'gi');
+    tags.lastIndex = start;
+    let depth = 0;
+    let match;
+    let end = -1;
+    while ((match = tags.exec(output))) {
+      if (match[0].startsWith('</')) depth -= 1;
+      else depth += 1;
+      if (depth === 0) {
+        end = tags.lastIndex;
+        break;
+      }
+    }
+    if (end < 0) break;
+    output = output.slice(0, start) + output.slice(end);
+  }
+  return output;
+}
+
+function sharedShellHtml(html) {
+  if (/class=["'][^"']*\bsite-header\b/i.test(html)) return html;
+  const lang = html.match(/<html\b[^>]*\blang=["']([^"']+)/i)?.[1]?.split('-')[0] || 'en';
+  const activeLang = SHELL_LANGUAGES.some(([code]) => code === lang) ? lang : 'en';
+  const labels = [...(SHELL_COPY[activeLang] || SHELL_COPY.en)];
+  if (!['en', 'pl'].includes(activeLang)) {
+    labels[2] += ' (EN)';
+    labels[3] += ' (EN)';
+    labels[4] += ' (EN)';
+  }
+  const canonical = html.match(/<link\b[^>]*\brel=["']canonical["'][^>]*\bhref=["']([^"']+)/i)?.[1] || `${BASE}/`;
+  let pathname = new URL(canonical, BASE).pathname.replace(/\.html$/, '').replace(/^\//, '').replace(/\/$/, '');
+  if (activeLang !== 'en' && pathname.startsWith(`${activeLang}/`)) pathname = pathname.slice(activeLang.length + 1);
+  else if (pathname === activeLang) pathname = '';
+  const prefix = activeLang === 'en' ? '' : `/${activeLang}`;
+  const specialistLang = activeLang === 'pl' ? 'pl' : 'en';
+  const routes = {
+    generator: `${prefix}/`, decoder: `${prefix}/decoder`,
+    bulk: specialistLang === 'pl' ? '/pl/generator-kodow-z-csv' : '/bulk-barcode-generator',
+    gs1: specialistLang === 'pl' ? '/pl/generator-kodow-gs1' : '/gs1-barcode-generator',
+    twoD: specialistLang === 'pl' ? '/pl/generator-kodow-2d' : '/2d-barcode-generator',
+    account: `${prefix}/konto`,
+  };
+  const active = {
+    generator: pathname === '', decoder: pathname === 'decoder',
+    bulk: /(?:bulk-barcode-generator|generator-kodow-z-csv)/.test(pathname),
+    gs1: /(?:gs1-barcode-generator|generator-kodow-gs1)/.test(pathname),
+    twoD: /(?:2d-barcode-generator|generator-kodow-2d)/.test(pathname),
+    account: /^(?:konto|moje-kody|szablony|drukarki|wydruk|historia-wydrukow|reset-hasla)$/.test(pathname),
+  };
+  const alternates = new Map();
+  for (const tag of html.match(/<link\b[^>]*\brel=["']alternate["'][^>]*>/gi) || []) {
+    const code = tag.match(/\bhreflang=["']([^"']+)/i)?.[1];
+    const href = tag.match(/\bhref=["']([^"']+)/i)?.[1];
+    if (code && code !== 'x-default' && href && SHELL_LANGUAGES.some(([known]) => known === code)) alternates.set(code, href);
+  }
+  if (alternates.size < 2 && (SHELL_CORE_PAGES.has(pathname) || /^(?:ean-13|code-128|upc-a|code-39|itf-14|codabar|qr-code)$/.test(pathname))) {
+    for (const [code] of SHELL_LANGUAGES) alternates.set(code, code === 'en' ? `/${pathname}` : `/${code}/${pathname}`);
+  }
+  if (!alternates.size) alternates.set(activeLang, new URL(canonical, BASE).pathname);
+  const current = SHELL_LANGUAGES.find(([code]) => code === activeLang) || SHELL_LANGUAGES[0];
+  const flag = (flagCode, text) => `<img class="flag-img" src="/flags/${flagCode}.png" width="20" height="15" alt=""><span>${text}</span>`;
+  const nav = (key, href, text) => `<a class="site-nav__link${active[key] ? ' is-active' : ''}" href="${href}"${active[key] ? ' aria-current="page"' : ''}>${text}</a>`;
+  const languageOptions = SHELL_LANGUAGES.filter(([code]) => alternates.has(code)).map(([code, _short, flagCode, name]) => (
+    `<a class="lang-option${code === activeLang ? ' active' : ''}" href="${alternates.get(code)}" lang="${code}"${code === activeLang ? ' aria-current="page"' : ''}>${flag(flagCode, name)}</a>`
+  )).join('');
+  const header = `<header class="site-header"><div class="site-header__inner">
+    <a class="site-brand" href="${routes.generator}" aria-label="Barcode Generator"><span class="site-brand__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span>Barcode Generator</span></a>
+    <nav class="site-nav" aria-label="${labels[8]}">${nav('generator', routes.generator, labels[0])}${nav('decoder', routes.decoder, labels[1])}${nav('bulk', routes.bulk, labels[2])}${nav('gs1', routes.gs1, labels[3])}${nav('twoD', routes.twoD, labels[4])}${nav('account', routes.account, labels[5])}</nav>
+    <div class="site-header__actions topbar__right"><div class="lang-switch"><button class="lang-current" id="lang-toggle" type="button" aria-haspopup="true" aria-expanded="false" aria-label="${labels[6]}">${flag(current[2], current[1])}<span aria-hidden="true">▾</span></button><div class="lang-dropdown" id="lang-dropdown">${languageOptions}</div></div><button class="theme-toggle" id="theme-toggle" type="button" title="${labels[7]}" aria-label="${labels[7]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg></button></div>
+  </div></header>`;
+  let output = html;
+  for (const [tag, className] of [['div', 'topbar'], ['header', 'bulk-header'], ['nav', 'decoder-nav'], ['div', 'lang-switch'], ['button', 'theme-toggle']]) {
+    output = removeElementByClass(output, tag, className);
+  }
+  output = output
+    .replace(/\bid=["'](?:lang-toggle|lang-dropdown|theme-toggle)["']/gi, (match) => `data-legacy-${match}`)
+    .replace(/<body([^>]*)>/i, (_match, attrs) => `<body${/\bclass=/.test(attrs) ? attrs.replace(/\bclass=(["'])([^"']*)\1/i, 'class=$1$2 site-shell-ready$1') : `${attrs} class="site-shell-ready"`}>`);
+  if (/<a class="skip-link"/i.test(output)) output = output.replace(/(<a class="skip-link"[^>]*>[\s\S]*?<\/a>)/i, `$1\n${header}`);
+  else output = output.replace(/(<body[^>]*>)/i, `$1\n${header}`);
+  return output;
 }
 
 function normaliseHtml(html) {
@@ -96,10 +203,22 @@ function normaliseHtml(html) {
       `    <script src="/appearance.js?v=${ASSET_VERSIONS.get('appearance.js')}"></script>\n</head>`,
     );
   }
+  if (!/site-shell\.css/i.test(output)) {
+    output = output.replace(
+      '</head>',
+      `    <link rel="stylesheet" href="/site-shell.css?v=${ASSET_VERSIONS.get('site-shell.css')}">\n</head>`,
+    );
+  }
+  if (!/site-shell\.js/i.test(output)) {
+    output = output.replace(
+      '</head>',
+      `    <script defer src="/site-shell.js?v=${ASSET_VERSIONS.get('site-shell.js')}"></script>\n</head>`,
+    );
+  }
   if (!/pwa-register\.js/i.test(output)) {
     output = output.replace('</body>', `    <script defer src="/pwa-register.js?v=${ASSET_VERSIONS.get('pwa-register.js')}"></script>\n</body>`);
   }
-  return output;
+  return sharedShellHtml(output);
 }
 
 function normaliseJavaScript(source) {
@@ -366,14 +485,6 @@ const FORMAT_TOOL_CONTENT = {
   uk: { title: 'Створіть штрихкод {format} зараз', label: 'Значення коду', hint: 'Введіть значення, сумісне з {format}. Воно перевіряється локально перед експортом.', generate: 'Створити', svg: 'Завантажити SVG', png: 'Завантажити PNG', full: 'Відкрити розширений генератор', invalid: 'Введіть дійсне значення для {format}.', checksum: 'Контрольна цифра неправильна. Очікується: {digit}.', ready: 'Дійсний {format}: {value}' },
 };
 
-const FORMAT_NAV_CONTENT = {
-  en: ['Generator', 'Scanner', 'CSV batch'], pl: ['Generator', 'Skaner', 'Kody z CSV'],
-  de: ['Generator', 'Scanner', 'CSV-Stapel'], fr: ['Générateur', 'Scanner', 'Lot CSV'],
-  es: ['Generador', 'Escáner', 'Lote CSV'], it: ['Generatore', 'Scanner', 'Lotto CSV'],
-  pt: ['Gerador', 'Scanner', 'Lote CSV'], nl: ['Generator', 'Scanner', 'CSV-batch'],
-  cs: ['Generátor', 'Skener', 'Dávka CSV'], uk: ['Генератор', 'Сканер', 'Пакет CSV'],
-};
-
 const QR_OPTION_CONTENT = {
   en: ['Error correction', 'L - 7%', 'M - 15% (recommended)', 'Q - 25%', 'H - 30%'],
   pl: ['Korekcja błędów', 'L - 7%', 'M - 15% (zalecane)', 'Q - 25%', 'H - 30%'],
@@ -395,28 +506,11 @@ function addFormatTool(html, lang, format) {
   if (config.titles?.[lang]) t.title = config.titles[lang];
   if (lang === 'en' && format === 'itf-14') t.title = t.title.replace('Create a ITF-14', 'Create an ITF-14');
   const advancedRoute = routeFor(lang);
-  const [generatorLabel, scannerLabel, bulkLabel] = FORMAT_NAV_CONTENT[lang] || FORMAT_NAV_CONTENT.en;
-  const bulkRoute = lang === 'pl' ? '/pl/generator-kodow-z-csv' : '/bulk-barcode-generator';
   const valueControl = config.multiline
     ? `<textarea id="format-inline-value" name="barcode-value" rows="4" inputmode="${config.inputMode}" autocomplete="off" maxlength="${config.maxLength}" aria-describedby="format-inline-hint format-inline-status">${config.example}</textarea>`
     : `<input id="format-inline-value" name="barcode-value" value="${config.example}" inputmode="${config.inputMode}" autocomplete="off" maxlength="${config.maxLength}" aria-describedby="format-inline-hint format-inline-status">`;
   const qrOptions = config.jsFormat === 'QR' ? QR_OPTION_CONTENT[lang] || QR_OPTION_CONTENT.en : null;
   const optionControl = qrOptions ? `<div class="format-tool__option"><label for="format-inline-ecc">${qrOptions[0]}</label><select id="format-inline-ecc" name="error-correction"><option value="L">${qrOptions[1]}</option><option value="M" selected>${qrOptions[2]}</option><option value="Q">${qrOptions[3]}</option><option value="H">${qrOptions[4]}</option></select></div>` : '';
-  const header = `
-    <header class="format-page-header">
-        <div class="format-page-header__identity">
-            <a class="format-page-header__brand" href="${advancedRoute}" aria-label="Barcode Generator">
-                <span class="format-page-header__mark" aria-hidden="true">▥</span>
-                <span>Barcode Generator</span>
-            </a>
-            <a class="format-page-header__publisher" href="https://daytodayapps.com/">by Day to Day Apps</a>
-        </div>
-        <nav class="format-page-header__nav" aria-label="${generatorLabel}">
-            <a href="${advancedRoute}">${generatorLabel}</a>
-            <a href="${routeFor(lang, 'decoder')}">${scannerLabel}</a>
-            <a href="${bulkRoute}">${bulkLabel}</a>
-        </nav>
-    </header>`;
   const tool = `
         <section class="format-tool" id="format-tool" aria-labelledby="format-tool-title"
             data-format="${config.jsFormat}" data-type="${config.appType}" data-name="${formatName}"
@@ -446,7 +540,6 @@ function addFormatTool(html, lang, format) {
         </section>`;
   return html
     .replace(/(<link rel="stylesheet" href="[^"]*styles\.css[^>]*>)/i, `$1\n    <link rel="stylesheet" href="/format-inline.css?v=${ASSET_VERSIONS.get('format-inline.css')}">`)
-    .replace(/(<body[^>]*>)/i, `$1\n${header}`)
     .replace(/<a class="landing__cta" href="[^"]*">/i, '<a class="landing__cta" href="#format-tool">')
     .replace(/(\s*<section class="landing__section)/i, `\n${tool}\n$1`)
     .replace('</body>', `    <script defer src="/vendor/${config.jsFormat === 'QR' ? 'qrcode-generator.js' : 'jsbarcode.min.js'}"></script>\n    <script defer src="/format-inline.js?v=${ASSET_VERSIONS.get('format-inline.js')}"></script>\n</body>`);
@@ -912,10 +1005,12 @@ function localisePrivateHtml(source, lang, page) {
 
   const privacy = lang === 'pl' ? '/pl/polityka-prywatnosci' : '/privacy-policy';
   const terms = lang === 'pl' ? '/pl/regulamin' : '/terms';
+  const bulk = lang === 'pl' ? '/pl/generator-kodow-z-csv' : '/bulk-barcode-generator';
   html = html
     .replace(/href=(['"])(?:\.\.\/)?(?:polityka-prywatnosci|privacy-policy)(?:\.html)?\1/g, `href="${privacy}"`)
     .replace(/href=(['"])(?:\.\.\/)?(?:regulamin|terms)(?:\.html)?\1/g, `href="${terms}"`)
-    .replace(/href=(['"])(?:\.\.\/)?kalibracja-druku(?:\.html)?\1/g, 'href="/kalibracja-druku"');
+    .replace(/href=(['"])(?:\.\.\/)?kalibracja-druku(?:\.html)?\1/g, 'href="/kalibracja-druku"')
+    .replace(/(<a\b[^>]*\bid="new-bulk-job"[^>]*\bhref=)["'][^"']*["']/i, `$1"${bulk}"`);
   return normaliseHtml(html);
 }
 
@@ -966,6 +1061,7 @@ async function copyPublicDirectory(name) {
     if (isLanding) html = improveLandingSeo(html, lang, rel.at(-2));
     if (rel.at(-2) === 'ean-13') html = addEan13Tool(html, lang);
     if (FORMAT_TOOL_CONFIG[rel.at(-2)]) html = addFormatTool(html, lang, rel.at(-2));
+    html = removeElementByClass(html, 'div', 'landing__lang');
     await writeFile(file, html, 'utf8');
   }
 }
@@ -1101,6 +1197,7 @@ for (const lang of LANGS) {
   await mkdir(path.dirname(target), { recursive: true });
   let html = normaliseHtml(qrPageHtml({ lang, langs: LANGS, base: BASE, routeFor, canonicalFor }));
   html = addFormatTool(html, lang, 'qr-code');
+  html = removeElementByClass(html, 'div', 'landing__lang');
   await writeFile(target, html, 'utf8');
 }
 
@@ -1246,6 +1343,10 @@ const landingLoader = `(function(){function load(){var s=document.createElement(
 const landingLoaderVersion = createHash('sha256').update(landingLoader).digest('hex').slice(0, 12);
 await writeFile(path.join(OUT, 'landing-loader.js'), landingLoader, 'utf8');
 const criticalThemeControl = `<script>(function(){var b=document.getElementById('theme-toggle');if(!b)return;b.addEventListener('click',function(e){e.stopImmediatePropagation();var d=document.documentElement,c=d.getAttribute('data-theme'),n=c==='dark'?'light':'dark';d.setAttribute('data-theme',n);try{localStorage.setItem('barcode-theme',n)}catch(_){}})})();</script>`;
+function criticalAdvancedSettings(lang) {
+  const label = BUILD_I18N[lang]?.advancedSettings || BUILD_I18N.en.advancedSettings || 'Advanced settings';
+  return `<script>(function(){var t=document.getElementById('barcode-type'),v=document.getElementById('barcode-text'),b=document.getElementById('btn-generate'),q=document.getElementById('qr-options'),c=t&&t.closest('.controls'),tg=t&&t.closest('.control-group'),vg=v&&v.closest('.control-group');if(!c||!tg||!vg||!b||c.querySelector('.advanced-settings'))return;var d=document.createElement('details');d.className='advanced-settings';d.open=!matchMedia('(max-width: 600px)').matches;var s=document.createElement('summary');s.textContent=${JSON.stringify(label)};var w=document.createElement('div');w.className='advanced-settings__content';if(q)w.appendChild(q);var n=vg.nextElementSibling;while(n&&n!==b){var x=n.nextElementSibling;w.appendChild(n);n=x}d.append(s,w);b.before(d)})();</script>`;
+}
 const qrDiscoveryLabels = {
   en: 'Learn more about QR codes', pl: 'Więcej o kodach QR', de: 'Mehr über QR-Codes',
   fr: 'En savoir plus sur les QR codes', es: 'Más sobre códigos QR', it: 'Scopri di più sui codici QR',
@@ -1285,7 +1386,7 @@ for (const lang of LANGS) {
   html = html.replaceAll('aria-label="Site controls"', `aria-label="${siteControlsLabels[lang]}"`);
   html = html.replace(
     `<script defer src="${prefix}landing-loader.js?v=${landingLoaderVersion}"></script>`,
-    `${criticalThemeControl}<script defer src="${prefix}landing-loader.js?v=${landingLoaderVersion}"></script>`,
+    `${criticalThemeControl}${criticalAdvancedSettings(lang)}<script defer src="${prefix}landing-loader.js?v=${landingLoaderVersion}"></script>`,
   );
   const qrRoute = routeFor(lang, 'qr-code/');
   const qrLink = `<a class="popular-card__more" href="${qrRoute}">${qrDiscoveryLabels[lang]}</a>`;

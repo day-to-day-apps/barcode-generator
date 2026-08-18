@@ -14,8 +14,20 @@ function escapeJson(s) {
     return JSON.stringify(String(s ?? ''));
 }
 
+function sharedHeader(origin) {
+    const home = `${escapeHtml(origin)}/`;
+    return `<header class="site-header"><div class="site-header__inner">
+<a class="site-brand" href="${home}" aria-label="Barcode Generator"><span class="site-brand__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span>Barcode Generator</span></a>
+<nav class="site-nav" aria-label="Main navigation">
+<a class="site-nav__link" href="${home}">Generator</a><a class="site-nav__link" href="${home}decoder">Scanner</a><a class="site-nav__link" href="${home}bulk-barcode-generator">Bulk / CSV</a><a class="site-nav__link" href="${home}gs1-barcode-generator">GS1</a><a class="site-nav__link" href="${home}2d-barcode-generator">2D codes</a><a class="site-nav__link" href="${home}konto">Account</a>
+</nav>
+<div class="site-header__actions"><button class="theme-toggle" id="theme-toggle" type="button" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></svg></button></div>
+</div></header>`;
+}
+
 function notFound(env) {
-    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Not found</title><meta name="robots" content="noindex"></head><body><h1>404 — Code not found</h1><p>This shared code does not exist or is no longer public.</p><p><a href="${escapeHtml(siteOrigin(env))}/">Go to homepage</a></p></body></html>`;
+    const origin = siteOrigin(env);
+    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Code not found | Barcode Generator</title><meta name="robots" content="noindex"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/site-shell.css"><script src="/appearance.js"></script><script defer src="/site-shell.js"></script><style>${sharedPageStyles()}</style></head><body class="site-shell-ready shared-page">${sharedHeader(origin)}<main class="shared-layout"><section class="shared-card shared-card--empty"><p class="shared-kicker">Shared code</p><h1>Code not found</h1><p class="shared-meta">This shared code does not exist or is no longer public.</p><a class="shared-cta" href="${escapeHtml(origin)}/">Open generator</a></section></main></body></html>`;
     return new Response(html, {
         status: 404,
         headers: {
@@ -28,6 +40,27 @@ function notFound(env) {
 
 function siteOrigin(env) {
     return env.SITE_ORIGIN || 'https://barcode-generator.daytodayapps.com';
+}
+
+function sharedPageStyles() {
+    return `
+* { box-sizing: border-box; }
+.shared-page { min-height: 100vh; margin: 0; font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif; }
+.shared-layout { display: grid; place-items: center; width: min(100% - 32px, 1120px); min-height: calc(100vh - 69px); margin: 0 auto; padding: 48px 0; }
+.shared-card { width: min(100%, 600px); padding: 32px; border: 1px solid var(--site-border); border-radius: 8px; background: var(--site-surface); box-shadow: var(--site-shadow); text-align: center; }
+.shared-card--empty { max-width: 520px; }
+.shared-kicker { margin: 0 0 8px; color: var(--site-primary-strong); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.shared-card h1 { margin: 0 0 6px; color: var(--site-text); font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.2; overflow-wrap: anywhere; }
+.shared-meta { margin: 0 0 24px; color: var(--site-muted); font-size: .95rem; }
+.shared-render { display: flex; justify-content: center; align-items: center; min-height: 220px; margin-bottom: 20px; padding: 24px; border: 1px solid var(--site-border); border-radius: 8px; background: #fff; color: #202738; }
+.shared-render svg, .shared-render canvas { max-width: 100%; height: auto; }
+.shared-value { margin: 0 0 24px; padding: 12px; border: 1px solid var(--site-border); border-radius: 8px; background: var(--site-bg); color: var(--site-text); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .95rem; overflow-wrap: anywhere; }
+.shared-cta { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 18px; border-radius: 8px; background: var(--site-primary); color: #fff; font-weight: 750; text-decoration: none; }
+.shared-cta:hover { background: var(--site-primary-strong); }
+.shared-footer { margin: 20px 0 0; color: var(--site-muted); font-size: .82rem; }
+.shared-footer a { color: var(--site-primary-strong); }
+@media (max-width: 720px) { .shared-layout { min-height: auto; padding: 28px 0; } .shared-card { padding: 24px 18px; } .shared-render { min-height: 180px; padding: 16px; } }
+`;
 }
 
 function renderPage({ row, origin }) {
@@ -54,35 +87,24 @@ function renderPage({ row, origin }) {
 <meta property="og:url" content="${escapeHtml(canonical)}">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<style>
-:root { color-scheme: light dark; }
-* { box-sizing: border-box; }
-body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; background: #f6f7f9; color: #1a1d21; }
-@media (prefers-color-scheme: dark) { body { background: #14171c; color: #e8eaed; } .card { background: #1f242b; box-shadow: 0 4px 20px rgba(0,0,0,.4); } .meta { color: #9aa0a6; } }
-.card { background: #fff; border-radius: 12px; padding: 2rem; max-width: 480px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,.08); text-align: center; }
-h1 { margin: 0 0 .5rem; font-size: 1.5rem; word-break: break-word; }
-.meta { color: #5f6368; font-size: .9rem; margin: 0 0 1.5rem; }
-.render { display: flex; justify-content: center; align-items: center; min-height: 160px; margin: 0 0 1.5rem; padding: 1rem; background: #fff; border-radius: 8px; }
-.render svg, .render canvas { max-width: 100%; height: auto; }
-.value { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .95rem; word-break: break-all; padding: .75rem; background: rgba(0,0,0,.04); border-radius: 6px; margin: 0 0 1.5rem; }
-@media (prefers-color-scheme: dark) { .value { background: rgba(255,255,255,.06); } }
-.cta { display: inline-block; padding: .75rem 1.25rem; background: #1a73e8; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 500; }
-.cta:hover { background: #1557b0; }
-.footer { margin-top: 1.5rem; font-size: .8rem; color: #80868b; }
-.footer a { color: inherit; }
-</style>
+<link rel="stylesheet" href="/site-shell.css">
+<script src="/appearance.js"></script>
+<script defer src="/site-shell.js"></script>
+<style>${sharedPageStyles()}</style>
 </head>
-<body>
-<main class="card">
+<body class="site-shell-ready shared-page">
+${sharedHeader(origin)}
+<main class="shared-layout"><section class="shared-card">
+<p class="shared-kicker">Shared code</p>
 <h1>${escapeHtml(name)}</h1>
-<p class="meta">${escapeHtml(type)}</p>
-<div class="render" id="render" aria-label="${escapeHtml(isQR ? 'QR code' : 'Barcode')}">
+<p class="shared-meta">${escapeHtml(type)}</p>
+<div class="shared-render" id="render" aria-label="${escapeHtml(isQR ? 'QR code' : 'Barcode')}">
 <noscript><p>Enable JavaScript to view the code.</p></noscript>
 </div>
-<p class="value">${escapeHtml(value)}</p>
-<a class="cta" href="${escapeHtml(origin)}/">Open generator</a>
-<p class="footer">Shared via <a href="${escapeHtml(origin)}/">Barcode Generator</a></p>
-</main>
+<p class="shared-value">${escapeHtml(value)}</p>
+<a class="shared-cta" href="${escapeHtml(origin)}/">Open generator</a>
+<p class="shared-footer">Shared via <a href="${escapeHtml(origin)}/">Barcode Generator</a></p>
+</section></main>
 <script>
 (function () {
     var value = ${escapeJson(value)};

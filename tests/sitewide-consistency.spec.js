@@ -104,7 +104,7 @@ test('specialist desktop navigation exposes practical click targets', async ({ p
   await page.setViewportSize({ width: 1440, height: 900 });
   for (const url of ['/bulk-barcode-generator', '/gs1-barcode-generator', '/2d-barcode-generator', '/avery-label-printing']) {
     await page.goto(url);
-    const links = page.locator('.bulk-header nav a');
+    const links = page.locator('.site-nav a');
     await expect(links.first(), url).toBeVisible();
     for (const box of await links.evaluateAll((items) => items.map((item) => item.getBoundingClientRect().toJSON()))) {
       expect(box.height, `${url} nav target`).toBeGreaterThanOrEqual(40);

@@ -3911,8 +3911,8 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 }
 /* Square frame for QR â€” finder patterns need breathing room */
 .popular-card__preview[data-preview="QR"] {
-    height: 86px;
-    padding: 4px;
+    height: 72px;
+    padding: 6px 8px;
 }
 .popular-card__preview svg,
 .popular-card__preview canvas,
@@ -4023,6 +4023,17 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
         background: var(--surface);
     }
 
+    /* Match the collapsed advanced-settings layout before its static bootstrap
+       reaches the end of the document, preventing a large first-paint shift. */
+    .controls {
+        min-height: 307px;
+    }
+
+    .controls > .control-row,
+    .controls > .control-group.non-qr-control {
+        display: none;
+    }
+
     .seo-links,
     .accent-section,
     .info-section,
@@ -4088,7 +4099,7 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
     }
     .popular-card { min-height: 100px; padding: 10px 6px; }
     .popular-card__preview { height: 60px; }
-    .popular-card__preview[data-preview="QR"] { height: 72px; }
+    .popular-card__preview[data-preview="QR"] { height: 60px; }
     .popular-card__label { font-size: 11px; }
 }
 

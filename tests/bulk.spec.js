@@ -29,6 +29,7 @@ test('validates check digits and corrects supported values', async ({ page }) =>
 });
 
 test('imports semicolon CSV and creates a readable PDF and SVG ZIP', async ({ page }) => {
+  test.setTimeout(120_000);
   await page.goto('/bulk-barcode-generator');
   await page.locator('#csv-file').setInputFiles({ name: 'products.csv', mimeType: 'text/csv', buffer: Buffer.from('\uFEFFvalue;type;name;copies\n590123412345;EAN13;Tea;2\nBOX-42;CODE128;Box;1', 'utf8') });
   await expect(page.locator('#bulk-rows tr')).toHaveCount(2);

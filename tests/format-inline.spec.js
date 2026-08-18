@@ -20,9 +20,9 @@ for (const { slug, type } of FORMATS) {
         const tool = page.locator('#format-tool');
         await expect(tool).toBeVisible();
         await expect(page.locator('h1')).toHaveCount(1);
-        await expect(page.locator('.format-page-header')).toBeVisible();
-        await expect(page.locator('.format-page-header__publisher')).toHaveAttribute('href', 'https://daytodayapps.com/');
-        await expect(page.locator('.format-page-header__nav a')).toHaveCount(3);
+        await expect(page.locator('.site-header')).toBeVisible();
+        await expect(page.locator('.site-brand')).toHaveAttribute('href', new RegExp(`^/${lang ? `${lang}/` : ''}$`));
+        await expect(page.locator('.site-nav a')).toHaveCount(6);
         await expect(page.locator('.landing__cta')).toHaveAttribute('href', '#format-tool');
         await expect(tool.locator('#format-inline-barcode rect, #format-inline-barcode path')).not.toHaveCount(0);
         await expect(tool.locator('.format-tool__status--success')).not.toBeEmpty();

@@ -35,7 +35,8 @@ export default async function globalSetup() {
   fs.writeFileSync(path.join(fixtureDir, 'test-ean13.png'), placeholder);
 
   if (await previewIsReady()) {
-    throw new Error(`Preview port is already in use: ${PREVIEW_URL}`);
+    if (process.env.CI) throw new Error(`Preview port is already in use: ${PREVIEW_URL}`);
+    return;
   }
 
   const preview = spawn(process.execPath, ['scripts/preview.mjs', '--port', '8765'], {

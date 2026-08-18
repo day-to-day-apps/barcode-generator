@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', savedTheme);
 
-    themeToggle.addEventListener('click', () => {
+    if (themeToggle && !themeToggle.closest('.site-header')) themeToggle.addEventListener('click', () => {
         const current = document.documentElement.getAttribute('data-theme');
         const next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===== LANGUAGE DROPDOWN =====
     const langToggle = document.getElementById('lang-toggle');
     const langDropdown = document.getElementById('lang-dropdown');
-    if (langToggle && langDropdown) {
+    if (langToggle && langDropdown && !langToggle.closest('.site-header')) {
         langToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             langDropdown.classList.toggle('open');

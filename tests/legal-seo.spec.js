@@ -44,7 +44,7 @@ for (const item of PAGES) {
     await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical);
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg');
-    await expect(page.locator('link[rel="stylesheet"]'))
+    await expect(page.locator('link[rel="stylesheet"][href^="/styles.css?v="]'))
       .toHaveAttribute('href', /^\/styles\.css\?v=[a-f0-9]{12}$/);
     await expect(page.locator('script[src^="/analytics.js?v="]')).toHaveCount(1);
 
