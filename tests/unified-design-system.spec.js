@@ -18,6 +18,11 @@ test.describe('shared site shell', () => {
       await expect(page.locator('#lang-toggle')).toBeVisible();
       await expect(page.locator('#theme-toggle')).toBeVisible();
       await expect(page.locator('[id="lang-toggle"]')).toHaveCount(1);
+      await expect(page.locator('header:not(.site-header)')).toHaveCount(0);
+      const introSectionsAreLabelled = await page.locator('.animated-header').evaluateAll((sections) => (
+        sections.every((section) => section.tagName === 'SECTION' && Boolean(section.getAttribute('aria-label')))
+      ));
+      expect(introSectionsAreLabelled).toBe(true);
       const legacyHidden = await page.locator('header.bulk-header, header.format-page-header, .topbar, nav.decoder-nav').evaluateAll((elements) => (
         elements.every((element) => getComputedStyle(element).display === 'none')
       ));

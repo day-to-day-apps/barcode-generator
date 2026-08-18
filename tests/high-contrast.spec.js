@@ -29,7 +29,7 @@ test('account appearance setting persists all three contrast modes', async ({ pa
   await expect(setting.locator('[data-contrast-choice="high"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#login-submit')).toHaveCSS('background-image', 'none');
   await expect(page.locator('.app-nav__cta')).toHaveCSS('background-image', 'none');
-  await expect(page.locator('header h1')).toHaveCSS('background-image', 'none');
+  await expect(page.locator('.animated-header h1')).toHaveCSS('background-image', 'none');
   expect(await page.evaluate(() => localStorage.getItem('barcode-contrast'))).toBe('high');
 
   await page.reload();

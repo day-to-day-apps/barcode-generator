@@ -176,6 +176,16 @@ function normaliseHtml(html) {
     .replace(/\s*<link[^>]+https:\/\/fonts\.(?:googleapis|gstatic)\.com[^>]*>/gi, '')
     .replace(/<script(?![^>]*\b(?:defer|async)\b)(?![^>]*type=['"]module['"])([^>]*\bsrc=[^>]*)>/gi, '<script defer$1>')
     .replace(ASSET_REF_RE, (_match, prefix, name) => `${prefix}${name}?v=${ASSET_VERSIONS.get(name)}`);
+  const pageLang = html.match(/<html\b[^>]*\blang=["']([^"']+)/i)?.[1]?.split('-')[0] || 'en';
+  const introLabels = {
+    en: 'Page introduction', pl: 'Wprowadzenie do strony', de: 'Seiteneinführung', fr: 'Présentation de la page',
+    es: 'Introducción de la página', it: 'Introduzione alla pagina', pt: 'Introdução da página',
+    nl: 'Pagina-inleiding', cs: 'Úvod stránky', uk: 'Вступ до сторінки',
+  };
+  output = output.replace(
+    /<header(\b[^>]*\bclass=["'][^"']*\banimated-header\b[^"']*["'][^>]*)>([\s\S]*?)<\/header>/gi,
+    `<section$1 aria-label="${introLabels[pageLang] || introLabels.en}">$2</section>`,
+  );
   if (!/analytics\.js/i.test(output)) {
     output = output.replace(
       '</body>',

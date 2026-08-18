@@ -81,6 +81,7 @@ body::before { display: none !important; }
 .site-nav__link:hover { color: var(--site-primary-strong); background: var(--site-primary-soft); }
 .site-nav__link.is-active { color: #fff; background: var(--site-primary); }
 [data-theme="dark"] .site-nav__link.is-active { color: #fff; background: #5b36f2; }
+[data-contrast="high"] .site-nav__link.is-active { color: #fff; background: #000091; }
 .site-nav__link:focus-visible, .site-brand:focus-visible, .site-header button:focus-visible, .site-header a:focus-visible { outline: 3px solid var(--site-focus); outline-offset: 2px; }
 .site-header__actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-width: max-content; }
 .site-header .lang-switch { position: relative; inset: auto; z-index: 3; }
