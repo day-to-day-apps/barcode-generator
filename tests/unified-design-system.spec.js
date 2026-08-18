@@ -43,6 +43,10 @@ test.describe('shared site shell', () => {
     await expect(page.locator('.site-nav a[href="/pl/generator-kodow-z-csv"]')).toBeVisible();
     await expect(page.locator('.site-nav a[href="/pl/generator-kodow-gs1"]')).toBeVisible();
     await expect(page.locator('.site-nav a[href="/pl/generator-kodow-2d"]')).toBeVisible();
+    const cameraButton = await page.locator('#camera-btn').boundingBox();
+    expect(cameraButton).not.toBeNull();
+    expect(cameraButton.width).toBeLessThanOrEqual(240);
+    expect(cameraButton.height).toBeLessThanOrEqual(60);
   });
 
   test('language and theme controls respond without delayed app bundles', async ({ page }) => {
@@ -80,6 +84,15 @@ test.describe('shared site shell', () => {
       await page.goto(route);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow, route).toBeLessThanOrEqual(1);
+    }
+  });
+
+  test('mobile home renders content sections without phantom placeholders', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/pl/');
+    await expect(page.locator('.animated-header')).toHaveCSS('animation-name', 'none');
+    for (const selector of ['.accent-section', '.info-section', '.howto-section', '.faq-section']) {
+      await expect(page.locator(selector)).toHaveCSS('content-visibility', 'visible');
     }
   });
 });

@@ -137,12 +137,16 @@ body::before { display: none !important; }
 .bulk-page :is(.btn-secondary) { border-color: var(--site-primary); background: var(--site-surface); color: var(--site-primary-strong); }
 .bulk-page :is(.task-kicker, .two-d-advanced summary, .gs1-reference a, .task-links a) { color: var(--site-primary-strong); }
 .bulk-page :is(.two-d-heading h1, .gs1-heading h1, .task-shell h1) { color: var(--site-text); }
-.animated-header { color: var(--site-text); }
+.animated-header { color: var(--site-text); animation: none !important; }
 .animated-header .subtitle { color: var(--site-muted); }
 .animated-header :is(h1, .brand-heading) { background: none !important; color: var(--site-text) !important; -webkit-text-fill-color: currentColor !important; }
 .generator-panel :is(.controls, .preview), .decoder-main :is(.camera-btn, .drop-area), main.container > .card { border-radius: 8px; }
 .decoder-main .camera-btn { background: var(--site-primary); }
-.decoder-main :is(.decoder-intro, .drop-area, .decoder-features) { animation: none; }
+.decoder-main :is(.decoder-intro, .camera-row, .camera-btn, .drop-area, .decoder-features) { animation: none; }
+.decoder-main .camera-row { justify-content: center; }
+.decoder-main .camera-btn { flex-direction: row; width: auto; min-height: 48px; padding: 11px 18px; gap: 9px; }
+.decoder-main .camera-btn svg { width: 22px; height: 22px; padding: 0; border-radius: 0; background: transparent; box-shadow: none; animation: none; }
+.decoder-main .camera-btn span { font-size: 14px; }
 .decoder-main .decoder-intro { color: var(--site-muted); }
 .decoder-main .decoder-feature {
   border-color: var(--site-border);
